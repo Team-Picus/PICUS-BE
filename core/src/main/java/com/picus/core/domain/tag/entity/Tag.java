@@ -16,6 +16,8 @@ public class Tag {
 
     private String name;
 
+    private TagType tagType;
+
     protected Tag(String name) {
         this.name = name;
     }
