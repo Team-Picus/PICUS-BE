@@ -29,7 +29,7 @@ public class Post {
     private String detail;
 
     @Column(nullable = false)
-    private String price;
+    private OptionTable optionTable;
 
     private Integer reviewCount;
 
@@ -43,10 +43,10 @@ public class Post {
 
     private ApprovalStatus approvalStatus;
 
-    public Post(String title, String detail, String price, Long studioNo, Set<Area> activeAreas) {
+    public Post(String title, String detail, OptionTable optionTable, Long studioNo, Set<Area> activeAreas) {
         this.title = title;
         this.detail = detail;
-        this.price = price;
+        this.optionTable = optionTable;
         this.reviewCount = 0;
         this.likeCount = 0;
         this.studioNo = studioNo;
