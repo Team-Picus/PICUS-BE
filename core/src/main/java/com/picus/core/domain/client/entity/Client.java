@@ -1,6 +1,6 @@
 package com.picus.core.domain.client.entity;
 
-import com.picus.core.domain.expert.entity.Area;
+import com.picus.core.global.common.enums.Area;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
