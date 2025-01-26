@@ -27,12 +27,12 @@ public class Expert {
     private Set<String> skills = new HashSet<>();
 
     @Column(nullable = false)
-    private Set<Type> type;
+    private Set<ActivityType> type = new HashSet<>();
 
     @Column(nullable = false)
     private Set<Area> area;
 
-    public Expert(String intro, String career, Set<String> skills, Set<Type> type, Set<Area> area) {
+    public Expert(String intro, String career, Set<String> skills, Set<ActivityType> type, Set<Area> area) {
         this.intro = intro;
         this.career = career;
         this.skills = skills;
