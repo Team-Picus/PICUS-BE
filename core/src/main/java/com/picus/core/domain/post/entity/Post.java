@@ -1,7 +1,7 @@
 package com.picus.core.domain.post.entity;
 
-import com.picus.core.global.common.enums.Area;
 import com.picus.core.global.common.enums.ApprovalStatus;
+import com.picus.core.global.common.enums.Area;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,8 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
-    @Id @Tsid
+    @Id
+    @Tsid
     @Column(name = "post_no")
     private Long id;
 
@@ -28,8 +29,6 @@ public class Post {
     @Column(nullable = false)
     private String detail;
 
-    @Column(nullable = false)
-    private OptionTable optionTable;
 
     private Integer reviewCount;
 
@@ -43,10 +42,9 @@ public class Post {
 
     private ApprovalStatus approvalStatus;
 
-    public Post(String title, String detail, OptionTable optionTable, Long studioNo, Set<Area> activeAreas) {
+    public Post(String title, String detail, Long studioNo, Set<Area> activeAreas) {
         this.title = title;
         this.detail = detail;
-        this.optionTable = optionTable;
         this.reviewCount = 0;
         this.likeCount = 0;
         this.studioNo = studioNo;

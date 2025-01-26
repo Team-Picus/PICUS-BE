@@ -1,6 +1,21 @@
 package com.picus.core.domain.post.entity;
 
-public class Discount {
+import jakarta.persistence.*;
 
-    private Option option;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+public class Discount {
+    @Id
+    @GeneratedValue
+    private Long discountId;
+    private String name;
+
+    @Enumerated(value = EnumType.STRING)
+    private DiscountType discountType;
+    private double discountValue;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
 }
+
