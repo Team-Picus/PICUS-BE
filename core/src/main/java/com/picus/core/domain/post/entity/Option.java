@@ -11,7 +11,7 @@ public class Option {
     private Long id;
 
     @Column(name = "post_no")
-    private Long postId; // post id
+    private Long postNo; // post id
 
     private String name;
     private Double price;
