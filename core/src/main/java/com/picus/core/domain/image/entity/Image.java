@@ -25,7 +25,7 @@ public abstract class Image {   // 사진 구현 시 추가 수정
 
     private LocalDateTime uploadedAt;
 
-    public Image(String path, String extension) {
+    protected Image(String path, String extension) {
         this.path = path;
         this.extension = extension;
         this.uploadedAt = LocalDateTime.now();

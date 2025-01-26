@@ -22,7 +22,7 @@ public abstract class Like {
 
     private LocalDateTime createdAt;
 
-    public Like(Long user_no) {
+    protected Like(Long user_no) {
         this.user_no = user_no;
         this.createdAt = LocalDateTime.now();
     }
