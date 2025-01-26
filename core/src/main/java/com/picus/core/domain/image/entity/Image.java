@@ -14,7 +14,7 @@ public abstract class Image {   // 사진 구현 시 추가 수정
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
+    @Column(name = "image_no")
     private Long id;
 
     @Column(nullable = false)
