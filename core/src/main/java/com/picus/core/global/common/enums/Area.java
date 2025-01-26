@@ -1,4 +1,4 @@
-package com.picus.core.domain.expert.entity;
+package com.picus.core.global.common.enums;
 
 public enum Area {
     STUDIO,     // 개인 스튜디오
