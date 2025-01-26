@@ -1,6 +1,7 @@
 package com.picus.core.domain.post.entity;
 
-import com.picus.core.domain.expert.entity.Area;
+import com.picus.core.global.common.enums.Area;
+import com.picus.core.global.common.enums.ApprovalStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

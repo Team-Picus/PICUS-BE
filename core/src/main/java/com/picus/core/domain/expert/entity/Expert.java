@@ -1,5 +1,7 @@
 package com.picus.core.domain.expert.entity;
 
+import com.picus.core.global.common.enums.ApprovalStatus;
+import com.picus.core.global.common.enums.Area;
 import com.picus.core.global.converter.StringSetConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -23,7 +25,7 @@ public class Expert {
     @Column(nullable = false)
     private String career;
 
-    @Convert(converter = StringSetConverter.class)  // 추후 스킬로 필터링 및 검색 기준이 되지 않을 것이므로 별도의 테이블이 아닌 컨버터 사용
+    @Convert(converter = StringSetConverter.class)
     private Set<String> skills = new HashSet<>();
 
     @Column(nullable = false)
@@ -32,11 +34,14 @@ public class Expert {
     @Column(nullable = false)
     private Set<Area> area;
 
+    private ApprovalStatus approvalStatus;
+
     public Expert(String intro, String career, Set<String> skills, Set<ActivityType> type, Set<Area> area) {
         this.intro = intro;
         this.career = career;
         this.skills = skills;
         this.type = type;
         this.area = area;
+        this.approvalStatus = ApprovalStatus.PENDING;
     }
 }
