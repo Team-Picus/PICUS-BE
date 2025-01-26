@@ -1,5 +1,6 @@
 package com.picus.core.domain.studio.entity;
 
+import com.picus.core.global.common.enums.ApprovalStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,7 +36,9 @@ public class Studio {
     @Column(nullable = false)
     private Long userNo;
 
-    public Studio(String name, String backgroundImgUrl, Address address, Integer reviewCount, Integer activityCount, Double avgRating, LocalDateTime recentActiveAt, Long userNo) {
+    private ApprovalStatus approvalStatus;
+
+    public Studio(String name, String backgroundImgUrl, Address address, Long userNo) {
         this.name = name;
         this.backgroundImgUrl = backgroundImgUrl;
         this.address = address;
@@ -44,5 +47,6 @@ public class Studio {
         this.avgRating = 0.0;
         this.recentActiveAt = LocalDateTime.now();
         this.userNo = userNo;
+        this.approvalStatus = ApprovalStatus.PENDING;
     }
 }
