@@ -1,5 +1,6 @@
 package com.picus.core.domain.reservation.entity;
 
+import com.picus.core.domain.post.entity.OptionTable;
 import com.picus.core.global.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
@@ -20,7 +21,7 @@ public class Reservation extends BaseEntity {
 
     private Schedule schedule;
 
-    private Price price;
+//    private Price price;
 
     private String detail;
 
@@ -29,9 +30,9 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private Long expertAccountNo;
 
-    public Reservation(Schedule schedule, Price price, String detail, Long expertAccountNo) {
+    public Reservation(Schedule schedule, OptionTable price, String detail, Long expertAccountNo) {
         this.schedule = schedule;
-        this.price = price;
+//        this.price = price;
         this.detail = detail;
         this.status = ReservationStatus.CHECKING;
         this.expertAccountNo = expertAccountNo;
