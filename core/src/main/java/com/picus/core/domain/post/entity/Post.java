@@ -23,16 +23,12 @@ public class Post {
     @Column(name = "post_no")
     private Long id;
 
+    // 기본 정보
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String detail;
-
-
-    private Integer reviewCount;
-
-    private Integer likeCount;
 
     @Column(nullable = false)
     private Long studioNo;
@@ -40,7 +36,13 @@ public class Post {
     @Column(nullable = false)
     private Set<Area> activeAreas = new HashSet<>();
 
+    // 승인 상태
     private ApprovalStatus approvalStatus;
+
+    // 통계셩
+    private Integer reviewCount;
+    private Integer likeCount;
+
 
     public Post(String title, String detail, Long studioNo, Set<Area> activeAreas) {
         this.title = title;
