@@ -20,7 +20,6 @@ public class Reservation extends BaseEntity {
 
     private Schedule schedule;
 
-
     private String detail;
 
     private ReservationStatus status;

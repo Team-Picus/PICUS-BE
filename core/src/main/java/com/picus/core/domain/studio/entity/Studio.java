@@ -33,12 +33,12 @@ public class Studio {
 
     private LocalDateTime recentActiveAt;
 
-    @Column(nullable = false)
-    private Long userNo;
+    @Column(nullable = false, name = "expert_no")
+    private Long expertNo;
 
     private ApprovalStatus approvalStatus;
 
-    public Studio(String name, String backgroundImgUrl, Address address, Long userNo) {
+    public Studio(String name, String backgroundImgUrl, Address address, Long expertNo) {
         this.name = name;
         this.backgroundImgUrl = backgroundImgUrl;
         this.address = address;
@@ -46,7 +46,7 @@ public class Studio {
         this.activityCount = 0;
         this.avgRating = 0.0;
         this.recentActiveAt = LocalDateTime.now();
-        this.userNo = userNo;
+        this.expertNo = expertNo;
         this.approvalStatus = ApprovalStatus.PENDING;
     }
 }

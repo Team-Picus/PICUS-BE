@@ -32,6 +32,7 @@ public class Review {
     @Column(nullable = false)
     private Long userNo;
 
+
     private Thumbnail thumbnail;
 
     public Review(String content, Integer rating, Long reservationNo, Long postNo, Long userNo, Thumbnail thumbnail) {
@@ -42,4 +43,5 @@ public class Review {
         this.userNo = userNo;
         this.thumbnail = thumbnail;
     }
+
 }

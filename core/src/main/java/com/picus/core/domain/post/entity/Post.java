@@ -33,6 +33,8 @@ public class Post {
     @Column(nullable = false)
     private Long studioNo;
 
+    // TODO : Area Entity 로 변경
+    // TODO : PostArea Entity로 만들어서 다대다, PostArea는 Post와 생명주기를 함께해야 한다.
     @Column(nullable = false)
     private Set<Area> activeAreas = new HashSet<>();
 
