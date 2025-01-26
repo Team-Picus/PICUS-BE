@@ -18,7 +18,12 @@ public class Tag {
 
     private TagType tagType;
 
-    protected Tag(String name) {
+    private Tag(String name, TagType tagType) {
         this.name = name;
+        this.tagType = tagType;
+    }
+
+    public static Tag createForAdmin(String name, TagType tagType) {
+        return new Tag(name, tagType);
     }
 }
