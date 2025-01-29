@@ -1,5 +1,6 @@
 package com.picus.core.domain.post.entity.category;
 
+import com.picus.core.global.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @IdClass(PostCategoryId.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCategory {
+public class PostCategory extends BaseEntity {
 
     @Id
     private Long postNo;

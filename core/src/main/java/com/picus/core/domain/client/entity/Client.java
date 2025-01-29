@@ -1,6 +1,7 @@
 package com.picus.core.domain.client.entity;
 
 import com.picus.core.domain.client.entity.area.ClientDistrict;
+import com.picus.core.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Client {
+public class Client extends BaseEntity {
 
     @Id
     @Column(name = "client_no")

@@ -1,5 +1,6 @@
 package com.picus.core.domain.studio.entity;
 
+import com.picus.core.global.common.BaseEntity;
 import com.picus.core.global.common.enums.ApprovalStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Studio {
+public class Studio extends BaseEntity {
 
     @Id @Tsid
     @Column(name = "studio_no")

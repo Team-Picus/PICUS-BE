@@ -1,6 +1,7 @@
 package com.picus.core.domain.post.entity.area;
 
 import com.picus.core.domain.post.entity.Post;
+import com.picus.core.global.common.BaseEntity;
 import com.picus.core.global.common.area.entity.District;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @IdClass(PostDistrictId.class)
-public class PostDistrict {
+public class PostDistrict extends BaseEntity {
 
     @Id
     @ManyToOne
