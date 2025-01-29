@@ -6,15 +6,21 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Discount {
+
     @Id
-    @GeneratedValue
-    private Long discountId;
+    @Column(name = "discount_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
 
     @Enumerated(value = EnumType.STRING)
     private DiscountType discountType;
+
     private double discountValue;
+
     private LocalDateTime validFrom;
+
     private LocalDateTime validTo;
 }
 
