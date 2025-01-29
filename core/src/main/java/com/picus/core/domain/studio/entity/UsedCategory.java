@@ -1,6 +1,6 @@
 package com.picus.core.domain.studio.entity;
 
-import com.picus.core.domain.user.entity.term.UserTermId;
+import com.picus.core.global.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @IdClass(UsedCategoryId.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UsedCategory {
+public class UsedCategory extends BaseEntity {
 
     @Id
     private Long studioNo;

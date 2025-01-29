@@ -1,6 +1,7 @@
 package com.picus.core.domain.review.entity;
 
 import com.picus.core.domain.post.entity.image.Thumbnail;
+import com.picus.core.global.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends BaseEntity {
 
     @Id @Tsid
     @Column(name = "review_no")
@@ -31,7 +32,6 @@ public class Review {
 
     @Column(nullable = false)
     private Long userNo;
-
 
     private Thumbnail thumbnail;
 

@@ -1,6 +1,7 @@
 package com.picus.core.domain.expert.entity.area;
 
 import com.picus.core.domain.expert.entity.Expert;
+import com.picus.core.global.common.BaseEntity;
 import com.picus.core.global.common.area.entity.District;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @IdClass(ExpertDistrictId.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ExpertDistrict {
+public class ExpertDistrict extends BaseEntity {
 
     @Id
     @ManyToOne

@@ -1,6 +1,7 @@
 package com.picus.core.domain.post.entity;
 
 import com.picus.core.domain.post.entity.area.PostDistrict;
+import com.picus.core.global.common.BaseEntity;
 import com.picus.core.global.common.enums.ApprovalStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
+public class Post extends BaseEntity {
 
     @Id
     @Tsid

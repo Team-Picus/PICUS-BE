@@ -1,5 +1,6 @@
 package com.picus.core.domain.post.entity.pricing;
 
+import com.picus.core.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "options")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Option {
+public class Option extends BaseEntity {
 
     @Id
     @GeneratedValue
