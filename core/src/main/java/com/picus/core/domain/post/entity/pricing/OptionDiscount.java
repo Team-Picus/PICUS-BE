@@ -1,21 +1,24 @@
 package com.picus.core.domain.post.entity.pricing;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@IdClass(OptionDiscountId.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OptionDiscount {
 
     @Id
-    @GeneratedValue
-    @Column(name = "option_discount_id")
-    private Long id;
-
-    @Column(name = "discount_id")
     private Long discountId;
 
-    @Column(name = "option_id")
+    @Id
     private Long optionId;
+
+    public OptionDiscount(Long discountId, Long optionId) {
+        this.discountId = discountId;
+        this.optionId = optionId;
+    }
 }

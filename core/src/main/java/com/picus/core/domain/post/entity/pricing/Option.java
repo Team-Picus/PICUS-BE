@@ -1,9 +1,12 @@
 package com.picus.core.domain.post.entity.pricing;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "options")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Option {
 
     @Id
@@ -11,9 +14,10 @@ public class Option {
     @Column(name = "option_id")
     private Long id;
 
-    @Column(name = "post_no")
-    private Long postNo; // post id
+    @Column(nullable = false)
+    private Long postNo;
 
     private String name;
+
     private Double price;
 }
