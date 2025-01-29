@@ -1,17 +1,15 @@
 package com.picus.core.domain.post.entity;
 
+import com.picus.core.domain.post.entity.area.PostDistrict;
 import com.picus.core.global.common.enums.ApprovalStatus;
-import com.picus.core.global.common.enums.Area;
 import io.hypersistence.utils.hibernate.id.Tsid;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -33,26 +31,35 @@ public class Post {
     @Column(nullable = false)
     private Long studioNo;
 
-    // TODO : Area Entity 로 변경
-    // TODO : PostArea Entity로 만들어서 다대다, PostArea는 Post와 생명주기를 함께해야 한다.
-    @Column(nullable = false)
-    private Set<Area> activeAreas = new HashSet<>();
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PostDistrict> availableAreas = new ArrayList<>();
 
     // 승인 상태
     private ApprovalStatus approvalStatus;
 
     // 통계셩
     private Integer reviewCount;
+
     private Integer likeCount;
 
 
-    public Post(String title, String detail, Long studioNo, Set<Area> activeAreas) {
+    public Post(String title, String detail, Long studioNo) {
         this.title = title;
         this.detail = detail;
         this.reviewCount = 0;
         this.likeCount = 0;
         this.studioNo = studioNo;
-        this.activeAreas = activeAreas;
         this.approvalStatus = ApprovalStatus.PENDING;
+    }
+
+    public void updateAvailableAreas(List<PostDistrict> areas) {
+        for (PostDistrict area : areas) {
+            if (!this.availableAreas.contains(area)) {
+                this.availableAreas.add(area);
+            }
+        }
+
+        this.availableAreas.removeIf(existingArea -> !areas.contains(existingArea));
     }
 }

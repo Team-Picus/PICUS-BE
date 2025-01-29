@@ -1,6 +1,7 @@
 package com.picus.core.domain.user.entity;
 
-import com.picus.core.domain.withdrawal.entity.Withdrawal;
+import com.picus.core.domain.user.entity.profile.Profile;
+import com.picus.core.domain.user.entity.withdrawal.Withdrawal;
 import com.picus.core.global.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;

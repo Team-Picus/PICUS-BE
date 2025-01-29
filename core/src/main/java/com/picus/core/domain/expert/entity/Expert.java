@@ -1,14 +1,16 @@
 package com.picus.core.domain.expert.entity;
 
+import com.picus.core.domain.expert.entity.area.ExpertDistrict;
 import com.picus.core.global.common.enums.ApprovalStatus;
-import com.picus.core.global.common.enums.Area;
 import com.picus.core.global.converter.StringSetConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -31,17 +33,27 @@ public class Expert {
     @Column(nullable = false)
     private Set<ActivityType> type = new HashSet<>();
 
-    @Column(nullable = false)
-    private Set<Area> area;
-
     private ApprovalStatus approvalStatus;
 
-    public Expert(String intro, String career, Set<String> skills, Set<ActivityType> type, Set<Area> area) {
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ExpertDistrict> activityAreas = new ArrayList<>();
+
+    public Expert(String intro, String career, Set<String> skills, Set<ActivityType> type) {
         this.intro = intro;
         this.career = career;
         this.skills = skills;
         this.type = type;
-        this.area = area;
         this.approvalStatus = ApprovalStatus.PENDING;
+    }
+
+    public void updateActivityAreas(List<ExpertDistrict> areas) {
+        for (ExpertDistrict area : areas) {
+            if (!this.activityAreas.contains(area)) {
+                this.activityAreas.add(area);
+            }
+        }
+
+        this.activityAreas.removeIf(existingArea -> !areas.contains(existingArea));
     }
 }
