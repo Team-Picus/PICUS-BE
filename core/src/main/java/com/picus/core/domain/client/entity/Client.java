@@ -1,12 +1,13 @@
 package com.picus.core.domain.client.entity;
 
-import com.picus.core.global.common.enums.Area;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.picus.core.domain.client.entity.area.ClientDistrict;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -17,9 +18,17 @@ public class Client {
     @Column(name = "client_no")
     private Long id;
 
-    private Area preferredArea;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ClientDistrict> preferredAreas = new ArrayList<>();
 
-    public Client(Area preferredArea) {
-        this.preferredArea = preferredArea;
+    public void updatePreferredArea(List<ClientDistrict> areas) {
+        for (ClientDistrict area : areas) {
+            if (!this.preferredAreas.contains(area)) {
+                this.preferredAreas.add(area);
+            }
+        }
+
+        this.preferredAreas.removeIf(existingArea -> !areas.contains(existingArea));
     }
 }
