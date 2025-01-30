@@ -1,5 +1,6 @@
-package com.picus.core.domain.post.entity.category;
+package com.picus.core.global.common.category.entity;
 
+import com.picus.core.domain.post.entity.category.Type;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

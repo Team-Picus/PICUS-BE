@@ -15,13 +15,13 @@ import java.io.Serializable;
 public class PostCategoryId implements Serializable {
 
     @EqualsAndHashCode.Include
-    private Long postNo;
+    private Long post;
 
     @EqualsAndHashCode.Include
-    private Long categoryId;
+    private Long category;
 
-    public PostCategoryId(Long postNo, Long categoryId) {
-        this.postNo = postNo;
-        this.categoryId = categoryId;
+    public PostCategoryId(Long post, Long category) {
+        this.post = post;
+        this.category = category;
     }
 }

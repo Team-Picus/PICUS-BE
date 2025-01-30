@@ -15,13 +15,13 @@ import java.io.Serializable;
 public class UsedCategoryId implements Serializable {
 
     @EqualsAndHashCode.Include
-    private Long studioNo;
+    private Long studio;
 
     @EqualsAndHashCode.Include
-    private Long categoryId;
+    private Long category;
 
-    public UsedCategoryId(Long studioNo, Long categoryId) {
-        this.studioNo = studioNo;
-        this.categoryId = categoryId;
+    public UsedCategoryId(Long studio, Long category) {
+        this.studio = studio;
+        this.category = category;
     }
 }

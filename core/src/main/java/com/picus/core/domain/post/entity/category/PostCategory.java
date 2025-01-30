@@ -1,9 +1,9 @@
 package com.picus.core.domain.post.entity.category;
 
+import com.picus.core.domain.post.entity.Post;
 import com.picus.core.global.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import com.picus.core.global.common.category.entity.Category;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +15,17 @@ import lombok.NoArgsConstructor;
 public class PostCategory extends BaseEntity {
 
     @Id
-    private Long postNo;
+    @ManyToOne
+    @JoinColumn(name = "post_no", nullable = false)
+    private Post post;
 
     @Id
-    private Long categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
-    public PostCategory(Long postNo, Long categoryId) {
-        this.postNo = postNo;
-        this.categoryId = categoryId;
+    public PostCategory(Post post, Category category) {
+        this.post = post;
+        this.category = category;
     }
 }
