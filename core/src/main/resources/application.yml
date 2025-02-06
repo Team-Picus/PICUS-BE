@@ -10,3 +10,8 @@ spring:
       ddl-auto: update
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
+
+kakao:
+  auth:
+    client: dc3741c4aaad93067048db400f8fff38
+    redirect: http://localhost:8080/auth/login/kakao
