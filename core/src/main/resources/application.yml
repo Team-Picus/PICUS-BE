@@ -11,7 +11,11 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
-kakao:
+app:
   auth:
-    client: dc3741c4aaad93067048db400f8fff38
-    redirect: http://localhost:8080/auth/login/kakao
+    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenExpiry: 1800000
+    refreshTokenExpiry: 604800000
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth/redirect
