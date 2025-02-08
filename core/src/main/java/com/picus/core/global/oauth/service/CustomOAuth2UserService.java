@@ -1,13 +1,13 @@
 package com.picus.core.global.oauth.service;
 
-import com.deeplify.tutorial.oauthlogin.api.entity.user.User;
-import com.deeplify.tutorial.oauthlogin.api.repository.user.UserRepository;
-import com.deeplify.tutorial.oauthlogin.oauth.entity.ProviderType;
-import com.deeplify.tutorial.oauthlogin.oauth.entity.RoleType;
-import com.deeplify.tutorial.oauthlogin.oauth.entity.UserPrincipal;
-import com.deeplify.tutorial.oauthlogin.oauth.exception.OAuthProviderMissMatchException;
-import com.deeplify.tutorial.oauthlogin.oauth.info.OAuth2UserInfo;
-import com.deeplify.tutorial.oauthlogin.oauth.info.OAuth2UserInfoFactory;
+import com.picus.core.domain.user.entity.User;
+import com.picus.core.domain.user.repository.UserRepository;
+import com.picus.core.global.oauth.entity.Provider;
+import com.picus.core.global.oauth.entity.Role;
+import com.picus.core.global.oauth.entity.UserPrincipal;
+import com.picus.core.global.oauth.exception.OAuthProviderMissMatchException;
+import com.picus.core.global.oauth.info.OAuth2UserInfo;
+import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -40,16 +40,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
-        ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
+        Provider providerType = Provider.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
 
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
         User savedUser = userRepository.findByUserId(userInfo.getId());
 
         if (savedUser != null) {
-            if (providerType != savedUser.getProviderType()) {
+            if (providerType != savedUser.getProvider()) {
                 throw new OAuthProviderMissMatchException(
                         "Looks like you're signed up with " + providerType +
-                        " account. Please use your " + savedUser.getProviderType() + " account to login."
+                        " account. Please use your " + savedUser.getProvider() + " account to login."
                 );
             }
             updateUser(savedUser, userInfo);
@@ -60,7 +60,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(savedUser, user.getAttributes());
     }
 
-    private User createUser(OAuth2UserInfo userInfo, ProviderType providerType) {
+    private User createUser(OAuth2UserInfo userInfo, Provider providerType) {
         LocalDateTime now = LocalDateTime.now();
         User user = new User(
                 userInfo.getId(),
@@ -69,7 +69,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 "Y",
                 userInfo.getImageUrl(),
                 providerType,
-                RoleType.USER,
+                Role.USER,
                 now,
                 now
         );

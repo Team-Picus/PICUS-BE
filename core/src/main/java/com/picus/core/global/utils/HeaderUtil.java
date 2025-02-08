@@ -1,6 +1,6 @@
 package com.picus.core.global.utils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class HeaderUtil {
 

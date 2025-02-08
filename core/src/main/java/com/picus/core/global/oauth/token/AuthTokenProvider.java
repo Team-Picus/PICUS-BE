@@ -1,6 +1,6 @@
 package com.picus.core.global.oauth.token;
 
-import com.deeplify.tutorial.oauthlogin.oauth.exception.TokenValidFailedException;
+import com.picus.core.global.oauth.exception.TokenValidFailedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
