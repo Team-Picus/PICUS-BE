@@ -1,16 +1,20 @@
 package com.picus.core.global.oauth.handler;
 
-import com.deeplify.tutorial.oauthlogin.api.entity.user.UserRefreshToken;
-import com.deeplify.tutorial.oauthlogin.api.repository.user.UserRefreshTokenRepository;
-import com.deeplify.tutorial.oauthlogin.config.properties.AppProperties;
-import com.deeplify.tutorial.oauthlogin.oauth.entity.ProviderType;
-import com.deeplify.tutorial.oauthlogin.oauth.entity.RoleType;
-import com.deeplify.tutorial.oauthlogin.oauth.info.OAuth2UserInfo;
-import com.deeplify.tutorial.oauthlogin.oauth.info.OAuth2UserInfoFactory;
-import com.deeplify.tutorial.oauthlogin.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import com.deeplify.tutorial.oauthlogin.oauth.token.AuthToken;
-import com.deeplify.tutorial.oauthlogin.oauth.token.AuthTokenProvider;
-import com.deeplify.tutorial.oauthlogin.utils.CookieUtil;
+import com.picus.core.global.config.properties.AppProperties;
+import com.picus.core.global.oauth.entity.Provider;
+import com.picus.core.global.oauth.entity.RefreshToken;
+import com.picus.core.global.oauth.entity.Role;
+import com.picus.core.global.oauth.info.OAuth2UserInfo;
+import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
+import com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.picus.core.global.oauth.repository.RefreshTokenRepository;
+import com.picus.core.global.oauth.token.AuthToken;
+import com.picus.core.global.oauth.token.AuthTokenProvider;
+import com.picus.core.global.utils.CookieUtil;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,18 +24,14 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.deeplify.tutorial.oauthlogin.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
-import static com.deeplify.tutorial.oauthlogin.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REFRESH_TOKEN;
+import static com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REFRESH_TOKEN;
 
 @Component
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final AuthTokenProvider tokenProvider;
     private final AppProperties appProperties;
-    private final UserRefreshTokenRepository userRefreshTokenRepository;
+    private final RefreshTokenRepository userRefreshTokenRepository;
     private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
 
     @Override
@@ -66,13 +66,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
-        ProviderType providerType = ProviderType.valueOf(authToken.getAuthorizedClientRegistrationId().toUpperCase());
+        Provider provider = Provider.valueOf(authToken.getAuthorizedClientRegistrationId().toUpperCase());
 
         OidcUser user = ((OidcUser) authentication.getPrincipal());
-        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
+        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, user.getAttributes());
         Collection<? extends GrantedAuthority> authorities = ((OidcUser) authentication.getPrincipal()).getAuthorities();
 
-        RoleType roleType = hasAuthority(authorities, RoleType.ADMIN.getCode()) ? RoleType.ADMIN : RoleType.USER;
+        Role roleType = hasAuthority(authorities, Role.ADMIN.getCode()) ? Role.ADMIN : Role.USER;
 
         Date now = new Date();
         AuthToken accessToken = tokenProvider.createAuthToken(
@@ -90,11 +90,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         );
 
         // DB 저장
-        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userInfo.getId());
+        RefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(userInfo.getId());
         if (userRefreshToken != null) {
             userRefreshToken.setRefreshToken(refreshToken.getToken());
         } else {
-            userRefreshToken = new UserRefreshToken(userInfo.getId(), refreshToken.getToken());
+            userRefreshToken = new RefreshToken(userInfo.getId(), refreshToken.getToken());
             userRefreshTokenRepository.saveAndFlush(userRefreshToken);
         }
 

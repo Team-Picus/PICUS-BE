@@ -1,6 +1,6 @@
 package com.picus.core.global.oauth.entity;
 
-import com.deeplify.tutorial.oauthlogin.api.entity.user.User;
+import com.picus.core.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ import java.util.Map;
 public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     private final String userId;
     private final String password;
-    private final ProviderType providerType;
-    private final RoleType roleType;
+    private final Provider provider;
+    private final Role role;
     private final Collection<GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
@@ -86,11 +86,11 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
 
     public static UserPrincipal create(User user) {
         return new UserPrincipal(
-                user.getUserId(),
-                user.getPassword(),
-                user.getProviderType(),
-                RoleType.USER,
-                Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode()))
+                user.getId().toString(),
+                "",
+                Provider.KAKAO,
+                Role.USER,
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getCode()))
         );
     }
 

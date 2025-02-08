@@ -1,6 +1,7 @@
 package com.picus.core.global.oauth.info.impl;
 
-import com.deeplify.tutorial.oauthlogin.oauth.info.OAuth2UserInfo;
+
+import com.picus.core.global.oauth.info.OAuth2UserInfo;
 
 import java.util.Map;
 

@@ -1,18 +1,18 @@
 package com.picus.core.global.oauth.filter;
 
-import com.deeplify.tutorial.oauthlogin.oauth.token.AuthToken;
-import com.deeplify.tutorial.oauthlogin.oauth.token.AuthTokenProvider;
-import com.deeplify.tutorial.oauthlogin.utils.HeaderUtil;
+import com.picus.core.global.oauth.token.AuthToken;
+import com.picus.core.global.oauth.token.AuthTokenProvider;
+import com.picus.core.global.utils.HeaderUtil;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
