@@ -1,11 +1,11 @@
 package com.picus.core.global.oauth.service;
 
 import com.picus.core.domain.user.entity.User;
+import com.picus.core.domain.user.entity.profile.Gender;
+import com.picus.core.domain.user.entity.profile.Profile;
 import com.picus.core.domain.user.repository.UserRepository;
 import com.picus.core.global.oauth.entity.Provider;
-import com.picus.core.global.oauth.entity.Role;
 import com.picus.core.global.oauth.entity.UserPrincipal;
-import com.picus.core.global.oauth.exception.OAuthProviderMissMatchException;
 import com.picus.core.global.oauth.info.OAuth2UserInfo;
 import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,53 +39,47 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
+    /**
+     * OAuth2User 정보를 가지고 유저 생성 및 업데이트
+     * @param userRequest OAuth2UserRequest
+     * @param user OAuth2User
+     * @return UserPrincipal
+     */
     private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
         Provider providerType = Provider.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
 
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-        User savedUser = userRepository.findByUserId(userInfo.getId());
+        Optional<User> userOptional = userRepository.findByProviderIdAndProvider(userInfo.getId(), providerType);
+        User savedUser = userOptional.orElse(null);
 
-        if (savedUser != null) {
-            if (providerType != savedUser.getProvider()) {
-                throw new OAuthProviderMissMatchException(
-                        "Looks like you're signed up with " + providerType +
-                        " account. Please use your " + savedUser.getProvider() + " account to login."
-                );
-            }
-            updateUser(savedUser, userInfo);
-        } else {
-            savedUser = createUser(userInfo, providerType);
+        if (userOptional.isEmpty()) {
+            this.createUser(userInfo, providerType);
         }
 
         return UserPrincipal.create(savedUser, user.getAttributes());
     }
 
+    /**
+     * 신규 유저 생성
+     * @param userInfo 유저 정보
+     * @param providerType Provider 타입
+     * @return 생성된 유저
+     */
     private User createUser(OAuth2UserInfo userInfo, Provider providerType) {
-        LocalDateTime now = LocalDateTime.now();
-        User user = new User(
-                userInfo.getId(),
+        Profile profile = new Profile(userInfo.getName(),
                 userInfo.getName(),
+                "01010101010", // TODO: OAuth2UserInfo 에 추가되어야한다.
                 userInfo.getEmail(),
-                "Y",
-                userInfo.getImageUrl(),
-                providerType,
-                Role.USER,
-                now,
-                now
-        );
+                Gender.MALE, // TODO: OAuth2UserInfo 에 추가되어야한다.
+                userInfo.getImageUrl());
+
+        User user = User.builder()
+                .profile(profile)
+                .provider(providerType)
+                .providerId(userInfo.getId())
+                .build();
 
         return userRepository.saveAndFlush(user);
     }
 
-    private User updateUser(User user, OAuth2UserInfo userInfo) {
-        if (userInfo.getName() != null && !user.getUsername().equals(userInfo.getName())) {
-            user.setUsername(userInfo.getName());
-        }
-
-        if (userInfo.getImageUrl() != null && !user.getProfileImageUrl().equals(userInfo.getImageUrl())) {
-            user.setProfileImageUrl(userInfo.getImageUrl());
-        }
-
-        return user;
-    }
 }
