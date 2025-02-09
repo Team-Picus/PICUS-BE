@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,9 +22,9 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Slf4j
 public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     private final String userId;
-    private final String password;
     private final Provider provider;
     private final Role role;
     private final Collection<GrantedAuthority> authorities;
@@ -37,6 +38,12 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        // UserPrincipal 는 pw가 없다.
+        return null;
     }
 
     @Override
@@ -87,7 +94,6 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     public static UserPrincipal create(User user) {
         return new UserPrincipal(
                 user.getId().toString(),
-                "",
                 Provider.KAKAO,
                 Role.USER,
                 Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getCode()))
