@@ -3,6 +3,7 @@ package com.picus.core.domain.user.entity;
 import com.picus.core.domain.user.entity.profile.Profile;
 import com.picus.core.domain.user.entity.withdrawal.Withdrawal;
 import com.picus.core.global.common.BaseEntity;
+import com.picus.core.global.oauth.entity.Provider;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,12 @@ public class User extends BaseEntity {
     private Long id;
 
     private Profile profile;
+
+    @Column(name = "provider", nullable = false)
+    private Provider provider;
+
+    @Column(name = "provider_id", nullable = false, unique = true)
+    private String providerId;
 
     @AttributeOverrides({
             @AttributeOverride(
