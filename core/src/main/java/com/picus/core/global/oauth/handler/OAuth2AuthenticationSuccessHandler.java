@@ -56,15 +56,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        // redirectUri 가져오기
         Optional<String> redirectUri = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
-        if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
+        if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
             throw new IllegalArgumentException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
+        // 토큰 추출 및 유저 정보 가져오기
         OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
         Provider provider = Provider.valueOf(authToken.getAuthorizedClientRegistrationId().toUpperCase());
 
@@ -74,6 +76,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Role roleType = hasAuthority(authorities, Role.ADMIN.getCode()) ? Role.ADMIN : Role.USER;
 
+        // access 토큰 설정
+        // TODO 토큰에 유저가 전문가 인지 일반 사용자인지 정보를 넣어야 함
         Date now = new Date();
         AuthToken accessToken = tokenProvider.createAuthToken(
                 userInfo.getId(),
@@ -134,7 +138,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .anyMatch(authorizedRedirectUri -> {
                     // Only validate host and port. Let the clients use different paths if they want to
                     URI authorizedURI = URI.create(authorizedRedirectUri);
-                    if(authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
+                    if (authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
                             && authorizedURI.getPort() == clientRedirectUri.getPort()) {
                         return true;
                     }
