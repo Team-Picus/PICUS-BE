@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public abstract class AdditionalOption {
+public class AdditionalOption {
 
     @Id @Tsid
     @Column(name = "additional_option_id")
@@ -25,6 +24,8 @@ public abstract class AdditionalOption {
     private Integer base;
 
     private Integer increment;
+
+    private OptionType optionType;
 
     @ManyToOne
     @JoinColumn(name = "basic_option_id")
