@@ -17,5 +17,4 @@ public class SelectedOption {
 
     private Double price;
 
-    private List<AppliedDiscount> appliedDiscounts = new ArrayList<>();
 }
