@@ -20,6 +20,7 @@ public class Region {
 
     private String name;
 
-    @OneToMany(mappedBy = "region")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "region")
     private List<District> districts = new ArrayList<>();
 }
