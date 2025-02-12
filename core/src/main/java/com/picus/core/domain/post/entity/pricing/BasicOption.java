@@ -14,6 +14,9 @@ public class BasicOption {
 
     private Integer basicPrice;
 
+    @Column(nullable = false)
+    private Long postNo;
+
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "basicOption")
     private List<AdditionalOption> additionalOptions;
