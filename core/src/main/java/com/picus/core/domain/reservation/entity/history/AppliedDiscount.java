@@ -1,6 +1,6 @@
 package com.picus.core.domain.reservation.entity.history;
 
-import com.picus.core.domain.post.entity.pricing.DiscountType;
+import com.picus.core.domain.payments.entity.DiscountType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 

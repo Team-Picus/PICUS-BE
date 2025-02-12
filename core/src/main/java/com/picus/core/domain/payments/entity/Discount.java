@@ -1,4 +1,4 @@
-package com.picus.core.domain.post.entity.pricing;
+package com.picus.core.domain.payments.entity;
 
 import com.picus.core.global.common.BaseEntity;
 import jakarta.persistence.*;
