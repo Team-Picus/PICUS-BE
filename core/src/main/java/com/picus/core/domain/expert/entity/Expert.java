@@ -37,7 +37,7 @@ public class Expert extends BaseEntity {
     private ApprovalStatus approvalStatus;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.LAZY)
+            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "expert")
     private List<ExpertDistrict> activityAreas = new ArrayList<>();
 
     public Expert(String intro, String career, Set<String> skills, Set<ActivityType> type) {

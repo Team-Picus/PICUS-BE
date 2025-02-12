@@ -20,7 +20,7 @@ public class Client extends BaseEntity {
     private Long id;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.LAZY)
+            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "client")
     private List<ClientDistrict> preferredAreas = new ArrayList<>();
 
     public void updatePreferredArea(List<ClientDistrict> areas) {
