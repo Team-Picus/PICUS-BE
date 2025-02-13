@@ -23,6 +23,10 @@ jobs:
             ${{ runner.os }}-gradle-
       # Gradle 빌드
       - name: Build with Gradle Wrapper
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          URL: ${{ secrets.URL }}
         run: |
           cd core
           ./gradlew build
