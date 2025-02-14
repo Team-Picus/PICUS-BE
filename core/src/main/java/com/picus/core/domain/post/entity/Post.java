@@ -33,7 +33,7 @@ public class Post extends BaseEntity {
     private Long studioNo;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.LAZY)
+            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "post")
     private List<PostDistrict> availableAreas = new ArrayList<>();
 
     // 승인 상태
