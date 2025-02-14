@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # 빌드된 JAR 파일을 컨테이너로 복사 (파일 경로는 실제 프로젝트에 맞게 수정)
-COPY build/libs/core-0.0.1-SNAPSHOT.jar app.jar
+COPY core/build/libs/core-0.0.1-SNAPSHOT.jar app.jar
 
 # 애플리케이션 포트 노출 (예: 8080)
 EXPOSE 8080
