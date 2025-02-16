@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ViewHistoryRepository extends CrudRepository<ViewHistory, String>, ViewHistoryCustomRepository {
+public interface ViewHistoryRepository extends CrudRepository<ViewHistory, String> {
 }
