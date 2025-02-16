@@ -31,7 +31,7 @@ public class ViewTrackerService {
     }
 
     private Boolean isViewed(Long userId, Long postId) {
-        return viewHistoryRepository.existsById(ViewHistory.generateKey(userId, postId));
+        return viewHistoryRepository.existsById(ViewHistory.format(userId, postId));
     }
 
     private void incrementViewCount(Long postId) {
@@ -39,6 +39,6 @@ public class ViewTrackerService {
     }
 
     private void saveViewHistory(Long userId, Long postId) {
-        viewHistoryRepository.save(ViewHistory.generateKey(userId, postId));
+        viewHistoryRepository.save(new ViewHistory(userId, postId));
     }
 }
