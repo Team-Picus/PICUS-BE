@@ -75,7 +75,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Collection<? extends GrantedAuthority> authorities = ((OidcUser) authentication.getPrincipal()).getAuthorities();
 
         Role roleType = hasAuthority(authorities, Role.ADMIN.getCode()) ? Role.ADMIN : Role.USER;
-
         // access 토큰 설정
         // TODO 토큰에 유저가 전문가 인지 일반 사용자인지 정보를 넣어야 함
         Date now = new Date();
