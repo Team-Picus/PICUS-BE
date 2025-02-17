@@ -81,7 +81,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .profile(profile)
                 .provider(providerType)
                 .providerId(userInfo.getId())
-                .userType(UserType.TEMPORAL)
+                .userType(UserType.CLIENT)
                 .build();
 
         return userRepository.saveAndFlush(user);
