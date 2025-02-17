@@ -1,6 +1,7 @@
 package com.picus.core.global.oauth.service;
 
 import com.picus.core.domain.user.entity.User;
+import com.picus.core.domain.user.entity.UserType;
 import com.picus.core.domain.user.entity.profile.Gender;
 import com.picus.core.domain.user.entity.profile.Profile;
 import com.picus.core.domain.user.repository.UserRepository;
@@ -9,6 +10,7 @@ import com.picus.core.global.oauth.entity.UserPrincipal;
 import com.picus.core.global.oauth.info.OAuth2UserInfo;
 import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -21,12 +23,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        log.info("CustomOAuth2UserService 호출");
         OAuth2User user = super.loadUser(userRequest);
 
         try {
@@ -77,6 +81,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .profile(profile)
                 .provider(providerType)
                 .providerId(userInfo.getId())
+                .userType(UserType.TEMPORAL)
                 .build();
 
         return userRepository.saveAndFlush(user);
