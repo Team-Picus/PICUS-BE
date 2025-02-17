@@ -105,7 +105,7 @@ public class SecurityConfig {
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         // Example role-based checks
                         .requestMatchers("/api/**").hasAnyAuthority(Role.USER.getCode())
-                        .requestMatchers("/api/**/admin/**").hasAnyAuthority(Role.ADMIN.getCode())
+                        .requestMatchers("/api/admin/**").hasAnyAuthority(Role.ADMIN.getCode())
                         // Everything else
                         .anyRequest().authenticated()
                 )
@@ -115,9 +115,7 @@ public class SecurityConfig {
                                     .baseUri("/oauth2/authorization")
                                 .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
                         )
-                        .redirectionEndpoint(endpoint -> endpoint
-                                .baseUri("/*/oauth2/code/*")
-                        )
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/login/oauth2/code/*"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2UserService)
                         )

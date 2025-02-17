@@ -7,14 +7,6 @@ import com.picus.core.global.oauth.entity.Provider;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -32,6 +24,8 @@ public class User extends BaseEntity {
     @Column(name = "user_no")
     private Long id;
 
+    private UserType userType;
+
     private Profile profile;
 
     @Column(name = "provider", nullable = false)
@@ -48,5 +42,7 @@ public class User extends BaseEntity {
     })
     @Embedded
     private Withdrawal withdrawal;
+
+
 
 }
