@@ -24,6 +24,7 @@ public class User extends BaseEntity {
     @Column(name = "user_no")
     private Long id;
 
+    @Enumerated(value = EnumType.STRING)
     private UserType userType;
 
     private Profile profile;
