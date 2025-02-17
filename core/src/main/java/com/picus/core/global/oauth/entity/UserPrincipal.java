@@ -1,6 +1,7 @@
 package com.picus.core.global.oauth.entity;
 
 import com.picus.core.domain.user.entity.User;
+import com.picus.core.domain.user.entity.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     private final Provider provider;
     private final Role role;
     private final Collection<GrantedAuthority> authorities;
+    private final UserType userType;
     private Map<String, Object> attributes;
 
     @Override
@@ -96,7 +98,8 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
                 user.getId().toString(),
                 Provider.KAKAO,
                 Role.USER,
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getCode()))
+                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getCode())),
+                user.getUserType()
         );
     }
 

@@ -1,7 +1,12 @@
 package com.picus.core.global.oauth.token;
 
+import com.picus.core.domain.user.entity.UserType;
+import com.picus.core.global.oauth.entity.Provider;
+import com.picus.core.global.oauth.entity.Role;
+import com.picus.core.global.oauth.entity.UserPrincipal;
 import com.picus.core.global.oauth.exception.TokenValidFailedException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,8 +35,16 @@ public class AuthTokenProvider {
         return new AuthToken(id, expiry, key);
     }
 
-    public AuthToken createAuthToken(String id, String role, Date expiry) {
-        return new AuthToken(id, role, expiry, key);
+    public AuthToken createAuthToken(String id, String role, String userType, Date expiry) {
+        String token = Jwts.builder()
+                .setSubject(id)
+                .claim(AUTHORITIES_KEY, role)
+                .claim("userType", userType) // 추가된 클레임
+                .setIssuedAt(new Date())
+                .setExpiration(expiry)
+                .signWith(key)
+                .compact();
+        return new AuthToken(token, key);
     }
 
     public AuthToken convertAuthToken(String token) {
@@ -39,18 +52,23 @@ public class AuthTokenProvider {
     }
 
     public Authentication getAuthentication(AuthToken authToken) {
-
         if(authToken.validate()) {
-
             Claims claims = authToken.getTokenClaims();
+            String roleClaim = claims.get(AUTHORITIES_KEY).toString();
+            String userTypeString = claims.get("userType", String.class);
             Collection<? extends GrantedAuthority> authorities =
-                    Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
+                    Arrays.stream(new String[]{roleClaim})
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
 
-            log.debug("claims subject := [{}]", claims.getSubject());
-            User principal = new User(claims.getSubject(), "", authorities);
-
+            // UserPrincipal에 userType을 포함하여 생성
+            UserPrincipal principal = new UserPrincipal(
+                    claims.getSubject(),
+                    Provider.KAKAO, // provider 정보가 필요하다면 토큰에 넣거나 다른 방식으로 주입
+                    Role.valueOf(roleClaim),
+                    (Collection<GrantedAuthority>) authorities,
+                    UserType.valueOf(userTypeString)
+            );
             return new UsernamePasswordAuthenticationToken(principal, authToken, authorities);
         } else {
             throw new TokenValidFailedException();

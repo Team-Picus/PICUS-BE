@@ -17,6 +17,7 @@ public class AuthToken {
     private final Key key;
 
     private static final String AUTHORITIES_KEY = "role";
+    private static final String USER_TYPE_KEY = "user_type";
 
     AuthToken(String id, Date expiry, Key key) {
         this.key = key;

@@ -4,6 +4,7 @@ import com.picus.core.global.config.properties.AppProperties;
 import com.picus.core.global.oauth.entity.Provider;
 import com.picus.core.global.oauth.entity.RefreshToken;
 import com.picus.core.global.oauth.entity.Role;
+import com.picus.core.global.oauth.entity.UserPrincipal;
 import com.picus.core.global.oauth.info.OAuth2UserInfo;
 import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
 import com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
@@ -78,9 +79,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // access 토큰 설정
         // TODO 토큰에 유저가 전문가 인지 일반 사용자인지 정보를 넣어야 함
         Date now = new Date();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         AuthToken accessToken = tokenProvider.createAuthToken(
                 userInfo.getId(),
                 roleType.getCode(),
+                userPrincipal.getUserType().toString(),
                 new Date(now.getTime() + appProperties.getAuth().getTokenExpiry())
         );
 
