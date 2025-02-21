@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: my_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # 루트 계정 비밀번호
+      MYSQL_DATABASE: mydatabase  # 생성할 데이터베이스 이름
+      MYSQL_USER: myuser  # 사용자 계정
+      MYSQL_PASSWORD: mypassword  # 사용자 계정 비밀번호
+    ports:
+      - "3306:3306"  # 호스트와 컨테이너의 포트 매핑
+    volumes:
+      - mysql_data:/var/lib/mysql  # MySQL 데이터 저장
+    networks:
+      - my_network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: my_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: mydatabase
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - my_network
+
+  redis:
+    image: redis:latest
+    container_name: my_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - my_network
+
+volumes:
+  mysql_data:
+  mongodb_data:
+  redis_data:
+
+networks:
+  my_network:
+    driver: bridge
