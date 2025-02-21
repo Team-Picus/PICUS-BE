@@ -65,7 +65,7 @@ public class AuthTokenProvider {
             UserPrincipal principal = new UserPrincipal(
                     claims.getSubject(),
                     Provider.KAKAO, // provider 정보가 필요하다면 토큰에 넣거나 다른 방식으로 주입
-                    Role.valueOf(roleClaim),
+                    Role.of(roleClaim),
                     (Collection<GrantedAuthority>) authorities,
                     UserType.valueOf(userTypeString)
             );
@@ -74,5 +74,4 @@ public class AuthTokenProvider {
             throw new TokenValidFailedException();
         }
     }
-
 }

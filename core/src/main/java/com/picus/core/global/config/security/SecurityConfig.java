@@ -104,8 +104,8 @@ public class SecurityConfig {
                         // Let pre-flight requests through
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         // Example role-based checks
-                        .requestMatchers("/api/**").hasAnyAuthority(Role.USER.getCode())
-                        .requestMatchers("/api/admin/**").hasAnyAuthority(Role.ADMIN.getCode())
+                        .requestMatchers("/api/**").hasAnyAuthority("USER")
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                         // Everything else
                         .anyRequest().authenticated()
                 )
