@@ -6,10 +6,10 @@ services:
     container_name: my_mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword  # 루트 계정 비밀번호
-      MYSQL_DATABASE: mydatabase  # 생성할 데이터베이스 이름
-      MYSQL_USER: myuser  # 사용자 계정
-      MYSQL_PASSWORD: mypassword  # 사용자 계정 비밀번호
+      MYSQL_ROOT_PASSWORD: 12345  # 루트 계정 비밀번호
+      MYSQL_DATABASE: picus  # 생성할 데이터베이스 이름
+      MYSQL_USER: user  # 사용자 계정
+      MYSQL_PASSWORD: 12345  # 사용자 계정 비밀번호
     ports:
       - "3306:3306"  # 호스트와 컨테이너의 포트 매핑
     volumes:
@@ -24,9 +24,9 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
-      MONGO_INITDB_DATABASE: mydatabase
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+      MONGO_INITDB_DATABASE: picus
     volumes:
       - mongodb_data:/data/db
     networks:
