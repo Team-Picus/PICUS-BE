@@ -3,22 +3,37 @@ package com.picus.core.domain.user.entity;
 import com.picus.core.domain.user.entity.profile.Profile;
 import com.picus.core.domain.user.entity.withdrawal.Withdrawal;
 import com.picus.core.global.common.BaseEntity;
+import com.picus.core.global.oauth.entity.Provider;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
 @Table(name = "users")
 @SecondaryTable(
         name = "withdrawal",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_no")
 )
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class User extends BaseEntity {
 
     @Id @Tsid
     @Column(name = "user_no")
     private Long id;
 
+    @Enumerated(value = EnumType.STRING)
+    private UserType userType;
+
     private Profile profile;
+
+    @Column(name = "provider", nullable = false)
+    private Provider provider;
+
+    @Column(name = "provider_id", nullable = false, unique = true)
+    private String providerId;
 
     @AttributeOverrides({
             @AttributeOverride(
@@ -28,4 +43,7 @@ public class User extends BaseEntity {
     })
     @Embedded
     private Withdrawal withdrawal;
+
+
+
 }

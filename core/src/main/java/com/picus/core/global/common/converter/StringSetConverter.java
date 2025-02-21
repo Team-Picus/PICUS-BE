@@ -1,4 +1,4 @@
-package com.picus.core.global.converter;
+package com.picus.core.global.common.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
