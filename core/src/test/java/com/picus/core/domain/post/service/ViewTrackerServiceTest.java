@@ -1,73 +1,57 @@
 package com.picus.core.domain.post.service;
 
 import com.picus.core.domain.post.entity.view.ViewCount;
-import com.picus.core.domain.post.entity.view.ViewHistory;
 import com.picus.core.domain.post.exception.PostNotFoundException;
 import com.picus.core.domain.post.repository.view.primary.ViewCountRepository;
-import com.picus.core.domain.post.repository.view.primary.ViewHistoryRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class ViewTrackerServiceTest {
+class ViewTrackerServiceTest {
 
-    @Mock
     private ViewCountRepository viewCountRepository;
-
-    @Mock
-    private ViewHistoryRepository viewHistoryRepository;
-
-    @InjectMocks
     private ViewTrackerService viewTrackerService;
 
-    private final Long userId = 1L;
-    private final Long postId = 100L;
-    private final String viewHistoryKey = ViewHistory.format(userId, postId);
-    private final String viewCountKey = ViewCount.generateKey(postId);
-
-    @Test
-    public void updateViewCount_조회_이력_X() {
-        when(viewHistoryRepository.existsById(viewHistoryKey)).thenReturn(false);
-
-        viewTrackerService.updateViewCount(userId, postId);
-
-        verify(viewCountRepository, times(1)).increment(viewCountKey);
-        verify(viewHistoryRepository, times(1)).save(any(ViewHistory.class));
+    @BeforeEach
+    void setUp() {
+        viewCountRepository = mock(ViewCountRepository.class);
+        viewTrackerService = new ViewTrackerService(viewCountRepository);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void updateViewCount_조회_이력_O() {
-        when(viewHistoryRepository.existsById(viewHistoryKey)).thenReturn(true);
+    void findViewCount_shouldReturnViewCount_whenPresent() {
+        // given
+        Long postId = 1L;
+        Integer expectedCount = 10;
+        String key = ViewCount.generateKey(postId);
 
-        viewTrackerService.updateViewCount(userId, postId);
+        when(viewCountRepository.findViewCount(key)).thenReturn(Optional.of(expectedCount));
 
-        verify(viewCountRepository, never()).increment(viewCountKey);
-        verify(viewHistoryRepository, never()).save(any(ViewHistory.class));
+        // when
+        Integer actualCount = viewTrackerService.findViewCount(postId);
+
+        // then
+        assertEquals(expectedCount, actualCount);
+        verify(viewCountRepository, times(1)).findViewCount(key);
     }
 
     @Test
-    public void findViewCount_O() {
-        Integer viewCount = 5;
-        when(viewCountRepository.findViewCount(viewCountKey)).thenReturn(Optional.of(viewCount));
+    void findViewCount_shouldThrowPostNotFoundException_whenNotPresent() {
+        // given
+        Long postId = 1L;
+        String key = ViewCount.generateKey(postId);
 
-        Integer result = viewTrackerService.findViewCount(postId);
+        when(viewCountRepository.findViewCount(key)).thenReturn(Optional.empty());
 
-        assertEquals(viewCount, result);
-    }
-
-    @Test
-    public void findViewCount_X() {
-        when(viewCountRepository.findViewCount(viewCountKey)).thenReturn(Optional.empty());
-
+        // when & then
         assertThrows(PostNotFoundException.class, () -> viewTrackerService.findViewCount(postId));
+        verify(viewCountRepository, times(1)).findViewCount(key);
     }
 }
