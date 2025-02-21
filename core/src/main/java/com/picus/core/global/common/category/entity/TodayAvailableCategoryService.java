@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class TodayAvailableCategoryService {
 
-    private final String PREFIX = "TODAY_AVAILABLE:";
+    private final String TODAY_AVAILABLE_PREFIX = "TODAY_AVAILABLE:";
     private final RedisTemplate<String, String> redisTemplate;
 
     public void activate(List<Long> postIds) {
@@ -25,7 +25,7 @@ public class TodayAvailableCategoryService {
     public void activate(List<Long> postIds, Duration duration) {
         redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
             postIds.stream()
-                    .map(postId -> PREFIX + postId)
+                    .map(postId -> TODAY_AVAILABLE_PREFIX + postId)
                     .forEach(keyStr -> {
                         byte[] key = redisTemplate.getStringSerializer().serialize(keyStr);
                         byte[] value = redisTemplate.getStringSerializer().serialize("");
@@ -36,14 +36,14 @@ public class TodayAvailableCategoryService {
     }
 
     public void deactivate(Long postId) {
-        redisTemplate.delete(PREFIX + postId);
+        redisTemplate.delete(TODAY_AVAILABLE_PREFIX + postId);
     }
 
     private Map<String, String> convertToMapWithPrefix(List<Long> list) {
         return IntStream.range(0, list.size())
                 .boxed()
                 .collect(Collectors.toMap(
-                        i -> PREFIX + list.get(i),
+                        i -> TODAY_AVAILABLE_PREFIX + list.get(i),
                         i -> ""
                 ));
     }
