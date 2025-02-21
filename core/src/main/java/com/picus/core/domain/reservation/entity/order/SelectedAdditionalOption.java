@@ -1,6 +1,6 @@
 package com.picus.core.domain.reservation.entity.order;
 
-import com.picus.core.domain.post.entity.pricing.OptionType;
+import com.picus.core.domain.post.domain.entity.pricing.OptionType;
 
 public class SelectedAdditionalOption {
 
