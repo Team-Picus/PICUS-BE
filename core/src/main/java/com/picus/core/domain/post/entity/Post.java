@@ -44,12 +44,15 @@ public class Post extends BaseEntity {
 
     private Integer likeCount;
 
+    private Integer viewCount;
+
 
     public Post(String title, String detail, Long studioNo) {
         this.title = title;
         this.detail = detail;
         this.reviewCount = 0;
         this.likeCount = 0;
+        this.viewCount = 0;
         this.studioNo = studioNo;
         this.approvalStatus = ApprovalStatus.PENDING;
     }
