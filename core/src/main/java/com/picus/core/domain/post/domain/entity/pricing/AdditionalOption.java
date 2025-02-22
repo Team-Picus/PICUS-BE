@@ -17,15 +17,16 @@ public class AdditionalOption {
     @Column(name = "additional_option_id")
     private Long id;
 
+    private String name;
+
     private Integer pricePerUnit;
 
     private Integer max;
 
     private Integer base;
 
-    private Integer increment;
+    private Integer increment; // 증가폭
 
-    private OptionType optionType;
 
     @ManyToOne
     @JoinColumn(name = "basic_option_id")

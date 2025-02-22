@@ -34,6 +34,7 @@ public class Expert extends BaseEntity {
     @Column(nullable = false)
     private Set<ActivityType> activityTypes = new HashSet<>(); // 활동 유형, ex) 사진작가, 편집자
 
+    @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus; // Expert 승인 상태
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},

@@ -13,17 +13,13 @@ import java.time.LocalTime;
 public class Schedule {
 
     @Column(nullable = false)
-    private LocalDate date;
-
-    @Column(nullable = false)
-    private LocalTime time;
+    private LocalDateTime localDateTime;
 
     @Column(nullable = false)
     private String location;
 
-    public Schedule(LocalDate date, LocalTime time, String location) {
-        this.date = date;
-        this.time = time;
+    public Schedule(LocalDateTime localDateTime, String location) {
+        this.localDateTime = localDateTime;
         this.location = location;
     }
 }
