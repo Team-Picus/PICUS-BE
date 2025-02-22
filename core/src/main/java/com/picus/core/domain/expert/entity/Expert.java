@@ -23,29 +23,29 @@ public class Expert extends BaseEntity {
     @Column(name = "expert_no")
     private Long id;
 
-    private String intro;
+    private String intro; // 한 줄 자기소개
 
     @Column(nullable = false)
-    private String career;
+    private String career; // 경력, ex) 수상 내역, 교육 이수 내역 etc
 
     @Convert(converter = StringSetConverter.class)
-    private Set<String> skills = new HashSet<>();
+    private Set<String> skills = new HashSet<>(); // 보유 기술, ex) 포토샵, 일러스트레이터, 파워포인트, 카메라 스펙 etc
 
     @Column(nullable = false)
-    private Set<ActivityType> type = new HashSet<>();
+    private Set<ActivityType> activityTypes = new HashSet<>(); // 활동 유형, ex) 사진작가, 편집자
 
-    private ApprovalStatus approvalStatus;
+    private ApprovalStatus approvalStatus; // Expert 승인 상태
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "expert")
-    private List<ExpertDistrict> activityAreas = new ArrayList<>();
+    private List<ExpertDistrict> activityAreas = new ArrayList<>(); // 활동 구역
 
-    public Expert(Long userId, String intro, String career, Set<String> skills, Set<ActivityType> type) {
+    public Expert(Long userId, String intro, String career, Set<String> skills, Set<ActivityType> activityTypes) {
         this.id = userId;
         this.intro = intro;
         this.career = career;
         this.skills = skills;
-        this.type = type;
+        this.activityTypes = activityTypes;
         this.approvalStatus = ApprovalStatus.PENDING;
     }
 
