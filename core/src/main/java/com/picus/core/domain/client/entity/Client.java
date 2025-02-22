@@ -1,7 +1,7 @@
 package com.picus.core.domain.client.entity;
 
 import com.picus.core.domain.client.entity.area.ClientDistrict;
-import com.picus.core.global.common.BaseEntity;
+import com.picus.core.global.common.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

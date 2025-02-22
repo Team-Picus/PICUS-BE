@@ -1,6 +1,6 @@
 package com.picus.core.domain.studio.entity;
 
-import com.picus.core.global.common.BaseEntity;
+import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.global.common.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
