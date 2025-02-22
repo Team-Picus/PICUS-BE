@@ -1,12 +1,12 @@
 package com.picus.core.domain.post.resolver;
 
-import com.picus.core.domain.post.helper.ViewHistoryCookieHelper;
-import com.picus.core.domain.post.resolver.annotation.CheckViewHistory;
+import com.picus.core.domain.post.infra.helper.ViewHistoryCookieHelper;
+import com.picus.core.global.config.resolver.ViewHistoryArgumentResolver;
+import com.picus.core.global.config.resolver.annotation.CheckViewHistory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.MethodParameter;
