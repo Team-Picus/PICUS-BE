@@ -1,7 +1,7 @@
 package com.picus.core.domain.review.entity;
 
 import com.picus.core.domain.post.domain.entity.image.Thumbnail;
-import com.picus.core.global.common.BaseEntity;
+import com.picus.core.global.common.base.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
