@@ -1,4 +1,4 @@
-package com.picus.core.global.common.category.entity;
+package com.picus.core.domain.post.application.usecase;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisCallback;
@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
-public class TodayAvailableCategoryService {
+public class TodayAvailableCategoryUseCase {
 
     private final String TODAY_AVAILABLE_PREFIX = "TODAY_AVAILABLE:";
     private final RedisTemplate<String, String> redisTemplate;

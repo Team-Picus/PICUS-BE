@@ -1,9 +1,8 @@
-package com.picus.core.domain.post.domain.entity.category;
+package com.picus.core.global.common.category.entity;
 
 public enum Type {
 
     PLACE,  // 장소
-    AREA,   // 지역
     THEME,  // 테마
     MOOD    // 분위기
 }
