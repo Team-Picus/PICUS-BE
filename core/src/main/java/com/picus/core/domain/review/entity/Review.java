@@ -6,6 +6,9 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +25,9 @@ public class Review extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private Integer rating;
+    @Min(1)
+    @Max(5)
+    private Integer rating; // 별점
 
     @Column(nullable = false)
     private Long reservationNo;

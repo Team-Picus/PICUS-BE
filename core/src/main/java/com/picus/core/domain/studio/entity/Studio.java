@@ -22,9 +22,9 @@ public class Studio extends BaseEntity {
     @Column(length = 20)
     private String name;
 
-    private String backgroundImgUrl;
+    private String backgroundImgUrl; // 스튜디오 대표 이미지
 
-    private Address address;
+    private Address address; // 스튜디오 주소
 
     private Integer reviewCount;
 
@@ -37,6 +37,7 @@ public class Studio extends BaseEntity {
     @Column(nullable = false, name = "expert_no")
     private Long expertNo;
 
+    @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
     public Studio(String name, String backgroundImgUrl, Address address, Long expertNo) {
