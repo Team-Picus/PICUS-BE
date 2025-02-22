@@ -40,7 +40,8 @@ public class Expert extends BaseEntity {
             orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "expert")
     private List<ExpertDistrict> activityAreas = new ArrayList<>();
 
-    public Expert(String intro, String career, Set<String> skills, Set<ActivityType> type) {
+    public Expert(Long userId, String intro, String career, Set<String> skills, Set<ActivityType> type) {
+        this.id = userId;
         this.intro = intro;
         this.career = career;
         this.skills = skills;
