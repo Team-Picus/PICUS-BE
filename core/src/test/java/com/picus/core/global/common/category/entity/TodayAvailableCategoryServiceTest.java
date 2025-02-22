@@ -1,6 +1,6 @@
 package com.picus.core.global.common.category.entity;
 
-import com.picus.core.domain.post.application.usecase.TodayAvailableCategoryService;
+import com.picus.core.domain.post.application.usecase.TodayAvailableCategoryUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -31,7 +31,7 @@ class TodayAvailableCategoryServiceTest {
     private org.springframework.data.redis.core.ValueOperations<String, String> valueOperations;
 
     @InjectMocks
-    private TodayAvailableCategoryService service;
+    private TodayAvailableCategoryUseCase usecase;
 
     @Test
     void activate_O() {
@@ -40,7 +40,7 @@ class TodayAvailableCategoryServiceTest {
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
 
         // when
-        service.activate(postIds);
+        usecase.activate(postIds);
 
         // then
         ArgumentCaptor<java.util.Map<String, String>> captor = ArgumentCaptor.forClass(java.util.Map.class);
@@ -64,7 +64,7 @@ class TodayAvailableCategoryServiceTest {
         String expectedKey = "TODAY_AVAILABLE:" + postId;
 
         // when
-        service.deactivate(postId);
+        usecase.deactivate(postId);
 
         // then
         verify(redisTemplate, times(1)).delete(expectedKey);
@@ -81,7 +81,7 @@ class TodayAvailableCategoryServiceTest {
         when(redisTemplate.getStringSerializer()).thenReturn(serializer);
 
         // when
-        service.activate(postIds, duration);
+        usecase.activate(postIds, duration);
 
         // then
         // 캡처: executePipelined에 전달된 RedisCallback
