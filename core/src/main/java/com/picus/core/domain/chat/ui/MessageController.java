@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/chat/{chattingRoomNo}")
+@RequestMapping("/api/v1/chat/{chattingRoomNo}")
 public class MessageController {
 
     @PostMapping("/message")
@@ -16,7 +16,7 @@ public class MessageController {
 
     }
 
-    @PatchMapping("/message/read")
+    @PatchMapping("/message")
     public Page<ReadMsgRes> readMessages(@PathVariable Long chattingRoomNo) {
         // 이전까지 모든 채팅들 중 "isRead = false"인 row 모두 true로 변환
         return null;
