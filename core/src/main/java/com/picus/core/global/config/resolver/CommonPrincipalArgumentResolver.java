@@ -1,5 +1,7 @@
 package com.picus.core.global.config.resolver;
 
+import com.picus.core.global.common.exception.RestApiException;
+import com.picus.core.global.common.exception.code.status.GlobalErrorStatus;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
 import com.picus.core.global.oauth.entity.UserPrincipal;
 import org.springframework.core.MethodParameter;
@@ -27,7 +29,7 @@ public class CommonPrincipalArgumentResolver implements HandlerMethodArgumentRes
                                   WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal)) {
-            throw new AccessDeniedException("인증 정보가 없습니다.");
+            throw new RestApiException(GlobalErrorStatus._UNAUTHORIZED);
         }
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         return principal;
