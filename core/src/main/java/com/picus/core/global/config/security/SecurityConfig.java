@@ -2,7 +2,6 @@ package com.picus.core.global.config.security;
 
 import com.picus.core.global.config.properties.AppProperties;
 import com.picus.core.global.config.properties.CorsProperties;
-import com.picus.core.global.oauth.entity.Role;
 import com.picus.core.global.oauth.exception.RestAuthenticationEntryPoint;
 import com.picus.core.global.oauth.filter.TokenAuthenticationFilter;
 import com.picus.core.global.oauth.handler.OAuth2AuthenticationFailureHandler;
@@ -94,7 +93,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // Exception handling
+//                // Exception handling
                 .exceptionHandling(except -> except
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                         .accessDeniedHandler(tokenAccessDeniedHandler)
