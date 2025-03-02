@@ -25,7 +25,6 @@ public class TestController {
 
     @GetMapping("/common")
     public String common(@CommonPrincipal UserPrincipal userPrincipal) {
-        userPrincipal.getUserId();
         return "common";
     }
 }

@@ -2,8 +2,6 @@ package com.picus.core.global.config.security;
 
 import com.picus.core.global.config.properties.AppProperties;
 import com.picus.core.global.config.properties.CorsProperties;
-import com.picus.core.global.oauth.entity.Role;
-import com.picus.core.global.oauth.exception.RestAuthenticationEntryPoint;
 import com.picus.core.global.oauth.filter.TokenAuthenticationFilter;
 import com.picus.core.global.oauth.handler.OAuth2AuthenticationFailureHandler;
 import com.picus.core.global.oauth.handler.OAuth2AuthenticationSuccessHandler;
@@ -94,16 +92,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // Exception handling
-                .exceptionHandling(except -> except
-                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                        .accessDeniedHandler(tokenAccessDeniedHandler)
-                )
+//                // Exception handling
+//                .exceptionHandling(except -> except
+//                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+//                        .accessDeniedHandler(tokenAccessDeniedHandler)
+//                )
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
                         // Let pre-flight requests through
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         // Example role-based checks
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
                         .requestMatchers("/api/**").hasAnyAuthority("USER")
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                         // Everything else
@@ -112,7 +111,7 @@ public class SecurityConfig {
                 // OAuth2 Login
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(endpoint -> endpoint
-                                    .baseUri("/oauth2/authorization")
+                                .baseUri("/oauth2/authorization")
                                 .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
                         )
                         .redirectionEndpoint(endpoint -> endpoint.baseUri("/login/oauth2/code/*"))
