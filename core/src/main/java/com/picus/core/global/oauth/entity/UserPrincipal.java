@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
-    private final String userId;
+    private final Long userId; // User Entity의 id
     private final Provider provider;
     private final Role role;
     private final Collection<GrantedAuthority> authorities;
@@ -50,12 +50,12 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
 
     @Override
     public String getName() {
-        return userId;
+        return String.valueOf(userId);
     }
 
     @Override
     public String getUsername() {
-        return userId;
+        return String.valueOf(userId);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
 
     public static UserPrincipal create(User user) {
         return new UserPrincipal(
-                user.getId().toString(),
+                user.getId(),
                 Provider.KAKAO,
                 Role.USER,
                 Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getCode())),

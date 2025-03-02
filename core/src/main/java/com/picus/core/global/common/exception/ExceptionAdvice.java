@@ -3,6 +3,7 @@ package com.picus.core.global.common.exception;
 import com.picus.core.global.common.base.BaseResponse;
 import com.picus.core.global.common.exception.code.BaseCodeDto;
 import com.picus.core.global.common.exception.code.status.GlobalErrorStatus;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
+@Hidden
 @RestControllerAdvice(annotations = {RestController.class})
 @RequiredArgsConstructor
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
