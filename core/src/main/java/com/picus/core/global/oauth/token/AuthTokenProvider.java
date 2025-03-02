@@ -52,7 +52,7 @@ public class AuthTokenProvider {
     }
 
     public Authentication getAuthentication(AuthToken authToken) {
-        if(authToken.validate()) {
+        if (authToken.validate()) {
             Claims claims = authToken.getTokenClaims();
             String roleClaim = claims.get(AUTHORITIES_KEY).toString();
             String userTypeString = claims.get("userType", String.class);
@@ -63,7 +63,7 @@ public class AuthTokenProvider {
 
             // UserPrincipal에 userType을 포함하여 생성
             UserPrincipal principal = new UserPrincipal(
-                    claims.getSubject(),
+                    Long.valueOf(claims.getSubject()),
                     Provider.KAKAO, // provider 정보가 필요하다면 토큰에 넣거나 다른 방식으로 주입
                     Role.of(roleClaim),
                     (Collection<GrantedAuthority>) authorities,
