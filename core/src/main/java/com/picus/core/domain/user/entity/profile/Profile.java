@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 public class Profile {
 
     @Column(length = 10)
-    private String name;
+    private String name;  // 이름
+    // TODO nickname 추가로 가져올 것인지?
 
     @Column(length = 10, nullable = false)
     private String nickname;

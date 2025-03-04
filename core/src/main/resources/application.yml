@@ -22,6 +22,7 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+
   security:
     oauth2:
       client:
@@ -40,6 +41,10 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+  threads:
+    virtual:
+      enabled: true
+
   rabbitmq:
     host: localhost
     port: 5672

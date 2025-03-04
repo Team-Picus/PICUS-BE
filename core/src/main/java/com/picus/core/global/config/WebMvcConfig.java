@@ -1,6 +1,9 @@
 package com.picus.core.global.config;
 
 import com.picus.core.domain.post.infra.helper.ViewHistoryCookieHelper;
+import com.picus.core.global.config.resolver.ClientPrincipalArgumentResolver;
+import com.picus.core.global.config.resolver.CommonPrincipalArgumentResolver;
+import com.picus.core.global.config.resolver.ExpertPrincipalArgumentResolver;
 import com.picus.core.global.config.resolver.ViewHistoryArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -20,5 +23,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new ViewHistoryArgumentResolver(viewHistoryCookieHelper));
+        resolvers.add(new CommonPrincipalArgumentResolver());
+        resolvers.add(new ClientPrincipalArgumentResolver());
+        resolvers.add(new ExpertPrincipalArgumentResolver());
     }
 }
