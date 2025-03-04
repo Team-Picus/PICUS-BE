@@ -4,4 +4,6 @@ public enum MessageType {
     TEXT,
     IMAGE,
     RESERVATION
+
+    // todo: 메세지 미리보기 텍스트 만들깆
 }

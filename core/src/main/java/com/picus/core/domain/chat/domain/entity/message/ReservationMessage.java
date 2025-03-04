@@ -2,14 +2,13 @@ package com.picus.core.domain.chat.domain.entity.message;
 
 import org.springframework.data.annotation.TypeAlias;
 
-import java.time.LocalDateTime;
-
 @TypeAlias("reservationMessage")
 public class ReservationMessage extends Message {
 
-    // 예약 플로우 컬럼
+    private Long reservationNo;
 
-    public ReservationMessage(Long chattingRoomNo, Long senderId, LocalDateTime sendAt) {
-        super(chattingRoomNo, senderId, sendAt, MessageType.RESERVATION, false);
+    public ReservationMessage(Long roomNo, Long senderNo, Long reservationNo) {
+        super(roomNo, senderNo, MessageType.RESERVATION);
+        this.reservationNo = reservationNo;
     }
 }

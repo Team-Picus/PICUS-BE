@@ -107,7 +107,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").hasAnyAuthority("USER")
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                         // Everything else
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 // OAuth2 Login
                 .oauth2Login(oauth2 -> oauth2

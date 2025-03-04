@@ -22,7 +22,6 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
-
   security:
     oauth2:
       client:
@@ -41,6 +40,19 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+rabbitmq:
+  chat-queue:
+    name: "chat.queue" # 사용할 Queue 이름 지정
+  chat-exchange:
+    name: "chat.exchange" # 사용할 exchange 이름 (구독할 때 사용)
+  chat-routing:
+    key: "chat.room.*" # routing-key. chat.room.{room_id}를 구독
 
 app:
   auth:
