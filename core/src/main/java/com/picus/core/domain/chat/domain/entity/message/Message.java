@@ -12,16 +12,17 @@ import java.time.LocalDateTime;
 public abstract class Message {
 
     private Long id;
-    private Long chattingRoomNo;
-    private Long senderId;
+    private Long roomNo;
+    private Long senderNo;
     private LocalDateTime sendAt;
     private MessageType messageType;
     private Boolean isRead;
 
-    public Message(Long chattingRoomNo, Long senderId, LocalDateTime sendAt, MessageType messageType, Boolean isRead) {
-        this.chattingRoomNo = chattingRoomNo;
-        this.senderId = senderId;
-        this.sendAt = sendAt;
+    public Message(Long roomNo, Long senderNo, MessageType messageType) {
+        this.roomNo = roomNo;
+        this.senderNo = senderNo;
+        this.sendAt = LocalDateTime.now();      // default: 현재 시간
         this.messageType = messageType;
+        this.isRead = false;    // default: 안읽음
     }
 }
