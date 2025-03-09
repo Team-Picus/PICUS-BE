@@ -103,10 +103,10 @@ public class SecurityConfig {
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         // Example role-based checks
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
-                        .requestMatchers("/api/**").hasAnyAuthority("USER")
+                        .requestMatchers("/api/**").hasAnyAuthority("ROLE_USER")
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
                         // Everything else
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 // OAuth2 Login
                 .oauth2Login(oauth2 -> oauth2

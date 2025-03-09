@@ -31,6 +31,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// Reactor Netty
+	implementation 'org.springframework.boot:spring-boot-starter-websocket' // ws
+	implementation 'org.springframework.boot:spring-boot-starter-amqp' // rabbitmq와 같은 외부 메시지 브로커 사용
+	implementation 'org.springframework:spring-messaging' // @MessageMapping 기능처럼 메시지 처리 기능
+	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty:3.0.0' // 서버 <-> rabbitmq의 비동기 네트워크 처리
+	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -48,16 +57,13 @@ dependencies {
 
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-//	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-//	implementation 'io.springfox:springfox-swagger2:2.9.2'
-//	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
 	// Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'redis.clients:jedis:4.4.3'
 	implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.15')
-	
 
+	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
 	implementation("org.glassfish.jaxb:jaxb-runtime:4.0.0")
