@@ -1,6 +1,7 @@
 package com.picus.core.domain.chat.domain.service.factory;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
+import com.picus.core.domain.chat.application.dto.response.MessageRes;
 import com.picus.core.domain.chat.domain.entity.message.Message;
 import com.picus.core.domain.chat.domain.entity.message.MessageType;
 import com.picus.core.domain.chat.domain.service.factory.strategy.ImageMessageCreationStrategy;
@@ -24,8 +25,13 @@ public class MessageFactory {
         );
     }
 
-    public Message create(Long roomNo, Long senderNo, SendMsgReq request) {
+    public Message toEntity(Long roomNo, Long senderNo, SendMsgReq request) {
         return creationStrategies.get(request.messageType())
-                .create(roomNo, senderNo, request);
+                .toEntity(roomNo, senderNo, request);
+    }
+
+    public MessageRes toDto(Message message, Integer unreadCnt) {
+        return creationStrategies.get(message.getMessageType())
+                .toDto(message, unreadCnt);
     }
 }

@@ -1,4 +1,4 @@
-package com.picus.core.domain.user.entity.term;
+package com.picus.core.domain.user.domain.entity.term;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

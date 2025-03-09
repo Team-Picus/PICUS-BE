@@ -1,4 +1,4 @@
-package com.picus.core.domain.user.entity.withdrawal;
+package com.picus.core.domain.user.domain.entity.withdrawal;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
