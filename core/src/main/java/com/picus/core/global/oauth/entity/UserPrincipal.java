@@ -1,7 +1,7 @@
 package com.picus.core.global.oauth.entity;
 
-import com.picus.core.domain.user.entity.User;
-import com.picus.core.domain.user.entity.UserType;
+import com.picus.core.domain.user.domain.entity.User;
+import com.picus.core.domain.user.domain.entity.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.picus.core.global.oauth.service;
 
-import com.picus.core.domain.user.entity.User;
-import com.picus.core.domain.user.repository.UserRepository;
+import com.picus.core.domain.user.domain.entity.User;
+import com.picus.core.domain.user.domain.repository.UserRepository;
 import com.picus.core.global.oauth.entity.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
