@@ -24,6 +24,10 @@ public class BaseResponse<T> {
         return new BaseResponse<>("COMMON200", "요청에 성공하였습니다.", result);
     }
 
+    public static BaseResponse<Void> onSuccess() {
+        return new BaseResponse<>("COMMON200", "요청에 성공하였습니다.", null);
+    }
+
     // 실패한 경우 응답 생성
     public static <T> BaseResponse<T> onFailure(String code, String message, T data) {
         return new BaseResponse<>(code, message, data);

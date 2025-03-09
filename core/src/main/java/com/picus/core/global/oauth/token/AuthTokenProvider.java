@@ -1,6 +1,6 @@
 package com.picus.core.global.oauth.token;
 
-import com.picus.core.domain.user.entity.UserType;
+import com.picus.core.domain.user.domain.entity.UserType;
 import com.picus.core.global.oauth.entity.Provider;
 import com.picus.core.global.oauth.entity.Role;
 import com.picus.core.global.oauth.entity.UserPrincipal;
@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
 import java.security.Key;
 import java.util.Arrays;

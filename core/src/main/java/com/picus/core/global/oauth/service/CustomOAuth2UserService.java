@@ -1,14 +1,15 @@
 package com.picus.core.global.oauth.service;
 
-import com.picus.core.domain.user.entity.User;
-import com.picus.core.domain.user.entity.UserType;
-import com.picus.core.domain.user.entity.profile.Gender;
-import com.picus.core.domain.user.entity.profile.Profile;
-import com.picus.core.domain.user.repository.UserRepository;
+import com.picus.core.domain.user.domain.entity.User;
+import com.picus.core.domain.user.domain.entity.UserType;
+import com.picus.core.domain.user.domain.entity.profile.Gender;
+import com.picus.core.domain.user.domain.entity.profile.Profile;
+import com.picus.core.domain.user.domain.repository.UserRepository;
 import com.picus.core.global.oauth.entity.Provider;
 import com.picus.core.global.oauth.entity.UserPrincipal;
 import com.picus.core.global.oauth.info.OAuth2UserInfo;
 import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
+import com.picus.core.global.oauth.token.AuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -27,6 +28,7 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final AuthTokenProvider authTokenProvider;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -51,7 +53,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      */
     private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
         Provider providerType = Provider.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
-
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
         Optional<User> userOptional = userRepository.findByProviderIdAndProvider(userInfo.getId(), providerType);
         User savedUser = userOptional.orElse(null);

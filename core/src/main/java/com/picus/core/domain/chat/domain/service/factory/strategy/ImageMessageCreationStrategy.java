@@ -1,6 +1,7 @@
 package com.picus.core.domain.chat.domain.service.factory.strategy;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
+import com.picus.core.domain.chat.application.dto.response.MessageRes;
 import com.picus.core.domain.chat.domain.entity.message.ImageMessage;
 import com.picus.core.domain.chat.domain.entity.message.Message;
 import lombok.AccessLevel;
@@ -18,11 +19,16 @@ public class ImageMessageCreationStrategy implements MessageCreationStrategy {
     }
 
     @Override
-    public Message create(Long roomNo, Long senderNo, SendMsgReq request) {
+    public Message toEntity(Long roomNo, Long senderNo, SendMsgReq request) {
         return new ImageMessage(
                 roomNo,
                 senderNo,
                 request.imageId()
         );
+    }
+
+    @Override
+    public MessageRes toDto(Message message, Integer unreadCnt) {
+        return null;
     }
 }

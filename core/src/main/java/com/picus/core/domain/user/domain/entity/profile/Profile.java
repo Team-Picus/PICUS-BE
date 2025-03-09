@@ -1,4 +1,4 @@
-package com.picus.core.domain.user.entity.profile;
+package com.picus.core.domain.user.domain.entity.profile;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

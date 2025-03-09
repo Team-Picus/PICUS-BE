@@ -1,6 +1,6 @@
-package com.picus.core.domain.user.repository;
+package com.picus.core.domain.user.domain.repository;
 
-import com.picus.core.domain.user.entity.User;
+import com.picus.core.domain.user.domain.entity.User;
 import com.picus.core.global.oauth.entity.Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
