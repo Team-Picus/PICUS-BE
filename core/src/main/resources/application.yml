@@ -28,7 +28,7 @@ spring:
       ddl-auto: update
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
-
+    open-in-view: false
 
   security:
     oauth2:
