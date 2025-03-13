@@ -1,4 +1,4 @@
-package com.picus.core.domain.chat.domain.service.factory.strategy;
+package com.picus.core.domain.chat.domain.factory.strategy;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
 import com.picus.core.domain.chat.application.dto.response.MessageRes;

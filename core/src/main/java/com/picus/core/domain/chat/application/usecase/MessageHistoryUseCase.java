@@ -5,19 +5,13 @@ import com.picus.core.domain.chat.domain.entity.message.Message;
 import com.picus.core.domain.chat.domain.entity.participant.ChatUser;
 import com.picus.core.domain.chat.domain.repository.MessageRepository;
 import com.picus.core.domain.chat.domain.service.ChatUserService;
-import com.picus.core.domain.chat.domain.service.factory.MessageFactory;
+import com.picus.core.domain.chat.domain.factory.MessageFactory;
 import com.picus.core.global.common.exception.RestApiException;
-import com.rabbitmq.client.ListAddressResolver;
 import lombok.RequiredArgsConstructor;
-import org.jboss.logging.Messages;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 

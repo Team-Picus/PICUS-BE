@@ -1,6 +1,6 @@
 package com.picus.core.domain.post.domain.entity.image;
 
-import com.picus.core.global.common.image.entity.Image;
+import com.picus.core.global.common.image.domain.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 public class PostImage extends Image {
 
     @Column(nullable = false)
-    private String postNo;
+    private Long postNo;
 
-    public PostImage(String path, String extension, String postNo) {
-        super(path, extension);
+    public PostImage(String preSignedKey, Long postNo) {
+        super(preSignedKey);
         this.postNo = postNo;
     }
 }

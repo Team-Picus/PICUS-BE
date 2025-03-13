@@ -1,6 +1,6 @@
 package com.picus.core.domain.review.entity;
 
-import com.picus.core.global.common.image.entity.Image;
+import com.picus.core.global.common.image.domain.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
@@ -15,8 +15,8 @@ public class ReviewImage extends Image {
     @Column(nullable = false)
     private Long reviewNo;
 
-    public ReviewImage(String path, String extension, Long reviewNo) {
-        super(path, extension);
+    public ReviewImage(String preSignedKey, Long reviewNo) {
+        super(preSignedKey);
         this.reviewNo = reviewNo;
     }
 }
