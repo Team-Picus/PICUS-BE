@@ -1,4 +1,4 @@
-package com.picus.core.domain.chat.domain.service.factory.strategy;
+package com.picus.core.domain.chat.domain.factory.strategy;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
 import com.picus.core.domain.chat.application.dto.response.MessageRes;
@@ -9,7 +9,6 @@ import com.picus.core.global.common.exception.RestApiException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Text;
 
 import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._BAD_REQUEST;
 

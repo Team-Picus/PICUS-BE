@@ -1,5 +1,6 @@
-package com.picus.core.global.common.image.entity;
+package com.picus.core.global.common.image.domain.entity;
 
+import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,24 +11,19 @@ import java.time.LocalDateTime;
 @Getter
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Image {   // 사진 구현 시 추가 수정
+public abstract class Image {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @Tsid
     @Column(name = "image_id")
     private Long id;
 
     @Column(nullable = false)
-    private String path;
-
-    @Column(nullable = false)
-    private String extension;
+    private String preSignedKey;
 
     private LocalDateTime uploadedAt;
 
-    protected Image(String path, String extension) {
-        this.path = path;
-        this.extension = extension;
+    protected Image(String preSignedKey) {
+        this.preSignedKey = preSignedKey;
         this.uploadedAt = LocalDateTime.now();
     }
 }
