@@ -1,5 +1,6 @@
 package com.picus.core.global.common.image.domain.factory.strategy;
 
+import com.picus.core.domain.review.entity.ReviewImageResource;
 import com.picus.core.global.common.image.application.dto.request.UploadImage;
 import com.picus.core.global.common.image.domain.entity.Image;
 import lombok.AccessLevel;
@@ -18,6 +19,6 @@ public class ReviewImageCreationStrategy implements ImageCreationStrategy {
 
     @Override
     public Image toEntity(String key, UploadImage request) {
-        return null;
+        return new ReviewImageResource(key, request.reviewNo());
     }
 }

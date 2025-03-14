@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReviewImage extends Image {
+public class ReviewImageResource extends Image {
 
     @Column(nullable = false)
     private Long reviewNo;
 
-    public ReviewImage(String preSignedKey, Long reviewNo) {
+    public ReviewImageResource(String preSignedKey, Long reviewNo) {
         super(preSignedKey);
         this.reviewNo = reviewNo;
     }

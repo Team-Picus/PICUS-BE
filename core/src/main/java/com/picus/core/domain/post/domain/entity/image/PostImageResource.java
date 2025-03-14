@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostImage extends Image {
+public class PostImageResource extends Image {
 
     @Column(nullable = false)
     private Long postNo;
 
-    public PostImage(String preSignedKey, Long postNo) {
+    public PostImageResource(String preSignedKey, Long postNo) {
         super(preSignedKey);
         this.postNo = postNo;
     }
