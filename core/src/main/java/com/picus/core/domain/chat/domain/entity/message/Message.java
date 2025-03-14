@@ -21,7 +21,7 @@ public abstract class Message {
     private Boolean isRead;
 
     public Message(Long roomNo, Long senderNo, MessageType messageType) {
-        this.id = (long) Math.random();
+        this.id = (long) Math.random(); // todo: 메세지 아이디 생성 커스텀
         this.roomNo = roomNo;
         this.senderNo = senderNo;
         this.sendAt = LocalDateTime.now();      // default: 현재 시간

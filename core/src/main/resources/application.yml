@@ -58,6 +58,16 @@ spring:
     username: guest
     password: guest
 
+  cloud:
+    aws:
+      s3:
+        bucket: ${BUCKET_NAME}
+      credentials:
+        access-key: ${IAM_ACCESS_KEY}
+        secret-key: ${IAM_SECRET_KEY}
+      region:
+        static: ap-northeast-2
+
 rabbitmq:
   host: "localhost"
   port: 5672
