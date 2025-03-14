@@ -7,7 +7,7 @@ import com.picus.core.domain.chat.domain.entity.message.Message;
 import com.picus.core.domain.chat.domain.entity.message.TextMessage;
 import com.picus.core.domain.chat.domain.service.ChatRoomService;
 import com.picus.core.domain.chat.domain.service.MessageService;
-import com.picus.core.domain.chat.domain.service.factory.MessageFactory;
+import com.picus.core.domain.chat.domain.factory.MessageFactory;
 import com.picus.core.domain.chat.infra.helper.MessagePreviewFormatter;
 import com.picus.core.global.utils.StompHeaderAccessorUtil;
 import lombok.RequiredArgsConstructor;

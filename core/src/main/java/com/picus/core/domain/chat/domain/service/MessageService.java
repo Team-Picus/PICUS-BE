@@ -6,8 +6,11 @@ import com.picus.core.domain.chat.domain.entity.message.Message;
 import com.picus.core.domain.chat.domain.entity.message.ReservationMessage;
 import com.picus.core.domain.chat.domain.entity.message.TextMessage;
 import com.picus.core.domain.chat.domain.repository.MessageRepository;
+import com.picus.core.global.common.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._METHOD_ARGUMENT_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,7 @@ public class MessageService {
             case TextMessage tm -> messageRepository.save(tm);
             case ImageMessage im -> messageRepository.save(im);
             case ReservationMessage rm -> messageRepository.save(rm);
-            case null, default -> throw new IllegalArgumentException("지원하지 않는 메시지 타입: " + message.getClass());
+            case null, default -> throw new RestApiException(_METHOD_ARGUMENT_ERROR);
         }
     }
 
