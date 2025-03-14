@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MessageImage extends Image {
+public class MessageImageResource extends Image {
 
-    public MessageImage(String preSignedKey) {
+    public MessageImageResource(String preSignedKey) {
         super(preSignedKey);
     }
 }

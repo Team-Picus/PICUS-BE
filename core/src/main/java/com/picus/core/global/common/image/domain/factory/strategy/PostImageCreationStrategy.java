@@ -1,6 +1,6 @@
 package com.picus.core.global.common.image.domain.factory.strategy;
 
-import com.picus.core.domain.post.domain.entity.image.PostImage;
+import com.picus.core.domain.post.domain.entity.image.PostImageResource;
 import com.picus.core.global.common.image.application.dto.request.UploadImage;
 import com.picus.core.global.common.image.domain.entity.Image;
 import lombok.AccessLevel;
@@ -19,6 +19,6 @@ public class PostImageCreationStrategy implements ImageCreationStrategy {
 
     @Override
     public Image toEntity(String key, UploadImage request) {
-        return new PostImage(key, request.postNo());
+        return new PostImageResource(key, request.postNo());
     }
 }

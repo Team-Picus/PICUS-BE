@@ -3,18 +3,12 @@ package com.picus.core.global.common.image.application.usecase;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.picus.core.domain.post.domain.entity.image.PostImage;
-import com.picus.core.global.common.exception.RestApiException;
 import com.picus.core.global.common.image.application.dto.request.UploadImage;
 import com.picus.core.global.common.image.application.dto.response.ImageUrl;
 import com.picus.core.global.common.image.application.dto.response.UploadUrl;
 import com.picus.core.global.common.image.domain.entity.Image;
 import com.picus.core.global.common.image.domain.entity.ImageType;
-import com.picus.core.global.common.image.domain.factory.ImageFactory;
-import com.picus.core.global.common.image.domain.repository.ImageRepository;
-import com.picus.core.global.common.image.domain.repository.MessageImageRepository;
-import com.picus.core.global.common.image.domain.repository.PostImageRepository;
-import com.picus.core.global.common.image.domain.repository.ReviewImageRepository;
+import com.picus.core.global.common.image.domain.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,18 +18,12 @@ import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._NOT_FOUND;
-
 @Service
 @RequiredArgsConstructor
 public class ImageUploadUseCase {
 
     private final AmazonS3 amazonS3Client;
-    private final ImageRepository imageRepository;
-    private final PostImageRepository postImageRepository;
-    private final ReviewImageRepository reviewImageRepository;
-    private final MessageImageRepository messageImageRepository;
-    private final ImageFactory imageFactory;
+    private final ImageService imageService;
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
@@ -45,7 +33,7 @@ public class ImageUploadUseCase {
         String key = "profile/" + userNo + "/" + UUID.randomUUID() + "/" + request.filename();
         Date expiration = getExpiration();
 
-        imageRepository.save(imageFactory.toEntity(key, request));
+        Image image = imageService.save(key, request);
 
         // URL 생성
         GeneratePresignedUrlRequest preSignedUrl = generatePostPreSignedUrl(key, expiration);
@@ -53,7 +41,7 @@ public class ImageUploadUseCase {
 
         return UploadUrl.builder()
                 .preSignedUrl(url.toExternalForm())
-                .key(key)
+                .imageId(image.getId())
                 .build();
     }
 
@@ -61,7 +49,7 @@ public class ImageUploadUseCase {
     public ImageUrl getGetS3Url(Long imageId, ImageType imageType) {
         Date expiration = getExpiration();
 
-        Image image = getImageByType(imageId, imageType);
+        Image image = imageService.findImage(imageId, imageType);
         GeneratePresignedUrlRequest preSignedUrlRequest = generateGetPreSignedUrl(image.getPreSignedKey(), expiration);
         URL url = amazonS3Client.generatePresignedUrl(preSignedUrlRequest);
 
@@ -88,16 +76,5 @@ public class ImageUploadUseCase {
         expTimeMillis += 1000 * 60 * 60;
         expiration.setTime(expTimeMillis);
         return expiration;
-    }
-
-    private Image getImageByType(Long imageId, ImageType imageType) {
-        return switch (imageType) {
-            case MESSAGE -> messageImageRepository.findById(imageId)
-                    .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-            case POST -> postImageRepository.findById(imageId)
-                    .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-            case REVIEW -> reviewImageRepository.findById(imageId)
-                    .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-        };
     }
 }

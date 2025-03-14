@@ -1,9 +1,8 @@
 package com.picus.core.global.common.image.domain.factory.strategy;
 
-import com.picus.core.domain.chat.domain.entity.message.ImageMessage;
 import com.picus.core.global.common.image.application.dto.request.UploadImage;
 import com.picus.core.global.common.image.domain.entity.Image;
-import com.picus.core.global.common.image.domain.entity.MessageImage;
+import com.picus.core.global.common.image.domain.entity.MessageImageResource;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,6 +19,6 @@ public class MessageImageCreationStrategy implements ImageCreationStrategy {
 
     @Override
     public Image toEntity(String key, UploadImage request) {
-        return new MessageImage(key);
+        return new MessageImageResource(key);
     }
 }

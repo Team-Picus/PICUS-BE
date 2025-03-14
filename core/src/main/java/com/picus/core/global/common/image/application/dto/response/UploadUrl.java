@@ -5,5 +5,5 @@ import lombok.Builder;
 @Builder
 public record UploadUrl (
         String preSignedUrl,
-        String key
+        Long imageId
 ) {}
