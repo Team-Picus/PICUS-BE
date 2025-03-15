@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +26,7 @@ public class BasicOption {
 
     @OneToMany(cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "basicOption")
-    private List<AdditionalOption> additionalOptions;
+    private List<AdditionalOption> additionalOptions = new ArrayList<>();
 
     // ======================================
     // =            Constructors            =
