@@ -1,6 +1,5 @@
 package com.picus.core.domain.post.domain.entity;
 
-import com.picus.core.domain.post.domain.entity.area.PostDistrict;
 import com.picus.core.global.common.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.global.common.enums.ApprovalStatus;
@@ -61,5 +60,4 @@ public class Post extends BaseEntity {
         this.approvalStatus = ApprovalStatus.PENDING;
     }
 
-   
 }
