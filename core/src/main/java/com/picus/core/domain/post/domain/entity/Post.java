@@ -1,6 +1,7 @@
 package com.picus.core.domain.post.domain.entity;
 
 import com.picus.core.domain.post.domain.entity.area.PostDistrict;
+import com.picus.core.global.common.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.global.common.enums.ApprovalStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -32,9 +33,12 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Long studioNo;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "post")
-    private List<PostDistrict> availableAreas = new ArrayList<>();
+
+    @ElementCollection(targetClass = District.class)
+    @CollectionTable(name = "post_district", joinColumns = @JoinColumn(name = "post_no"))
+    @Column(name = "district")
+    @Enumerated(EnumType.STRING)
+    private List<District> availableAreas = new ArrayList<>();
 
     // 승인 상태
     private ApprovalStatus approvalStatus;
@@ -57,13 +61,5 @@ public class Post extends BaseEntity {
         this.approvalStatus = ApprovalStatus.PENDING;
     }
 
-    public void updateAvailableAreas(List<PostDistrict> areas) {
-        for (PostDistrict area : areas) {
-            if (!this.availableAreas.contains(area)) {
-                this.availableAreas.add(area);
-            }
-        }
-
-        this.availableAreas.removeIf(existingArea -> !areas.contains(existingArea));
-    }
+   
 }
