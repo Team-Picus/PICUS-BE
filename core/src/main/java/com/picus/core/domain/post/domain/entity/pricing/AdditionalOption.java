@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class AdditionalOption {
 
@@ -27,10 +26,26 @@ public class AdditionalOption {
 
     private Integer increment; // 증가폭
 
-
     @ManyToOne
     @JoinColumn(name = "basic_option_id")
     private BasicOption basicOption;
+
+
+    public AdditionalOption(BasicOption basicOption,
+                            String name,
+                            Integer pricePerUnit,
+                            Integer max,
+                            Integer base,
+                            Integer increment) {
+        this.basicOption = basicOption;
+        this.name = name;
+        this.pricePerUnit = pricePerUnit;
+        this.max = max;
+        this.base = base;
+        this.increment = increment;
+    }
+
+
 
     public int calculatePrice(int count) {
         if(isValid(count))

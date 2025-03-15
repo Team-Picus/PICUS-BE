@@ -1,7 +1,5 @@
 package com.picus.core.domain.reservation.entity.order;
 
-import com.picus.core.domain.post.domain.entity.pricing.OptionType;
-
 /**
  * 예약 내역을 저장하는 Value Entity
  *
@@ -17,7 +15,7 @@ public class SelectedAdditionalOption {
 
     private Integer increment;
 
-    private OptionType optionType;
+    private String optionName;
 
     // client selection
     private Integer count;
