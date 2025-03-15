@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+// TODO entity가 아니라 ENUM으로 변경해야함
+// 시군구
 public class District {
 
     @Id

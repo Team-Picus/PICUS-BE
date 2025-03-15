@@ -1,26 +1,24 @@
 package com.picus.core.global.common.area.entity;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Region {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "region_id")
-    private Long id;
-
-    private String name;
-
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "region")
-    private List<District> districts = new ArrayList<>();
+public enum Region {
+    서울특별시,
+    부산광역시,
+    대구광역시,
+    인천광역시,
+    광주광역시,
+    대전광역시,
+    울산광역시,
+    세종특별자치시,
+    경기도,
+    충청북도,
+    충청남도,
+    전라남도,
+    경상북도,
+    경상남도,
+    강원특별자치도,
+    전북특별자치도,
+    제주특별자치도
 }
