@@ -1,7 +1,6 @@
 package com.picus.core.domain.post.domain.entity;
 
 import com.picus.core.domain.post.domain.entity.pricing.BasicOption;
-import com.picus.core.domain.post.domain.entity.statistic.PostStatistics;
 import com.picus.core.global.common.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.global.common.enums.ApprovalStatus;
@@ -44,22 +43,13 @@ public class Post extends BaseEntity {
     private PostStatus postStatus = PostStatus.DRAFT;
 
     // 승인 상태
-    private ApprovalStatus approvalStatus;
-
-    // 통계성
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
-    private PostStatistics statistics;
-
-
-
+    private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 
     // ======================================
     // =            Constructors            =
     // ======================================
     public Post(Long studioNo) {
         this.studioNo = studioNo;
-        this.approvalStatus = ApprovalStatus.PENDING;
-        this.statistics = new PostStatistics(this);
     }
 
     // ======================================
@@ -89,6 +79,16 @@ public class Post extends BaseEntity {
         this.postStatus = PostStatus.PUBLISHED;
         this.basicOption = new BasicOption(this, basicPrice);
 
+        return true;
+    }
+
+    /**
+     * 승인 상태 변경
+     * @param approvalStatus 변경할 승인 상태
+     * @return 변경 성공 여부
+     */
+    public boolean updateApprovalStatus(ApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
         return true;
     }
 
