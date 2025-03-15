@@ -1,25 +1,304 @@
 package com.picus.core.global.common.area.entity;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-// TODO entity가 아니라 ENUM으로 변경해야함
-// 시군구
-public class District {
+public enum District {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "district_id")
-    private Long id;
+    // 서울특별시
+    SEOUL_JONGNO("종로구", Region.서울특별시),
+    SEOUL_JUNG("중구", Region.서울특별시),
+    SEOUL_YONGSAN("용산구", Region.서울특별시),
+    SEOUL_SEONGDONG("성동구", Region.서울특별시),
+    SEOUL_GWANGJIN("광진구", Region.서울특별시),
+    SEOUL_DONGDAEMUN("동대문구", Region.서울특별시),
+    SEOUL_JUNGRANG("중랑구", Region.서울특별시),
+    SEOUL_SEONGBUK("성북구", Region.서울특별시),
+    SEOUL_GANGBUK("강북구", Region.서울특별시),
+    SEOUL_DOBONG("도봉구", Region.서울특별시),
+    SEOUL_NOWON("노원구", Region.서울특별시),
+    SEOUL_EUNPYEONG("은평구", Region.서울특별시),
+    SEOUL_SEODAEMUN("서대문구", Region.서울특별시),
+    SEOUL_MAPO("마포구", Region.서울특별시),
+    SEOUL_YANGCHEON("양천구", Region.서울특별시),
+    SEOUL_GANGSEO("강서구", Region.서울특별시),
+    SEOUL_GURO("구로구", Region.서울특별시),
+    SEOUL_GEUMCHEON("금천구", Region.서울특별시),
+    SEOUL_YOUNGDEUNGPO("영등포구", Region.서울특별시),
+    SEOUL_DONGJAK("동작구", Region.서울특별시),
+    SEOUL_GWANAK("관악구", Region.서울특별시),
+    SEOUL_SEOCHO("서초구", Region.서울특별시),
+    SEOUL_GANGNAM("강남구", Region.서울특별시),
+    SEOUL_SONGPA("송파구", Region.서울특별시),
+    SEOUL_GANGDONG("강동구", Region.서울특별시),
 
-    private String name;
+    // 부산광역시
+    BUSAN_JUNG("중구", Region.부산광역시),
+    BUSAN_SEOGU("서구", Region.부산광역시),
+    BUSAN_DONGGU("동구", Region.부산광역시),
+    BUSAN_YOUNGDO("영도구", Region.부산광역시),
+    BUSAN_JINGU("부산진구", Region.부산광역시),
+    BUSAN_DONGNAE("동래구", Region.부산광역시),
+    BUSAN_NAMGU("남구", Region.부산광역시),
+    BUSAN_BUKGU("북구", Region.부산광역시),
+    BUSAN_GANGSEO("강서구", Region.부산광역시),
+    BUSAN_HAEUNDAE("해운대구", Region.부산광역시),
+    BUSAN_SAHA("사하구", Region.부산광역시),
+    BUSAN_GEUMJEONG("금정구", Region.부산광역시),
+    BUSAN_YUNJE("연제구", Region.부산광역시),
+    BUSAN_SUYEONG("수영구", Region.부산광역시),
+    BUSAN_SASANG("사상구", Region.부산광역시),
+    BUSAN_GIJANG("기장군", Region.부산광역시),
 
-    @ManyToOne
-    @JoinColumn(name = "region_id", nullable = false)
-    private Region region;
+    // 대구광역시
+    DAEGU_JUNG("중구", Region.대구광역시),
+    DAEGU_DONG("동구", Region.대구광역시),
+    DAEGU_SEOGU("서구", Region.대구광역시),
+    DAEGU_NAM("남구", Region.대구광역시),
+    DAEGU_BUKGU("북구", Region.대구광역시),
+    DAEGU_SUSEONG("수성구", Region.대구광역시),
+    DAEGU_DALSEO("달서구", Region.대구광역시),
+    DAEGU_DALSEONG("달성군", Region.대구광역시),
+    DAEGU_GUNWI("군위군", Region.대구광역시),
+
+    // 인천광역시
+    INCHEON_JUNG("중구", Region.인천광역시),
+    INCHEON_DONG("동구", Region.인천광역시),
+    INCHEON_MICHUHOL("미추홀구", Region.인천광역시),
+    INCHEON_YUNSU("연수구", Region.인천광역시),
+    INCHEON_NAMDONG("남동구", Region.인천광역시),
+    INCHEON_BUPYEONG("부평구", Region.인천광역시),
+    INCHEON_GYEYANG("계양구", Region.인천광역시),
+    INCHEON_SEOGU("서구", Region.인천광역시),
+    INCHEON_GANGHWAGUN("강화군", Region.인천광역시),
+    INCHEON_ONGJINGUN("옹진군", Region.인천광역시),
+
+    // 광주광역시
+    GWANGJU_DONGGU("동구", Region.광주광역시),
+    GWANGJU_SEOGU("서구", Region.광주광역시),
+    GWANGJU_JUNG("중구", Region.광주광역시),
+    GWANGJU_BUKGU("북구", Region.광주광역시),
+    GWANGJU_GWANGSAN("광산구", Region.광주광역시),
+
+    // 대전광역시
+    DAEJEON_JUNG("중구", Region.대전광역시),
+    DAEJEON_SEOGU("서구", Region.대전광역시),
+    DAEJEON_DONGGU("동구", Region.대전광역시),
+    DAEJEON_YUSEONG("유성구", Region.대전광역시),
+    DAEJEON_DAEDUK("대덕구", Region.대전광역시),
+
+    // 울산광역시
+    ULSAN_JUNG("중구", Region.울산광역시),
+    ULSAN_NAM("남구", Region.울산광역시),
+    ULSAN_DONG("동구", Region.울산광역시),
+    ULSAN_BUKGU("북구", Region.울산광역시),
+    ULSAN_ULJU("울주군", Region.울산광역시),
+
+    // 세종특별자치시
+    SEJONG_JOCHIWON_EUP("조치원읍", Region.세종특별자치시),
+    SEJONG_YEONGI_MYEON("연기면", Region.세종특별자치시),
+    SEJONG_YEONDONG_MYEON("연동면", Region.세종특별자치시),
+    SEJONG_BUGANG_MYEON("부강면", Region.세종특별자치시),
+    SEJONG_GEUMNAM_MYEON("금남면", Region.세종특별자치시),
+    SEJONG_JANGGUN_MYEON("장군면", Region.세종특별자치시),
+    SEJONG_YEONSEO_MYEON("연서면", Region.세종특별자치시),
+    SEJONG_JUNUI_MYEON("전의면", Region.세종특별자치시),
+    SEJONG_JEONDONG_MYEON("전동면", Region.세종특별자치시),
+    SEJONG_SOJUNG_MYEON("소정면", Region.세종특별자치시),
+    SEJONG_HANSOL_DONG("한솔동", Region.세종특별자치시),
+    SEJONG_SAEROM_DONG("새롬동", Region.세종특별자치시),
+    SEJONG_NASEONG_DONG("나성동", Region.세종특별자치시),
+    SEJONG_DAJEONG_DONG("다정동", Region.세종특별자치시),
+    SEJONG_DODAM_DONG("도담동", Region.세종특별자치시),
+    SEJONG_EOJJIN_DONG("어진동", Region.세종특별자치시),
+    SEJONG_HEAMIL_DONG("해밀동", Region.세종특별자치시),
+    SEJONG_AREUM_DONG("아름동", Region.세종특별자치시),
+    SEJONG_JONGCHON_DONG("종촌동", Region.세종특별자치시),
+    SEJONG_GOUN_DONG("고운동", Region.세종특별자치시),
+    SEJONG_BORAM_DONG("보람동", Region.세종특별자치시),
+    SEJONG_DAEPYUNG_DONG("대평동", Region.세종특별자치시),
+    SEJONG_SODAM_DONG("소담동", Region.세종특별자치시),
+    SEJONG_BANGOK_DONG("반곡동", Region.세종특별자치시),
+
+    // 경기도
+    GYEONGGI_SUWON_JANGAN("수원시 장안구", Region.경기도),
+    GYEONGGI_SUWON_GWONSEON("수원시 권선구", Region.경기도),
+    GYEONGGI_SUWON_PALDAL("수원시 팔달구", Region.경기도),
+    GYEONGGI_SUWON_YOUNGTONG("수원시 영통구", Region.경기도),
+    GYEONGGI_SEONGNAM_SUJEONG("성남시 수정구", Region.경기도),
+    GYEONGGI_SEONGNAM_JUNGWON("성남시 중원구", Region.경기도),
+    GYEONGGI_SEONGNAM_BUNDANG("성남시 분당구", Region.경기도),
+    GYEONGGI_UIJE("의정부시", Region.경기도),
+    GYEONGGI_ANYANG_MANAN("안양시 만안구", Region.경기도),
+    GYEONGGI_ANYANG_DONGAN("안양시 동안구", Region.경기도),
+    GYEONGGI_BUCHEON_WONMI("부천시 원미구", Region.경기도),
+    GYEONGGI_BUCHEON_SOSA("부천시 소사구", Region.경기도),
+    GYEONGGI_BUCHEON_OJEONG("부천시 오정구", Region.경기도),
+    GYEONGGI_GWANGMYEONG("광명시", Region.경기도),
+    GYEONGGI_DONGDUCHEON("동두천시", Region.경기도),
+    GYEONGGI_PYEONGTAEK("평택시", Region.경기도),
+    GYEONGGI_ANSAN_SANGNOK("안산시 상록구", Region.경기도),
+    GYEONGGI_ANSAN_DANWON("안산시 단원구", Region.경기도),
+    GYEONGGI_GOYANG_DEOKYANG("고양시 덕양구", Region.경기도),
+    GYEONGGI_GOYANG_ILSAN_DONG("고양시 일산동구", Region.경기도),
+    GYEONGGI_GOYANG_ILSAN_SEO("고양시 일산서구", Region.경기도),
+    GYEONGGI_GWACHEON("과천시", Region.경기도),
+    GYEONGGI_GURI("구리시", Region.경기도),
+    GYEONGGI_NAMYANGJU("남양주시", Region.경기도),
+    GYEONGGI_OSAN("오산시", Region.경기도),
+    GYEONGGI_SIHEUNG("시흥시", Region.경기도),
+    GYEONGGI_GUNPO("군포시", Region.경기도),
+    GYEONGGI_UIWANG("의왕시", Region.경기도),
+    GYEONGGI_HANAM("하남시", Region.경기도),
+    GYEONGGI_YONGIN_CHEOIN("용인시 처인구", Region.경기도),
+    GYEONGGI_YONGIN_GIHEUNG("용인시 기흥구", Region.경기도),
+    GYEONGGI_YONGIN_SUJI("용인시 수지구", Region.경기도),
+    GYEONGGI_PAJU("파주시", Region.경기도),
+    GYEONGGI_ICHEON("이천시", Region.경기도),
+    GYEONGGI_ANSUNG("안성시", Region.경기도),
+    GYEONGGI_GIMPO("김포시", Region.경기도),
+    GYEONGGI_HWASUNG("화성시", Region.경기도),
+    GYEONGGI_GWANGJU("광주시", Region.경기도),
+    GYEONGGI_YANGJU("양주시", Region.경기도),
+    GYEONGGI_POCHEON("포천시", Region.경기도),
+    GYEONGGI_YEOJU("여주시", Region.경기도),
+    GYEONGGI_YEONCHEON("연천군", Region.경기도),
+    GYEONGGI_GAPYEONG("가평군", Region.경기도),
+    GYEONGGI_YANGPYEONG("양평군", Region.경기도),
+
+    // 충청북도
+    CHUNGBOOK_CHEONGJU_SANGDANG("청주시 상당구", Region.충청북도),
+    CHUNGBOOK_CHEONGJU_HEUNGDEOK("청주시 흥덕구", Region.충청북도),
+    CHUNGBOOK_CHEONGJU_SEOWON("청주시 서원구", Region.충청북도),
+    CHUNGBOOK_CHEONGJU_CHEONGWON("청주시 청원구", Region.충청북도),
+    CHUNGBOOK_CHUNGJU("충주시", Region.충청북도),
+    CHUNGBOOK_JECHEON("제천시", Region.충청북도),
+    CHUNGBOOK_BOEUN("보은군", Region.충청북도),
+    CHUNGBOOK_OKCHEON("옥천군", Region.충청북도),
+    CHUNGBOOK_YOUNGDONG("영동군", Region.충청북도),
+    CHUNGBOOK_JUNGPEUNG("증평군", Region.충청북도),
+    CHUNGBOOK_JINCHEON("진천군", Region.충청북도),
+    CHUNGBOOK_GWOESAN("괴산군", Region.충청북도),
+    CHUNGBOOK_EUMSEONG("음성군", Region.충청북도),
+    CHUNGBOOK_DANYANG("단양군", Region.충청북도),
+
+    // 충청남도
+    CHUNGNAM_CHEONAN_DONGNAM("천안시 동남구", Region.충청남도),
+    CHUNGNAM_CHEONAN_SEOBUK("천안시 서북구", Region.충청남도),
+    CHUNGNAM_GONGJU("공주시", Region.충청남도),
+    CHUNGNAM_BORYEONG("보령시", Region.충청남도),
+    CHUNGNAM_ASAN("아산시", Region.충청남도),
+    CHUNGNAM_SEOSAN("서산시", Region.충청남도),
+    CHUNGNAM_NONSAN("논산시", Region.충청남도),
+    CHUNGNAM_GYERYONG("계룡시", Region.충청남도),
+    CHUNGNAM_DANGJIN("당진시", Region.충청남도),
+    CHUNGNAM_GEUMSAN("금산군", Region.충청남도),
+    CHUNGNAM_BUYEO("부여군", Region.충청남도),
+    CHUNGNAM_SEOCHEON("서천군", Region.충청남도),
+    CHUNGNAM_CHEONGYANG("청양군", Region.충청남도),
+    CHUNGNAM_HONGSEONG("홍성군", Region.충청남도),
+    CHUNGNAM_YESA("예산군", Region.충청남도),
+    CHUNGNAM_TAEAN("태안군", Region.충청남도),
+
+    // 전라남도
+    JEONNAM_MOKPO("목포시", Region.전라남도),
+    JEONNAM_YEOSU("여수시", Region.전라남도),
+    JEONNAM_SUNCHEON("순천시", Region.전라남도),
+    JEONNAM_NAJU("나주시", Region.전라남도),
+    JEONNAM_GWANGYANG("광양시", Region.전라남도),
+    JEONNAM_DAMYANG("담양군", Region.전라남도),
+    JEONNAM_GOKSEONG("곡성군", Region.전라남도),
+    JEONNAM_GURYE("구례군", Region.전라남도),
+    JEONNAM_GOHEUNG("고흥군", Region.전라남도),
+    JEONNAM_BOSEONG("보성군", Region.전라남도),
+    JEONNAM_HWASUN("화순군", Region.전라남도),
+    JEONNAM_JANGHEUNG("장흥군", Region.전라남도),
+    JEONNAM_GANGJIN("강진군", Region.전라남도),
+    JEONNAM_HAENAM("해남군", Region.전라남도),
+    JEONNAM_YEONGAM("영암군", Region.전라남도),
+    JEONNAM_MUAN("무안군", Region.전라남도),
+    JEONNAM_HAMPYEONG("함평군", Region.전라남도),
+    JEONNAM_YEONGGANG("영광군", Region.전라남도),
+    JEONNAM_JANGSUNG("장성군", Region.전라남도),
+    JEONNAM_WANDO("완도군", Region.전라남도),
+    JEONNAM_JINDO("진도군", Region.전라남도),
+    JEONNAM_SINAN("신안군", Region.전라남도),
+
+    // 경상북도
+    GYEONGBUK_POHANG_NAM("포항시 남구", Region.경상북도),
+    GYEONGBUK_POHANG_BUK("포항시 북구", Region.경상북도),
+    GYEONGBUK_GYEONGJU("경주시", Region.경상북도),
+    GYEONGBUK_KIMCHEON("김천시", Region.경상북도),
+    GYEONGBUK_ANDONG("안동시", Region.경상북도),
+    GYEONGBUK_GUMI("구미시", Region.경상북도),
+    GYEONGBUK_YOUNGJU("영주시", Region.경상북도),
+    GYEONGBUK_YOUNGCHEON("영천시", Region.경상북도),
+    GYEONGBUK_SANGJU("상주시", Region.경상북도),
+    GYEONGBUK_MUNGYEONG("문경시", Region.경상북도),
+    GYEONGBUK_GYEONGSAN("경산시", Region.경상북도),
+    GYEONGBUK_UISEONG("의성군", Region.경상북도),
+    GYEONGBUK_CHEONGSONG("청송군", Region.경상북도),
+    GYEONGBUK_YEONGYANG("영양군", Region.경상북도),
+    GYEONGBUK_YEONGDEOK("영덕군", Region.경상북도),
+    GYEONGBUK_CHEONGDO("청도군", Region.경상북도),
+    GYEONGBUK_GORYEONG("고령군", Region.경상북도),
+    GYEONGBUK_SEONGJU("성주군", Region.경상북도),
+    GYEONGBUK_CHILGOK("칠곡군", Region.경상북도),
+    GYEONGBUK_YECHEON("예천군", Region.경상북도),
+    GYEONGBUK_BONGHWA("봉화군", Region.경상북도),
+    GYEONGBUK_ULJIN("울진군", Region.경상북도),
+    GYEONGBUK_ULLEUNG("울릉군", Region.경상북도),
+
+    // 경상남도
+    GYEONGNAM_CHANGWON_MASAN_HWOEON("창원시 마산회원구", Region.경상남도),
+    GYEONGNAM_CHANGWON_MASAN_HAPPO("창원시 마산합포구", Region.경상남도),
+    GYEONGNAM_CHANGWON_SEONGSAN("창원시 성산구", Region.경상남도),
+    GYEONGNAM_CHANGWON_UICHANG("창원시 의창구", Region.경상남도),
+    GYEONGNAM_CHANGWON_JINHAE("창원시 진해구", Region.경상남도),
+    GYEONGNAM_JINJU("진주시", Region.경상남도),
+    GYEONGNAM_TONGYEONG("통영시", Region.경상남도),
+    GYEONGNAM_SACHEON("사천시", Region.경상남도),
+    GYEONGNAM_KIMHAE("김해시", Region.경상남도),
+    GYEONGNAM_MILYANG("밀양시", Region.경상남도),
+    GYEONGNAM_GEOJE("거제시", Region.경상남도),
+    GYEONGNAM_YANGSAN("양산시", Region.경상남도),
+    GYEONGNAM_UIRYEONG("의령군", Region.경상남도),
+    GYEONGNAM_HAMAN("함안군", Region.경상남도),
+    GYEONGNAM_CHANGNYEONG("창녕군", Region.경상남도),
+    GYEONGNAM_GOSUNG("고성군", Region.경상남도),
+    GYEONGNAM_NAMHAE("남해군", Region.경상남도),
+    GYEONGNAM_HADONG("하동군", Region.경상남도),
+    GYEONGNAM_SANCHEONG("산청군", Region.경상남도),
+    GYEONGNAM_HAMYANG("함양군", Region.경상남도),
+    GYEONGNAM_GEACHANG("거창군", Region.경상남도),
+    GYEONGNAM_HAPCHEON("합천군", Region.경상남도),
+
+    // 전북특별자치도
+    JEONBUK_JEONJU_WANSAN("전주시 완산구", Region.전북특별자치도),
+    JEONBUK_JEONJU_DEOKJIN("전주시 덕진구", Region.전북특별자치도),
+    JEONBUK_GUNSAN("군산시", Region.전북특별자치도),
+    JEONBUK_IKSAN("익산시", Region.전북특별자치도),
+    JEONBUK_JUNGEUP("정읍시", Region.전북특별자치도),
+    JEONBUK_NAMWON("남원시", Region.전북특별자치도),
+    JEONBUK_KIMJE("김제시", Region.전북특별자치도),
+    JEONBUK_JINAN("진안군", Region.전북특별자치도),
+    JEONBUK_WANJU("완주군", Region.전북특별자치도),
+    JEONBUK_MUJOO("무주군", Region.전북특별자치도),
+    JEONBUK_JANGSU("장수군", Region.전북특별자치도),
+    JEONBUK_IMSIL("임실군", Region.전북특별자치도),
+    JEONBUK_SUNCHANG("순창군", Region.전북특별자치도),
+    JEONBUK_GOCHEONG("고창군", Region.전북특별자치도),
+    JEONBUK_BUAN("부안군", Region.전북특별자치도),
+
+    // 제주특별자치도
+    JEJU_JEJU("제주시", Region.제주특별자치도),
+    JEJU_SEOGWIPO("서귀포시", Region.제주특별자치도);
+
+    private final String displayName;
+    private final Region region;
+
+    District(String displayName, Region region) {
+        this.displayName = displayName;
+        this.region = region;
+    }
 }
