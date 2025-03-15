@@ -1,5 +1,7 @@
 package com.picus.core.domain.post.domain.entity;
 
+import com.picus.core.domain.post.domain.entity.pricing.BasicOption;
+import com.picus.core.domain.post.domain.entity.statistic.PostStatistics;
 import com.picus.core.global.common.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.global.common.enums.ApprovalStatus;
@@ -23,41 +25,71 @@ public class Post extends BaseEntity {
     private Long id;
 
     // 기본 정보
-    @Column(nullable = false)
     private String title;
-
-    @Column(nullable = false)
     private String detail;
-
-    @Column(nullable = false)
     private Long studioNo;
 
-
+    // 가용 지역
     @ElementCollection(targetClass = District.class)
     @CollectionTable(name = "post_district", joinColumns = @JoinColumn(name = "post_no"))
     @Column(name = "district")
     @Enumerated(EnumType.STRING)
     private List<District> availableAreas = new ArrayList<>();
 
+    // 옵션 정보
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    private BasicOption basicOption;
+
+    // 상태
+    private PostStatus postStatus = PostStatus.DRAFT;
+
     // 승인 상태
     private ApprovalStatus approvalStatus;
 
-    // 통계셩
-    private Integer reviewCount;
-
-    private Integer likeCount;
-
-    private Integer viewCount;
+    // 통계성
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    private PostStatistics statistics;
 
 
-    public Post(String title, String detail, Long studioNo) {
-        this.title = title;
-        this.detail = detail;
-        this.reviewCount = 0;
-        this.likeCount = 0;
-        this.viewCount = 0;
+
+
+    // ======================================
+    // =            Constructors            =
+    // ======================================
+    public Post(Long studioNo) {
         this.studioNo = studioNo;
         this.approvalStatus = ApprovalStatus.PENDING;
+        this.statistics = new PostStatistics(this);
+    }
+
+    // ======================================
+    // =          Business methods          =
+    // ======================================
+
+    public boolean initialize(String title,
+                              String detail,
+                              List<District> availableAreas,
+                              Integer basicPrice) {
+
+        // 이미 생성된 경우
+        if (getPostStatus() != PostStatus.DRAFT) {
+            // TODO 예외 정의 후 예외 던져야한다.
+            return false;
+        }
+
+        // 가용 지역이 없는 경우
+        if (availableAreas.isEmpty()) {
+            // TODO 예외 정의 후 예외 던져야한다.
+            return false;
+        }
+
+        this.title = title;
+        this.detail = detail;
+        this.availableAreas = availableAreas;
+        this.postStatus = PostStatus.PUBLISHED;
+        this.basicOption = new BasicOption(this, basicPrice);
+
+        return true;
     }
 
 }
