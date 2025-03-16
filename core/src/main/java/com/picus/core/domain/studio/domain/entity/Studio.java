@@ -26,11 +26,9 @@ public class Studio extends BaseEntity {
 
     private Address address; // 스튜디오 주소
 
-    private Integer reviewCount;
-
-    private Integer activityCount;
-
-    private Double avgRating;
+//    private Integer reviewCount;
+//    private Integer activityCount;
+//    private Double avgRating;
 
     private LocalDateTime recentActiveAt;
 
@@ -47,9 +45,9 @@ public class Studio extends BaseEntity {
         this.name = name;
         this.backgroundImgUrl = backgroundImgUrl;
         this.address = address;
-        this.reviewCount = 0;
-        this.activityCount = 0;
-        this.avgRating = 0.0;
+//        this.reviewCount = 0;
+//        this.activityCount = 0;
+//        this.avgRating = 0.0;
         this.recentActiveAt = LocalDateTime.now();
         this.expertNo = expertNo;
         this.approvalStatus = ApprovalStatus.PENDING;
