@@ -1,29 +1,34 @@
 package com.picus.core.global.common.category.entity;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category {
+public enum Category {
+    // 장소 카테고리
+    STUDIO("스튜디오", CategoryType.LOCATION),
+    OUTSIDE("출강", CategoryType.LOCATION),
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
-    private Long id;
+    // 테마 카테고리
+    COUPLE("연인과 함께", CategoryType.THEME),
+    FAMILY("가족과 함께", CategoryType.THEME),
+    PROFILE("개인프로필", CategoryType.THEME),
 
-    private String name;
+    // 분위기 카테고리
+    DREAMY("몽환적", CategoryType.MOOD),
+    DARK("어두운", CategoryType.MOOD),
+    BRIGHT("밝은", CategoryType.MOOD),
+    CLASSIC("클래식", CategoryType.MOOD),
+    COLD("차가운", CategoryType.MOOD),
+    WARM("따뜻한", CategoryType.MOOD),
+    VINTAGE("빈티지", CategoryType.MOOD),
+    NATURAL("자연적인", CategoryType.MOOD),
+    URBAN("도시적인", CategoryType.MOOD);
 
-    private Type type;
+    private final String displayName;
+    private final CategoryType type;
 
-    private Category(String name, Type type) {
-        this.name = name;
+    Category(String displayName, CategoryType type) {
+        this.displayName = displayName;
         this.type = type;
-    }
-
-    public static Category createForAdmin(String name, Type type) {
-        return new Category(name, type);
     }
 }

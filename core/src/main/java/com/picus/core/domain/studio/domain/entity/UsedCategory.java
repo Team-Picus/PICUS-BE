@@ -1,4 +1,4 @@
-package com.picus.core.domain.studio.entity;
+package com.picus.core.domain.studio.domain.entity;
 
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.global.common.category.entity.Category;
@@ -18,9 +18,7 @@ public class UsedCategory extends BaseEntity {
     @JoinColumn(name = "studio_no", nullable = false)
     private Studio studio;
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     public UsedCategory(Studio studio, Category category) {

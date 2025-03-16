@@ -1,26 +1,24 @@
-package com.picus.core.domain.post.domain.entity.category;
+package com.picus.core.domain.post.domain.entity.cateogory;
 
-import jakarta.persistence.Embeddable;
+
+import com.picus.core.global.common.category.entity.Category;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-@Getter
-@Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class PostCategoryId implements Serializable {
 
     @EqualsAndHashCode.Include
-    private Long post;
+    private Long post; // Post 엔티티의 ID
 
     @EqualsAndHashCode.Include
-    private Long category;
+    private Category category; // Category enum 값
 
-    public PostCategoryId(Long post, Long category) {
+    public PostCategoryId(Long post, Category category) {
         this.post = post;
         this.category = category;
     }

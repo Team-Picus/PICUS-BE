@@ -1,6 +1,6 @@
-package com.picus.core.domain.expert.entity.area;
+package com.picus.core.domain.expert.domain.entity.area;
 
-import com.picus.core.domain.expert.entity.Expert;
+import com.picus.core.domain.expert.domain.entity.Expert;
 import com.picus.core.global.common.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import jakarta.persistence.*;
@@ -20,8 +20,8 @@ public class ExpertDistrict extends BaseEntity {
     private Expert expert;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "district", nullable = false)
     private District district;
 
     public ExpertDistrict(Expert expert, District district) {

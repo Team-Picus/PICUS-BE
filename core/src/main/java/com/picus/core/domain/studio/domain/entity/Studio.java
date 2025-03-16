@@ -1,4 +1,4 @@
-package com.picus.core.domain.studio.entity;
+package com.picus.core.domain.studio.domain.entity;
 
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.global.common.enums.ApprovalStatus;
