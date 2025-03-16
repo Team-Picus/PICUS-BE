@@ -40,6 +40,9 @@ public class Studio extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
+    // ======================================
+    // =            Constructors            =
+    // ======================================
     public Studio(String name, String backgroundImgUrl, Address address, Long expertNo) {
         this.name = name;
         this.backgroundImgUrl = backgroundImgUrl;

@@ -6,6 +6,7 @@ import com.picus.core.domain.post.application.dto.request.PostInitialDto;
 import com.picus.core.domain.post.application.dto.response.PostDetailDto;
 import com.picus.core.domain.post.application.dto.response.PostSummaryDto;
 import com.picus.core.domain.post.domain.entity.Post;
+import com.picus.core.domain.post.domain.entity.PostStatus;
 import com.picus.core.domain.post.domain.service.PostService;
 import com.picus.core.domain.studio.application.usecase.StudioUseCase;
 import com.picus.core.global.common.area.entity.District;
@@ -37,8 +38,7 @@ public class PostUseCase {
     }
 
     @Transactional
-    // TODO 반환값 dto를 정의해야한다.
-    public PostDetailDto initialPost(Long expertNo, PostInitialDto postInitialDto) {
+    public PostDetailDto registerPost(Long expertNo, PostInitialDto postInitialDto) {
         // 1. Post 조회
         Post post = postService.findById(postInitialDto.postId());
         Long studioNo = studioUseCase.findStudioIdByExpertNo(expertNo);
@@ -49,7 +49,7 @@ public class PostUseCase {
         }
 
         // 3. Post 초기화
-        postService.initailPost(post.getId(),
+        postService.registerPost(post.getId(),
                 postInitialDto.title(),
                 postInitialDto.detail(),
                 postInitialDto.basicPrice());
@@ -78,7 +78,23 @@ public class PostUseCase {
         return PostConverter.convertDetail(post);
     }
 
-    public void validateCategories(List<Category> postCategories) {
+    public PostDetailDto findPostDetail(Long userId, Long postId) {
+        Post post = postService.findById(postId);
+
+        // TODO 조회수 1회 증가 추가해야함.
+
+        PostStatus postStatus = post.getPostStatus();
+
+        // Publish 상태만 조회 가능
+        if (postStatus != PostStatus.PUBLISHED) {
+            log.error("해당 포스트는 공개되지 않았습니다. postId: {}, status: {}", postId, postStatus);
+            throw new IllegalArgumentException("해당 포스트는 공개되지 않았습니다." );
+        }
+
+        return PostConverter.convertDetail(post);
+    }
+
+    private void validateCategories(List<Category> postCategories) {
         boolean hasLocation = postCategories.stream()
                 .anyMatch(pc -> pc.getType() == CategoryType.LOCATION);
         boolean hasTheme = postCategories.stream()
