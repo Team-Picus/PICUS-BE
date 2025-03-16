@@ -2,7 +2,6 @@ package com.picus.core.domain.post.domain.entity;
 
 import com.picus.core.domain.post.domain.entity.area.PostDistrict;
 import com.picus.core.domain.post.domain.entity.cateogory.PostCategory;
-import com.picus.core.domain.post.domain.entity.image.PostImageResource;
 import com.picus.core.domain.post.domain.entity.pricing.BasicOption;
 import com.picus.core.global.common.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
@@ -74,9 +73,9 @@ public class Post extends BaseEntity {
      * @param basicPrice
      * @return 초기화 성공 여부
      */
-    public void initialize(String title,
-                              String detail,
-                              Integer basicPrice) {
+    public void register(String title,
+                         String detail,
+                         Integer basicPrice) {
 
         // 이미 생성된 경우
         if (getPostStatus() != PostStatus.DRAFT) {
