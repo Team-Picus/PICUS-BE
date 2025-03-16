@@ -1,6 +1,6 @@
-package com.picus.core.domain.client.entity.area;
+package com.picus.core.domain.client.domain.entity.area;
 
-import com.picus.core.domain.client.entity.Client;
+import com.picus.core.domain.client.domain.entity.Client;
 import com.picus.core.global.common.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import jakarta.persistence.*;
@@ -20,8 +20,8 @@ public class ClientDistrict extends BaseEntity {
     private Client client;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "district", nullable = false)
     private District district;
 
     public ClientDistrict(Client client, District district_id) {

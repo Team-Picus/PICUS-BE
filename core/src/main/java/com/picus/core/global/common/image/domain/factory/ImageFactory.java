@@ -1,13 +1,5 @@
 package com.picus.core.global.common.image.domain.factory;
 
-import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
-import com.picus.core.domain.chat.application.dto.response.MessageRes;
-import com.picus.core.domain.chat.domain.entity.message.Message;
-import com.picus.core.domain.chat.domain.entity.message.MessageType;
-import com.picus.core.domain.chat.domain.factory.strategy.ImageMessageCreationStrategy;
-import com.picus.core.domain.chat.domain.factory.strategy.MessageCreationStrategy;
-import com.picus.core.domain.chat.domain.factory.strategy.ReservationMessageCreationStrategy;
-import com.picus.core.domain.chat.domain.factory.strategy.TextMessageCreationStrategy;
 import com.picus.core.global.common.image.application.dto.request.UploadImage;
 import com.picus.core.global.common.image.domain.entity.Image;
 import com.picus.core.global.common.image.domain.entity.ImageType;
