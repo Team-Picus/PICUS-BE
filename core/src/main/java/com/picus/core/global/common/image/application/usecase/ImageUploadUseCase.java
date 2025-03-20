@@ -46,14 +46,14 @@ public class ImageUploadUseCase {
     }
 
     @Transactional(readOnly = true)
-    public ImageUrl getGetS3Url(Long imageId, ImageType imageType) {
+    public String getImage(Long imageId, ImageType imageType) {
         Date expiration = getExpiration();
 
         Image image = imageService.findImage(imageId, imageType);
         GeneratePresignedUrlRequest preSignedUrlRequest = generateGetPreSignedUrl(image.getPreSignedKey(), expiration);
         URL url = amazonS3Client.generatePresignedUrl(preSignedUrlRequest);
 
-        return new ImageUrl(url.toExternalForm());
+        return url.toExternalForm();
     }
 
 

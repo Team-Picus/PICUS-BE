@@ -36,18 +36,8 @@ public class ChatRoom extends BaseEntity {
 
     private String thumbnailMessage;
 
-    private LocalDateTime clientLeftAt;
-
-    private LocalDateTime expertLeftAt;
-
     public void updateLastMessage(String thumbnailMessage) {
         this.lastMessageAt = LocalDateTime.now();
         this.thumbnailMessage = thumbnailMessage;
-    }
-
-    public int getChatRoomMemberCnt() {
-        if (Optional.ofNullable(chatUsers).isEmpty())
-            return 0;
-        return chatUsers.size();
     }
 }

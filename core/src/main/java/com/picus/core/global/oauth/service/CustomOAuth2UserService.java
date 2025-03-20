@@ -76,7 +76,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 "01010101010", // TODO: OAuth2UserInfo 에 추가되어야한다.
                 userInfo.getEmail(),
                 Gender.MALE, // TODO: OAuth2UserInfo 에 추가되어야한다.
-                userInfo.getImageUrl());
+                null /* userInfo.getImageUrl() */);
 
         User user = User.builder()
                 .profile(profile)

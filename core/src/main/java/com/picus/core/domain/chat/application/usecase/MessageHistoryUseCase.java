@@ -1,6 +1,7 @@
 package com.picus.core.domain.chat.application.usecase;
 
 import com.picus.core.domain.chat.application.dto.response.MessageRes;
+import com.picus.core.domain.chat.application.dto.response.SyncRequestRes;
 import com.picus.core.domain.chat.domain.entity.message.Message;
 import com.picus.core.domain.chat.domain.entity.participant.ChatUser;
 import com.picus.core.domain.chat.domain.repository.MessageRepository;
@@ -8,8 +9,11 @@ import com.picus.core.domain.chat.domain.service.ChatUserService;
 import com.picus.core.domain.chat.domain.factory.MessageFactory;
 import com.picus.core.global.common.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,19 +27,25 @@ public class MessageHistoryUseCase {
     private final OnlineStatusUseCase onlineStatusUseCase;
     private final ChatUserService chatUserService;
     private final MessageFactory messageFactory;
+    private final RabbitTemplate rabbitTemplate;
 
+    private final String ROUTING_KEY_PREFIX = "room.";
     private final Integer ROOM_SIZE = 2;
 
-    public Message findById(Long messageNo) {
+    public Message findById(String messageNo) {
         return messageRepository.findById(messageNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
 
-    public List<MessageRes> readMessages(Long roomNo, Long userNo, Optional<Long> last) {
+    @Transactional
+    public List<MessageRes> readMessages(Long roomNo, Long userNo, Optional<String> last) {
+        readUnreadMessages(roomNo, userNo);
+
         if (last.isEmpty()) {   // 채팅방 입장 시 요청
-            List<MessageRes> newMessages = readNewMessage(roomNo, userNo);  // 과거 50개
-            List<MessageRes> messages = readHistory(roomNo, newMessages.getFirst().getId());    // 안읽은 쌓인 메세지
+            List<MessageRes> newMessages = readNewMessage(roomNo, userNo);  // 새 메세지
+            List<MessageRes> messages = readHistory(roomNo, newMessages.getFirst().getId());    // 과거 50개 메세지
             messages.addAll(newMessages);
+
 
             return messages;
         }
@@ -52,7 +62,25 @@ public class MessageHistoryUseCase {
                 .toList();
     }
 
-    private List<MessageRes> readHistory(Long roomNo, Long lastMessageNo) {
+    private void readUnreadMessages(Long roomNo, Long userNo) {
+        ChatUser chatUser = chatUserService.findById(userNo, roomNo);
+        LocalDateTime lastEntryTime = chatUser.getLastEntryTime();
+
+        List<Message> unreadMessages = messageRepository.findUnreadMessages(roomNo, lastEntryTime);
+        boolean existsOnlineChatRoomMember = onlineStatusUseCase.getOnlineMemberCntInChatRoom(roomNo) > 1; // 1은 본인
+
+        if (!unreadMessages.isEmpty() && existsOnlineChatRoomMember) {
+            unreadMessages.forEach(Message::updateIsRead);  // Update DB
+            sendChatSyncRequestMessage(roomNo);     // Send Sync Msg
+        }
+    }
+
+    private void sendChatSyncRequestMessage(Long chatRoomId) {
+        MessageRes messageRes = SyncRequestRes.createRes();
+        rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
+    }
+
+    private List<MessageRes> readHistory(Long roomNo, String lastMessageNo) {
         Message lastMessage = findById(lastMessageNo);
 
         return messageRepository.findTop50ByRoomNoAndSendAtLessThanOrderBySendAtAsc(roomNo, lastMessage.getSendAt()).stream()

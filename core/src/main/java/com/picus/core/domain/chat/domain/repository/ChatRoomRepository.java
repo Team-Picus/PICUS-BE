@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
 //    @Query("SELECT new com.picus.core.domain.chat.application.dto.response.ChatRoomRes(" +
@@ -24,4 +26,12 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 //            "WHERE c.clientNo = :userNo OR c.expertNo = :userNo " +
 //            "ORDER BY c.lastMessageAt DESC")
 //    Page<ChatRoomRes> findChatRooms(@Param("userNo") Long userNo, Pageable pageable);
+
+    @Query("SELECT r " +
+            "FROM ChatRoom r " +
+            "WHERE r.id IN (" +
+            "   SELECT c.roomNo FROM ChatUser c WHERE c.userNo = :userNo" +
+            ") " +
+            "ORDER BY r.lastMessageAt DESC")
+    List<ChatRoom> findChatRooms(@Param("userNo") Long userNo, @Param("lastChatRoomNo") Long last);
 }
