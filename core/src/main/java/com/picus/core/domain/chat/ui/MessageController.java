@@ -49,12 +49,12 @@ public class MessageController {
      * @return Disconnect 할 때 저장해둔 lastEntryTime + 이전 10개 기준으로 불러오기
      */
     @PatchMapping("/api/v1/chat/{roomNo}/message")
-    public BaseResponse<List<MessageRes>> readMessages(@CommonPrincipal UserPrincipal userPrincipal, @PathVariable Long roomNo, @RequestParam("last") Optional<Long> lastMessageNo) {
+    public BaseResponse<List<MessageRes>> readMessages(@CommonPrincipal UserPrincipal userPrincipal, @PathVariable Long roomNo, @RequestParam("last") Optional<String> lastMessageNo) {
         return BaseResponse.onSuccess(messageHistoryUseCase.readMessages(roomNo, userPrincipal.getUserId(), lastMessageNo));
     }
 
     /***
-     * 채팅방 입장 (WebSocket 연결)
+     * 채팅 탭 입장 (채팅방 목록 조회 - WebSocket 연결)
      * @param event
      */
     @EventListener
@@ -64,7 +64,7 @@ public class MessageController {
     }
 
     /***
-     * 채팅방 퇴장 (WebSocket 해제)
+     * 채팅 탭 퇴장 (화면 전환 - WebSocket 해제)
      * @param event
      */
     @EventListener
