@@ -1,4 +1,4 @@
-package com.picus.core.domain.expert.entity;
+package com.picus.core.domain.expert.domain.entity;
 
 public enum ActivityType {
     PHOTOGRAPHER,
