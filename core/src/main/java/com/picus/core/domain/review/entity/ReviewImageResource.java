@@ -1,6 +1,6 @@
 package com.picus.core.domain.review.entity;
 
-import com.picus.core.global.common.image.domain.entity.Image;
+import com.picus.core.domain.shared.image.domain.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;

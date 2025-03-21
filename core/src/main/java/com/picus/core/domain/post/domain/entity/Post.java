@@ -2,7 +2,7 @@ package com.picus.core.domain.post.domain.entity;
 
 import com.picus.core.domain.post.domain.entity.area.PostDistrict;
 import com.picus.core.global.common.base.BaseEntity;
-import com.picus.core.global.common.enums.ApprovalStatus;
+import com.picus.core.domain.shared.enums.ApprovalStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -2,7 +2,7 @@ package com.picus.core.domain.expert.entity;
 
 import com.picus.core.domain.expert.entity.area.ExpertDistrict;
 import com.picus.core.global.common.base.BaseEntity;
-import com.picus.core.global.common.enums.ApprovalStatus;
+import com.picus.core.domain.shared.enums.ApprovalStatus;
 import com.picus.core.global.common.converter.StringSetConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
