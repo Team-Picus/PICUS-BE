@@ -24,6 +24,8 @@ public class ChatUser {
 
     private LocalDateTime lastEntryTime;
 
+    private Integer unreadCnt;
+
     public ChatUser(Long userNo, Long roomNo) {
         this.userNo = userNo;
         this.roomNo = roomNo;

@@ -1,10 +1,7 @@
 package com.picus.core.domain.chat.domain.service;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
-import com.picus.core.domain.chat.domain.entity.message.ImageMessage;
-import com.picus.core.domain.chat.domain.entity.message.Message;
-import com.picus.core.domain.chat.domain.entity.message.ReservationMessage;
-import com.picus.core.domain.chat.domain.entity.message.TextMessage;
+import com.picus.core.domain.chat.domain.entity.message.*;
 import com.picus.core.domain.chat.domain.repository.MessageRepository;
 import com.picus.core.global.common.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +20,7 @@ public class MessageService {
             case TextMessage tm -> messageRepository.save(tm);
             case ImageMessage im -> messageRepository.save(im);
             case ReservationMessage rm -> messageRepository.save(rm);
+            case SystemMessage sm -> messageRepository.save(sm);
             case null, default -> throw new RestApiException(_METHOD_ARGUMENT_ERROR);
         }
     }

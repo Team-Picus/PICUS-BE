@@ -18,10 +18,10 @@ import lombok.Getter;
 })
 public abstract class MessageRes {
 
-    private Long id;
+    private String id;
     private MessageType messageType;
 
-    protected MessageRes(Long id, MessageType messageType) {
+    protected MessageRes(String id, MessageType messageType) {
         this.id = id;
         this.messageType = messageType;
     }
