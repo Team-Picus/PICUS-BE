@@ -25,7 +25,7 @@ public class ChatRoomController {
     // todo: 페이지네이션 완성
     /***
      * 내 채팅방 목록 조회 API
-     * @param userPrincipal 채팅방 열람하려는 유저의 정보
+     * @param userPrincipal 유저 정보
      * @param last 커서 기반 페이지네이션
      * @return 최근 메세지 날짜 내림차순 20개 채팅방 조회
      */

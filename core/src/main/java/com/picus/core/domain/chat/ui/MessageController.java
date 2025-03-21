@@ -49,7 +49,7 @@ public class MessageController {
      * @return Disconnect 할 때 저장해둔 lastEntryTime + 이전 10개 기준으로 불러오기
      */
     @PatchMapping("/api/v1/chat/{roomNo}/message")
-    public BaseResponse<List<MessageRes>> readMessages(@CommonPrincipal UserPrincipal userPrincipal, @PathVariable Long roomNo, @RequestParam("last") Optional<String> lastMessageNo) {
+    public BaseResponse<List<MessageRes>> readMessages(@CommonPrincipal UserPrincipal userPrincipal, @PathVariable Long roomNo, @RequestParam(value = "last", required = false) Optional<String> lastMessageNo) {
         return BaseResponse.onSuccess(messageHistoryUseCase.readMessages(roomNo, userPrincipal.getUserId(), lastMessageNo));
     }
 

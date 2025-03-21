@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"   # Management UI
+      - "5672:5672"     # AMQP
+      - "61613:61613"   # STOMP
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    command: >
+      sh -c "rabbitmq-plugins enable rabbitmq_management rabbitmq_stomp &&
+      docker-entrypoint.sh rabbitmq-server"
+      
+
   mysql:
     image: mysql:8.0
     container_name: my_mysql

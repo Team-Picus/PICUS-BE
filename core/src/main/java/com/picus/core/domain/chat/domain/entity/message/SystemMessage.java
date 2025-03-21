@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.data.annotation.TypeAlias;
 
 @Getter
-@TypeAlias("reservationMessage")
+@TypeAlias("systemMessage")
 public class SystemMessage extends Message {
 
     private String content;
