@@ -17,6 +17,7 @@ public class MessagePreviewFormatter {
         };
     }
 
+    // todo: 예약 플로우 정립 후 개발
     private String convertToReservationMessage(ReservationStatus reservationStatus, Long reservationNo) {
         return switch (reservationStatus) {
             case CHECKING -> null; // todo

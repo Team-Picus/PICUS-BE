@@ -1,9 +1,12 @@
 package com.picus.core.domain.chat.domain.factory.strategy;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
+import com.picus.core.domain.chat.application.dto.response.ImageMessageRes;
 import com.picus.core.domain.chat.application.dto.response.MessageRes;
 import com.picus.core.domain.chat.application.dto.response.TextMessageRes;
+import com.picus.core.domain.chat.domain.entity.message.ImageMessage;
 import com.picus.core.domain.chat.domain.entity.message.Message;
+import com.picus.core.domain.chat.domain.entity.message.ReservationMessage;
 import com.picus.core.domain.chat.domain.entity.message.TextMessage;
 import com.picus.core.global.common.exception.RestApiException;
 import lombok.AccessLevel;

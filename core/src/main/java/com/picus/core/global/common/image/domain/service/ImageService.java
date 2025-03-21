@@ -31,6 +31,8 @@ public class ImageService {
 
     public Image findImage(Long imageId, ImageType imageType) {
         return switch (imageType) {
+            case BACKGROUND -> null;    // todo: 새 로직 생성
+            case PROFILE -> null;
             case MESSAGE -> messageImageResourceRepository.findById(imageId)
                     .orElseThrow(() -> new RestApiException(_NOT_FOUND));
             case POST -> postImageResourceRepository.findById(imageId)

@@ -19,8 +19,6 @@ public class OnlineStatusUseCase {
 
     public void addChatRoom2Member(Long roomNo, Long userNo) {
         SetOperations<String, Long> ops = chatRoom2Users.opsForSet();
-//        chatRoom2Users.opsForValue().set(convertToKey(roomNo), userNo); // todo 수정
-
         ops.add(convertToKey(roomNo), userNo);
     }
 

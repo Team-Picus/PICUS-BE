@@ -1,5 +1,6 @@
-package com.picus.core.global.common.image.domain.entity;
+package com.picus.core.domain.chat.domain.entity.message;
 
+import com.picus.core.global.common.image.domain.entity.Image;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
