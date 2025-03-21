@@ -2,7 +2,7 @@ package com.picus.core.global.common.image.domain.factory.strategy;
 
 import com.picus.core.global.common.image.application.dto.request.UploadImage;
 import com.picus.core.global.common.image.domain.entity.Image;
-import com.picus.core.global.common.image.domain.entity.MessageImageResource;
+import com.picus.core.domain.chat.domain.entity.message.MessageImageResource;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

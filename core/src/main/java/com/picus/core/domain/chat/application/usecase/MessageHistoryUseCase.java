@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +45,10 @@ public class MessageHistoryUseCase {
 
         if (last.isEmpty()) {   // 채팅방 입장 시 요청
             List<MessageRes> newMessages = readNewMessage(roomNo, userNo);  // 새 메세지
-            List<MessageRes> messages = readHistory(roomNo, newMessages.getFirst().getId());    // 과거 50개 메세지
-            messages.addAll(newMessages);
+            List<MessageRes> messages = new ArrayList<>(Optional.ofNullable(readHistory(roomNo, newMessages.getFirst().getId()))
+                    .orElseGet(Collections::emptyList)); // 과거 50개 메세지
 
+            messages.addAll(newMessages);
 
             return messages;
         }
