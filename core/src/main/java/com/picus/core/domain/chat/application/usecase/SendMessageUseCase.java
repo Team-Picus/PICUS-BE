@@ -4,6 +4,7 @@ import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
 import com.picus.core.domain.chat.application.dto.response.MessageRes;
 import com.picus.core.domain.chat.application.dto.response.TextMessageRes;
 import com.picus.core.domain.chat.domain.entity.message.Message;
+import com.picus.core.domain.chat.domain.entity.message.SystemMessage;
 import com.picus.core.domain.chat.domain.entity.message.TextMessage;
 import com.picus.core.domain.chat.domain.service.ChatRoomService;
 import com.picus.core.domain.chat.domain.service.MessageService;
@@ -43,6 +44,15 @@ public class SendMessageUseCase {
 
             int unreadCnt = calculateUnreadCnt(roomNo);
             publish(message, unreadCnt, roomNo);
+        }
+    }
+
+    public void sendSystemMessage(Long roomNo, String content) {
+        if(chatRoomService.isExist(roomNo)) {
+            Message message = new SystemMessage(roomNo, content);
+            chatRoomService.updateLastMessage(roomNo, content);    // todo: 적절한 워딩으로 변경 예정
+
+            publish(message, 0, roomNo);
         }
     }
 

@@ -44,7 +44,7 @@ public class MessageController {
     }
 
     /***
-     * 초기 채팅 이력 조회 API
+     * 채팅방 입장 시 채팅 이력 조회 API
      * @param roomNo
      * @return Disconnect 할 때 저장해둔 lastEntryTime + 이전 10개 기준으로 불러오기
      */

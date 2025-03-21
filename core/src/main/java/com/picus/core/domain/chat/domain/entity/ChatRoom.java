@@ -40,4 +40,8 @@ public class ChatRoom extends BaseEntity {
         this.lastMessageAt = LocalDateTime.now();
         this.thumbnailMessage = thumbnailMessage;
     }
+
+    public void enterUser(Set<Long> chatUsers) {
+        this.chatUsers = chatUsers;
+    }
 }
