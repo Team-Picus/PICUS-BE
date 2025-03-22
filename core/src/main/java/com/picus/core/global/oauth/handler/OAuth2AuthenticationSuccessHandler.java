@@ -31,8 +31,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
-import static com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REFRESH_TOKEN;
+import static com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.*;
 
 @Component
 @RequiredArgsConstructor
@@ -58,11 +57,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         // redirectUri 가져오기
-
         Optional<String> redirectUri = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
-        // 추후에 허용할 redirect url를 설정할 것
+        // todo: 추후에 허용할 redirect url를 설정할 것
 //        if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
         if (redirectUri.isPresent()) {
             throw new IllegalArgumentException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
@@ -110,6 +108,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
         CookieUtil.addCookie(response, REFRESH_TOKEN, refreshToken.getToken(), cookieMaxAge);
+//        CookieUtil.addCookie(response, ACCESS_TOKEN, accessToken.getToken(), cook);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", accessToken.getToken())
