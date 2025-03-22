@@ -22,7 +22,6 @@ import static com.picus.core.global.common.exception.code.status.GlobalErrorStat
 
 @Getter
 @Entity
-@NoArgsConstructor
 public class ChatRoom extends BaseEntity {
 
     @Id @Tsid
@@ -36,12 +35,17 @@ public class ChatRoom extends BaseEntity {
 
     private String thumbnailMessage;
 
+    public ChatRoom() {
+        this.lastMessageAt = LocalDateTime.now();
+        this.thumbnailMessage = "대화를 시작합니다.";
+    }
+
     public void updateLastMessage(String thumbnailMessage) {
         this.lastMessageAt = LocalDateTime.now();
         this.thumbnailMessage = thumbnailMessage;
     }
 
-    public void enterUser(Set<Long> chatUsers) {
-        this.chatUsers = chatUsers;
+    public void enterUser(Long userNo) {
+        this.chatUsers.add(userNo);
     }
 }

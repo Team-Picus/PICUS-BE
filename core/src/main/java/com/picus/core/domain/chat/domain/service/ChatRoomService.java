@@ -20,19 +20,13 @@ import static com.picus.core.global.common.exception.code.status.GlobalErrorStat
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatUserRepository chatUserRepository;
 
     public Boolean isExist(Long roomNo) {
         return chatRoomRepository.existsById(roomNo);
     }
 
-    public ChatRoom create(Long clientNo, Long exportNo) {
-        ChatRoom newRoom = chatRoomRepository.save(new ChatRoom());
-        chatUserRepository.save(new ChatUser(clientNo, newRoom.getId()));
-        chatUserRepository.save(new ChatUser(exportNo, newRoom.getId()));
-        newRoom.enterUser(Set.of(clientNo, exportNo));
-
-        return newRoom;
+    public ChatRoom create() {
+        return chatRoomRepository.save(new ChatRoom());
     }
 
     @Transactional
