@@ -35,10 +35,6 @@ public abstract class PostConverter {
             );
         }
 
-//        // 이미지 변환: PostImageResource에서 preSignedKey를 가져온다고 가정
-//        List<PostImageDto> imageDtos = post.getImages().stream()
-//                .map(img -> new PostImageDto(img.getPreSignedKey()))
-//                .collect(Collectors.toList());
 
         // 카테고리 변환: PostCategory의 category(enum)에서 이름과 타입을 추출
         List<CategoryDto> categoryDtos = post.getPostCategories().stream()
@@ -69,10 +65,6 @@ public abstract class PostConverter {
         if (post.getBasicOption() != null) {
             basicPrice = post.getBasicOption().getBasicPrice();
         }
-//
-//        List<PostImageDto> postImageDtos = post.getImages().stream()
-//                .map(img -> new PostImageDto(img.getPreSignedKey()))
-//                .collect(Collectors.toList());
 
         return new PostSummaryDto(
                 post.getId(),
