@@ -1,4 +1,4 @@
-package com.picus.core.domain.chat.domain.repository;
+package com.picus.core.domain.chat.infra.repository;
 
 import com.picus.core.domain.chat.application.dto.response.ChatRoomRes;
 

@@ -20,7 +20,6 @@ public class MessageService {
             case TextMessage tm -> messageRepository.save(tm);
             case ImageMessage im -> messageRepository.save(im);
             case ReservationMessage rm -> messageRepository.save(rm);
-            case SystemMessage sm -> messageRepository.save(sm);
             case null, default -> throw new RestApiException(_METHOD_ARGUMENT_ERROR);
         }
     }
