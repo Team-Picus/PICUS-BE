@@ -1,4 +1,4 @@
-package com.picus.core.domain.review.entity;
+package com.picus.core.domain.review.entity.image;
 
 import com.picus.core.domain.shared.image.domain.entity.Image;
 import jakarta.persistence.Column;

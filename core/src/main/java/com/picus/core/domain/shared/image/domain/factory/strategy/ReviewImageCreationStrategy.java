@@ -1,6 +1,6 @@
 package com.picus.core.domain.shared.image.domain.factory.strategy;
 
-import com.picus.core.domain.review.entity.ReviewImageResource;
+import com.picus.core.domain.review.entity.image.ReviewImageResource;
 import com.picus.core.domain.shared.image.application.dto.request.UploadImage;
 import com.picus.core.domain.shared.image.domain.entity.Image;
 import lombok.AccessLevel;
