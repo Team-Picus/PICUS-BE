@@ -2,6 +2,7 @@ package com.picus.core.domain.post.application.dto.response;
 
 import com.picus.core.domain.post.domain.entity.PostStatus;
 import com.picus.core.domain.shared.enums.ApprovalStatus;
+import com.picus.core.domain.shared.image.application.dto.response.ImageUrl;
 
 import java.util.List;
 
@@ -14,5 +15,6 @@ public record PostDetailDto(
         BasicOptionDto basicOption,
         List<CategoryDto> categories,
         PostStatus postStatus,
+        List<ImageUrl> imageUrls,
         ApprovalStatus approvalStatus
 ) {}
