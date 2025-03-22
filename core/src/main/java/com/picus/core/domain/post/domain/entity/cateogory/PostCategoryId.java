@@ -1,7 +1,7 @@
 package com.picus.core.domain.post.domain.entity.cateogory;
 
 
-import com.picus.core.global.common.category.entity.Category;
+import com.picus.core.domain.shared.category.entity.Category;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
