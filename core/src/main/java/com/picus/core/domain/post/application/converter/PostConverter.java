@@ -26,6 +26,7 @@ public abstract class PostConverter {
                     post.getBasicOption().getBasicPrice(),
                     post.getBasicOption().getAdditionalOptions().stream()
                             .map(opt -> new AdditionalOptionDto(
+                                    opt.getId(),
                                     opt.getName(),
                                     opt.getPricePerUnit(),
                                     opt.getMax(),
