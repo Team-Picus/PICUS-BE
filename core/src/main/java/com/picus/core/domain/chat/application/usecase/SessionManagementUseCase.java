@@ -26,11 +26,7 @@ public class SessionManagementUseCase {
     private final ChatRoomService chatRoomService;
     private final OnlineStatusUseCase onlineStatusUseCase;
     private final ChatUserService chatUserService;
-    private final MessageRepository messageRepository;
-    private final RabbitTemplate rabbitTemplate;
     private final StompHeaderAccessorUtil stompHeaderAccessorUtil;
-
-    private final String ROUTING_KEY_PREFIX = "room.";
     private final UserService userService;
 
     public void handleConnectMessage(StompHeaderAccessor accessor) {
@@ -39,7 +35,6 @@ public class SessionManagementUseCase {
 
         if (userService.isExist(userNo) && chatRoomService.isExist(roomNo)) {
             enterChatRoom(roomNo, userNo);
-            readUnreadMessages(roomNo, userNo);
         }
     }
 
@@ -59,23 +54,9 @@ public class SessionManagementUseCase {
         onlineStatusUseCase.addChatRoom2Member(chatRoomId, memberId);
     }
 
-    private void readUnreadMessages(Long roomNo, Long userNo) {
-        ChatUser chatUser = chatUserService.findById(userNo, roomNo);
-        LocalDateTime lastEntryTime = chatUser.getLastEntryTime();
 
-        List<Message> unreadMessages = messageRepository.findUnreadMessages(roomNo, lastEntryTime);
-        boolean existsOnlineChatRoomMember = onlineStatusUseCase.getOnlineMemberCntInChatRoom(roomNo) > 1; // 1은 본인
 
-        if (!unreadMessages.isEmpty() && existsOnlineChatRoomMember) {
-            unreadMessages.forEach(Message::updateIsRead);  // Update DB
-            sendChatSyncRequestMessage(roomNo);     // Send Sync Msg
-        }
-    }
 
-    private void sendChatSyncRequestMessage(Long chatRoomId) {
-        MessageRes messageRes = SyncRequestRes.createRes();
-        rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + chatRoomId, messageRes);
-    }
 
     private void exitChatRoom(Long roomNo, Long userNo) {
         onlineStatusUseCase.removeChatRoom2Member(roomNo, userNo);

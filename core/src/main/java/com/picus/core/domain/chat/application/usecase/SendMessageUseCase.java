@@ -2,8 +2,10 @@ package com.picus.core.domain.chat.application.usecase;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
 import com.picus.core.domain.chat.application.dto.response.MessageRes;
+import com.picus.core.domain.chat.application.dto.response.SystemMessageRes;
 import com.picus.core.domain.chat.application.dto.response.TextMessageRes;
 import com.picus.core.domain.chat.domain.entity.message.Message;
+import com.picus.core.domain.chat.domain.entity.message.SystemMessage;
 import com.picus.core.domain.chat.domain.entity.message.TextMessage;
 import com.picus.core.domain.chat.domain.service.ChatRoomService;
 import com.picus.core.domain.chat.domain.service.MessageService;
@@ -46,11 +48,25 @@ public class SendMessageUseCase {
         }
     }
 
+    public void sendSystemMessage(Long roomNo, String content) {
+        if(chatRoomService.isExist(roomNo)) {
+            Message message = new SystemMessage(roomNo, content);
+            messageService.save(message);
+            chatRoomService.updateLastMessage(roomNo, content);    // todo: 적절한 워딩으로 변경 예정
+
+            publishSystemMessage(message, roomNo);
+        }
+    }
+
     private void publish(Message message, int unreadCnt, Long roomNo) {
-        MessageRes messageRes = TextMessageRes.createRes((TextMessage) message, unreadCnt); // todo: handle other type
+        MessageRes messageRes = messageFactory.toDto(message, unreadCnt); // todo: handle other type
         rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + roomNo, messageRes);
     }
 
+    private void publishSystemMessage(Message message, Long roomNo) {
+        MessageRes messageRes = SystemMessageRes.createRes((SystemMessage) message);
+        rabbitTemplate.convertAndSend(ROUTING_KEY_PREFIX + roomNo, messageRes);
+    }
     private int calculateUnreadCnt(Long roomNo) {
         int onlineMemberCnt = onlineStatusUseCase.getOnlineMemberCntInChatRoom(roomNo);
         return CHAT_USER_CNT - onlineMemberCnt;

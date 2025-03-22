@@ -6,8 +6,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
@@ -29,14 +31,14 @@ public class Profile {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    private String profileImgUrl;
+    private Long profileImgId;
 
-    public Profile(String name, String nickname, String tel, String email, Gender gender, String profileImgUrl) {
+    public Profile(String name, String nickname, String tel, String email, Gender gender, Long profileImgId) {
         this.name = name;
         this.nickname = nickname;
         this.tel = tel;
         this.email = email;
         this.gender = gender;
-        this.profileImgUrl = profileImgUrl;
+        this.profileImgId = profileImgId;
     }
 }
