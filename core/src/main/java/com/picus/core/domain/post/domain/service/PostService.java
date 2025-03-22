@@ -86,20 +86,6 @@ public class PostService {
                 .orElseThrow();
     }
 
-//    /**
-//     * 포스트에 이미지를 추가하는 메서드
-//     * @param postId 포스트 ID
-//     * @param imageKey 추가할 이미지 키
-//     * @return
-//     */
-//    @Transactional
-//    public void addImages(Long postId, String imageKey) {
-//        Post post = postRepository.findById(postId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
-//
-//        post.addPostImageResource(imageKey);
-//    }
-
     @Transactional
     public void addCategory(Long postId, Category category) {
         Post post = postRepository.findById(postId)

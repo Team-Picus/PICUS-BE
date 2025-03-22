@@ -41,11 +41,6 @@ public class Post extends BaseEntity {
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     private BasicOption basicOption;
 
-//    // 이미지
-//    @OneToMany(cascade = CascadeType.ALL,
-//            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "post")
-//    private List<PostImageResource> images = new ArrayList<>();
-
     // 상태
     private PostStatus postStatus = PostStatus.DRAFT;
 

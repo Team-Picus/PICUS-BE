@@ -28,6 +28,7 @@ public class PostUseCase {
 
     private final PostService postService;
     private final StudioUseCase studioUseCase;
+    private final ViewTrackerUseCase viewTrackerUseCase;
 
     @Transactional
     public PostSummaryDto createPost(Long expertNo) {
@@ -59,18 +60,13 @@ public class PostUseCase {
             postService.addAdditionalOption(post.getId(), additionalOption);
         }
 
-//        // 5. 이미지 등록
-//        for (String imageKey : postInitialDto.imageKeys()) {
-//            postService.addImages(post.getId(), imageKey);
-//        }
-
-        // 6. 카테고리 등록
+        // 5. 카테고리 등록
         validateCategories(postInitialDto.categories());
         for (Category category : postInitialDto.categories()) {
             postService.addCategory(post.getId(), category);
         }
 
-        // 7. 가용 지역 등록
+        // 6. 가용 지역 등록
         for (District district : postInitialDto.availableAreas()) {
             postService.addAvailableArea(post.getId(), district);
         }
@@ -78,10 +74,13 @@ public class PostUseCase {
         return PostConverter.convertDetail(post);
     }
 
-    public PostDetailDto findPostDetail(Long userId, Long postId) {
+    public PostDetailDto findPostDetail(Long postId, boolean isNewView) {
         Post post = postService.findById(postId);
 
-        // TODO 조회수 1회 증가 추가해야함.
+        // 조회수 증가
+        if (isNewView) {
+            viewTrackerUseCase.incrementViewCount(postId);
+        }
 
         PostStatus postStatus = post.getPostStatus();
 

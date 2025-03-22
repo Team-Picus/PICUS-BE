@@ -12,7 +12,6 @@ public record PostDetailDto(
         Long studioNo,
         List<DistrictDto> availableAreas,  // District의 displayName 또는 name을 매핑
         BasicOptionDto basicOption,
-//        List<PostImageDto> images,
         List<CategoryDto> categories,
         PostStatus postStatus,
         ApprovalStatus approvalStatus
