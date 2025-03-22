@@ -14,7 +14,7 @@ import static org.springframework.messaging.simp.stomp.StompCommand.CONNECT;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationInterceptor implements ChannelInterceptor {
+public class StompHeaderAuthenticationInterceptor implements ChannelInterceptor {
 
     private final StompHeaderAccessorUtil stompHeaderAccessorUtil;
     private final AuthTokenProvider tokenProvider;

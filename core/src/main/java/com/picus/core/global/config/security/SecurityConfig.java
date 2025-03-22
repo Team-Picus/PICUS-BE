@@ -5,7 +5,6 @@ import com.picus.core.global.config.properties.CorsProperties;
 import com.picus.core.global.oauth.filter.TokenAuthenticationFilter;
 import com.picus.core.global.oauth.handler.OAuth2AuthenticationFailureHandler;
 import com.picus.core.global.oauth.handler.OAuth2AuthenticationSuccessHandler;
-import com.picus.core.global.oauth.handler.TokenAccessDeniedHandler;
 import com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.picus.core.global.oauth.repository.RefreshTokenRepository;
 import com.picus.core.global.oauth.service.CustomOAuth2UserService;
@@ -42,7 +41,6 @@ public class SecurityConfig {
     private final AuthTokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
     private final RefreshTokenRepository refreshTokenRepository;
 
     /**
@@ -92,11 +90,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-//                // Exception handling
-//                .exceptionHandling(except -> except
-//                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-//                        .accessDeniedHandler(tokenAccessDeniedHandler)
-//                )
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
                         // Let pre-flight requests through

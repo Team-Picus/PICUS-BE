@@ -48,20 +48,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     /**
      * OAuth2User 정보를 가지고 유저 생성 및 업데이트
      * @param userRequest OAuth2UserRequest
-     * @param user OAuth2User
+     * @param oAuth2User OAuth2User
      * @return UserPrincipal
      */
-    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
+    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         Provider providerType = Provider.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
-        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-        Optional<User> userOptional = userRepository.findByProviderIdAndProvider(userInfo.getId(), providerType);
-        User savedUser = userOptional.orElse(null);
+        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, oAuth2User.getAttributes());
 
-        if (userOptional.isEmpty()) {
-            this.createUser(userInfo, providerType);
-        }
+        User user = userRepository.findByProviderIdAndProvider(userInfo.getId(), providerType)
+                .orElseGet(() -> createUser(userInfo, providerType));
 
-        return UserPrincipal.create(savedUser, user.getAttributes());
+        return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
     /**
