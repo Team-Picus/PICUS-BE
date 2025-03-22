@@ -92,14 +92,6 @@ public class Post extends BaseEntity {
         postCategories.add(postCategory);
     }
 
-//    /**
-//     * 포스트 이미지 추가
-//     * @param preSignedKey 이미지 키
-//     */
-//    public void addPostImageResource(String preSignedKey) {
-//        // TODO 이미지 갯수 제약 넣어야함
-//        images.add(new PostImageResource(preSignedKey, id));
-//    }
 
     public void addAvailableArea(District district) {
         postDistricts.add(new PostDistrict(this, district));
