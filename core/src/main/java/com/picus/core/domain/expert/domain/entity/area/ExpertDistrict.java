@@ -1,7 +1,7 @@
 package com.picus.core.domain.expert.domain.entity.area;
 
 import com.picus.core.domain.expert.domain.entity.Expert;
-import com.picus.core.global.common.area.entity.District;
+import com.picus.core.domain.shared.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

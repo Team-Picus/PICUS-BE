@@ -1,12 +1,12 @@
 package com.picus.core.global.common.image.domain.factory;
 
-import com.picus.core.global.common.image.application.dto.request.UploadImage;
-import com.picus.core.global.common.image.domain.entity.Image;
-import com.picus.core.global.common.image.domain.entity.ImageType;
-import com.picus.core.global.common.image.domain.factory.strategy.ImageCreationStrategy;
-import com.picus.core.global.common.image.domain.factory.strategy.MessageImageCreationStrategy;
-import com.picus.core.global.common.image.domain.factory.strategy.PostImageCreationStrategy;
-import com.picus.core.global.common.image.domain.factory.strategy.ReviewImageCreationStrategy;
+import com.picus.core.domain.shared.image.application.dto.request.UploadImage;
+import com.picus.core.domain.shared.image.domain.entity.Image;
+import com.picus.core.domain.shared.image.domain.entity.ImageType;
+import com.picus.core.domain.shared.image.domain.factory.strategy.ImageCreationStrategy;
+import com.picus.core.domain.shared.image.domain.factory.strategy.MessageImageCreationStrategy;
+import com.picus.core.domain.shared.image.domain.factory.strategy.PostImageCreationStrategy;
+import com.picus.core.domain.shared.image.domain.factory.strategy.ReviewImageCreationStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

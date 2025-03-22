@@ -1,6 +1,6 @@
 package com.picus.core.domain.post.domain.entity.area;
 
-import com.picus.core.global.common.area.entity.District;
+import com.picus.core.domain.shared.area.entity.District;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

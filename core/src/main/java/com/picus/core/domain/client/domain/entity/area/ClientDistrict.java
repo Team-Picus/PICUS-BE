@@ -1,6 +1,6 @@
 package com.picus.core.domain.client.domain.entity.area;
 
-import com.picus.core.domain.client.entity.Client;
+import com.picus.core.domain.client.domain.entity.Client;
 import com.picus.core.domain.shared.area.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import jakarta.persistence.*;

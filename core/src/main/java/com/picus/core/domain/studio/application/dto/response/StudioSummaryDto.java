@@ -1,7 +1,7 @@
 package com.picus.core.domain.studio.application.dto.response;
 
+import com.picus.core.domain.shared.enums.ApprovalStatus;
 import com.picus.core.domain.studio.domain.entity.Address;
-import com.picus.core.global.common.enums.ApprovalStatus;
 
 import java.time.LocalDateTime;
 
