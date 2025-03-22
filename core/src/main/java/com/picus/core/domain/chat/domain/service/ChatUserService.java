@@ -1,5 +1,6 @@
 package com.picus.core.domain.chat.domain.service;
 
+import com.picus.core.domain.chat.domain.entity.ChatRoom;
 import com.picus.core.domain.chat.domain.entity.participant.ChatUser;
 import com.picus.core.domain.chat.domain.entity.participant.ChatUserId;
 import com.picus.core.domain.chat.domain.repository.ChatUserRepository;
@@ -18,5 +19,12 @@ public class ChatUserService {
     public ChatUser findById(Long userNo, Long roomNo) {
         return chatUserRepository.findById(new ChatUserId(userNo, roomNo))
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+    }
+
+    public ChatUser create(Long userNo, ChatRoom chatRoom) {
+        ChatUser chatUser = chatUserRepository.save(new ChatUser(userNo, chatRoom.getId()));
+        chatRoom.enterUser(chatUser.getUserNo());
+
+        return chatUser;
     }
 }
