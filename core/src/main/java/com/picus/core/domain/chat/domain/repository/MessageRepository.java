@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface MessageRepository extends MongoRepository<Message, Long> {
+public interface MessageRepository extends MongoRepository<Message, String> {
 
     @Query(value = "{ 'roomNo': ?0, 'sendAt': { '$gt': ?1 } }", sort = "{ 'sendAt': 1 }")
     List<Message> findNewMessages(Long roomNo, LocalDateTime lastEntryTime);

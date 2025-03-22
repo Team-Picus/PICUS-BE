@@ -14,7 +14,7 @@ public class TextMessageRes extends MessageRes {
     private LocalDateTime sendAt;
     private int unreadCnt;
 
-    private TextMessageRes(Long id, Long senderNo, String content, LocalDateTime sendAt, int unreadCnt) {
+    private TextMessageRes(String id, Long senderNo, String content, LocalDateTime sendAt, int unreadCnt) {
         super(id, messageType);
         this.senderNo = senderNo;
         this.content = content;
