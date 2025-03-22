@@ -5,6 +5,7 @@ import com.picus.core.domain.post.application.dto.response.PostDetailDto;
 import com.picus.core.domain.post.application.dto.response.PostSummaryDto;
 import com.picus.core.domain.post.application.usecase.PostUseCase;
 import com.picus.core.global.common.base.BaseResponse;
+import com.picus.core.global.config.resolver.annotation.CheckViewHistory;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
 import com.picus.core.global.config.resolver.annotation.ExpertPrincipal;
 import com.picus.core.global.oauth.entity.UserPrincipal;
@@ -38,8 +39,9 @@ public class PostController {
 
     @PostMapping("/{postId}")
     public BaseResponse<PostDetailDto> findPostDetail(@CommonPrincipal UserPrincipal userPrincipal,
-                                                      @PathVariable Long postId) {
-        PostDetailDto postDetailDto = postUseCase.findPostDetail(userPrincipal.getUserId(), postId);
+                                                      @PathVariable Long postId,
+                                                      @CheckViewHistory boolean isNewView) {
+        PostDetailDto postDetailDto = postUseCase.findPostDetail(postId, isNewView);
         return BaseResponse.onSuccess(postDetailDto);
     }
 
