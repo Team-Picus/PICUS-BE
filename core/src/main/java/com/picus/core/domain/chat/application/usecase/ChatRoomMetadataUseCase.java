@@ -2,14 +2,20 @@ package com.picus.core.domain.chat.application.usecase;
 
 import com.picus.core.domain.chat.application.dto.response.ChatRoomRes;
 import com.picus.core.domain.chat.domain.entity.ChatRoom;
+import com.picus.core.domain.chat.domain.entity.participant.ChatUser;
 import com.picus.core.domain.chat.domain.service.ChatRoomService;
+import com.picus.core.domain.chat.domain.service.ChatUserService;
+import com.picus.core.domain.expert.domain.service.ExpertService;
 import com.picus.core.domain.shared.image.application.usecase.ImageUploadUseCase;
 import com.picus.core.domain.shared.image.domain.entity.ImageType;
+import com.picus.core.global.common.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -17,12 +23,17 @@ public class ChatRoomMetadataUseCase {
 
     private final ChatRoomService chatRoomService;
     private final ImageUploadUseCase imageUploadUseCase;
-    private final SendMessageUseCase sendMessageUseCase;
+    private final ExpertService expertService;
+    private final ChatUserService chatUserService;
 
     @Transactional
     public Long initRoom(Long clientNo, Long expertNo) {
-        ChatRoom newRoom = chatRoomService.create(clientNo, expertNo);
-        sendMessageUseCase.sendSystemMessage(newRoom.getId(), "예약하시겠습니까?"); // todo: 적절한 워딩으로 변경 예정
+        if(!expertService.isExist(expertNo) || clientNo.equals(expertNo))
+            throw new RestApiException(_BAD_REQUEST);
+
+        ChatRoom newRoom = chatRoomService.create();
+        chatUserService.create(clientNo, newRoom);
+        chatUserService.create(expertNo, newRoom);
 
         return newRoom.getId();
     }
