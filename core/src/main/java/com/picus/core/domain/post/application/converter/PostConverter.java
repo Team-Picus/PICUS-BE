@@ -2,12 +2,14 @@ package com.picus.core.domain.post.application.converter;
 
 import com.picus.core.domain.post.application.dto.response.*;
 import com.picus.core.domain.post.domain.entity.Post;
+import com.picus.core.domain.shared.image.application.dto.response.ImageUrl;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class PostConverter {
-    public static PostDetailDto convertDetail(Post post) {
+    public static PostDetailDto convertDetail(@NotNull Post post, @NotNull List<ImageUrl> imageUrls) {
 
         // 가용 지역: District의 displayName을 사용한다고 가정
         List<DistrictDto> areas = post.getPostDistricts().stream()
@@ -55,6 +57,7 @@ public abstract class PostConverter {
 //                imageDtos,
                 categoryDtos,
                 post.getPostStatus(),
+                imageUrls,
                 post.getApprovalStatus()
         );
     }

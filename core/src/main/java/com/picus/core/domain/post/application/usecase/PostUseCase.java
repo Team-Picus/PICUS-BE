@@ -10,6 +10,8 @@ import com.picus.core.domain.post.domain.entity.PostStatus;
 import com.picus.core.domain.post.domain.service.PostService;
 import com.picus.core.domain.shared.area.entity.District;
 import com.picus.core.domain.shared.category.entity.Category;
+import com.picus.core.domain.shared.image.application.dto.response.ImageUrl;
+import com.picus.core.domain.shared.image.application.usecase.ImageUseCase;
 import com.picus.core.domain.studio.application.usecase.StudioUseCase;
 import com.picus.core.global.common.category.entity.CategoryType;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class PostUseCase {
     private final PostService postService;
     private final StudioUseCase studioUseCase;
     private final ViewTrackerUseCase viewTrackerUseCase;
+    private final ImageUseCase imageUseCase;
 
     @Transactional
     public PostSummaryDto createPost(Long expertNo) {
@@ -71,26 +74,32 @@ public class PostUseCase {
             postService.addAvailableArea(post.getId(), district);
         }
 
-        return PostConverter.convertDetail(post);
+        // 7. 이미지 조회
+        List<ImageUrl> postImages = imageUseCase.findPostImages(post.getId());
+        return PostConverter.convertDetail(post, postImages);
     }
 
     public PostDetailDto findPostDetail(Long postId, boolean isNewView) {
+        // 1. post 조회
         Post post = postService.findById(postId);
 
-        // 조회수 증가
+        // 2. [Optional] 조회수 증가
         if (isNewView) {
             viewTrackerUseCase.incrementViewCount(postId);
         }
 
         PostStatus postStatus = post.getPostStatus();
 
-        // Publish 상태만 조회 가능
+        // 3. Publish 상태만 조회 가능
         if (postStatus != PostStatus.PUBLISHED) {
             log.error("해당 포스트는 공개되지 않았습니다. postId: {}, status: {}", postId, postStatus);
             throw new IllegalArgumentException("해당 포스트는 공개되지 않았습니다." );
         }
 
-        return PostConverter.convertDetail(post);
+        // 4. 이미지 조회
+        List<ImageUrl> postImages = imageUseCase.findPostImages(postId);
+
+        return PostConverter.convertDetail(post, postImages);
     }
 
     private void validateCategories(List<Category> postCategories) {
