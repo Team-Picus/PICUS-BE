@@ -104,4 +104,6 @@ public class PostService {
 
 
     // TODO update 작성해야함.
+    // AdditionalOption이 수정될 때, optionName이 바뀌면은 새로 AdditionalOption을 생성하도록 변경해야함. ->
+
 }
