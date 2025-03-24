@@ -2,14 +2,15 @@ package com.picus.core.global.config.security;
 
 import com.picus.core.global.config.properties.AppProperties;
 import com.picus.core.global.config.properties.CorsProperties;
-import com.picus.core.global.oauth.filter.TokenAuthenticationFilter;
+import com.picus.core.global.config.security.path.ExcludeAuthPathProperties;
+import com.picus.core.global.jwt.JwtAuthenticationFilter;
+import com.picus.core.global.jwt.TokenProvider;
 import com.picus.core.global.oauth.handler.OAuth2AuthenticationFailureHandler;
 import com.picus.core.global.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.picus.core.global.oauth.repository.RefreshTokenRepository;
 import com.picus.core.global.oauth.service.CustomOAuth2UserService;
 import com.picus.core.global.oauth.service.CustomUserDetailsService;
-import com.picus.core.global.oauth.token.AuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,10 +39,11 @@ public class SecurityConfig {
 
     private final CorsProperties corsProperties;
     private final AppProperties appProperties;
-    private final AuthTokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
     private final CustomOAuth2UserService oAuth2UserService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ExcludeAuthPathProperties excludeAuthPathProperties;
 
     /**
      * 1) Define the PasswordEncoder bean.
@@ -116,7 +118,7 @@ public class SecurityConfig {
                 );
 
         // Add custom token filter
-        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         // Build the SecurityFilterChain
         return http.build();
@@ -126,8 +128,8 @@ public class SecurityConfig {
      * 5) Custom TokenAuthenticationFilter.
      */
     @Bean
-    public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider);
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties);
     }
 
     /**

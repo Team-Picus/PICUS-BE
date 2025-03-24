@@ -7,12 +7,11 @@ import com.picus.core.global.oauth.entity.UserPrincipal;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.nio.file.AccessDeniedException;
 
 public class CommonPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -28,10 +27,11 @@ public class CommonPrincipalArgumentResolver implements HandlerMethodArgumentRes
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hello = authentication.getPrincipal() instanceof UserPrincipal;
+//        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal)) {
             throw new RestApiException(GlobalErrorStatus._UNAUTHORIZED);
         }
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        return principal;
+        return authentication.getPrincipal();
     }
 }

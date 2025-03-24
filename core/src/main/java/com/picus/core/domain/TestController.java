@@ -1,10 +1,8 @@
 package com.picus.core.domain;
 
-import com.picus.core.global.config.resolver.annotation.ClientPrincipal;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
 import com.picus.core.global.config.resolver.annotation.ExpertPrincipal;
 import com.picus.core.global.oauth.entity.UserPrincipal;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +17,7 @@ public class TestController {
     }
 
     @GetMapping("/client")
-    public String client(@ClientPrincipal UserPrincipal userPrincipal) {
+    public String client(UserPrincipal userPrincipal) {
         return "client";
     }
 
