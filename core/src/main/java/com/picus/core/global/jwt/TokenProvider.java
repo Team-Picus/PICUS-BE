@@ -65,7 +65,7 @@ public class TokenProvider {
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .claim(ID_CLAIM, id)
                 .claim(USER_TYPE_CLAIM, userType)
-                .claim(ROLE_CLAIM, role)
+                .claim(ROLE_CLAIM, role.getCode())
                 .signWith(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -84,7 +84,7 @@ public class TokenProvider {
                 )
                 .setSubject(REFRESH_TOKEN_SUBJECT)
                 .claim(ID_CLAIM, id)
-                .claim(ROLE_CLAIM, role)
+                .claim(ROLE_CLAIM, role.getCode())
                 .signWith(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }

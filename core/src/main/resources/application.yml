@@ -120,8 +120,6 @@ exclude-auth-path-patterns:
       method: POST
     - pathPattern: /login
       method: POST
-    - path-pattern: /api/v1/token
-      method: POST
     - pathPattern: /profiles/nickname/available
       method: POST
     - pathPattern: /members/suspension
