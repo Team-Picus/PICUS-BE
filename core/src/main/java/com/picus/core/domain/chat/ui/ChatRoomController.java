@@ -1,19 +1,14 @@
 package com.picus.core.domain.chat.ui;
 
 import com.picus.core.domain.chat.application.dto.response.ChatRoomRes;
-import com.picus.core.domain.chat.application.dto.response.MessageRes;
 import com.picus.core.domain.chat.application.usecase.ChatRoomMetadataUseCase;
 import com.picus.core.global.common.base.BaseResponse;
-import com.picus.core.global.config.resolver.annotation.ClientPrincipal;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
 import com.picus.core.global.oauth.entity.UserPrincipal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +36,7 @@ public class ChatRoomController {
      * @return 채팅방 인덱스
      */
     @PostMapping
-    public BaseResponse<Long> createChatRoom(@ClientPrincipal UserPrincipal userPrincipal, @RequestParam Long expertNo) {
+    public BaseResponse<Long> createChatRoom(@CommonPrincipal UserPrincipal userPrincipal, @RequestParam Long expertNo) {
         return BaseResponse.onSuccess(chatRoomMetadataUseCase.initRoom(userPrincipal.getUserId(), expertNo));
     }
 }

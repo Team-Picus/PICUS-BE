@@ -1,5 +1,6 @@
 package com.picus.core.global.config.resolver;
 
+import com.picus.core.domain.user.domain.entity.UserType;
 import com.picus.core.global.common.exception.RestApiException;
 import com.picus.core.global.common.exception.code.status.GlobalErrorStatus;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
@@ -29,13 +30,14 @@ public class ExpertPrincipalArgumentResolver implements HandlerMethodArgumentRes
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal)) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal principal)) {
             throw new RestApiException(GlobalErrorStatus._UNAUTHORIZED);
         }
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+
         if (!"EXPERT".equals(principal.getUserType().toString())) {
             throw new RestApiException(GlobalErrorStatus._EXPERT_ONLY_ERROR);
         }
+
         return principal;
     }
 }

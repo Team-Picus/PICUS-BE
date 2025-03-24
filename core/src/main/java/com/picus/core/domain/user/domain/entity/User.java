@@ -8,6 +8,8 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Table(name = "users")
@@ -24,7 +26,7 @@ public class User extends BaseEntity {
     @Column(name = "user_no")
     private Long id;
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private UserType userType;
 
     private Profile profile;
