@@ -1,4 +1,4 @@
-package com.picus.core.domain.client.entity.area;
+package com.picus.core.domain.client.domain.entity.area;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
