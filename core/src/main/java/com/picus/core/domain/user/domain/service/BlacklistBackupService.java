@@ -1,4 +1,4 @@
-package com.picus.core.domain.client.domain.service;
+package com.picus.core.domain.user.domain.service;
 
 import com.picus.core.global.oauth.entity.Blacklist;
 import com.picus.core.global.oauth.repository.BlacklistBackupRepository;
