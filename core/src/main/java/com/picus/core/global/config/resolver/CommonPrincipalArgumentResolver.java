@@ -27,11 +27,11 @@ public class CommonPrincipalArgumentResolver implements HandlerMethodArgumentRes
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean hello = authentication.getPrincipal() instanceof UserPrincipal;
-//        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal)) {
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal userPrincipal)) {
             throw new RestApiException(GlobalErrorStatus._UNAUTHORIZED);
         }
-        return authentication.getPrincipal();
+
+        return userPrincipal;
     }
 }

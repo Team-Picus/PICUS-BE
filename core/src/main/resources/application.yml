@@ -114,19 +114,7 @@ cors:
 
 exclude-auth-path-patterns:
   paths:
-    - pathPattern: /users/key
-      method: GET
-    - pathPattern: /users/sign-up
-      method: POST
     - pathPattern: /login
-      method: POST
-    - pathPattern: /profiles/nickname/available
-      method: POST
-    - pathPattern: /members/suspension
-      method: POST
-    - pathPattern: /app/version/**
-      method: GET
-    - path-pattern: /settings/transfer
       method: POST
     - path-pattern: /users/token
       method: POST
