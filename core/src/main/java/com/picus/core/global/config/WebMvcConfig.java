@@ -2,10 +2,13 @@ package com.picus.core.global.config;
 
 import com.picus.core.domain.post.infra.helper.ViewHistoryCookieHelper;
 import com.picus.core.global.config.resolver.*;
+import com.picus.core.global.config.security.path.ExcludeAuthPathProperties;
 import com.picus.core.global.jwt.TokenProvider;
+import com.picus.core.global.oauth.interceptor.JwtBlacklistInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -16,6 +19,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final ViewHistoryCookieHelper viewHistoryCookieHelper;
     private final TokenProvider tokenProvider;
+    private final JwtBlacklistInterceptor jwtBlacklistInterceptor;
+    private final ExcludeAuthPathProperties excludeAuthPathProperties;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -26,5 +31,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         new RefreshTokenArgumentResolver(tokenProvider)
                 )
         );
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(jwtBlacklistInterceptor)
+                .excludePathPatterns(excludeAuthPathProperties.getExcludeAuthPaths());
     }
 }

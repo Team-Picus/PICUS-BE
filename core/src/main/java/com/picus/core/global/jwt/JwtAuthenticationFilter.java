@@ -16,8 +16,8 @@ import org.springframework.web.util.pattern.PathPatternParser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Optional;
 
+import static com.picus.core.global.common.exception.code.status.AuthErrorStatus.EMPTY_JWT;
 import static com.picus.core.global.common.exception.code.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
 
 @RequiredArgsConstructor
@@ -36,18 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            Optional<String> token1 = tokenProvider.getToken(request);
-
-//            Boolean b = tokenProvider.validateToken(token1.get());
-
             tokenProvider.getToken(request).ifPresentOrElse(token -> {
                     if (tokenProvider.validateToken(token))
                         setAuthentication(token);
                     else
                         throw new RestApiException(INVALID_ACCESS_TOKEN);
                 }, () -> {
-                        System.out.println(request);
-//                    throw new RestApiException(INVALID_ACCESS_TOKEN);
+                    throw new RestApiException(EMPTY_JWT);
                 }
             );
 

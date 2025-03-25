@@ -4,7 +4,6 @@ import com.picus.core.domain.user.application.dto.response.AuthTokenRes;
 import com.picus.core.domain.user.domain.entity.UserType;
 import com.picus.core.global.common.exception.RestApiException;
 import com.picus.core.global.oauth.entity.Role;
-import com.picus.core.global.oauth.entity.UserPrincipal;
 import com.picus.core.global.oauth.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -12,20 +11,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Set;
 
+import static com.picus.core.global.common.exception.code.status.AuthErrorStatus.*;
 import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 import static com.picus.core.global.oauth.entity.Role.USER;
 
@@ -101,7 +96,9 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(getId(token)));
+        Long userNo = getId(token)
+                .orElseThrow(() -> new RestApiException(INVALID_ID_TOKEN));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(userNo));
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
@@ -148,19 +145,16 @@ public class TokenProvider {
         return Optional.of(Role.of(getClaims(token).get(ROLE_CLAIM, String.class)));
     }
 
-    public LocalDateTime getExpirationAllowExpired(String token) {
+    public LocalDateTime getExpiration(String token) {
         try {
             return getClaims(token).getExpiration()
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
         } catch (ExpiredJwtException e) {
-            return e.getClaims().getExpiration()
-                    .toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
+            throw new RestApiException(EXPIRED_MEMBER_JWT);
         } catch (Exception e) {
-            throw new RestApiException(_NOT_FOUND); // todo 수정
+            throw new RestApiException(UNSUPPORTED_JWT); // todo 수정
         }
     }
 

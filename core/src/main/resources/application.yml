@@ -116,5 +116,5 @@ exclude-auth-path-patterns:
   paths:
     - pathPattern: /login
       method: POST
-    - path-pattern: /users/token
+    - path-pattern: /api/v1/token
       method: POST
