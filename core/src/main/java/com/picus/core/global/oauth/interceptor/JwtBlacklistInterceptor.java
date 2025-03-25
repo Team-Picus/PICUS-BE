@@ -1,6 +1,6 @@
 package com.picus.core.global.oauth.interceptor;
 
-import com.picus.core.domain.client.application.TokenBlacklistUseCase;
+import com.picus.core.domain.user.application.usecase.TokenBlacklistUseCase;
 import com.picus.core.global.common.exception.RestApiException;
 import com.picus.core.global.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
