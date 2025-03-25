@@ -101,17 +101,8 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        Claims claims = getClaims(token);
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(claims.get(ID_CLAIM, Long.class)));
-//        Role role = getRole(token).orElse(USER);    // orElse를 타는 경우는 refreshToken일 경우이므로 USER로 설정
-//        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(userDetails.getAuthorities()));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(getId(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
-
-//        return new UsernamePasswordAuthenticationToken(
-//                new UserPrincipal(String.valueOf(claims.get(ID_CLAIM, Long.class)), "", authorities),
-//                token,
-//                authorities
-//        );
     }
 
     public boolean isAccessToken(String token) {
