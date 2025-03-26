@@ -28,7 +28,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 List.of(new ViewHistoryArgumentResolver(viewHistoryCookieHelper),
                         new CommonPrincipalArgumentResolver(),
                         new ExpertPrincipalArgumentResolver(),
-                        new RefreshTokenArgumentResolver(tokenProvider)
+                        new RefreshTokenArgumentResolver(tokenProvider),
+                        new AccessTokenArgumentResolver(tokenProvider)
                 )
         );
     }

@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -21,16 +23,10 @@ public class Client extends BaseEntity {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "client")
-    private List<ClientDistrict> preferredAreas = new ArrayList<>();
+    private Set<ClientDistrict> preferredAreas = new HashSet<>();
 
-    public void updatePreferredArea(List<ClientDistrict> areas) {
-        for (ClientDistrict area : areas) {
-            if (!this.preferredAreas.contains(area)) {
-                this.preferredAreas.add(area);
-            }
-        }
-
-        this.preferredAreas.removeIf(existingArea -> !areas.contains(existingArea));
+    public void updatePreferredArea(Set<ClientDistrict> areas) {
+        this.preferredAreas.addAll(areas);
     }
 
     public Client(Long id) {

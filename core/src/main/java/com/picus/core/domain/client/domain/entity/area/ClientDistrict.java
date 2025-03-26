@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @IdClass(ClientDistrictId.class)
@@ -27,5 +29,18 @@ public class ClientDistrict extends BaseEntity {
     public ClientDistrict(Client client, District district) {
         this.client = client;
         this.district = district;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClientDistrict that = (ClientDistrict) o;
+        return Objects.equals(client, that.client) && Objects.equals(district, that.district);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(client, district);
     }
 }

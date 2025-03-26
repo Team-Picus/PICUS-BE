@@ -1,8 +1,8 @@
-package com.picus.core.domain.client.ui;
+package com.picus.core.domain.expert.ui;
 
-import com.picus.core.domain.client.application.dto.request.SignUpReq;
-import com.picus.core.domain.client.application.usecase.ClientInfoUseCase;
-import com.picus.core.domain.client.domain.entity.Client;
+import com.picus.core.domain.expert.application.dto.request.RegExpReq;
+import com.picus.core.domain.expert.application.usecase.ExpertInfoUseCase;
+import com.picus.core.domain.expert.domain.entity.Expert;
 import com.picus.core.domain.user.application.dto.response.AuthTokenRes;
 import com.picus.core.domain.user.application.usecase.TokenBlacklistUseCase;
 import com.picus.core.domain.user.domain.entity.UserType;
@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/clients")
-public class ClientController {
+@RequestMapping("/api/v1/experts")
+public class ExpertController {
 
-    private final ClientInfoUseCase clientInfoUseCase;
+    private final ExpertInfoUseCase expertInfoUseCase;
     private final TokenProvider tokenProvider;
     private final TokenBlacklistUseCase tokenBlacklistUseCase;
 
     @PostMapping
-    public AuthTokenRes signUp(@CommonPrincipal UserPrincipal userPrincipal, @AccessToken String accessToken, @RequestBody SignUpReq request) {
-        Client client = clientInfoUseCase.save(userPrincipal.getUserId(), request);
+    public AuthTokenRes registerExpert(@CommonPrincipal UserPrincipal userPrincipal, @AccessToken String accessToken, @RequestBody RegExpReq request) {
+        Expert expert = expertInfoUseCase.save(userPrincipal.getUserId(), request);
         tokenBlacklistUseCase.invalidateTokens(accessToken);
-        return tokenProvider.createToken(client.getId(), UserType.CLIENT);
+        return tokenProvider.createToken(expert.getId(), UserType.EXPERT);
     }
 }
