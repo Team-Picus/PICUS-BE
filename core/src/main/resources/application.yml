@@ -91,18 +91,18 @@ rabbitmq:
 app:
   auth:
     tokenSecret: ${APP_TOKEN_SECRET}
-    tokenExpiry: 1800000
-    refreshTokenExpiry: 604800000
+    tokenExpiry: 18000
+    refreshTokenExpiry: 18000
   oauth2:
     authorizedRedirectUris:
 
 jwt:
   secret: ${JWT_SECRET}
   access:
-    expiration: 18000000
+    expiration: 18000
     header: Authorization
   refresh:
-    expiration: 604800000
+    expiration: 18000
     header: Authorization-Refresh
 
 cors:
@@ -116,5 +116,3 @@ exclude-auth-path-patterns:
   paths:
     - pathPattern: /login
       method: GET
-    - path-pattern: /api/v1/token
-      method: POST

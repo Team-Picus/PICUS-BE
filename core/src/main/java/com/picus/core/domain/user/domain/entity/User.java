@@ -50,4 +50,8 @@ public class User extends BaseEntity {
     public void updateProfile(String nickname, Long profileImgId) {
         profile.updateProfile(nickname, profileImgId);
     }
+
+    public void updateUserType(UserType userType) {
+        this.userType = userType;
+    }
 }

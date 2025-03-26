@@ -2,14 +2,12 @@ package com.picus.core.global.oauth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.domain.user.application.dto.response.AuthTokenRes;
+import com.picus.core.domain.user.application.usecase.TokenBlacklistUseCase;
 import com.picus.core.global.common.exception.RestApiException;
 import com.picus.core.global.config.properties.AppProperties;
 import com.picus.core.global.jwt.TokenProvider;
-import com.picus.core.global.oauth.entity.Provider;
 import com.picus.core.global.oauth.entity.RefreshToken;
 import com.picus.core.global.oauth.entity.UserPrincipal;
-import com.picus.core.global.oauth.info.OAuth2UserInfo;
-import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
 import com.picus.core.global.oauth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.picus.core.global.oauth.repository.RefreshTokenRepository;
 import com.picus.core.global.utils.CookieUtil;
@@ -20,8 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -67,6 +63,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+
+        // todo: 토큰이 만료 되기 전 소셜 로그인을 다시 할 시 Active한 토큰이 생김.
+//        tokenBlacklistUseCase.invalidateTokens();
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         AuthTokenRes authTokenRes = tokenProvider.createToken(userPrincipal.getUserId(), userPrincipal.getUserType());
