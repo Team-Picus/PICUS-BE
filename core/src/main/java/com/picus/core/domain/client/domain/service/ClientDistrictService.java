@@ -7,7 +7,10 @@ import com.picus.core.domain.shared.area.domain.entity.District;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,11 +18,11 @@ public class ClientDistrictService {
 
     private final ClientDistrictRepository clientDistrictRepository;
 
-    public List<ClientDistrict> saveAll(Client client, List<District> districts) {
+    public Set<ClientDistrict> saveAll(Client client, Set<District> districts) {
         List<ClientDistrict> clientDistricts = districts.stream()
                 .map(district -> new ClientDistrict(client, district))
                 .toList();
 
-        return clientDistrictRepository.saveAll(clientDistricts);
+        return new HashSet<>(clientDistrictRepository.saveAll(clientDistricts));
     }
 }

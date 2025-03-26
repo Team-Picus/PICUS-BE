@@ -1,8 +1,10 @@
 package com.picus.core.domain.expert.domain.entity;
 
+import com.picus.core.domain.expert.application.dto.request.RegExpReq;
 import com.picus.core.domain.expert.domain.entity.area.ExpertDistrict;
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.domain.shared.enums.ApprovalStatus;
+import com.picus.core.global.common.converter.ActivityTypeSetConverter;
 import com.picus.core.global.common.converter.StringSetConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,7 +33,7 @@ public class Expert extends BaseEntity {
     @Convert(converter = StringSetConverter.class)
     private Set<String> skills = new HashSet<>(); // 보유 기술, ex) 포토샵, 일러스트레이터, 파워포인트, 카메라 스펙 etc
 
-    @Column(nullable = false)
+    @Convert(converter = ActivityTypeSetConverter.class)
     private Set<ActivityType> activityTypes = new HashSet<>(); // 활동 유형, ex) 사진작가, 편집자
 
     @Enumerated(EnumType.STRING)
@@ -39,24 +41,30 @@ public class Expert extends BaseEntity {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "expert")
-    private List<ExpertDistrict> activityAreas = new ArrayList<>(); // 활동 구역
+    private Set<ExpertDistrict> activityAreas = new HashSet<>(); // 활동 구역
 
-    public Expert(Long userId, String intro, String career, Set<String> skills, Set<ActivityType> activityTypes) {
+    private Expert(Long userId, String intro, String career, Set<String> skills) {
         this.id = userId;
         this.intro = intro;
         this.career = career;
         this.skills = skills;
-        this.activityTypes = activityTypes;
         this.approvalStatus = ApprovalStatus.PENDING;
     }
 
-    public void updateActivityAreas(List<ExpertDistrict> areas) {
-        for (ExpertDistrict area : areas) {
-            if (!this.activityAreas.contains(area)) {
-                this.activityAreas.add(area);
-            }
-        }
-
-        this.activityAreas.removeIf(existingArea -> !areas.contains(existingArea));
+    public static Expert create(Long userNo, RegExpReq request) {
+        return new Expert(userNo,
+                request.intro(),
+                request.career(),
+                request.skills());
     }
+
+    public void updateActivityAreas(Set<ExpertDistrict> areas) {
+        this.activityAreas.addAll(areas);
+    }
+
+    public void updateActivityType(ActivityType activityType) {
+        this.activityTypes.add(activityType);
+    }
+
+
 }

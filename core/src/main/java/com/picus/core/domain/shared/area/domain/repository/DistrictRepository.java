@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface DistrictRepository extends JpaRepository<District, Long> {
 
     Optional<District> findByName(String name);
 
     @Query("SELECT d FROM District d WHERE d.name IN :names")
-    List<District> findPreferredAreas(List<String> names);
+    Set<District> findPreferredAreas(Set<String> names);
 
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
@@ -25,10 +27,10 @@ public class AreaSearchService {
         return fullName.substring(fullName.indexOf(" ") + 1);
     }
 
-    public List<District> findDistricts(List<String> fullNames) {
-        List<String> name = fullNames.stream()
+    public Set<District> findDistricts(Set<String> fullNames) {
+        Set<String> name = fullNames.stream()
                 .map(this::convertToDistrictName)
-                .toList();
+                .collect(Collectors.toSet());
 
         return districtRepository.findPreferredAreas(name);
     }

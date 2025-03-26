@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._CONTAIN_BAD_WORD;
 
@@ -39,8 +40,8 @@ public class ClientInfoUseCase {
         User user = userService.findById(userNo);
         user.updateProfile(request.nickname(), request.profileImgId());
 
-        List<District> Districts = areaSearchService.findDistricts(request.preferredArea());
-        List<ClientDistrict> clientDistricts = clientDistrictService.saveAll(client, Districts);
+        Set<District> Districts = areaSearchService.findDistricts(request.preferredArea());
+        Set<ClientDistrict> clientDistricts = clientDistrictService.saveAll(client, Districts);
         client.updatePreferredArea(clientDistricts);
 
         return client;
