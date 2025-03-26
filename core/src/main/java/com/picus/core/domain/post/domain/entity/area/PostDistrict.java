@@ -1,7 +1,7 @@
 package com.picus.core.domain.post.domain.entity.area;
 
 import com.picus.core.domain.post.domain.entity.Post;
-import com.picus.core.domain.shared.area.entity.District;
+import com.picus.core.domain.shared.area.domain.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

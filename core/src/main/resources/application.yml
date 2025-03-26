@@ -91,7 +91,7 @@ rabbitmq:
 app:
   auth:
     tokenSecret: ${APP_TOKEN_SECRET}
-    tokenExpiry: 18000000000
+    tokenExpiry: 1800000
     refreshTokenExpiry: 604800000
   oauth2:
     authorizedRedirectUris:
@@ -99,8 +99,10 @@ app:
 jwt:
   secret: ${JWT_SECRET}
   access:
+    expiration: 18000000
     header: Authorization
   refresh:
+    expiration: 604800000
     header: Authorization-Refresh
 
 cors:
@@ -108,3 +110,11 @@ cors:
   allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
   allowed-headers: "*"  # 모든 헤더 허용
   max-age: 3600
+
+
+exclude-auth-path-patterns:
+  paths:
+    - pathPattern: /login
+      method: GET
+    - path-pattern: /api/v1/token
+      method: POST

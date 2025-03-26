@@ -9,7 +9,6 @@ import com.picus.core.global.oauth.entity.Provider;
 import com.picus.core.global.oauth.entity.UserPrincipal;
 import com.picus.core.global.oauth.info.OAuth2UserInfo;
 import com.picus.core.global.oauth.info.OAuth2UserInfoFactory;
-import com.picus.core.global.oauth.token.AuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -20,15 +19,12 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
-    private final AuthTokenProvider authTokenProvider;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -48,20 +44,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     /**
      * OAuth2User 정보를 가지고 유저 생성 및 업데이트
      * @param userRequest OAuth2UserRequest
-     * @param user OAuth2User
+     * @param oAuth2User OAuth2User
      * @return UserPrincipal
      */
-    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
+    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         Provider providerType = Provider.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
-        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-        Optional<User> userOptional = userRepository.findByProviderIdAndProvider(userInfo.getId(), providerType);
-        User savedUser = userOptional.orElse(null);
+        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, oAuth2User.getAttributes());
 
-        if (userOptional.isEmpty()) {
-            this.createUser(userInfo, providerType);
-        }
+        User user = userRepository.findByProviderIdAndProvider(userInfo.getId(), providerType)
+                .orElseGet(() -> createUser(userInfo, providerType));
 
-        return UserPrincipal.create(savedUser, user.getAttributes());
+        return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
     /**
