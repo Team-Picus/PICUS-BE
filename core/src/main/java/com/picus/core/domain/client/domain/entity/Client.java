@@ -32,4 +32,8 @@ public class Client extends BaseEntity {
 
         this.preferredAreas.removeIf(existingArea -> !areas.contains(existingArea));
     }
+
+    public Client(Long id) {
+        this.id = id;
+    }
 }

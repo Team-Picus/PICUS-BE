@@ -1,4 +1,4 @@
-package com.picus.core.domain.shared.area.entity;
+package com.picus.core.domain.shared.area.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

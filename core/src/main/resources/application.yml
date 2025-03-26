@@ -115,6 +115,6 @@ cors:
 exclude-auth-path-patterns:
   paths:
     - pathPattern: /login
-      method: POST
+      method: GET
     - path-pattern: /api/v1/token
       method: POST
