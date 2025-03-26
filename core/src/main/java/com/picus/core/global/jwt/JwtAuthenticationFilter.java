@@ -36,8 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            StringBuffer url = request.getRequestURL();
-
             tokenProvider.getToken(request).ifPresentOrElse(token -> {
                     if (tokenProvider.validateToken(token))
                         setAuthentication(token);
@@ -52,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (RestApiException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             PrintWriter writer = response.getWriter();
-//            System.out.println(e.getMessage());
             writer.flush();
             writer.close();
         }
