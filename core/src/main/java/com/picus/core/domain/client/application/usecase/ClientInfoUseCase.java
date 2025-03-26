@@ -32,9 +32,7 @@ public class ClientInfoUseCase {
 
     @Transactional
     public Client save(Long userNo, SignUpReq request) {
-        if (badWordFilterUtil.isBadWord(request.nickname())) {
-            throw new RestApiException(_CONTAIN_BAD_WORD);
-        }
+        badWordFilterUtil.filterBadWord(request.nickname());
 
         Client client = clientService.save(userNo);
         User user = userService.findById(userNo);
