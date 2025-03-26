@@ -41,4 +41,9 @@ public class Profile {
         this.gender = gender;
         this.profileImgId = profileImgId;
     }
+
+    public void updateProfile(String nickname, Long profileImgId) {
+        this.nickname = nickname;
+        this.profileImgId = profileImgId;
+    }
 }

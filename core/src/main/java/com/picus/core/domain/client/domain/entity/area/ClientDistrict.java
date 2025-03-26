@@ -1,7 +1,7 @@
 package com.picus.core.domain.client.domain.entity.area;
 
 import com.picus.core.domain.client.domain.entity.Client;
-import com.picus.core.domain.shared.area.entity.District;
+import com.picus.core.domain.shared.area.domain.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,7 +24,7 @@ public class ClientDistrict extends BaseEntity {
     @JoinColumn(name = "district_id", nullable = false)
     private District district;
 
-    public ClientDistrict(Client client, District district_id) {
+    public ClientDistrict(Client client, District district) {
         this.client = client;
         this.district = district;
     }

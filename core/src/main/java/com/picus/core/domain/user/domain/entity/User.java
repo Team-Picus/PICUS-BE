@@ -47,5 +47,7 @@ public class User extends BaseEntity {
     private Withdrawal withdrawal;
 
 
-
+    public void updateProfile(String nickname, Long profileImgId) {
+        profile.updateProfile(nickname, profileImgId);
+    }
 }
