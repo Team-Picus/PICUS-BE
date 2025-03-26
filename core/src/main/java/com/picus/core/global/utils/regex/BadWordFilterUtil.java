@@ -1,10 +1,13 @@
 package com.picus.core.global.utils.regex;
 
+import com.picus.core.global.common.exception.RestApiException;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._CONTAIN_BAD_WORD;
 
 @Component
 public class BadWordFilterUtil implements BadWords {
@@ -31,12 +34,11 @@ public class BadWordFilterUtil implements BadWords {
         return delimiterBuilder.toString();
     }
 
-    public boolean isBadWord(String input) {
+    public void filterBadWord(String input) {
         for (Pattern pattern : badWordPatterns.values()) {
             if (pattern.matcher(input).find()) {
-                return true;
+                throw new RestApiException(_CONTAIN_BAD_WORD);
             }
         }
-        return false;
     }
 }
