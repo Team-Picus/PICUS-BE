@@ -1,4 +1,4 @@
-package com.picus.core.domain.studio.entity;
+package com.picus.core.domain.studio.domain.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
