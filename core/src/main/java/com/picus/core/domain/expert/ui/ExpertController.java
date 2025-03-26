@@ -10,6 +10,7 @@ import com.picus.core.global.config.resolver.annotation.AccessToken;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
 import com.picus.core.global.jwt.TokenProvider;
 import com.picus.core.global.oauth.entity.UserPrincipal;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,7 @@ public class ExpertController {
     private final TokenBlacklistUseCase tokenBlacklistUseCase;
 
     @PostMapping
-    public AuthTokenRes registerExpert(@CommonPrincipal UserPrincipal userPrincipal, @AccessToken String accessToken, @RequestBody RegExpReq request) {
+    public AuthTokenRes registerExpert(@CommonPrincipal UserPrincipal userPrincipal, @AccessToken String accessToken, @RequestBody @Valid RegExpReq request) {
         Expert expert = expertInfoUseCase.save(userPrincipal.getUserId(), request);
         tokenBlacklistUseCase.invalidateTokens(accessToken);
         return tokenProvider.createToken(expert.getId(), UserType.EXPERT);

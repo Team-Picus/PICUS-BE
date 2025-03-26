@@ -10,6 +10,7 @@ import com.picus.core.global.config.resolver.annotation.AccessToken;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
 import com.picus.core.global.jwt.TokenProvider;
 import com.picus.core.global.oauth.entity.UserPrincipal;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,7 @@ public class ClientController {
     private final TokenBlacklistUseCase tokenBlacklistUseCase;
 
     @PostMapping
-    public AuthTokenRes signUp(@CommonPrincipal UserPrincipal userPrincipal, @AccessToken String accessToken, @RequestBody SignUpReq request) {
+    public AuthTokenRes signUp(@CommonPrincipal UserPrincipal userPrincipal, @AccessToken String accessToken, @RequestBody @Valid SignUpReq request) {
         Client client = clientInfoUseCase.save(userPrincipal.getUserId(), request);
         tokenBlacklistUseCase.invalidateTokens(accessToken);
         return tokenProvider.createToken(client.getId(), UserType.CLIENT);
