@@ -15,4 +15,8 @@ public class StudioService {
     public Studio save(Long expertNo, StudioReq request) {
         return studioRepository.save(Studio.create(expertNo, request));
     }
+
+    public boolean isExist(Long expertNo) {
+        return studioRepository.existsByExpertNo(expertNo);
+    }
 }
