@@ -1,6 +1,6 @@
 package com.picus.core.global.config;
 
-import com.picus.core.global.oauth.interceptor.JwtAuthenticationInterceptor;
+import com.picus.core.global.oauth.interceptor.StompHeaderAuthenticationInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final JwtAuthenticationInterceptor jwtAuthenticationInterceptor;
+    private final StompHeaderAuthenticationInterceptor stompHeaderAuthenticationInterceptor;
 
     @Value("${rabbitmq.host}")
     private String host;
@@ -59,6 +59,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(jwtAuthenticationInterceptor);
+        registration.interceptors(stompHeaderAuthenticationInterceptor);
     }
 }
