@@ -1,5 +1,6 @@
-package com.picus.core.domain.studio.entity;
+package com.picus.core.domain.studio.domain.entity;
 
+import com.picus.core.domain.studio.application.dto.request.StudioReq;
 import com.picus.core.global.common.base.BaseEntity;
 import com.picus.core.domain.shared.enums.ApprovalStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -22,7 +23,7 @@ public class Studio extends BaseEntity {
     @Column(length = 20)
     private String name;
 
-    private String backgroundImgUrl; // 스튜디오 대표 이미지
+    private Long backgroundImgId; // 스튜디오 대표 이미지
 
     private Address address; // 스튜디오 주소
 
@@ -40,9 +41,9 @@ public class Studio extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
-    public Studio(String name, String backgroundImgUrl, Address address, Long expertNo) {
+    private Studio(String name, Long backgroundImgId, Address address, Long expertNo) {
         this.name = name;
-        this.backgroundImgUrl = backgroundImgUrl;
+        this.backgroundImgId = backgroundImgId;
         this.address = address;
         this.reviewCount = 0;
         this.activityCount = 0;
@@ -50,5 +51,9 @@ public class Studio extends BaseEntity {
         this.recentActiveAt = LocalDateTime.now();
         this.expertNo = expertNo;
         this.approvalStatus = ApprovalStatus.PENDING;
+    }
+
+    public static Studio create(Long expertNo, StudioReq request) {
+        return new Studio(request.name(), request.backgroundImgId(), request.address(), expertNo);
     }
 }
