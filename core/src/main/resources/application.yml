@@ -116,3 +116,8 @@ exclude-auth-path-patterns:
   paths:
     - pathPattern: /login
       method: GET
+
+exclude-ratelimiter-path-patterns:
+  paths:
+    - pathPattern: /login
+      method: GET

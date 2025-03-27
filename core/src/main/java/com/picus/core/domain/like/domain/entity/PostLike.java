@@ -1,4 +1,4 @@
-package com.picus.core.domain.like.entity;
+package com.picus.core.domain.like.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StudioLike extends Like {
+public class PostLike extends Like {
 
     @Column(nullable = false)
-    private Long studioNo;
+    private Long postNo;
 
-    public StudioLike(Long user_no, Long studioNo) {
+    public PostLike(Long user_no, Long postNo) {
         super(user_no);
-        this.studioNo = studioNo;
+        this.postNo = postNo;
     }
 }
