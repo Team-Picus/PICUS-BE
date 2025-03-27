@@ -1,6 +1,6 @@
 package com.picus.core.domain.like.domain.service;
 
-import com.picus.core.domain.like.domain.entity.PostLike;
+import com.picus.core.domain.like.domain.entity.post.PostLike;
 import com.picus.core.domain.like.domain.repository.PostLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,6 @@ public class PostLikeService {
     }
 
     public void delete(Long userNo, Long postNo) {
-        postLikeRepository.unlike(userNo, postNo);
+        postLikeRepository.delete(userNo, postNo);
     }
 }
