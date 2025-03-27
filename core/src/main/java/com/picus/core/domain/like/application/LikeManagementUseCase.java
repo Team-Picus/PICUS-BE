@@ -46,5 +46,6 @@ public class LikeManagementUseCase {
     public void unlikeStudio(Long userNo, Long studioNo) {
         studioLikeService.delete(userNo, studioNo);
         Studio studio = studioService.findStudio(studioNo);
+        studio.updateLikeCount(-1);
     }
 }
