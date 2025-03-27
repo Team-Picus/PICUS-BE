@@ -1,4 +1,4 @@
-package com.picus.core.domain.like.entity;
+package com.picus.core.domain.like.domain.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
@@ -18,12 +18,12 @@ public abstract class Like {
     private Long id;
 
     @Column(nullable = false)
-    private Long user_no;
+    private Long userNo;
 
     private LocalDateTime createdAt;
 
-    protected Like(Long user_no) {
-        this.user_no = user_no;
+    protected Like(Long userNo) {
+        this.userNo = userNo;
         this.createdAt = LocalDateTime.now();
     }
 }
