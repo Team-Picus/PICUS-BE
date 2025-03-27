@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._EXIST_REQUEST;
+import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._EXIST_ENTITY;
 import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @Service
@@ -27,7 +27,7 @@ public class StudioInfoUseCase {
             throw new RestApiException(_NOT_FOUND);
 
         if(studioService.isExist(expertNo))
-            throw new RestApiException(_EXIST_REQUEST);
+            throw new RestApiException(_EXIST_ENTITY);
 
         badWordFilterUtil.filterBadWord(request.name());
 
