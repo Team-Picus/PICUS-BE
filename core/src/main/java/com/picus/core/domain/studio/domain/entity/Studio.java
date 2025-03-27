@@ -29,11 +29,16 @@ public class Studio extends BaseEntity {
 
     private Integer reviewCount;
 
+    private Integer likeCount;
+
     private Integer activityCount;
 
     private Double avgRating;
 
     private LocalDateTime recentActiveAt;
+
+    @Version
+    private Long version;
 
     @Column(nullable = false, name = "expert_no")
     private Long expertNo;
@@ -46,6 +51,7 @@ public class Studio extends BaseEntity {
         this.backgroundImgId = backgroundImgId;
         this.address = address;
         this.reviewCount = 0;
+        this.likeCount = 0;
         this.activityCount = 0;
         this.avgRating = 0.0;
         this.recentActiveAt = LocalDateTime.now();
@@ -55,5 +61,9 @@ public class Studio extends BaseEntity {
 
     public static Studio create(Long expertNo, StudioReq request) {
         return new Studio(request.name(), request.backgroundImgId(), request.address(), expertNo);
+    }
+
+    public void updateLikeCount(int count) {
+        this.likeCount += count;
     }
 }
