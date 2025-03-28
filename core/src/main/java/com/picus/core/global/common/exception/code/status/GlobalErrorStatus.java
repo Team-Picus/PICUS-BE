@@ -20,7 +20,8 @@ public enum GlobalErrorStatus implements BaseCodeInterface {
     _CLIENT_ONLY_ERROR(HttpStatus.BAD_REQUEST, "COMMON406", "client만 접근 가능합니다."),
     _EXPERT_ONLY_ERROR(HttpStatus.BAD_REQUEST, "COMMON407", "exeprt만 접근 가능합니다."),
     _CONTAIN_BAD_WORD(HttpStatus.BAD_REQUEST, "COMMON400", "입력하신 내용에 부적절한 단어가 포함되어 있습니다."),
-    _EXIST_REQUEST(HttpStatus.BAD_REQUEST, "COMMON400", "중복된 요청입니다."),
+    _EXIST_ENTITY(HttpStatus.BAD_REQUEST, "COMMON400", "이미 존재하는 요청입니다."),
+    _TOO_MANY_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "COMMON429", "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요."),
 
     // S3 관련 에러
     _S3_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S3_5001", "파일 업로드에 실패했습니다."),

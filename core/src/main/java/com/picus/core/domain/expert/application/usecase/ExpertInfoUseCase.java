@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._EXIST_REQUEST;
+import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._EXIST_ENTITY;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class ExpertInfoUseCase {
     @Transactional
     public Expert save(Long userNo, RegExpReq request) {
         if (expertService.isExist(userNo))
-            throw new RestApiException(_EXIST_REQUEST);
+            throw new RestApiException(_EXIST_ENTITY);
 
         filterBadWord(request);
 
