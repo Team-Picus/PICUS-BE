@@ -143,7 +143,7 @@ public class PostUseCase {
         }
 
 
-        // 5. 이미지 조회
+        // 8. 이미지 조회
         List<ImageUrl> postImages = imageUseCase.findPostImages(post.getId());
         return PostConverter.convertDetail(post, postImages);
 
