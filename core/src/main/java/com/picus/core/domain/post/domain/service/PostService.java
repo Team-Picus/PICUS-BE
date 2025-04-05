@@ -1,6 +1,6 @@
 package com.picus.core.domain.post.domain.service;
 
-import com.picus.core.domain.post.application.dto.request.AdditionalOptionDto;
+import com.picus.core.domain.post.application.dto.request.AdditionalOptionCreate;
 import com.picus.core.domain.post.domain.entity.Post;
 import com.picus.core.domain.post.domain.repository.PostRepository;
 import com.picus.core.domain.shared.area.entity.District;
@@ -58,34 +58,6 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    /**
-     * Post -> BasicOption -> AdditionalOption 추가하는 메서드
-     * @param postId 포스트 ID
-     * @param additionalOptionDto 추가할 옵션 정보
-     */
-    public void addAdditionalOption(Long postId, AdditionalOptionDto additionalOptionDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
-
-        post.getBasicOption().addAdditionalOption(
-                additionalOptionDto.name(),
-                additionalOptionDto.pricePerUnit(),
-                additionalOptionDto.max(),
-                additionalOptionDto.base(),
-                additionalOptionDto.increment()
-        );
-    }
-
-    /**
-     * Post의 모든 정보를 조회
-     * @param postId 조회할 포스트 ID
-     * @return 조회된 포스트 엔티티
-     */
-    public Post findPostByIdWithDetails(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow();
-    }
-
     @Transactional
     public void addCategory(Long postId, Category category) {
         Post post = postRepository.findById(postId)
@@ -102,8 +74,99 @@ public class PostService {
         post.addAvailableArea(district);
     }
 
+    @Transactional
+    public void clearCategory(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
 
-    // TODO update 작성해야함.
-    // AdditionalOption이 수정될 때, optionName이 바뀌면은 새로 AdditionalOption을 생성하도록 변경해야함. ->
+        post.clearPostCategories();
+    }
+
+    @Transactional
+    public void clearAvailableArea(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
+
+        post.clearPostDistricts();
+    }
+    /**
+     * Post -> BasicOption -> AdditionalOption 추가하는 메서드
+     * @param postId 포스트 ID
+     * @param additionalOptionCreate 추가할 옵션 정보
+     */
+    @Transactional
+    public boolean addAdditionalOption(Long postId, AdditionalOptionCreate additionalOptionCreate) {
+        // 1. Post 조회
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
+
+        // 2. 추가 옵션 저장
+        post.getBasicOption().addAdditionalOption(
+                additionalOptionCreate.name(),
+                additionalOptionCreate.pricePerUnit(),
+                additionalOptionCreate.max(),
+                additionalOptionCreate.base(),
+                additionalOptionCreate.increment()
+        );
+
+        return true;
+    }
+
+    @Transactional
+    public boolean updatePost(Long postId, String title, String detail, Integer basicPrice) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
+
+        post.updatePost(title, detail);
+        post.updateBasicPrice(basicPrice);
+
+        return true;
+    }
+
+
+    /**
+     * Post -> BasicOption -> AdditionalOption 수정하는 메서드
+     * @param postId
+     * @param additionalOptionCreate
+     * @param prevAdditionalOptionId
+     * @return
+     */
+    @Transactional
+    public boolean updateAdditionalOption(Long postId, AdditionalOptionCreate additionalOptionCreate, Long prevAdditionalOptionId) {
+        // 1. 기존의 AdditionalOption 삭제
+        this.removeAdditionalOption(postId, prevAdditionalOptionId);
+
+        // 2. 새로운 AdditionalOption 추가
+        this.addAdditionalOption(postId, additionalOptionCreate);
+
+        return true;
+    }
+
+
+    /**
+     * Post -> BasicOption -> AdditionalOption 삭제하는 메서드. 실제로 삭제하지는 않고 deactivate함.
+     * @param postId
+     * @param additionalOptionId
+     * @return
+     */
+    @Transactional
+    public boolean removeAdditionalOption(Long postId, Long additionalOptionId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
+
+        return post.getBasicOption().removeAdditionalOption(additionalOptionId);
+    }
+
+    /**
+     * Post의 모든 정보를 조회
+     * @param postId 조회할 포스트 ID
+     * @return 조회된 포스트 엔티티
+     */
+    public Post findPostByIdWithDetails(Long postId) {
+        return postRepository.findPostWithDetailsById(postId)
+                .orElseThrow();
+    }
+
+
 
 }

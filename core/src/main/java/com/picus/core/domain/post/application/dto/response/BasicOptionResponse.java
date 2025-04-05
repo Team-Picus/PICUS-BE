@@ -3,7 +3,7 @@ package com.picus.core.domain.post.application.dto.response;
 import java.util.List;
 
 // BasicOption 정보를 담는 DTO
-public record BasicOptionDto(
+public record BasicOptionResponse(
         Integer basicPrice,
-        List<AdditionalOptionDto> additionalOptions
+        List<AdditionalOptionResponse> additionalOptions
 ) {}

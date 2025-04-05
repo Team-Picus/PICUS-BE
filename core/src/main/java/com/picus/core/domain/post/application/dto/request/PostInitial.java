@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 
-public record PostInitialDto(
+public record PostInitial(
         @NotNull Long postId,
         @NotBlank String title,
         @NotBlank String detail,
@@ -16,5 +16,5 @@ public record PostInitialDto(
         @NotNull Integer basicPrice,
 //        @NotBlank List<String> imageKeys,
         @NotBlank List<Category> categories,
-        List<AdditionalOptionDto> additionalOptions
+        List<AdditionalOptionCreate> additionalOptions
 ) {}

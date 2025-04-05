@@ -1,6 +1,7 @@
-package com.picus.core.domain.post.application.dto.request;
+package com.picus.core.domain.post.application.dto.response;
 
-public record AdditionalOptionDto(
+public record AdditionalOptionResponse(
+        Long id,
         String name,
         Integer pricePerUnit,
         Integer max,

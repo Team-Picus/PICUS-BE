@@ -9,23 +9,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class PostConverter {
-    public static PostDetailDto convertDetail(@NotNull Post post, @NotNull List<ImageUrl> imageUrls) {
+    public static PostDetailResponse convertDetail(@NotNull Post post, @NotNull List<ImageUrl> imageUrls) {
 
         // 가용 지역: District의 displayName을 사용한다고 가정
-        List<DistrictDto> areas = post.getPostDistricts().stream()
-                .map(district -> new DistrictDto(
+        List<DistrictResponse> areas = post.getPostDistricts().stream()
+                .map(district -> new DistrictResponse(
                         district.getDistrict().name(),
                         district.getDistrict().getDisplayName()
                 ))
                 .toList();
 
         // BasicOption 변환
-        BasicOptionDto basicOptionDto = null;
+        BasicOptionResponse basicOptionResponse = null;
         if (post.getBasicOption() != null) {
-            basicOptionDto = new BasicOptionDto(
+            basicOptionResponse = new BasicOptionResponse(
                     post.getBasicOption().getBasicPrice(),
                     post.getBasicOption().getAdditionalOptions().stream()
-                            .map(opt -> new AdditionalOptionDto(
+                            .map(opt -> new AdditionalOptionResponse(
                                     opt.getId(),
                                     opt.getName(),
                                     opt.getPricePerUnit(),
@@ -38,28 +38,28 @@ public abstract class PostConverter {
 
 
         // 카테고리 변환: PostCategory의 category(enum)에서 이름과 타입을 추출
-        List<CategoryDto> categoryDtos = post.getPostCategories().stream()
-                .map(pc -> new CategoryDto(
+        List<CategoryRespnose> categoryRespnoses = post.getPostCategories().stream()
+                .map(pc -> new CategoryRespnose(
                         pc.getCategory().name(),          // 또는 pc.getCategory().getDisplayName() 등
                         pc.getCategory().getType().name()))
                 .collect(Collectors.toList());
 
-        return new PostDetailDto(
+        return new PostDetailResponse(
                 post.getId(),
                 post.getTitle(),
                 post.getDetail(),
                 post.getStudioNo(),
                 areas,
-                basicOptionDto,
+                basicOptionResponse,
 //                imageDtos,
-                categoryDtos,
+                categoryRespnoses,
                 post.getPostStatus(),
                 imageUrls,
                 post.getApprovalStatus()
         );
     }
 
-    public static PostSummaryDto convertSummary(Post post) {
+    public static PostSummaryResponse convertSummary(Post post) {
 
         Integer basicPrice = null;
 
@@ -67,7 +67,7 @@ public abstract class PostConverter {
             basicPrice = post.getBasicOption().getBasicPrice();
         }
 
-        return new PostSummaryDto(
+        return new PostSummaryResponse(
                 post.getId(),
                 post.getStudioNo(),
                 post.getTitle(),
