@@ -35,6 +35,9 @@ public class BasicOption {
     // ======================================
     public BasicOption(Post post, Integer basicPrice) {
         this.post = post;
+        if (basicPrice < 0) {
+            throw new IllegalArgumentException("Basic price cannot be negative"); // TODO
+        }
         this.basicPrice = basicPrice;
     }
 
@@ -59,8 +62,21 @@ public class BasicOption {
     }
 
     public boolean removeAdditionalOption(Long id) {
-        additionalOptions.removeIf(option -> option.getId().equals(id));
+        for (AdditionalOption additionalOption : additionalOptions) {
+            if (additionalOption.getId().equals(id)) {
+                additionalOption.deactivateStatus();
+                return true;
+            }
+        }
 
+        return true;
+    }
+
+    public boolean updateBasicPrice(Integer basicPrice) {
+        if (basicPrice < 0) {
+            throw new IllegalArgumentException("Basic price cannot be negative"); // TODO
+        }
+        this.basicPrice = basicPrice;
         return true;
     }
 

@@ -105,5 +105,25 @@ public class Post extends BaseEntity {
         this.approvalStatus = approvalStatus;
     }
 
+    public void updatePost(String title,
+                           String detail) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (detail != null && !detail.isBlank()) {
+            this.detail = detail;
+        }
+    }
 
+    public void updateBasicPrice(Integer basicPrice) {
+        this.basicOption.updateBasicPrice(basicPrice);
+    }
+
+    public void clearPostCategories() {
+        this.postCategories.clear();
+    }
+
+    public void clearPostDistricts() {
+        this.postDistricts.clear();
+    }
 }

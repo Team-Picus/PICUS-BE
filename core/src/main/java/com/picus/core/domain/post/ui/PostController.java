@@ -1,8 +1,8 @@
 package com.picus.core.domain.post.ui;
 
-import com.picus.core.domain.post.application.dto.request.PostInitialDto;
-import com.picus.core.domain.post.application.dto.response.PostDetailDto;
-import com.picus.core.domain.post.application.dto.response.PostSummaryDto;
+import com.picus.core.domain.post.application.dto.request.PostInitial;
+import com.picus.core.domain.post.application.dto.response.PostDetailResponse;
+import com.picus.core.domain.post.application.dto.response.PostSummaryResponse;
 import com.picus.core.domain.post.application.usecase.PostUseCase;
 import com.picus.core.global.common.base.BaseResponse;
 import com.picus.core.global.config.resolver.annotation.CheckViewHistory;
@@ -24,32 +24,32 @@ public class PostController {
     private final PostUseCase postUseCase;
 
     @PostMapping
-    public BaseResponse<PostSummaryDto> createPost(@ExpertPrincipal UserPrincipal userPrincipal) {
-        PostSummaryDto post = postUseCase.createPost(userPrincipal.getUserId());
+    public BaseResponse<PostSummaryResponse> createPost(@ExpertPrincipal UserPrincipal userPrincipal) {
+        PostSummaryResponse post = postUseCase.createPost(userPrincipal.getUserId());
         return BaseResponse.onSuccess(post);
     }
 
     @PostMapping("/register")
-    public BaseResponse<PostDetailDto> initializePost(@ExpertPrincipal UserPrincipal userPrincipal,
-                               @Valid PostInitialDto postInitialDto) {
+    public BaseResponse<PostDetailResponse> initializePost(@ExpertPrincipal UserPrincipal userPrincipal,
+                                                           @Valid PostInitial postInitial) {
 
-        PostDetailDto postDetailDto = postUseCase.registerPost(userPrincipal.getUserId(), postInitialDto);
+        PostDetailResponse postDetailDto = postUseCase.registerPost(userPrincipal.getUserId(), postInitial);
         return BaseResponse.onSuccess(postDetailDto);
     }
 
     @PostMapping("/{postId}")
-    public BaseResponse<PostDetailDto> findPostDetail(@CommonPrincipal UserPrincipal userPrincipal,
-                                                      @PathVariable Long postId,
-                                                      @CheckViewHistory boolean isNewView) {
-        PostDetailDto postDetailDto = postUseCase.findPostDetail(postId, isNewView);
+    public BaseResponse<PostDetailResponse> findPostDetail(@CommonPrincipal UserPrincipal userPrincipal,
+                                                           @PathVariable Long postId,
+                                                           @CheckViewHistory boolean isNewView) {
+        PostDetailResponse postDetailDto = postUseCase.findPostDetail(postId, isNewView);
         return BaseResponse.onSuccess(postDetailDto);
     }
 
 
     // TODO 가격별, 지역(카테고리), 장소(카테고리), 테마(카테고리) 별 조회
     @PostMapping("/list")
-    public BaseResponse<PostDetailDto> findPosts(@ExpertPrincipal UserPrincipal userPrincipal,
-                                                      @Valid PostInitialDto postInitialDto) {
+    public BaseResponse<PostDetailResponse> findPosts(@ExpertPrincipal UserPrincipal userPrincipal,
+                                                      @Valid PostInitial postInitial) {
         return null;
     }
 
