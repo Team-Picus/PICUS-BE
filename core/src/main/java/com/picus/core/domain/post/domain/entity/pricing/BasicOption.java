@@ -28,6 +28,7 @@ public class BasicOption {
 
     @OneToMany(cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "basicOption")
+
     private List<AdditionalOption> additionalOptions = new ArrayList<>();
 
     // ======================================
@@ -68,8 +69,7 @@ public class BasicOption {
                 return true;
             }
         }
-
-        return true;
+        return false;
     }
 
     public boolean updateBasicPrice(Integer basicPrice) {

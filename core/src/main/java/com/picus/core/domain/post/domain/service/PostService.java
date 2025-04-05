@@ -2,6 +2,7 @@ package com.picus.core.domain.post.domain.service;
 
 import com.picus.core.domain.post.application.dto.request.AdditionalOptionCreate;
 import com.picus.core.domain.post.domain.entity.Post;
+import com.picus.core.domain.post.domain.entity.pricing.AdditionalOptionStatus;
 import com.picus.core.domain.post.domain.repository.PostRepository;
 import com.picus.core.domain.shared.area.entity.District;
 import com.picus.core.domain.shared.category.entity.Category;
@@ -154,7 +155,12 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
 
-        return post.getBasicOption().removeAdditionalOption(additionalOptionId);
+        boolean b = post.getBasicOption().removeAdditionalOption(additionalOptionId);
+        if (!b) {
+            throw new IllegalArgumentException("해당 추가 옵션을 찾을 수 없습니다. additionalOptionId: " + additionalOptionId);
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -163,8 +169,14 @@ public class PostService {
      * @return 조회된 포스트 엔티티
      */
     public Post findPostByIdWithDetails(Long postId) {
-        return postRepository.findPostWithDetailsById(postId)
-                .orElseThrow();
+        Post post = postRepository.findPostWithDetailsById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
+
+        // additionalOptions에서 ACTIVE 상태가 아닌 항목 제거
+        post.getBasicOption().getAdditionalOptions().removeIf(
+                option -> option.getStatus() != AdditionalOptionStatus.ACTIVE
+        );
+        return post;
     }
 
 
