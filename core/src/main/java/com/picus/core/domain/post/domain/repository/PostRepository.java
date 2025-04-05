@@ -11,7 +11,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select distinct p " +
             "from Post p " +
             "left join fetch p.basicOption bo " +
-            "left join fetch bo.additionalOptions ao with ao.status = 'ACTIVE' " +
+            "left join fetch bo.additionalOptions " +
             "left join fetch p.postCategories " +
             "left join fetch p.postDistricts " +
             "where p.id = :postId")
