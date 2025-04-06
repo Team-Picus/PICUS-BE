@@ -4,7 +4,7 @@ import com.picus.core.domain.post.application.dto.request.AdditionalOptionCreate
 import com.picus.core.domain.post.domain.entity.Post;
 import com.picus.core.domain.post.domain.entity.pricing.AdditionalOptionStatus;
 import com.picus.core.domain.post.domain.repository.PostRepository;
-import com.picus.core.domain.shared.area.entity.District;
+import com.picus.core.domain.shared.area.domain.entity.District;
 import com.picus.core.domain.shared.category.entity.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

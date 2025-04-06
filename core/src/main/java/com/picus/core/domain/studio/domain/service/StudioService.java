@@ -27,4 +27,9 @@ public class StudioService {
         return studioRepository.findById(studioNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
+
+    public Studio findByExpertNo(Long expertNo) {
+        return studioRepository.findByExpertNo(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+    }
 }

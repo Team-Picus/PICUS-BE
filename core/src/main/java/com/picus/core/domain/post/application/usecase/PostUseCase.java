@@ -10,7 +10,7 @@ import com.picus.core.domain.post.application.dto.response.PostSummaryResponse;
 import com.picus.core.domain.post.domain.entity.Post;
 import com.picus.core.domain.post.domain.entity.PostStatus;
 import com.picus.core.domain.post.domain.service.PostService;
-import com.picus.core.domain.shared.area.entity.District;
+import com.picus.core.domain.shared.area.domain.entity.District;
 import com.picus.core.domain.shared.category.entity.Category;
 import com.picus.core.domain.shared.image.application.dto.response.ImageUrl;
 import com.picus.core.domain.shared.image.application.usecase.ImageUseCase;
