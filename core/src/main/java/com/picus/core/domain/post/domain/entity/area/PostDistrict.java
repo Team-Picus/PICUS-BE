@@ -3,29 +3,25 @@ package com.picus.core.domain.post.domain.entity.area;
 import com.picus.core.domain.post.domain.entity.Post;
 import com.picus.core.domain.shared.area.domain.entity.District;
 import com.picus.core.global.common.base.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 @IdClass(PostDistrictId.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostDistrict extends BaseEntity {
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_no", nullable = false)
     private Post post;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "district", nullable = false)
     private District district;
 
     public PostDistrict(Post post, District district) {

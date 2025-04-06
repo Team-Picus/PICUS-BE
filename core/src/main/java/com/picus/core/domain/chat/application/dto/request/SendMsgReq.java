@@ -1,9 +1,8 @@
 package com.picus.core.domain.chat.application.dto.request;
 
 import com.picus.core.domain.chat.domain.entity.message.MessageType;
-import com.picus.core.domain.reservation.entity.ReservationStatus;
+import com.picus.core.domain.reservation.domain.entity.ReservationStatus;
 import lombok.Builder;
-import lombok.Setter;
 
 @Builder
 public record SendMsgReq (

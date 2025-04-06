@@ -22,8 +22,8 @@ public class ExpertDistrict extends BaseEntity {
     private Expert expert;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "district", nullable = false)
     private District district;
 
     public ExpertDistrict(Expert expert, District district) {

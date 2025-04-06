@@ -1,7 +1,7 @@
 package com.picus.core.domain.chat.infra.helper;
 
 import com.picus.core.domain.chat.application.dto.request.SendMsgReq;
-import com.picus.core.domain.reservation.entity.ReservationStatus;
+import com.picus.core.domain.reservation.domain.entity.ReservationStatus;
 import org.springframework.stereotype.Component;
 
 @Component

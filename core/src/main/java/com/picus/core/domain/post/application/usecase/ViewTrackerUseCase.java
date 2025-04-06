@@ -21,7 +21,7 @@ public class ViewTrackerUseCase {
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
 
-    private void incrementViewCount(Long postId) {
+    public void incrementViewCount(Long postId) {
         redisTemplate.opsForValue().increment(ViewCount.generateKey(postId));
     }
 }

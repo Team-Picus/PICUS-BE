@@ -1,5 +1,6 @@
 package com.picus.core.domain.expert.domain.entity.area;
 
+import com.picus.core.domain.shared.area.entity.District;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,10 @@ public class ExpertDistrictId implements Serializable {
     private Long expert;
 
     @EqualsAndHashCode.Include
-    private Long district;
+    private District district;
 
-    public ExpertDistrictId(Long expert, Long district) {
-        this.expert = expert;
+    public ExpertDistrictId(Long expertNo, District district) {
+        this.expert = expertNo;
         this.district = district;
     }
 }
