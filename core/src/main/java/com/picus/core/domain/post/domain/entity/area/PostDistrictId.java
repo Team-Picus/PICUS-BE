@@ -1,5 +1,6 @@
 package com.picus.core.domain.post.domain.entity.area;
 
+import com.picus.core.domain.shared.area.entity.District;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,13 @@ import java.io.Serializable;
 public class PostDistrictId implements Serializable {
 
     @EqualsAndHashCode.Include
-    private Long post;
+    private Long post;  // Post 엔티티의 ID
 
     @EqualsAndHashCode.Include
-    private Long district;
+    private District district;  // District enum 값
 
-    public PostDistrictId(Long post, Long district) {
-        this.post = post;
+    public PostDistrictId(Long postId, District district) {
+        this.post = postId;
         this.district = district;
     }
 }

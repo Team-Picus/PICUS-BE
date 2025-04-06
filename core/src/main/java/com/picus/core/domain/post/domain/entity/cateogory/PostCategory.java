@@ -1,4 +1,4 @@
-package com.picus.core.domain.post.domain.entity.category;
+package com.picus.core.domain.post.domain.entity.cateogory;
 
 import com.picus.core.domain.post.domain.entity.Post;
 import com.picus.core.global.common.base.BaseEntity;
@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @IdClass(PostCategoryId.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCategory extends BaseEntity {
+public class PostCategory {
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_no", nullable = false)
     private Post post;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
     private Category category;
 
     public PostCategory(Post post, Category category) {
