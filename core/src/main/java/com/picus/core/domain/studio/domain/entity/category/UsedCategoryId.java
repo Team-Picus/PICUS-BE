@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:core/src/main/java/com/picus/core/domain/studio/domain/entity/category/UsedCategoryId.java
 package com.picus.core.domain.studio.domain.entity.category;
-========
-package com.picus.core.domain.studio.domain.entity;
->>>>>>>> feat/#26/Post-도메인-개발:core/src/main/java/com/picus/core/domain/studio/domain/entity/UsedCategoryId.java
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
