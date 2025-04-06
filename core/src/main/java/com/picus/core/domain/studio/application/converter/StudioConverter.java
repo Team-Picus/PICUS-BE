@@ -9,7 +9,7 @@ public abstract class StudioConverter {
         return new StudioSummaryDto(
                 studio.getId(),              // studioNo
                 studio.getName(),
-                studio.getBackgroundImgUrl(),
+                studio.getBackgroundImgId(),
                 studio.getAddress(),
                 studio.getRecentActiveAt(),
                 studio.getExpertNo(),

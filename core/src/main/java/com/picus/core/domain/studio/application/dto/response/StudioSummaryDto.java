@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public record StudioSummaryDto(
         Long studioNo,
         String name,
-        String backgroundImgUrl,
+        Long backgroundImgUrl,
         Address address,
         LocalDateTime recentActiveAt,
         Long expertNo,

@@ -3,7 +3,7 @@ package com.picus.core.domain.post.domain.entity;
 import com.picus.core.domain.post.domain.entity.area.PostDistrict;
 import com.picus.core.domain.post.domain.entity.cateogory.PostCategory;
 import com.picus.core.domain.post.domain.entity.pricing.BasicOption;
-import com.picus.core.domain.shared.area.entity.District;
+import com.picus.core.domain.shared.area.domain.entity.District;
 import com.picus.core.domain.shared.category.entity.Category;
 import com.picus.core.domain.shared.enums.ApprovalStatus;
 import com.picus.core.global.common.base.BaseEntity;

@@ -1,6 +1,6 @@
 package com.picus.core.domain.post.application.dto.request;
 
-import com.picus.core.domain.shared.area.entity.District;
+import com.picus.core.domain.shared.area.domain.entity.District;
 import com.picus.core.domain.shared.category.entity.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
