@@ -1,19 +1,18 @@
 package com.picus.core.domain.expert.domain.entity;
 
 import com.picus.core.domain.expert.application.dto.request.RegExpReq;
-import com.picus.core.domain.expert.domain.entity.area.ExpertDistrict;
+import com.picus.core.domain.shared.area.District;
 import com.picus.core.global.common.base.BaseEntity;
-import com.picus.core.domain.shared.enums.ApprovalStatus;
+import com.picus.core.domain.shared.approval.ApprovalStatus;
 import com.picus.core.global.common.converter.ActivityTypeSetConverter;
+import com.picus.core.global.common.converter.DistrictSetConverter;
 import com.picus.core.global.common.converter.StringSetConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -39,26 +38,27 @@ public class Expert extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus; // Expert 승인 상태
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "expert")
-    private Set<ExpertDistrict> activityAreas = new HashSet<>(); // 활동 구역
+    @Convert(converter = DistrictSetConverter.class)
+    private Set<District> activityAreas = new HashSet<>(); // 활동 구역
 
-    private Expert(Long userId, String intro, String career, Set<String> skills) {
+    private Expert(Long userId, String intro, String career, Set<String> skills, Set<District> activityAreas) {
         this.id = userId;
         this.intro = intro;
         this.career = career;
         this.skills = skills;
         this.approvalStatus = ApprovalStatus.PENDING;
+        this.activityAreas = activityAreas;
     }
 
     public static Expert create(Long userNo, RegExpReq request) {
         return new Expert(userNo,
                 request.intro(),
                 request.career(),
-                request.skills());
+                request.skills(),
+                request.activityAreas());
     }
 
-    public void updateActivityAreas(Set<ExpertDistrict> areas) {
+    public void updateActivityAreas(Set<District> areas) {
         this.activityAreas.addAll(areas);
     }
 

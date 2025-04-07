@@ -1,4 +1,4 @@
-package com.picus.core.domain.shared.category.entity;
+package com.picus.core.domain.shared.category;
 
 public enum Type {
 

@@ -1,8 +1,10 @@
 package com.picus.core.domain.studio.domain.entity;
 
+import com.picus.core.domain.shared.category.Category;
 import com.picus.core.domain.studio.application.dto.request.StudioReq;
 import com.picus.core.global.common.base.BaseEntity;
-import com.picus.core.domain.shared.enums.ApprovalStatus;
+import com.picus.core.domain.shared.approval.ApprovalStatus;
+import com.picus.core.global.common.converter.CategorySetConverter;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -46,6 +50,9 @@ public class Studio extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
+    @Convert(converter = CategorySetConverter.class)
+    private Set<Category> usedCategory = new HashSet<>();
+
     private Studio(String name, Long backgroundImgId, Address address, Long expertNo) {
         this.name = name;
         this.backgroundImgId = backgroundImgId;
@@ -65,5 +72,9 @@ public class Studio extends BaseEntity {
 
     public void updateLikeCount(int count) {
         this.likeCount += count;
+    }
+
+    public void updateCategory(Set<Category> categories) {
+        this.usedCategory.addAll(categories);
     }
 }

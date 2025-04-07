@@ -14,8 +14,8 @@ public abstract class PostConverter {
         // 가용 지역: District의 displayName을 사용한다고 가정
         List<DistrictResponse> areas = post.getPostDistricts().stream()
                 .map(district -> new DistrictResponse(
-                        district.getDistrict().name(),
-                        district.getDistrict().getDisplayName()
+                        district.name(),
+                        district.getDisplayName()
                 ))
                 .toList();
 
@@ -40,8 +40,8 @@ public abstract class PostConverter {
         // 카테고리 변환: PostCategory의 category(enum)에서 이름과 타입을 추출
         List<CategoryRespnose> categoryRespnoses = post.getPostCategories().stream()
                 .map(pc -> new CategoryRespnose(
-                        pc.getCategory().name(),          // 또는 pc.getCategory().getDisplayName() 등
-                        pc.getCategory().getType().name()))
+                        pc.name(),          // 또는 pc.getCategory().getDisplayName() 등
+                        pc.getType().name()))
                 .collect(Collectors.toList());
 
         return new PostDetailResponse(

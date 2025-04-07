@@ -1,20 +1,20 @@
 package com.picus.core.domain.post.domain.entity;
 
-import com.picus.core.domain.post.domain.entity.area.PostDistrict;
-import com.picus.core.domain.post.domain.entity.cateogory.PostCategory;
 import com.picus.core.domain.post.domain.entity.pricing.BasicOption;
-import com.picus.core.domain.shared.area.domain.entity.District;
-import com.picus.core.domain.shared.category.entity.Category;
-import com.picus.core.domain.shared.enums.ApprovalStatus;
+import com.picus.core.domain.shared.area.District;
+import com.picus.core.domain.shared.category.Category;
+import com.picus.core.domain.shared.approval.ApprovalStatus;
 import com.picus.core.global.common.base.BaseEntity;
+import com.picus.core.global.common.converter.CategorySetConverter;
+import com.picus.core.global.common.converter.DistrictSetConverter;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -30,12 +30,13 @@ public class Post extends BaseEntity {
     private String title;
     private String detail;
     private Long studioNo;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostCategory> postCategories = new ArrayList<>();
+
+    @Convert(converter = CategorySetConverter.class)
+    private Set<Category> postCategories = new HashSet<>();
 
     // 가용 지역
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostDistrict> postDistricts = new ArrayList<>();
+    @Convert(converter = DistrictSetConverter.class)
+    private Set<District> postDistricts = new HashSet<>();
 
     // 옵션 정보
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
@@ -88,13 +89,12 @@ public class Post extends BaseEntity {
      * @param category 카테고리
      */
     public void addPostCategory(Category category) {
-        PostCategory postCategory = new PostCategory(this, category);
-        postCategories.add(postCategory);
+        postCategories.add(category);
     }
 
 
     public void addAvailableArea(District district) {
-        postDistricts.add(new PostDistrict(this, district));
+        postDistricts.add(district);
     }
 
     /**

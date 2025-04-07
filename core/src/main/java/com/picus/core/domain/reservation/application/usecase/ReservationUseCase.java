@@ -1,7 +1,7 @@
 package com.picus.core.domain.reservation.application.usecase;
 
 import com.picus.core.domain.post.application.dto.response.PostDetailResponse;
-import com.picus.core.domain.post.application.usecase.PostUseCase;
+import com.picus.core.domain.post.application.usecase.PostManagementUseCase;
 import com.picus.core.domain.reservation.application.dto.request.ReservationRequestDto;
 import com.picus.core.domain.reservation.application.dto.request.SelectedAdditionalOptionRequest;
 import com.picus.core.domain.reservation.domain.entity.Reservation;
@@ -17,12 +17,12 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class ReservationUseCase {
 
-    private final PostUseCase postUseCase;
+    private final PostManagementUseCase postManagementUseCase;
     private final ReservationService reservationService;
 
     @Transactional
     public void createReservation(Long userId, Long postId) {
-        PostDetailResponse postDetail = postUseCase.findPostDetail(postId, false);
+        PostDetailResponse postDetail = postManagementUseCase.findPostDetail(postId, false);
         reservationService.createReservation(userId, postId, postDetail.basicOption().basicPrice());
     }
 
