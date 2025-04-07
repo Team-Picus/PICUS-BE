@@ -3,7 +3,7 @@ package com.picus.core.domain.post.ui;
 import com.picus.core.domain.post.application.dto.request.PostInitial;
 import com.picus.core.domain.post.application.dto.response.PostDetailResponse;
 import com.picus.core.domain.post.application.dto.response.PostSummaryResponse;
-import com.picus.core.domain.post.application.usecase.PostUseCase;
+import com.picus.core.domain.post.application.usecase.PostManagementUseCase;
 import com.picus.core.global.common.base.BaseResponse;
 import com.picus.core.global.config.resolver.annotation.CheckViewHistory;
 import com.picus.core.global.config.resolver.annotation.CommonPrincipal;
@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class PostController {
 
-    private final PostUseCase postUseCase;
+    private final PostManagementUseCase postManagementUseCase;
 
     @PostMapping
     public BaseResponse<PostSummaryResponse> createPost(@ExpertPrincipal UserPrincipal userPrincipal) {
-        PostSummaryResponse post = postUseCase.createPost(userPrincipal.getUserId());
+        PostSummaryResponse post = postManagementUseCase.createPost(userPrincipal.getUserId());
         return BaseResponse.onSuccess(post);
     }
 
@@ -33,7 +33,7 @@ public class PostController {
     public BaseResponse<PostDetailResponse> initializePost(@ExpertPrincipal UserPrincipal userPrincipal,
                                                            @Valid PostInitial postInitial) {
 
-        PostDetailResponse postDetailDto = postUseCase.registerPost(userPrincipal.getUserId(), postInitial);
+        PostDetailResponse postDetailDto = postManagementUseCase.registerPost(userPrincipal.getUserId(), postInitial);
         return BaseResponse.onSuccess(postDetailDto);
     }
 
@@ -41,7 +41,7 @@ public class PostController {
     public BaseResponse<PostDetailResponse> findPostDetail(@CommonPrincipal UserPrincipal userPrincipal,
                                                            @PathVariable Long postId,
                                                            @CheckViewHistory boolean isNewView) {
-        PostDetailResponse postDetailDto = postUseCase.findPostDetail(postId, isNewView);
+        PostDetailResponse postDetailDto = postManagementUseCase.findPostDetail(postId, isNewView);
         return BaseResponse.onSuccess(postDetailDto);
     }
 

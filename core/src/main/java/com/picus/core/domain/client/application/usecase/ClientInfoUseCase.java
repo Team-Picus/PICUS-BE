@@ -2,31 +2,19 @@ package com.picus.core.domain.client.application.usecase;
 
 import com.picus.core.domain.client.application.dto.request.SignUpReq;
 import com.picus.core.domain.client.domain.entity.Client;
-import com.picus.core.domain.client.domain.entity.area.ClientDistrict;
-import com.picus.core.domain.client.domain.service.ClientDistrictService;
 import com.picus.core.domain.client.domain.service.ClientService;
-import com.picus.core.domain.shared.area.domain.entity.District;
-import com.picus.core.domain.shared.area.domain.service.AreaSearchService;
 import com.picus.core.domain.user.domain.entity.User;
 import com.picus.core.domain.user.domain.service.UserService;
-import com.picus.core.global.common.exception.RestApiException;
 import com.picus.core.global.utils.regex.BadWordFilterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
-
-import static com.picus.core.global.common.exception.code.status.GlobalErrorStatus._CONTAIN_BAD_WORD;
-
 @Service
 @RequiredArgsConstructor
 public class ClientInfoUseCase {
 
-    private final AreaSearchService areaSearchService;
     private final ClientService clientService;
-    private final ClientDistrictService clientDistrictService;
     private final UserService userService;
     private final BadWordFilterUtil badWordFilterUtil;
 
@@ -34,13 +22,9 @@ public class ClientInfoUseCase {
     public Client save(Long userNo, SignUpReq request) {
         badWordFilterUtil.filterBadWord(request.nickname());
 
-        Client client = clientService.save(userNo);
+        Client client = clientService.save(userNo, request.preferredAreas());
         User user = userService.findById(userNo);
         user.updateProfile(request.nickname(), request.profileImgId());
-
-        Set<District> Districts = areaSearchService.findDistricts(request.preferredArea());
-        Set<ClientDistrict> clientDistricts = clientDistrictService.saveAll(client, Districts);
-        client.updatePreferredArea(clientDistricts);
 
         return client;
     }

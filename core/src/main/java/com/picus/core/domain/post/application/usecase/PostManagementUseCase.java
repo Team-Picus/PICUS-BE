@@ -10,31 +10,35 @@ import com.picus.core.domain.post.application.dto.response.PostSummaryResponse;
 import com.picus.core.domain.post.domain.entity.Post;
 import com.picus.core.domain.post.domain.entity.PostStatus;
 import com.picus.core.domain.post.domain.service.PostService;
-import com.picus.core.domain.shared.area.domain.entity.District;
-import com.picus.core.domain.shared.category.entity.Category;
+import com.picus.core.domain.shared.area.District;
+import com.picus.core.domain.shared.category.Category;
+import com.picus.core.domain.shared.category.CategoryType;
 import com.picus.core.domain.shared.image.application.dto.response.ImageUrl;
 import com.picus.core.domain.shared.image.application.usecase.ImageUseCase;
-import com.picus.core.domain.studio.application.usecase.StudioUseCase;
-import com.picus.core.global.common.category.entity.CategoryType;
+import com.picus.core.domain.studio.domain.entity.Studio;
+import com.picus.core.domain.studio.domain.service.StudioService;
+import com.picus.core.global.utils.regex.BadWordFilterUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class PostUseCase {
+public class PostManagementUseCase {
 
     private final PostService postService;
-    private final StudioUseCase studioUseCase;
+    private final StudioService studioService;
     private final ViewTrackerUseCase viewTrackerUseCase;
     private final ImageUseCase imageUseCase;
     private final AdditionalOptionUseCase additionalOptionUseCase;
+    private final BadWordFilterUtil badWordFilterUtil;
 
     /**
      * Post 최초 생성
@@ -43,7 +47,7 @@ public class PostUseCase {
      */
     @Transactional
     public PostSummaryResponse createPost(Long expertNo) {
-        Long studioIdByExpertNo = studioUseCase.findStudioIdByExpertNo(expertNo);
+        Long studioIdByExpertNo = studioService.findByExpertNo(expertNo).getId();
         Post post = postService.create(studioIdByExpertNo);
 
         return PostConverter.convertSummary(post);
@@ -59,12 +63,14 @@ public class PostUseCase {
     public PostDetailResponse registerPost(Long expertNo, PostInitial postInitial) {
         // 1. Post 조회
         Post post = postService.findById(postInitial.postId());
-        Long studioNo = studioUseCase.findStudioIdByExpertNo(expertNo);
+        Studio studio = studioService.findByExpertNo(expertNo);
 
         // 2. Post 의 스튜디오 일치 여부 확인
-        if (!post.getStudioNo().equals(studioNo)) {
+        if (!post.getStudioNo().equals(studio.getId())) {
             throw new IllegalArgumentException("해당 포스트의 스튜디오와 일치하지 않습니다. postNo: " + post.getId());
         }
+
+        filterBadWords(postInitial.title(), postInitial.detail());
 
         // 3. Post 초기화
         postService.registerPost(post.getId(),
@@ -82,6 +88,7 @@ public class PostUseCase {
         for (Category category : postInitial.categories()) {
             postService.addCategory(post.getId(), category);
         }
+        studio.updateCategory(postInitial.categories());
 
         // 6. 가용 지역 등록
         for (District district : postInitial.availableAreas()) {
@@ -97,6 +104,8 @@ public class PostUseCase {
     public PostDetailResponse updatePost(PostUpdate postUpdate) {
         // 1. Post 조회
         Post post = postService.findPostByIdWithDetails(postUpdate.postId());
+
+        filterBadWords(postUpdate.title(), postUpdate.detail());
 
         // 2. Post 초기화
         postService.updatePost(post.getId(),
@@ -182,7 +191,7 @@ public class PostUseCase {
      * 카테고리 검증
      * @param postCategories
      */
-    private void validateCategories(List<Category> postCategories) {
+    private void validateCategories(Set<Category> postCategories) {
         boolean hasLocation = postCategories.stream()
                 .anyMatch(pc -> pc.getType() == CategoryType.LOCATION);
         boolean hasTheme = postCategories.stream()
@@ -195,4 +204,8 @@ public class PostUseCase {
         }
     }
 
+    private void filterBadWords(String title, String detail) {
+        badWordFilterUtil.filterBadWord(title);
+        badWordFilterUtil.filterBadWord(detail);
+    }
 }

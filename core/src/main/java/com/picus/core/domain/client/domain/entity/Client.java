@@ -1,15 +1,17 @@
 package com.picus.core.domain.client.domain.entity;
 
-import com.picus.core.domain.client.domain.entity.area.ClientDistrict;
+import com.picus.core.domain.shared.area.District;
 import com.picus.core.global.common.base.BaseEntity;
-import jakarta.persistence.*;
+import com.picus.core.global.common.converter.DistrictSetConverter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,15 +23,15 @@ public class Client extends BaseEntity {
     @Column(name = "client_no")
     private Long id;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "client")
-    private Set<ClientDistrict> preferredAreas = new HashSet<>();
+    @Convert(converter = DistrictSetConverter.class)
+    private Set<District> preferredAreas = new HashSet<>();
 
-    public void updatePreferredArea(Set<ClientDistrict> areas) {
+    public void updatePreferredArea(Set<District> areas) {
         this.preferredAreas.addAll(areas);
     }
 
-    public Client(Long id) {
+    public Client(Long id, Set<District> preferredAreas) {
         this.id = id;
+        this.preferredAreas = preferredAreas;
     }
 }

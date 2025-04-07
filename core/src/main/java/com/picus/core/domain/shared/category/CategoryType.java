@@ -1,4 +1,4 @@
-package com.picus.core.global.common.category.entity;
+package com.picus.core.domain.shared.category;
 
 public enum CategoryType {
     LOCATION,   // 장소 관련 카테고리

@@ -1,6 +1,5 @@
-package com.picus.core.domain.shared.category.entity;
+package com.picus.core.domain.shared.category;
 
-import com.picus.core.global.common.category.entity.CategoryType;
 import lombok.Getter;
 
 @Getter
