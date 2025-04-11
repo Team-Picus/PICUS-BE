@@ -57,9 +57,9 @@ public class SelectedOption {
         additionalOptions.add(selectedAdditionalOption);
     }
 
-    public void changeAdditionalOption(Long optionNO, int count) {
+    public void changeAdditionalOption(Long selectedAdditionalOptionId, int count) {
         for (SelectedAdditionalOption selectedAdditionalOption : additionalOptions) {
-            if (selectedAdditionalOption.getAdditionalOptionNo().equals(optionNO)) {
+            if (selectedAdditionalOption.getId().equals(selectedAdditionalOptionId)) {
                 selectedAdditionalOption.changeCount(count);
                 return;
             }

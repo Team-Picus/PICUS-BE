@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public record ReservationRequestDto(
+public record ReservationRegister(
         @NotNull Long reservationId,
         @NotNull Schedule schedule,
         @NotNull String detail,
-        List<SelectedAdditionalOptionRequest> selectedOptions
+        List<SelectedAdditionalOptionRegister> selectedOptions
 ) {}

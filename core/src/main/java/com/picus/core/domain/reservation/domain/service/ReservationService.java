@@ -36,6 +36,9 @@ public class ReservationService {
     public Reservation registerReservation(Long reservationId, Schedule schedule, String detail) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + reservationId));
+
+        // TODO schedule 중복 확인해야하나?
+
         reservation.register(schedule, detail);
         return reservationRepository.save(reservation);
     }
@@ -55,10 +58,10 @@ public class ReservationService {
      * 예약이 CHECKING 상태일 때 이미 추가된 옵션을 변경합니다.
      */
     @Transactional
-    public Reservation changeAdditionalOption(Long reservationId, Long optionNo, int count) {
+    public Reservation changeAdditionalOption(Long reservationId, Long selectedOptionId, int count) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + reservationId));
-        reservation.changeAdditionalOption(optionNo, count);
+        reservation.changeAdditionalOption(selectedOptionId, count);
         return reservationRepository.save(reservation);
     }
 
