@@ -57,6 +57,11 @@ public class ReservationUseCase {
         }
     }
 
+    /**
+     * 클라이언트가 제출한 예약을 전문가가 수정합니다.
+     * @param expertId
+     * @param reservationUpdate
+     */
     @Transactional
     public void updateReservation(Long expertId, ReservationUpdate reservationUpdate) {
         // 1. Reservation 조회
@@ -84,5 +89,7 @@ public class ReservationUseCase {
                     additionalFeeRegister.feeDetail());
         }
 
+        // 6. Reservation 상태 변경
+        findReservation.approve();
     }
 }

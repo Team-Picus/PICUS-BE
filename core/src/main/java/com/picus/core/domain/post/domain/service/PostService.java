@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -169,8 +171,7 @@ public class PostService {
      * @return 조회된 포스트 엔티티
      */
     public Post findPostByIdWithDetails(Long postId) {
-        Post post = postRepository.findPostWithDetailsById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
+        Post post = findPostByIdWithAllDetails(postId);
 
         // additionalOptions에서 ACTIVE 상태가 아닌 항목 제거
         post.getBasicOption().getAdditionalOptions().removeIf(
@@ -179,6 +180,9 @@ public class PostService {
         return post;
     }
 
-
+    public Post findPostByIdWithAllDetails(Long postId) {
+        return postRepository.findPostWithDetailsById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 포스트를 찾을 수 없습니다. postId: " + postId));
+    }
 
 }

@@ -106,4 +106,8 @@ public class Reservation extends BaseEntity {
         additionalFees.add(additionalFee);
     }
 
+    public void approve() {
+        this.status = ReservationStatus.APPROVAL;
+    }
+
 }
