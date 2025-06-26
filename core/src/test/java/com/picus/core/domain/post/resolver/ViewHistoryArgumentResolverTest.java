@@ -1,8 +1,8 @@
 package com.picus.core.domain.post.resolver;
 
-import com.picus.core.domain.post.infra.helper.ViewHistoryCookieHelper;
-import com.picus.core.global.config.resolver.ViewHistoryArgumentResolver;
-import com.picus.core.global.config.resolver.annotation.CheckViewHistory;
+import com.picus.core.old.domain.post.infra.helper.ViewHistoryCookieHelper;
+import com.picus.core.old.global.config.resolver.ViewHistoryArgumentResolver;
+import com.picus.core.old.global.config.resolver.annotation.CheckViewHistory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;

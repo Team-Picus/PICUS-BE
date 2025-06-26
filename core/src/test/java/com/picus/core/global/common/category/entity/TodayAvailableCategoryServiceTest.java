@@ -1,6 +1,6 @@
 package com.picus.core.global.common.category.entity;
 
-import com.picus.core.domain.post.application.usecase.TodayAvailableCategoryUseCase;
+import com.picus.core.old.domain.post.application.usecase.TodayAvailableCategoryUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
