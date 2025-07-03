@@ -1,9 +1,11 @@
 package com.picus.core.user.infra.adapter.out.persistence.entity;
 
+import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -13,7 +15,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class TermEntity {
+@Table(name = "term")
+public class TermEntity extends BaseEntity {
 
     @Id @Tsid
     private String termNo;
