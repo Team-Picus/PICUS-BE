@@ -1,4 +1,4 @@
 package com.picus.core.notification.infra.adapter.out.persistence.entity;
 
-public class XXXEntity {
+public enum NotificationType {
 }
