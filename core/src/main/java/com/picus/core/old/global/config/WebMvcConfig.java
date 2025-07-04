@@ -1,7 +1,6 @@
 package com.picus.core.old.global.config;
 
 import com.picus.core.old.domain.post.infra.helper.ViewHistoryCookieHelper;
-import com.picus.core.global.config.resolver.*;
 import com.picus.core.old.global.config.resolver.*;
 import com.picus.core.old.global.config.security.path.ExcludeAuthPathProperties;
 import com.picus.core.old.global.jwt.TokenProvider;
