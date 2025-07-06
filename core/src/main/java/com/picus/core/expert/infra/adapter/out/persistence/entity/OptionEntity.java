@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,5 +21,5 @@ public class OptionEntity {
     private Integer count;
     private Integer price;
     @Convert(converter = StringConverter.class)
-    private List<String> content;
+    private List<String> content = new ArrayList<>();
 }

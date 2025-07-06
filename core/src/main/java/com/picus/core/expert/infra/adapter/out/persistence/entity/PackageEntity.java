@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,5 +20,5 @@ public class PackageEntity {
     private String name;
     private Integer price;
     @Convert(converter = StringConverter.class)
-    private List<String> contents;
+    private List<String> contents = new ArrayList<>();
 }
