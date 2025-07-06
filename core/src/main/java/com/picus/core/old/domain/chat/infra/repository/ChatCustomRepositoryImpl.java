@@ -1,9 +1,9 @@
 package com.picus.core.old.domain.chat.infra.repository;
 
 import com.picus.core.old.domain.chat.application.dto.response.ChatRoomRes;
-import com.picus.core.domain.chat.domain.entity.QChatRoom;
-import com.picus.core.domain.chat.domain.entity.participant.QChatUser;
-import com.picus.core.domain.user.domain.entity.QUser;
+import com.picus.core.old.domain.chat.domain.entity.QChatRoom;
+import com.picus.core.old.domain.chat.domain.entity.participant.QChatUser;
+import com.picus.core.old.domain.user.domain.entity.QUser;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
