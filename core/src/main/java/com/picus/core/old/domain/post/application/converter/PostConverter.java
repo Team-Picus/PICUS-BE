@@ -1,6 +1,5 @@
 package com.picus.core.old.domain.post.application.converter;
 
-import com.picus.core.domain.post.application.dto.response.*;
 import com.picus.core.old.domain.post.application.dto.response.*;
 import com.picus.core.old.domain.post.domain.entity.Post;
 import com.picus.core.old.domain.shared.image.application.dto.response.ImageUrl;
