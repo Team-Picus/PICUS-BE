@@ -1,4 +1,4 @@
-package com.picus.core.reservation.domain.model;
+package com.picus.core.reservation.infra.adapter.out.persistence.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Entity;
