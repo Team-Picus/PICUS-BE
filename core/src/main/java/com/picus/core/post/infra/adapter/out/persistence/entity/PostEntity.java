@@ -19,7 +19,8 @@ public class PostEntity {
     private String postNo;
 
     private String title;
-    private String content;
+    private String oneLineDescription;
+    private String detailedDescription;
     @Convert(converter = PostThemeTypeConverter.class)
     private List<PostThemeType> postThemeTypes = new ArrayList<>();
     @Convert(converter = PostMoodTypeConverter.class)
