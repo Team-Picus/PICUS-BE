@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ThemeType {
+public enum ExpertThemeType {
 
     FASHION("패션"),
     BEAUTY("뷰티"),
