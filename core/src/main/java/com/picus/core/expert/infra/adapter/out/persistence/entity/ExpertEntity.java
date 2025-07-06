@@ -9,6 +9,7 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,12 +24,12 @@ public class ExpertEntity extends BaseEntity {
     private String intro;
     private String career;
     @Convert(converter = ActivityAreasConverter.class)
-    private List<ActivityArea> activityAreas;
+    private List<ActivityArea> activityAreas = new ArrayList<>();
     private String activityDuration;
     private int activityCount;
     private LocalDateTime recentlyActivityAt;
     @Convert(converter = StringConverter.class)
-    private List<String> portfolioLinks;
+    private List<String> portfolioLinks = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
 
