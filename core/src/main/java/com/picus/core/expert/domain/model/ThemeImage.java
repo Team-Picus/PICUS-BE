@@ -1,4 +1,4 @@
-package com.picus.core.expert.domain.model.vo;
+package com.picus.core.expert.domain.model;
 
 import java.util.List;
 
