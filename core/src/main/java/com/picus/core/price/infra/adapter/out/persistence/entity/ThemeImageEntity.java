@@ -1,4 +1,4 @@
-package com.picus.core.expert.infra.adapter.out.persistence.entity;
+package com.picus.core.price.infra.adapter.out.persistence.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
