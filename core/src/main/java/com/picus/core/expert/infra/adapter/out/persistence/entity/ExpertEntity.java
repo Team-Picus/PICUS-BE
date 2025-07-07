@@ -7,7 +7,6 @@ import com.picus.core.expert.infra.adapter.out.persistence.converter.StringConve
 import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;

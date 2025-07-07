@@ -1,11 +1,9 @@
 package com.picus.core.expert.infra.adapter.out.persistence.converter;
 
-import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.picus.core.expert.domain.model.vo.ActivityArea;
 import jakarta.persistence.AttributeConverter;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
