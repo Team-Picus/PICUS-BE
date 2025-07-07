@@ -1,5 +1,6 @@
-package com.picus.core.post.infra.adapter.out.persistence.entity;
+package com.picus.core.weekly_magazine.infra.adapter.out.persistence.entity;
 
+import com.picus.core.post.infra.adapter.out.persistence.entity.PostEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
