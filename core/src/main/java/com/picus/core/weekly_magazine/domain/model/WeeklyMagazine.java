@@ -1,4 +1,4 @@
-package com.picus.core.post.domain.model;
+package com.picus.core.weekly_magazine.domain.model;
 
 
 import java.util.List;

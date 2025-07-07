@@ -1,4 +1,4 @@
-package com.picus.core.post.infra.adapter.out.persistence.entity;
+package com.picus.core.weekly_magazine.infra.adapter.out.persistence.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
