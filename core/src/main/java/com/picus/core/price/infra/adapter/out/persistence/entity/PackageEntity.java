@@ -21,9 +21,14 @@ public class PackageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theme_no", nullable = false)
     private ThemeEntity themeEntity;
+
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Integer price;
     @Convert(converter = StringConverter.class)
+    @Column(nullable = false)
     private List<String> contents = new ArrayList<>();
+    @Column(nullable = false)
     private String notice;
 }
