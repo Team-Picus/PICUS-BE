@@ -1,6 +1,7 @@
 package com.picus.core.post.domain.model;
 
 import com.picus.core.post.domain.model.vo.PostMoodType;
+import com.picus.core.post.domain.model.vo.PostStatus;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;
 
@@ -22,6 +23,7 @@ public class Post {
     private List<PostMoodType> postMoodTypes = new ArrayList<>();
     private SpaceType spaceType;
     private String spaceAddress;
+    private PostStatus postStatus;
     private List<PostImage> postImages;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
