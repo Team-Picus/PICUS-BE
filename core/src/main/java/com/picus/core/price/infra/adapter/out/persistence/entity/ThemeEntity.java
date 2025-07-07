@@ -1,6 +1,7 @@
-package com.picus.core.expert.infra.adapter.out.persistence.entity;
+package com.picus.core.price.infra.adapter.out.persistence.entity;
 
 import com.picus.core.expert.domain.model.vo.ExpertThemeType;
+import com.picus.core.expert.infra.adapter.out.persistence.entity.ExpertEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,8 @@
 package com.picus.core.expert.domain.model;
 
 import com.picus.core.expert.domain.model.vo.*;
+import com.picus.core.price.domain.model.Theme;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,4 +23,7 @@ public class Expert {
     private List<Skill> skills = new ArrayList<>();
     private List<Project> projects = new ArrayList<>();
     private List<Theme> themes = new ArrayList<>();
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 }
