@@ -1,10 +1,8 @@
 package com.picus.core.reservation.infra.adapter.out.persistence.entity;
 
+import com.picus.core.reservation.domain.model.ReservationStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -22,13 +20,13 @@ public class ReservationEntity {
     @Id @Tsid
     private String reservationNo;
 
-    @NotNull(message = "reservationStatus 값은 필수입니다.")
+    @Column(nullable = false)
     private ReservationStatus reservationStatus;
 
-    @NotBlank(message = "place 값은 필수입니다.")
+    @Column(nullable = false)
     private String place;
 
-    @NotNull(message = "startTime 값은 필수입니다.")
+    @Column(nullable = false)
     private LocalDateTime startTime;
 
     private String request;

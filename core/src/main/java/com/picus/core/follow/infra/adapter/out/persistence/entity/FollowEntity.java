@@ -22,7 +22,7 @@ public class FollowEntity {
     @Id
     private String followeeNo;
 
-    @PastOrPresent(message = "followedAt은 과거 또는 현재 시각이어야 합니다.")
+    @Column(nullable = false)
     private LocalDateTime followedAt;
 
     @PrePersist

@@ -24,9 +24,8 @@ public class UserTermEntity extends BaseEntity {
     @Id
     private String termNo;
 
-    @NotNull(message = "isAgreed 값은 null일 수 없습니다.")
+    @Column(nullable = false)
     private Boolean isAgreed;
-
 }
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

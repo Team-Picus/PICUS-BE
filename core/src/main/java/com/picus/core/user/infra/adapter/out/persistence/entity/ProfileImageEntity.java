@@ -1,6 +1,7 @@
 package com.picus.core.user.infra.adapter.out.persistence.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
@@ -16,10 +17,10 @@ public class ProfileImageEntity {
     @Id @Tsid
     private String profileImageNo;
 
-    @NotBlank(message = "key 값은 필수입니다.")
+    @Column(nullable = false)
     private String key;
 
-    @NotBlank(message = "userNo는 공백일 수 없습니다.")
+    @Column(nullable = false)
     private String userNo;
 
 }
