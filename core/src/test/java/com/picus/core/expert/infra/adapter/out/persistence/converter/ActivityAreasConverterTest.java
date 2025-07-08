@@ -1,7 +1,6 @@
 package com.picus.core.expert.infra.adapter.out.persistence.converter;
 
 import com.picus.core.expert.domain.model.vo.ActivityArea;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +8,6 @@ import java.util.List;
 
 import static com.picus.core.expert.domain.model.vo.ActivityArea.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ActivityAreasConverterTest {
 
