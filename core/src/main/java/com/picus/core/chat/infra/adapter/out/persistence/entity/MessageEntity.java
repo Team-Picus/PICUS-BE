@@ -12,7 +12,9 @@ public class MessageEntity {
     private String messageNo;
 
     private String content;
+
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
+
     private Boolean isRead;
 }

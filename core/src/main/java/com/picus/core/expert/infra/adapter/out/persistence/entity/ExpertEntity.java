@@ -26,21 +26,29 @@ public class ExpertEntity extends BaseEntity {
     private String expertNo;
 
     private String backgroundImageKey;
+
     @Column(nullable = false)
     private String intro;
+
     @Column(nullable = false)
     private String career;
+
     @Convert(converter = ActivityAreasConverter.class)
     @Column(nullable = false)
     private List<ActivityArea> activityAreas = new ArrayList<>();
+
     @Column(nullable = false)
     private String activityDuration;
+
     @Column(nullable = false)
     private Integer activityCount;
+
     @Column(nullable = false)
     private LocalDateTime recentlyActivityAt;
+
     @Convert(converter = StringConverter.class)
     private List<String> portfolioLinks = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ApprovalStatus approvalStatus;
