@@ -17,6 +17,7 @@ public class ThemeImageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theme_no", nullable = false)
     private ThemeEntity themeEntity;
+
     @Column(nullable = false)
-    private String key;
+    private String file_key;
 }

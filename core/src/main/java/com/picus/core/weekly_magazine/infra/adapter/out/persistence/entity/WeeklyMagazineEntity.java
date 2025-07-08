@@ -18,10 +18,13 @@ public class WeeklyMagazineEntity {
 
     @Column(nullable = false)
     private String topic;
+
     @Column(nullable = false)
     private String topicDescription;
+
     @Column(nullable = false)
     private String weekAt;
+
     @Column(nullable = false)
     private String thumbnailKey;
 }
