@@ -22,7 +22,7 @@ public class MoodboardEntity {
     @Id
     private String postNo;
 
-    @PastOrPresent(message = "createdAt은 과거 또는 현재 시각이어야 합니다.")
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @PrePersist

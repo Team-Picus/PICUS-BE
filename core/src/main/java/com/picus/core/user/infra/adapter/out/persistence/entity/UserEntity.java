@@ -1,22 +1,23 @@
 package com.picus.core.user.infra.adapter.out.persistence.entity;
 
 import com.picus.core.shared.common.BaseEntity;
+import com.picus.core.user.domain.model.Role;
+import com.picus.core.user.domain.model.SocialType;
 import io.hypersistence.utils.hibernate.id.Tsid;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Builder
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_users_nickname", columnNames = "nickname"),
+                @UniqueConstraint(name = "uk_users_provider", columnNames = {"provider", "providerId"})
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UserEntity extends BaseEntity {
@@ -24,47 +25,50 @@ public class UserEntity extends BaseEntity {
     @Id @Tsid
     private String userNo;
 
-    @NotBlank(message = "이름은 필수입니다.")
-    @Length(max = 30, message = "이름은 30자를 초과할 수 없습니다.")
+    @Column(nullable = false, length = 30)
     private String name;
 
-    @NotNull(message = "역할은 필수입니다.")
-    private Role role;
-
-    @NotBlank(message = "닉네임은 필수입니다.")
-    @Length(max = 10, message = "닉네임은 10자를 초과할 수 없습니다.")
+    @Column(nullable = false, length = 10)
     private String nickname;
 
-    @NotBlank(message = "이메일은 필수입니다.")
-    @Email(message = "올바른 이메일 형식이어야 합니다.")
-    private String email;
-
-    @NotBlank(message = "전화번호는 필수입니다.")
-    @Length(min = 6, max = 16, message = "전화번호는 6~16자리여야 합니다.")
-    @Pattern(regexp = "^[0-9]{6,16}$", message = "전화번호는 숫자만 포함해야 합니다.")
+    @Column(nullable = false, length = 16)
     private String tel;
 
-    private Integer reservationHistoryCount;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
-    private Integer followCount;
+    @Column(nullable = false)
+    private String email;
 
-    private Integer myMoodboardCount;
-
-    private String expertNo;    // FK
-
-    @NotNull(message = "socialType은 필수입니다.")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private SocialType socialType;
 
-    @NotBlank(message = "providerId은 필수입니다.")
+    @Column(nullable = false)
     private String providerId;
 
-    @NotBlank(message = "provider는 필수입니다.")
+    @Column(nullable = false)
     private String provider;
+
+    @Column(nullable = false)
+    private Integer reservationHistoryCount;
+
+    @Column(nullable = false)
+    private Integer followCount;
+
+    @Column(nullable = false)
+    private Integer myMoodboardCount;
+
+    private String expertNo;    // FK (nullable)
 
     @PrePersist
     protected void init() {
-        this.reservationHistoryCount = 0;
-        this.followCount = 0;
-        this.myMoodboardCount = 0;
+        if (reservationHistoryCount == null)
+            reservationHistoryCount = 0;
+        if (followCount == null)
+            followCount = 0;
+        if (myMoodboardCount == null)
+            myMoodboardCount = 0;
     }
 }

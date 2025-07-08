@@ -22,8 +22,10 @@ public class ProjectEntity {
 
     @Column(nullable = false)
     private String projectName;
+
     @Column(nullable = false)
     private LocalDateTime startDate;
+
     @Column(nullable = false)
     private LocalDateTime endDate;
 

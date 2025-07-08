@@ -20,12 +20,16 @@ public class OptionEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theme_no", nullable = false)
     private ThemeEntity themeEntity;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private Integer count;
+
     @Column(nullable = false)
     private Integer price;
+
     @Column(nullable = false)
     @Convert(converter = StringConverter.class)
     private List<String> content = new ArrayList<>();

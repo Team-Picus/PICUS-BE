@@ -12,6 +12,7 @@ public class MessageFileEntity {
     @Id @Tsid
     private String messageFileNo;
 
-    private String key;
+    private String file_key ;
+
     private String extension;
 }

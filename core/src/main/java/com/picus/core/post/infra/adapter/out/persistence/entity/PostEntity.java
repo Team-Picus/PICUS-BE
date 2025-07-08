@@ -31,15 +31,22 @@ public class PostEntity extends BaseEntity {
     private String packageNo;
 
     private String title;
+
     private String oneLineDescription;
+
     private String detailedDescription;
+
     @Convert(converter = PostThemeTypeConverter.class)
     private List<PostThemeType> postThemeTypes = new ArrayList<>();
+
     @Convert(converter = PostMoodTypeConverter.class)
     private List<PostMoodType> postMoodTypes = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private SpaceType spaceType;
+
     private String spaceAddress;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PostStatus postStatus;

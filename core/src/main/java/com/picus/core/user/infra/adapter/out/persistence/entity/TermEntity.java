@@ -2,10 +2,7 @@ package com.picus.core.user.infra.adapter.out.persistence.entity;
 
 import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -27,7 +24,7 @@ public class TermEntity extends BaseEntity {
     @NotBlank(message = "약관 내용은 필수입니다.")
     private String content;
 
-    @NotNull(message = "isRequired 값은 null일 수 없습니다.")
+    @Column(nullable = false)
     private Boolean isRequired;
 
     @PrePersist
