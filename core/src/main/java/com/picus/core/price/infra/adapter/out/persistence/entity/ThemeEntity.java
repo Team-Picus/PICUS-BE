@@ -16,9 +16,8 @@ public class ThemeEntity {
     @Id @Tsid
     private String themeNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "expert_no", nullable = false)
-    private ExpertEntity expertEntity;
+    @Column(nullable = false)
+    private String expertNo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

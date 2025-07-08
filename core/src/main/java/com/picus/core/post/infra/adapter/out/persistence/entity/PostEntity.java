@@ -25,13 +25,10 @@ public class PostEntity extends BaseEntity {
     @Id @Tsid
     private String postNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_no", nullable = false)
-    private ExpertEntity expertEntity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "package_no")
-    private PackageEntity packageEntity;
+    @Column(nullable = false)
+    private String expertNo;
+    @Column(nullable = false)
+    private String packageNo;
 
     private String title;
     private String oneLineDescription;

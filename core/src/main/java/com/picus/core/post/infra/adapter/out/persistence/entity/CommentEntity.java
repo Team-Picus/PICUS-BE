@@ -18,9 +18,9 @@ public class CommentEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_no")
     private PostEntity postEntity;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_no")
-    private UserEntity userEntity;
+
+    @Column(nullable = false)
+    private String userNo;
 
     @Column(nullable = false)
     private String content;
