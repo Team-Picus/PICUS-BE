@@ -18,7 +18,7 @@ public class ProfileImageEntity {
     private String profileImageNo;
 
     @Column(nullable = false)
-    private String key;
+    private String file_key;
 
     @Column(nullable = false)
     private String userNo;

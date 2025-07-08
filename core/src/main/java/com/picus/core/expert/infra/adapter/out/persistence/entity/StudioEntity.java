@@ -19,10 +19,13 @@ public class StudioEntity {
 
     @Column(nullable = false)
     private String studioName;
+
     @Column(nullable = false)
     private Integer employeesCount;
+
     @Column(nullable = false)
     private String businessHours;
+
     @Column(nullable = false)
     private String address;
 }

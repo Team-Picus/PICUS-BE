@@ -22,6 +22,7 @@ public class SkillEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SkillType skillType;
+
     @Column(nullable = false)
     private String content;
 }

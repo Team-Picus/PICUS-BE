@@ -17,6 +17,7 @@ public class WeeklyMagazinePostEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "weekly_magazine_no", nullable = false)
     private WeeklyMagazineEntity weeklyMagazineEntity;
+
     @Column(nullable = false)
     private String postNo;
 
