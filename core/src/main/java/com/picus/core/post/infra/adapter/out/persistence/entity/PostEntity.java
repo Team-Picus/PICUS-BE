@@ -51,5 +51,8 @@ public class PostEntity extends BaseEntity {
     @Column(nullable = false)
     private PostStatus postStatus;
 
+    @Column(nullable = false)
+    private Boolean isPinned;
+
 }
 
