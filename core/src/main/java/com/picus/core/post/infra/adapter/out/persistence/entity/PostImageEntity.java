@@ -18,5 +18,8 @@ public class PostImageEntity {
     private PostEntity postEntity;
 
     @Column(nullable = false)
-    private String file_key;
+    private String fileKey;
+
+    @Column(nullable = false)
+    private Integer imageOrder;
 }
