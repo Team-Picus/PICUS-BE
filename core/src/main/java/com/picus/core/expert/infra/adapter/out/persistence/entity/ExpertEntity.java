@@ -7,15 +7,21 @@ import com.picus.core.expert.infra.adapter.out.persistence.converter.StringConve
 import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
-
+@Getter
+@SuperBuilder
 @Entity
 @Table(name = "experts")
 @NoArgsConstructor(access = PROTECTED)
@@ -27,15 +33,14 @@ public class ExpertEntity extends BaseEntity {
 
     private String backgroundImageKey;
 
-    @Column(nullable = false)
     private String intro;
 
     @Column(nullable = false)
-    private String career;
+    private String activityCareer;
 
     @Convert(converter = ActivityAreasConverter.class)
     @Column(nullable = false)
-    private List<ActivityArea> activityAreas = new ArrayList<>();
+    private List<ActivityArea> activityAreas;
 
     @Column(nullable = false)
     private String activityDuration;
@@ -47,7 +52,7 @@ public class ExpertEntity extends BaseEntity {
     private LocalDateTime recentlyActivityAt;
 
     @Convert(converter = StringConverter.class)
-    private List<String> portfolioLinks = new ArrayList<>();
+    private List<String> portfolioLinks;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,29 +1,44 @@
 package com.picus.core.expert.domain.model;
 
 import com.picus.core.expert.domain.model.vo.*;
-import com.picus.core.price.domain.model.Theme;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Builder
 public class Expert {
     private String expertNo;
 
     private String backgroundImageKey;
+
     private String intro;
-    private String career;
-    private List<ActivityArea> activityAreas = new ArrayList<>();
+
+    private String activityCareer;
+
+    private List<ActivityArea> activityAreas;
+
     private String activityDuration;
+
     private Integer activityCount;
+
     private LocalDateTime recentlyActivityAt;
-    private List<String> portfolioLinks = new ArrayList<>();
+
+    private List<Portfolio> portfolioLinks;
+
     private ApprovalStatus approvalStatus;
+
     private Studio studio;
-    private List<Skill> skills = new ArrayList<>();
-    private List<Project> projects = new ArrayList<>();
-    private List<Theme> themes = new ArrayList<>();
+
+    private List<Skill> skills;
+
+    private List<Project> projects;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+
     private LocalDateTime deletedAt;
 }
