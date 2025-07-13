@@ -38,7 +38,6 @@ public class ExpertPersistenceMapper {
 
     public ExpertEntity mapToEntity(Expert expert) {
         return ExpertEntity.builder()
-                .expertNo(expert.getExpertNo())
                 .backgroundImageKey(expert.getBackgroundImageKey())
                 .intro(expert.getIntro())
                 .activityCareer(expert.getActivityCareer())

@@ -26,7 +26,5 @@ public class RequestApprovalService implements RequestApprovalUseCase {
         return saveExpertPort.saveExpert(expert);
     }
 
-    // TODO: recentlyActivityAt
-
 
 }
