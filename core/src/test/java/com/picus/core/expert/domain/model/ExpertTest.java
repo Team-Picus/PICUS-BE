@@ -1,6 +1,5 @@
 package com.picus.core.expert.domain.model;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ExpertTest {
 
@@ -21,10 +19,10 @@ class ExpertTest {
                 .build();
 
         // when
-        expert.calculateActivityDuration(LocalDate.of(2025, 7, 13));
+        String activityDuration = expert.calculateActivityDuration(LocalDate.of(2025, 7, 13));
 
         // then
-        assertThat(expert.getActivityDuration()).isEqualTo("29일");
+        assertThat(activityDuration).isEqualTo("29일");
     }
 
     @Test
@@ -36,10 +34,10 @@ class ExpertTest {
                 .build();
 
         // when
-        expert.calculateActivityDuration(LocalDate.of(2025, 7, 13));
+        String activityDuration = expert.calculateActivityDuration(LocalDate.of(2025, 7, 13));
 
         // then
-        assertThat(expert.getActivityDuration()).isEqualTo("1개월");
+        assertThat(activityDuration).isEqualTo("1개월");
     }
 
     @Test
@@ -51,10 +49,10 @@ class ExpertTest {
                 .build();
 
         // when
-        expert.calculateActivityDuration(LocalDate.of(2025, 7, 13));
+        String activityDuration = expert.calculateActivityDuration(LocalDate.of(2025, 7, 13));
 
         // then
-        assertThat(expert.getActivityDuration()).isEqualTo("1년");
+        assertThat(activityDuration).isEqualTo("1년");
     }
 
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -85,17 +86,19 @@ public class Expert {
         if (this.createdAt == null) return null;
 
         LocalDate createDate = createdAt.toLocalDate();
-        Period period = Period.between(createDate, now);
+
+        long totalYears = ChronoUnit.YEARS.between(createDate, now);
+        long totalMonths = ChronoUnit.MONTHS.between(createDate, now);
+        long totalDays = ChronoUnit.DAYS.between(createDate, now);
 
         String activityDuration;
-        if (period.getYears() >= 1) {
-            activityDuration = period.getYears() + "년";
-        } else if (period.getMonths() >= 1) {
-            activityDuration = period.getMonths() + "개월";
+        if (totalYears >= 1) {
+            activityDuration = totalYears + "년";
+        } else if (totalMonths >= 1) {
+            activityDuration = totalMonths + "개월";
         } else {
-            activityDuration = period.getDays() + "일";
+            activityDuration = totalDays + "일";
         }
-
         return activityDuration;
     }
 }
