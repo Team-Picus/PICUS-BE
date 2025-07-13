@@ -41,4 +41,8 @@ public class Expert {
     private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
+
+    public void bindExpertNo(String expertNo) {
+        this.expertNo = expertNo;
+    }
 }

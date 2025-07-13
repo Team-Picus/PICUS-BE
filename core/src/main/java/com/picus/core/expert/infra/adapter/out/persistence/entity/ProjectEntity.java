@@ -2,15 +2,22 @@ package com.picus.core.expert.infra.adapter.out.persistence.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
+@Getter
+@Builder
 @Entity
 @Table(name = "projects")
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PRIVATE)
 public class ProjectEntity {
 
     @Id @Tsid
@@ -29,4 +36,8 @@ public class ProjectEntity {
     @Column(nullable = false)
     private LocalDateTime endDate;
 
+    // 연관관계 편의 메서드
+    public void assignExpert(ExpertEntity expertEntity) {
+        this.expertEntity = expertEntity;
+    }
 }
