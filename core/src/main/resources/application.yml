@@ -39,7 +39,7 @@ spring:
             client-secret: ${KAKAO_CLIENT_SECRET}
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope: profile_nickname
 
         provider:
@@ -95,9 +95,11 @@ app:
     refreshTokenExpiry: 18000
   oauth2:
     authorizedRedirectUris:
+      - http://localhost:8080/login/oauth2/code/kakao
+      - http://localhost:8080/oauth2/callback/kakao
 
 jwt:
-  secret: ${JWT_SECRET}
+  key: ${JWT_SECRET}
   access:
     expiration: 18000
     header: Authorization
@@ -121,3 +123,17 @@ exclude-ratelimiter-path-patterns:
   paths:
     - pathPattern: /login
       method: GET
+
+exclude-blacklist-path-patterns:
+  paths:
+    - pathPattern: /login
+      method: GET
+    - pathPattern: /error
+      method: GET
+
+token:
+  prefix:
+    access:  "ACCESS_TOKEN:"
+    refresh: "REFRESH_TOKEN:"
+    blacklist: "BLACKLIST:"
+    whitelist: "WHITELIST:"

@@ -1,0 +1,32 @@
+package com.picus.core.infrastructure.web;
+
+import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties;
+import com.picus.core.infrastructure.security.jwt.JwtBlacklistInterceptor;
+import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
+
+@Configuration
+@RequiredArgsConstructor
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final TokenProvider tokenProvider;
+    private final JwtBlacklistInterceptor jwtBlacklistInterceptor;
+    private final ExcludeBlacklistPathProperties excludeBlacklistPathProperties;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+//        resolvers.add(new CurrentUserArgumentResolver(tokenProvider));
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(jwtBlacklistInterceptor)
+                .excludePathPatterns(excludeBlacklistPathProperties.getExcludeAuthPaths());
+        }
+}
