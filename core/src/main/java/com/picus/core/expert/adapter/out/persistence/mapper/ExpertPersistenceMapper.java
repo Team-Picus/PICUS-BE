@@ -5,6 +5,8 @@ import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -12,13 +14,12 @@ import java.util.Optional;
 public class ExpertPersistenceMapper {
 
     public Expert mapToDomain(ExpertEntity entity) {
-        return Expert.builder()
+        Expert expert = Expert.builder()
                 .expertNo(entity.getExpertNo())
                 .backgroundImageKey(entity.getBackgroundImageKey())
                 .intro(entity.getIntro())
                 .activityCareer(entity.getActivityCareer())
                 .activityAreas(entity.getActivityAreas())
-                .activityDuration(entity.getActivityDuration())
                 .activityCount(entity.getActivityCount())
                 .lastActivityAt(entity.getLastActivityAt())
                 .portfolios(
@@ -33,6 +34,8 @@ public class ExpertPersistenceMapper {
                 .updatedAt(entity.getUpdatedAt())
                 .deletedAt(entity.getDeletedAt())
                 .build();
+        expert.calculateActivityDuration(LocalDate.now());
+        return expert;
     }
 
     public ExpertEntity mapToEntity(Expert expert) {
@@ -42,7 +45,6 @@ public class ExpertPersistenceMapper {
                 .intro(expert.getIntro())
                 .activityCareer(expert.getActivityCareer())
                 .activityAreas(expert.getActivityAreas())
-                .activityDuration(expert.getActivityDuration())
                 .activityCount(expert.getActivityCount())
                 .lastActivityAt(expert.getLastActivityAt())
                 .portfolioLinks(

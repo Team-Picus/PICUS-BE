@@ -39,9 +39,6 @@ public class ExpertEntity extends BaseEntity {
     private List<ActivityArea> activityAreas;
 
     @Column(nullable = false)
-    private String activityDuration;
-
-    @Column(nullable = false)
     private Integer activityCount;
 
     @Column(nullable = false)
