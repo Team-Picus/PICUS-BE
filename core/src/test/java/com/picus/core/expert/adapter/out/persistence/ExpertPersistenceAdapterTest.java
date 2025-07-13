@@ -62,7 +62,6 @@ class ExpertPersistenceAdapterTest {
                 .intro("소개입니다")
                 .activityCareer("5년")
                 .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
-                .activityDuration("2년")
                 .activityCount(10)
                 .lastActivityAt(LocalDateTime.of(2024, 5, 10, 10, 0))
                 .portfolios(List.of(Portfolio.builder().link("http://portfolio.com").build()))

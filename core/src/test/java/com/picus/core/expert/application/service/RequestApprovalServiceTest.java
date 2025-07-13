@@ -1,7 +1,5 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.RequestApprovalRequest;
-import com.picus.core.expert.application.port.in.RequestApprovalResponse;
 import com.picus.core.expert.application.port.out.SaveExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
@@ -16,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,14 +35,13 @@ class RequestApprovalServiceTest {
     @DisplayName("승인 요청시 ApprovalStatus가 PENDING인 Expert가 생성된다.")
     public void requestApproval_success() throws Exception {
         // given
-        RequestApprovalRequest request = givenRequestApprovalRequest();
+        Expert request = givenExpert();
 
         // saveExpertPort.saveExpert() stubbing
         givenSaveExpertPortResult(request);
 
         // when
-        RequestApprovalResponse response = requestApprovalService.requestApproval(request);
-
+        Expert response = requestApprovalService.requestApproval(request);
 
         // then
         ArgumentCaptor<Expert> captor = ArgumentCaptor.forClass(Expert.class);
@@ -57,9 +55,11 @@ class RequestApprovalServiceTest {
     }
 
 
-    private RequestApprovalRequest givenRequestApprovalRequest() {
-        return RequestApprovalRequest.builder()
+    private Expert givenExpert() {
+        return Expert.builder()
                 .activityCareer("3년차")
+                .activityCount(0)
+                .approvalStatus(ApprovalStatus.PENDING)
                 .projects(List.of(
                         Project.builder()
                                 .projectName("단편영화 촬영 프로젝트")
@@ -100,29 +100,30 @@ class RequestApprovalServiceTest {
                 .build();
     }
 
-    private void givenSaveExpertPortResult(RequestApprovalRequest request) {
+    private void givenSaveExpertPortResult(Expert expert) {
         Expert savedExpert = Expert.builder()
                 .expertNo("expert_no1")
-                .activityCareer(request.activityCareer())
+                .activityCareer(expert.getActivityCareer())
+                .activityAreas(expert.getActivityAreas())
+                .activityCount(expert.getActivityCount())
+                .portfolios(expert.getPortfolios())
                 .approvalStatus(ApprovalStatus.PENDING)
-                .projects(request.projects())
-                .activityAreas(request.activityAreas())
-                .skills(request.skills())
-                .studio(request.studio())
-                .portfolios(request.portfolios())
+                .studio(expert.getStudio())
+                .skills(expert.getSkills())
+                .projects(expert.getProjects())
+                .createdAt(expert.getCreatedAt())
                 .build();
-
         given(saveExpertPort.saveExpert(any(Expert.class)))
                 .willReturn(savedExpert);
     }
-    private void assertResponse(RequestApprovalResponse response, RequestApprovalRequest request) {
-        assertThat(response.expertNo()).isNotNull();
-        assertThat(response.activityCareer()).isEqualTo(request.activityCareer());
-        assertThat(response.projects()).usingRecursiveComparison().isEqualTo(request.projects());
-        assertThat(response.activityAreas()).usingRecursiveComparison().isEqualTo(request.activityAreas());
-        assertThat(response.skills()).usingRecursiveComparison().isEqualTo(request.skills());
-        assertThat(response.studio()).usingRecursiveComparison().isEqualTo(request.studio());
-        assertThat(response.portfolios()).usingRecursiveComparison().isEqualTo(request.portfolios());
+    private void assertResponse(Expert response, Expert request) {
+        assertThat(response.getExpertNo()).isNotNull();
+        assertThat(response.getActivityCareer()).isEqualTo(request.getActivityCareer());
+        assertThat(response.getProjects()).usingRecursiveComparison().isEqualTo(request.getProjects());
+        assertThat(response.getActivityAreas()).usingRecursiveComparison().isEqualTo(request.getActivityAreas());
+        assertThat(response.getSkills()).usingRecursiveComparison().isEqualTo(request.getSkills());
+        assertThat(response.getStudio()).usingRecursiveComparison().isEqualTo(request.getStudio());
+        assertThat(response.getPortfolios()).usingRecursiveComparison().isEqualTo(request.getPortfolios());
     }
 
 }

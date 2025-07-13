@@ -67,7 +67,6 @@ class ExpertPersistenceMapperTest {
                 .intro("소개입니다")
                 .activityCareer("10년 경력")
                 .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
-                .activityDuration("3년")
                 .activityCount(15)
                 .lastActivityAt(LocalDateTime.of(2023, 1, 1, 12, 0))
                 .portfolios(List.of(Portfolio.builder().link("http://portfolio.com").build()))

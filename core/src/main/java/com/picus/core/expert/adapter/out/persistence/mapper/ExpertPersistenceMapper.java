@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ExpertPersistenceMapper {
 
     public Expert mapToDomain(ExpertEntity entity) {
-        Expert expert = Expert.builder()
+        return Expert.builder()
                 .expertNo(entity.getExpertNo())
                 .backgroundImageKey(entity.getBackgroundImageKey())
                 .intro(entity.getIntro())
@@ -34,8 +34,6 @@ public class ExpertPersistenceMapper {
                 .updatedAt(entity.getUpdatedAt())
                 .deletedAt(entity.getDeletedAt())
                 .build();
-        expert.calculateActivityDuration(LocalDate.now());
-        return expert;
     }
 
     public ExpertEntity mapToEntity(Expert expert) {

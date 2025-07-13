@@ -22,38 +22,11 @@ public class RequestApprovalService implements RequestApprovalUseCase {
      * ApprovalStatus가 Pending인 Expert 저장
      */
     @Override
-    public RequestApprovalResponse requestApproval(RequestApprovalRequest requestApprovalRequest) {
-
-        Expert expert = createExpert(requestApprovalRequest);
-
-        Expert saved = saveExpertPort.saveExpert(expert);
-        return mapToResponse(saved);
+    public Expert requestApproval(Expert expert) {
+        return saveExpertPort.saveExpert(expert);
     }
 
-    // TODO: activityCareer,activityDuration,recentlyActivityAt,activityCount 관련 점검 필요
+    // TODO: recentlyActivityAt
 
-    private Expert createExpert(RequestApprovalRequest requestApprovalRequest) {
-        return Expert.builder()
-                .activityCareer(requestApprovalRequest.activityCareer())
-                .approvalStatus(ApprovalStatus.PENDING)
-                .projects(requestApprovalRequest.projects())
-                .activityAreas(requestApprovalRequest.activityAreas())
-                .skills(requestApprovalRequest.skills())
-                .studio(requestApprovalRequest.studio())
-                .portfolios(requestApprovalRequest.portfolios())
-                .build();
-    }
-
-    private RequestApprovalResponse mapToResponse(Expert saved) {
-        return RequestApprovalResponse.builder()
-                .expertNo(saved.getExpertNo())
-                .activityCareer(saved.getActivityCareer())
-                .projects(saved.getProjects())
-                .activityAreas(saved.getActivityAreas())
-                .skills(saved.getSkills())
-                .studio(saved.getStudio())
-                .portfolios(saved.getPortfolios())
-                .build();
-    }
 
 }
