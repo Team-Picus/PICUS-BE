@@ -52,7 +52,7 @@ class ExpertPersistenceMapperTest {
         assertThat(domain.getActivityDuration()).isEqualTo("2년");
         assertThat(domain.getActivityCount()).isEqualTo(8);
         assertThat(domain.getRecentlyActivityAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
-        assertThat(domain.getPortfolioLinks()).extracting(Portfolio::getLink).containsExactly("http://myportfolio.com");
+        assertThat(domain.getPortfolios()).extracting(Portfolio::getLink).containsExactly("http://myportfolio.com");
         assertThat(domain.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING);
         assertThat(domain.getCreatedAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
         assertThat(domain.getUpdatedAt()).isEqualTo(LocalDateTime.of(2024, 5, 21, 10, 30));
@@ -72,7 +72,7 @@ class ExpertPersistenceMapperTest {
                 .activityDuration("3년")
                 .activityCount(15)
                 .recentlyActivityAt(LocalDateTime.of(2023, 1, 1, 12, 0))
-                .portfolioLinks(List.of(Portfolio.builder().link("http://portfolio.com").build()))
+                .portfolios(List.of(Portfolio.builder().link("http://portfolio.com").build()))
                 .approvalStatus(ApprovalStatus.APPROVAL)
                 .build();
 

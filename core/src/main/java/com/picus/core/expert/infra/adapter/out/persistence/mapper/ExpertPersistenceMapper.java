@@ -21,7 +21,7 @@ public class ExpertPersistenceMapper {
                 .activityDuration(entity.getActivityDuration())
                 .activityCount(entity.getActivityCount())
                 .recentlyActivityAt(entity.getRecentlyActivityAt())
-                .portfolioLinks(
+                .portfolios(
                         Optional.ofNullable(entity.getPortfolioLinks())
                                 .orElse(new ArrayList<>())
                                 .stream()
@@ -46,7 +46,7 @@ public class ExpertPersistenceMapper {
                 .activityCount(expert.getActivityCount())
                 .recentlyActivityAt(expert.getRecentlyActivityAt())
                 .portfolioLinks(
-                        Optional.ofNullable(expert.getPortfolioLinks())
+                        Optional.ofNullable(expert.getPortfolios())
                                 .orElse(new ArrayList<>())
                                 .stream()
                                 .map(Portfolio::getLink) // Portfolio에서 URL 추출
