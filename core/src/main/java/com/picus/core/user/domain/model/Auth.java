@@ -7,9 +7,7 @@ import lombok.Getter;
 @Builder
 public class Auth {
 
-    private String userNo;
-    private SocialType socialType;
     private String providerId;
-    private String provider;
+    private Provider provider;
 
 }
