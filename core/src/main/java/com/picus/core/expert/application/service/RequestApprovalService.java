@@ -1,6 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.RequestApprovalResponse;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
 import com.picus.core.expert.application.port.out.SaveExpertPort;
 import com.picus.core.expert.domain.model.Expert;
@@ -21,12 +22,15 @@ public class RequestApprovalService implements RequestApprovalUseCase {
      * ApprovalStatus가 Pending인 Expert 저장
      */
     @Override
-    public Expert requestApproval(RequestApprovalRequest requestApprovalRequest) {
+    public RequestApprovalResponse requestApproval(RequestApprovalRequest requestApprovalRequest) {
 
         Expert expert = createExpert(requestApprovalRequest);
 
-        return saveExpertPort.saveExpert(expert);
+        Expert saved = saveExpertPort.saveExpert(expert);
+        return mapToResponse(saved);
     }
+
+    // TODO: activityCareer,activityDuration,recentlyActivityAt,activityCount 관련 점검 필요
 
     private Expert createExpert(RequestApprovalRequest requestApprovalRequest) {
         return Expert.builder()
@@ -36,7 +40,20 @@ public class RequestApprovalService implements RequestApprovalUseCase {
                 .activityAreas(requestApprovalRequest.activityAreas())
                 .skills(requestApprovalRequest.skills())
                 .studio(requestApprovalRequest.studio())
-                .portfolioLinks(requestApprovalRequest.portfolios())
+                .portfolios(requestApprovalRequest.portfolios())
                 .build();
     }
+
+    private RequestApprovalResponse mapToResponse(Expert saved) {
+        return RequestApprovalResponse.builder()
+                .expertNo(saved.getExpertNo())
+                .activityCareer(saved.getActivityCareer())
+                .projects(saved.getProjects())
+                .activityAreas(saved.getActivityAreas())
+                .skills(saved.getSkills())
+                .studio(saved.getStudio())
+                .portfolios(saved.getPortfolios())
+                .build();
+    }
+
 }

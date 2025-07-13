@@ -26,7 +26,7 @@ public class Expert {
 
     private LocalDateTime recentlyActivityAt;
 
-    private List<Portfolio> portfolioLinks;
+    private List<Portfolio> portfolios;
 
     private ApprovalStatus approvalStatus;
 

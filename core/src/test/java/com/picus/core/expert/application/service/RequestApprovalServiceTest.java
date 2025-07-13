@@ -1,6 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.RequestApprovalResponse;
 import com.picus.core.expert.application.port.out.SaveExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
@@ -32,16 +33,17 @@ class RequestApprovalServiceTest {
 
 
     @Test
-    @DisplayName("승인 요청시 ApprovalStatus가 PENDING인 Expert가 저장된다.")
+    @DisplayName("승인 요청시 ApprovalStatus가 PENDING인 Expert가 생성된다.")
     public void requestApproval_success() throws Exception {
         // given
         RequestApprovalRequest request = givenRequestApprovalRequest();
 
         // saveExpertPort.saveExpert() stubbing
-        Expert savedExpert = givenSaveExpertPortResult(request);
+        givenSaveExpertPortResult(request);
 
         // when
-        Expert result = requestApprovalService.requestApproval(request);
+        RequestApprovalResponse response = requestApprovalService.requestApproval(request);
+
 
         // then
         ArgumentCaptor<Expert> captor = ArgumentCaptor.forClass(Expert.class);
@@ -49,10 +51,11 @@ class RequestApprovalServiceTest {
         then(saveExpertPort).should().saveExpert(captor.capture()); // out port를 호출했는지 검증
 
         Expert captured = captor.getValue();
-        assertThat(captured.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING); // 적절한 파라미터를 사용했는지 검증
+        assertThat(captured.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING); // PENDING인 Expert가 생성됐는지 검증
 
-        assertThat(result).isEqualTo(savedExpert); // 리턴값을 잘 반환했는지 검증
+        assertResponse(response, request); // 리턴값을 잘 반환했는지 검증
     }
+
 
     private RequestApprovalRequest givenRequestApprovalRequest() {
         return RequestApprovalRequest.builder()
@@ -97,7 +100,7 @@ class RequestApprovalServiceTest {
                 .build();
     }
 
-    private Expert givenSaveExpertPortResult(RequestApprovalRequest request) {
+    private void givenSaveExpertPortResult(RequestApprovalRequest request) {
         Expert savedExpert = Expert.builder()
                 .expertNo("expert_no1")
                 .activityCareer(request.activityCareer())
@@ -106,13 +109,20 @@ class RequestApprovalServiceTest {
                 .activityAreas(request.activityAreas())
                 .skills(request.skills())
                 .studio(request.studio())
-                .portfolioLinks(request.portfolios())
+                .portfolios(request.portfolios())
                 .build();
 
         given(saveExpertPort.saveExpert(any(Expert.class)))
                 .willReturn(savedExpert);
-
-        return savedExpert;
+    }
+    private void assertResponse(RequestApprovalResponse response, RequestApprovalRequest request) {
+        assertThat(response.expertNo()).isNotNull();
+        assertThat(response.activityCareer()).isEqualTo(request.activityCareer());
+        assertThat(response.projects()).usingRecursiveComparison().isEqualTo(request.projects());
+        assertThat(response.activityAreas()).usingRecursiveComparison().isEqualTo(request.activityAreas());
+        assertThat(response.skills()).usingRecursiveComparison().isEqualTo(request.skills());
+        assertThat(response.studio()).usingRecursiveComparison().isEqualTo(request.studio());
+        assertThat(response.portfolios()).usingRecursiveComparison().isEqualTo(request.portfolios());
     }
 
 }
