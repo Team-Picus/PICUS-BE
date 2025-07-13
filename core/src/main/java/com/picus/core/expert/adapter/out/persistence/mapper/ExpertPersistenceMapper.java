@@ -20,7 +20,7 @@ public class ExpertPersistenceMapper {
                 .activityAreas(entity.getActivityAreas())
                 .activityDuration(entity.getActivityDuration())
                 .activityCount(entity.getActivityCount())
-                .recentlyActivityAt(entity.getRecentlyActivityAt())
+                .lastActivityAt(entity.getLastActivityAt())
                 .portfolios(
                         Optional.ofNullable(entity.getPortfolioLinks())
                                 .orElse(new ArrayList<>())
@@ -44,7 +44,7 @@ public class ExpertPersistenceMapper {
                 .activityAreas(expert.getActivityAreas())
                 .activityDuration(expert.getActivityDuration())
                 .activityCount(expert.getActivityCount())
-                .recentlyActivityAt(expert.getRecentlyActivityAt())
+                .lastActivityAt(expert.getLastActivityAt())
                 .portfolioLinks(
                         Optional.ofNullable(expert.getPortfolios())
                                 .orElse(new ArrayList<>())

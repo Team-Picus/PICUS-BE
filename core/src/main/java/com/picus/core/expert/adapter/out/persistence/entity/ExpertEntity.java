@@ -45,7 +45,7 @@ public class ExpertEntity extends BaseEntity {
     private Integer activityCount;
 
     @Column(nullable = false)
-    private LocalDateTime recentlyActivityAt;
+    private LocalDateTime lastActivityAt;
 
     @Convert(converter = StringConverter.class)
     private List<String> portfolioLinks;

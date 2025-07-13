@@ -24,7 +24,7 @@ public class Expert {
 
     private Integer activityCount;
 
-    private LocalDateTime recentlyActivityAt;
+    private LocalDateTime lastActivityAt;
 
     private List<Portfolio> portfolios;
 
