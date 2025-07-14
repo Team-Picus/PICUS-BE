@@ -8,4 +8,5 @@ public interface SocialPrincipal extends OAuth2User {
     String getProviderId();
     String getEmail();
     String getName();
+    String getTel();
 }

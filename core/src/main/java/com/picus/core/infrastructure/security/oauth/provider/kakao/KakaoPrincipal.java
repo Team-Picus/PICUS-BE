@@ -9,21 +9,14 @@ import java.util.Map;
 
 public class KakaoPrincipal extends AbstractOAuth2Principal {
 
-    public KakaoPrincipal(User user, Map<String,Object> attrs) {
-
+    public KakaoPrincipal(User user, KakaoProfile kakaoProfile) {
         super(user.getAuth().getProvider(),
                 user.getAuth().getProviderId(),
-                user.getEmail(),
-                extractNickname(attrs),
-                attrs,
+                kakaoProfile.email(),
+                kakaoProfile.tel(),
+                kakaoProfile.name(),
+                kakaoProfile.attributes(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
         );
     }
-
-    private static String extractNickname(Map<String, Object> attrs) {
-        Map<String, Object> account = (Map<String, Object>) attrs.get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
-        return (String) profile.get("nickname");
-    }
-
 }

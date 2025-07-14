@@ -10,10 +10,14 @@ public record TokenPrefixProperties (
         String whitelist
 ){
     public String toWhitelist(String token) {
-        return whitelist + access + token;
+        return whitelist + token;
     }
 
     public String toBlacklist(String token) {
-        return blacklist + access + token;
+        return blacklist + token;
+    }
+
+    public String toRefresh(String userNo) {
+        return refresh + userNo;
     }
 }

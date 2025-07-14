@@ -15,6 +15,7 @@ public abstract class AbstractOAuth2Principal implements SocialPrincipal {
     protected final Provider provider;
     protected final String providerId;
     protected final String email;
+    protected final String tel;
     protected final String name;
     protected final Map<String, Object> attributes;
     protected final Collection<? extends GrantedAuthority> authorities;

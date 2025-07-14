@@ -11,11 +11,15 @@ public class UserPersistenceMapper {
 
     public UserEntity mapToUserEntity(String providerId,
                                       Provider provider,
-                                      String email) {
+                                      String email,
+                                      String name,
+                                      String tel) {
         return UserEntity.builder()
                 .providerId(providerId)
                 .provider(provider)
                 .email(email)
+                .name(name)
+                .tel(tel)
                 .build();
     }
 

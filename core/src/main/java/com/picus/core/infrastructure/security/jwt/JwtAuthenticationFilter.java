@@ -1,7 +1,8 @@
 package com.picus.core.infrastructure.security.jwt;
 
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.in.TokenValidationUseCase;
+import com.picus.core.user.application.port.in.TokenManagementCommand;
+import com.picus.core.user.application.port.in.TokenValidationQuery;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
-    private final TokenValidationUseCase tokenValidationUseCase;
+    private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
+    private final TokenValidationQuery tokenValidationQuery;
+    private final TokenManagementCommand tokenManagementCommand;
 
     private static final PathPatternParser pathPatternParser = new PathPatternParser();
 
@@ -42,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .orElseThrow(() -> new RestApiException(EMPTY_JWT));
 
             // 토큰 캐시 확인
-            if (tokenValidationUseCase.isWhitelistToken(token)) {
+            if (tokenValidationQuery.isWhitelistToken(token)) {
                 setAuthentication(token);
                 filterChain.doFilter(request, response);
                 return;
@@ -55,7 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new RestApiException(INVALID_ACCESS_TOKEN);
 
             // 토큰 캐시
-            tokenValidationUseCase.whitelist(token, Duration.ofSeconds(30));
+            if(isExcludedPathForWhitelist(request)) {
+                tokenManagementCommand.whitelist(token, Duration.ofSeconds(30));
+            }
 
             filterChain.doFilter(request, response);
         } catch (RestApiException e) {
@@ -80,6 +85,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         pathPatternParser.parse(authPath.getPathPattern())
                                 .matches(PathContainer.parsePath(requestPath))
                         && requestMethod.equals(HttpMethod.valueOf(authPath.getMethod()))
+                );
+    }
+
+    public boolean isExcludedPathForWhitelist(HttpServletRequest request) {
+        String requestPath = request.getRequestURI();
+        HttpMethod requestMethod = HttpMethod.valueOf(request.getMethod());
+
+        return excludeWhitelistPathProperties.getPaths().stream()
+                .anyMatch(authPath ->
+                        pathPatternParser.parse(authPath.getPathPattern())
+                                .matches(PathContainer.parsePath(requestPath))
+                                && requestMethod.equals(HttpMethod.valueOf(authPath.getMethod()))
                 );
     }
 

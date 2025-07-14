@@ -1,5 +1,6 @@
 package com.picus.core.infrastructure.security.jwt;
 
+import com.picus.core.shared.exception.RestApiException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -22,6 +23,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+
+import static com.picus.core.shared.exception.code.status.AuthErrorStatus.UNSUPPORTED_JWT;
 
 
 @Service
@@ -95,6 +98,15 @@ public class TokenProvider {
             return Optional.ofNullable(getClaims(token).get(ID_CLAIM, String.class));
         } catch (Exception e) {
             return Optional.empty();
+        }
+    }
+
+    public boolean isAccessToken(String token) {
+        try {
+            String subject = getClaims(token).getSubject();
+            return ACCESS_TOKEN_SUBJECT.equals(subject);
+        } catch (Exception e) {
+            throw new RestApiException(UNSUPPORTED_JWT);
         }
     }
 

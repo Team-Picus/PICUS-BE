@@ -19,6 +19,7 @@ public class ApplePrincipal extends AbstractOAuth2Principal implements OidcUser 
         super(user.getAuth().getProvider(),
                 user.getAuth().getProviderId(),
                 user.getEmail(),
+                null,
                 user.getName(),
                 attrs,
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())));

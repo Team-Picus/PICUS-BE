@@ -39,4 +39,9 @@ public class TokenLifecycleAdapter implements TokenLifecycleQueryPort, TokenLife
     public void save(String key, String value, Duration duration) {
         redisTemplate.opsForValue().set(key, value, duration);
     }
+
+    @Override
+    public void delete(String key) {
+        redisTemplate.delete(key);
+    }
 }

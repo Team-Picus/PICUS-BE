@@ -32,7 +32,7 @@ public class SocialPrincipalFactory {
 //    public
 
     private SocialPrincipal fromKakao(KakaoProfile kakaoProfile) {
-        User user = socialAuthenticationUseCase.authenticate(kakaoProfile.providerId(), Provider.KAKAO, kakaoProfile.email());
-        return new KakaoPrincipal(user, kakaoProfile.attributes());
+        User user = socialAuthenticationUseCase.authenticate(kakaoProfile.providerId(), Provider.KAKAO, kakaoProfile.email(), kakaoProfile.name(), kakaoProfile.tel());
+        return new KakaoPrincipal(user, kakaoProfile);
     }
 }
