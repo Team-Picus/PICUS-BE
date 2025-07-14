@@ -4,5 +4,6 @@ import java.util.List;
 
 public class PostImage {
 
-    private List<String> keys;
+    private String fileKey;
+    private Integer imageOrder;
 }
