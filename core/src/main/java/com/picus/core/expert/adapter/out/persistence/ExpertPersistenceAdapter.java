@@ -66,7 +66,8 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
 
     @Override
     public Optional<Expert> loadExpertByExpertNo(String expertNo) {
-        return null;
+        return expertJpaRepository.findById(expertNo)
+                .map(expertPersistenceMapper::mapToDomain);
     }
 
     @Override
