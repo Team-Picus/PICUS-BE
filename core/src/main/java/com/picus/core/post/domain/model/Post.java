@@ -24,6 +24,7 @@ public class Post {
     private SpaceType spaceType;
     private String spaceAddress;
     private PostStatus postStatus;
+    private Boolean isPinned;
     private List<PostImage> postImages;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

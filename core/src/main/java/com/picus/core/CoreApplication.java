@@ -1,5 +1,7 @@
 package com.picus.core;
 
+import com.picus.core.infrastructure.security.CorsProperties;
+import com.picus.core.user.config.TokenPrefixProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -10,12 +12,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
 @EnableRetry
-@EnableJpaAuditing
+//@EnableJpaAuditing
 @SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableConfigurationProperties({
-//		CorsProperties.class,
-//		AppProperties.class
+		CorsProperties.class,
+		TokenPrefixProperties.class
 })
 public class CoreApplication {
 
