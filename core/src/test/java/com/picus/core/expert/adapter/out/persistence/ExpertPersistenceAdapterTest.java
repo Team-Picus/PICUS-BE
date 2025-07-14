@@ -1,6 +1,6 @@
 package com.picus.core.expert.adapter.out.persistence;
 
-import com.picus.core.expert.adapter.out.persistence.ExpertPersistenceAdapter;
+import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -58,7 +58,63 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장된다")
     public void saveExpert() throws Exception {
         // given
-        Expert expert = Expert.builder()
+        Expert expert = givenExpertDomain();
+
+        // when
+        Expert saved = expertPersistenceAdapter.saveExpert(expert);
+
+        // then
+        assertThat(expertJpaRepository.findById(saved.getExpertNo())).isPresent();
+
+        assertThat(projectJpaRepository.findAll())
+                .anyMatch(p -> p.getProjectName().equals("프로젝트 A"));
+
+        assertThat(skillJpaRepository.findAll())
+                .anyMatch(s -> s.getContent().equals("카메라 전문가"));
+
+        assertThat(studioJpaRepository.findAll())
+                .anyMatch(s -> s.getStudioName().equals("포토 스튜디오"));
+    }
+
+    @Test
+    @DisplayName("expertNo로 Expert를 조회한다.")
+    public void loadExpertByExpertNo_success() throws Exception {
+        // given
+        ExpertEntity testEntity = givenExpertEntity();
+        ExpertEntity savedTestEntity  = expertJpaRepository.save(testEntity);
+        String testExpertNo = savedTestEntity.getExpertNo();
+
+        // when
+        Expert result = expertPersistenceAdapter.loadExpertByExpertNo(testExpertNo).get();
+
+        // then
+        assertThat(result.getExpertNo()).isEqualTo(testExpertNo);
+        assertThat(result).satisfies(expert -> {
+            assertThat(expert.getBackgroundImageKey()).isEqualTo("img-key");
+            assertThat(expert.getIntro()).isEqualTo("전문가 소개");
+            assertThat(expert.getActivityCareer()).isEqualTo("경력 5년");
+            assertThat(expert.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GANGBUKGU);
+            assertThat(expert.getActivityCount()).isEqualTo(8);
+            assertThat(expert.getLastActivityAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
+            assertThat(expert.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING);
+        });
+    }
+
+    private ExpertEntity givenExpertEntity() {
+        return ExpertEntity.builder()
+                .backgroundImageKey("img-key")
+                .intro("전문가 소개")
+                .activityCareer("경력 5년")
+                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
+                .activityCount(8)
+                .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
+                .portfolioLinks(List.of("http://myportfolio.com"))
+                .approvalStatus(ApprovalStatus.PENDING)
+                .build();
+    }
+
+    private Expert givenExpertDomain() {
+        return Expert.builder()
                 .intro("소개입니다")
                 .activityCareer("5년")
                 .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
@@ -88,21 +144,6 @@ class ExpertPersistenceAdapterTest {
                                 .build()
                 )
                 .build();
-
-        // when
-        Expert saved = expertPersistenceAdapter.saveExpert(expert);
-
-        // then
-        assertThat(expertJpaRepository.findById(saved.getExpertNo())).isPresent();
-
-        assertThat(projectJpaRepository.findAll())
-                .anyMatch(p -> p.getProjectName().equals("프로젝트 A"));
-
-        assertThat(skillJpaRepository.findAll())
-                .anyMatch(s -> s.getContent().equals("카메라 전문가"));
-
-        assertThat(studioJpaRepository.findAll())
-                .anyMatch(s -> s.getStudioName().equals("포토 스튜디오"));
     }
 
 }
