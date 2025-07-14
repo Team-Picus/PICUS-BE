@@ -6,7 +6,6 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class Expert {
 
     private final List<Portfolio> portfolios;
 
-    private final ApprovalStatus approvalStatus;
+    private ApprovalStatus approvalStatus;
 
     private final Studio studio;
 
@@ -100,5 +99,9 @@ public class Expert {
             activityDuration = totalDays + "일";
         }
         return activityDuration;
+    }
+
+    public void approve() {
+        this.approvalStatus = ApprovalStatus.APPROVAL;
     }
 }
