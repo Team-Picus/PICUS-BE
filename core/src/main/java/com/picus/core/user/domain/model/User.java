@@ -17,5 +17,6 @@ public class User {
     private Integer followCount;
     private Integer myMoodboardCount;
     private String expertNo;
+    private Auth auth;
 
 }
