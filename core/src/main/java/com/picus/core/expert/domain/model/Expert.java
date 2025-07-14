@@ -2,6 +2,7 @@ package com.picus.core.expert.domain.model;
 
 import com.picus.core.expert.domain.model.vo.*;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
+@EqualsAndHashCode
 public class Expert {
     private String expertNo;
 

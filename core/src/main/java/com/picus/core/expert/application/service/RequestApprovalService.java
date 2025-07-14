@@ -1,11 +1,8 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.RequestApprovalRequest;
-import com.picus.core.expert.application.port.in.RequestApprovalResponse;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
 import com.picus.core.expert.application.port.out.SaveExpertPort;
 import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

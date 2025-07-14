@@ -4,7 +4,9 @@ package com.picus.core.expert.adapter.out.persistence;
 import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
+import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.SaveExpertPort;
+import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -22,10 +24,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
-public class ExpertPersistenceAdapter implements SaveExpertPort {
+public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort, UpdateExpertPort {
 
     // Jpa Repository
     private final ExpertJpaRepository expertJpaRepository;
@@ -61,6 +64,19 @@ public class ExpertPersistenceAdapter implements SaveExpertPort {
         return expert;
     }
 
+    @Override
+    public Optional<Expert> loadExpertByExpertNo(String expertNo) {
+        return null;
+    }
+
+    @Override
+    public void updateExpert(Expert expert) {
+
+    }
+
+    /**
+     * private 메서드
+     */
 
     private ExpertEntity saveExpertEntity(Expert expert) {
         ExpertEntity expertEntity = expertPersistenceMapper.mapToEntity(expert);
@@ -97,4 +113,5 @@ public class ExpertPersistenceAdapter implements SaveExpertPort {
         studioEntity.assignExpert(saved);
         studioJpaRepository.save(studioEntity);
     }
+
 }
