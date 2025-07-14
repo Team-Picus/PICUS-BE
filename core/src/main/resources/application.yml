@@ -25,7 +25,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
@@ -58,15 +58,15 @@ spring:
     username: guest
     password: guest
 
-  cloud:
-    aws:
-      s3:
-        bucket: ${BUCKET_NAME}
-      credentials:
-        access-key: ${IAM_ACCESS_KEY}
-        secret-key: ${IAM_SECRET_KEY}
-      region:
-        static: ap-northeast-2
+#  cloud:
+#    aws:
+#      s3:
+#        bucket: ${BUCKET_NAME}
+#      credentials:
+#        access-key: ${IAM_ACCESS_KEY}
+#        secret-key: ${IAM_SECRET_KEY}
+#      region:
+#        static: ap-northeast-2
 
 rabbitmq:
   host: "localhost"
@@ -94,9 +94,9 @@ app:
     tokenExpiry: 18000
     refreshTokenExpiry: 18000
   oauth2:
-    authorizedRedirectUris:
-      - http://localhost:8080/login/oauth2/code/kakao
-      - http://localhost:8080/oauth2/callback/kakao
+    authorizedRedirectUris: http://localhost:8080/login/oauth2/code/kakao, http://localhost:8080/login/oauth2/code, http://localhost:8080/oauth2/callback/kakao
+    defaultRedirectUri: http://localhost:8080
+
 
 jwt:
   key: ${JWT_SECRET}
@@ -118,17 +118,25 @@ exclude-auth-path-patterns:
   paths:
     - pathPattern: /login
       method: GET
-
-exclude-ratelimiter-path-patterns:
-  paths:
-    - pathPattern: /login
+    - path-pattern: /
       method: GET
+    - path-pattern: /oauth2
+      method: GET
+
+#exclude-ratelimiter-path-patterns:
+#  paths:
+#    - pathPattern: /login
+#      method: GET
 
 exclude-blacklist-path-patterns:
   paths:
     - pathPattern: /login
       method: GET
     - pathPattern: /error
+      method: GET
+    - path-pattern: /
+      method: GET
+    - path-pattern: /oauth2
       method: GET
 
 token:
@@ -137,3 +145,4 @@ token:
     refresh: "REFRESH_TOKEN:"
     blacklist: "BLACKLIST:"
     whitelist: "WHITELIST:"
+

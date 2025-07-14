@@ -11,7 +11,9 @@ import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
 import com.picus.core.user.domain.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -28,18 +30,17 @@ import static com.picus.core.shared.exception.code.status.AuthErrorStatus.INVALI
 public class OAuth2AuthenticationSuccessHandler
         extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final SocialAuthenticationUseCase socialAuthUseCase;    // port.in
-    private final TokenProvider tokenProvider;                   // infra.security.jwt Port
-    private final RefreshTokenManagementUseCase refreshTokenManagementUseCase;         // port.out
-    private final OAuth2AuthorizationRequestRepository cookieRepository;  // infra.security.oauth.repository
-    private final AppProperties appProperties;                      // Infra 공통 설정
+    private final SocialAuthenticationUseCase socialAuthUseCase;
+    private final TokenProvider tokenProvider;
+    private final RefreshTokenManagementUseCase refreshTokenManagementUseCase;
+    private final OAuth2AuthorizationRequestRepository cookieRepository;
+    private final AppProperties appProperties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication)
             throws IOException {
-        String targetUrl = determineTargetUrl(request);
         clearAuthenticationAttributes(request, response);
 
         SocialPrincipal principal = (SocialPrincipal) authentication.getPrincipal();
@@ -61,23 +62,29 @@ public class OAuth2AuthenticationSuccessHandler
 
         // 4) Response(쿠키/헤더/JSON) 반영
         CookieUtil.createSecureCookie(response, "refresh_token", refreshToken, (int) duration.getSeconds());
-        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
-    }
+        response.setStatus(HttpServletResponse.SC_OK);
+//        response.setContentType("application/json");
+//        String body = new Auth(accessToken, refreshToken).toString();
+//        response.getWriter().write(body);
 
-    private String determineTargetUrl(HttpServletRequest request) {
-        String redirectUri = cookieRepository.removeRedirectUri(request);
-        if (redirectUri != null && !appProperties.getOauth2().isAuthorizedRedirectUri(redirectUri)) {
-            throw new RestApiException(INVALID_REDIRECT_URI);
-        }
-        return redirectUri != null
-                ? redirectUri
-                : appProperties.getOauth2().getDefaultRedirectUri();
+        response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
         cookieRepository.removeAuthorizationRequestCookies(request, response);
+    }
+}
+
+@AllArgsConstructor
+class Auth {
+    private String accessToken;
+    private String refreshToken;
+
+    @Override
+    public String toString() {
+        return "accessToken='" + accessToken + '\'' +
+                ", refreshToken='" + refreshToken;
     }
 }

@@ -27,6 +27,9 @@ public class AppProperties {
     }
 
     @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static final class OAuth2 {
 
         private List<String> authorizedRedirectUris = new ArrayList<>();
@@ -37,6 +40,7 @@ public class AppProperties {
         }
 
         public OAuth2 authorizedRedirectUris(List<String> authorizedRedirectUris) {
+            authorizedRedirectUris.listIterator().forEachRemaining(System.out::println);
             this.authorizedRedirectUris = authorizedRedirectUris;
             return this;
         }
