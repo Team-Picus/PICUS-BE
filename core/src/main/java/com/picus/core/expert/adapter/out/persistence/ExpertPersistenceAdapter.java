@@ -72,7 +72,8 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
 
     @Override
     public void updateExpert(Expert expert) {
-
+        Optional<ExpertEntity> expertEntity = expertJpaRepository.findById(expert.getExpertNo());
+        expertEntity.ifPresent(entity -> entity.updateEntity(expert));
     }
 
     /**
