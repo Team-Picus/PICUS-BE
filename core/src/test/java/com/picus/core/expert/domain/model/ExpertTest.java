@@ -59,18 +59,34 @@ class ExpertTest {
     //
 
     @Test
-    @DisplayName("Expert의 ApprovalStatus를 바꾼다.")
-    public void approve() throws Exception {
+    @DisplayName("Expert의 ApprovalStatus를 APPROVAL로 바꾼다.")
+    public void approveApprovalRequest() throws Exception {
         // given
         Expert expert = Expert.builder()
                 .approvalStatus(ApprovalStatus.PENDING)
                 .build();
 
         // when
-        expert.approve();
+        expert.approveApprovalRequest();
 
         // then
         assertThat(expert.getApprovalStatus())
                 .isEqualTo(ApprovalStatus.APPROVAL);
+    }
+
+    @Test
+    @DisplayName("Expert의 ApprovalStatus를 REJECT로 바꾼다.")
+    public void rejectApprovalRequest() throws Exception {
+        // given
+        Expert expert = Expert.builder()
+                .approvalStatus(ApprovalStatus.PENDING)
+                .build();
+
+        // when
+        expert.rejectApprovalRequest();
+
+        // then
+        assertThat(expert.getApprovalStatus())
+                .isEqualTo(ApprovalStatus.REJECT);
     }
 }
