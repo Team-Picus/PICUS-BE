@@ -103,7 +103,10 @@ public class Expert {
         return activityDuration;
     }
 
-    public void approve() {
+    public void approveApprovalRequest() {
         this.approvalStatus = ApprovalStatus.APPROVAL;
+    }
+    public void rejectApprovalRequest() {
+        this.approvalStatus = ApprovalStatus.REJECT;
     }
 }
