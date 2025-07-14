@@ -1,6 +1,7 @@
 package com.picus.core.infrastructure.security;
 
 import com.picus.core.infrastructure.security.jwt.ExcludeAuthPathProperties;
+import com.picus.core.infrastructure.security.jwt.ExcludeWhitelistPathProperties;
 import com.picus.core.infrastructure.security.jwt.JwtAuthenticationFilter;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.infrastructure.security.oauth.handler.OAuth2AuthenticationFailureHandler;
@@ -8,9 +9,9 @@ import com.picus.core.infrastructure.security.oauth.handler.OAuth2Authentication
 import com.picus.core.infrastructure.security.oauth.repository.OAuth2AuthorizationRequestRepository;
 import com.picus.core.infrastructure.security.oauth.service.CustomOAuth2UserService;
 import com.picus.core.infrastructure.security.oauth.service.CustomUserDetailsService;
-import com.picus.core.user.application.port.in.RefreshTokenManagementUseCase;
+import com.picus.core.user.application.port.in.TokenManagementCommand;
 import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
-import com.picus.core.user.application.port.in.TokenValidationUseCase;
+import com.picus.core.user.application.port.in.TokenValidationQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,14 +40,14 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final CorsProperties corsProperties;
-    private final AppProperties appProperties;
     private final TokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
     private final SocialAuthenticationUseCase socialAuthenticationUseCase;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final RefreshTokenManagementUseCase refreshTokenManagementUseCase;
+    private final TokenManagementCommand tokenManagementCommand;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
-    private final TokenValidationUseCase tokenValidationUseCase;
+    private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
+    private final TokenValidationQuery tokenValidationQuery;
 
     /**
      * 1) Define the PasswordEncoder bean.
@@ -133,7 +134,7 @@ public class SecurityConfig {
      */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties, tokenValidationUseCase);
+        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties, excludeWhitelistPathProperties, tokenValidationQuery, tokenManagementCommand);
     }
 
     /**
@@ -152,9 +153,8 @@ public class SecurityConfig {
         return new OAuth2AuthenticationSuccessHandler(
                 socialAuthenticationUseCase,
                 tokenProvider,
-                refreshTokenManagementUseCase,
-                oAuth2AuthorizationRequestRepository(),
-                appProperties
+                tokenManagementCommand,
+                oAuth2AuthorizationRequestRepository()
         );
     }
 

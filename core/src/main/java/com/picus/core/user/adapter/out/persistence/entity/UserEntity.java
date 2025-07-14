@@ -72,7 +72,12 @@ public class UserEntity extends BaseEntity {
             role = Role.CLIENT;
     }
 
-    public void updateSocialProfile(String email) {
-        this.email = email;
+    public void updateSocialProfile(String email, String name, String tel) {
+        if(this.email == null)
+            this.email = email;
+        if(this.name == null)
+            this.name = name;
+        if(this.tel == null)
+            this.tel = tel;
     }
 }

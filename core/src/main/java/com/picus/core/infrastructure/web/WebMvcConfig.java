@@ -3,7 +3,9 @@ package com.picus.core.infrastructure.web;
 import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties;
 import com.picus.core.infrastructure.security.jwt.JwtBlacklistInterceptor;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import com.picus.core.infrastructure.web.resolver.AccessTokenArgumentResolver;
 import com.picus.core.infrastructure.web.resolver.CurrentUserArgumentResolver;
+import com.picus.core.infrastructure.web.resolver.RefreshTokenArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -22,7 +24,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new CurrentUserArgumentResolver(tokenProvider));
+        resolvers.addAll(List.of(
+                new CurrentUserArgumentResolver(tokenProvider),
+                new AccessTokenArgumentResolver(tokenProvider),
+                new RefreshTokenArgumentResolver(tokenProvider)
+        ));
     }
 
     @Override

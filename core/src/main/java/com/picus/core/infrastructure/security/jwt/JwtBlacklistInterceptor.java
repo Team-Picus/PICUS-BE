@@ -1,7 +1,7 @@
 package com.picus.core.infrastructure.security.jwt;
 
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.in.TokenValidationUseCase;
+import com.picus.core.user.application.port.in.TokenValidationQuery;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import static com.picus.core.shared.exception.code.status.AuthErrorStatus.*;
 public class JwtBlacklistInterceptor implements HandlerInterceptor {
 
     private final TokenProvider tokenProvider;
-    private final TokenValidationUseCase tokenValidationUseCase;
+    private final TokenValidationQuery tokenValidationQuery;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -24,7 +24,7 @@ public class JwtBlacklistInterceptor implements HandlerInterceptor {
                 .orElseThrow(() -> new RestApiException(EMPTY_JWT));
 
         // 블랙리스트 검사
-        if (tokenValidationUseCase.isBlacklistToken(token))
+        if (tokenValidationQuery.isBlacklistToken(token))
             throw new RestApiException(EXPIRED_MEMBER_JWT);
 
         return true;

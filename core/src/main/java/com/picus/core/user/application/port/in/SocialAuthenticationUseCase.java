@@ -5,6 +5,6 @@ import com.picus.core.user.domain.model.User;
 
 public interface SocialAuthenticationUseCase {
 
-    User authenticate(String providerId, Provider provider, String email);
+    User authenticate(String providerId, Provider provider, String email, String name, String tel);
 
 }

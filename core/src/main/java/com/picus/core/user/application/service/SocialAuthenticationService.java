@@ -16,8 +16,8 @@ public class SocialAuthenticationService implements SocialAuthenticationUseCase 
     private final UserCommandPort userCommandPort;
 
     @Override
-    public User authenticate(String providerId, Provider provider, String email) {
-        return userCommandPort.upsert(providerId, provider, email);
+    public User authenticate(String providerId, Provider provider, String email, String name, String tel) {
+        return userCommandPort.upsert(providerId, provider, email, name, tel);
     }
 
 }
