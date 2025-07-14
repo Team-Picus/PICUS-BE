@@ -100,6 +100,44 @@ class ExpertPersistenceAdapterTest {
         });
     }
 
+    @Test
+    @DisplayName("ExpertEntity를 수정한다.")
+    public void updateExpert_success() throws Exception {
+        // given
+        ExpertEntity originalEntity = givenExpertEntity();
+        ExpertEntity savedEntity = expertJpaRepository.save(originalEntity);
+
+        String expertNo = savedEntity.getExpertNo();
+
+        // 수정할 도메인 Expert 생성
+        Expert updatedExpert = Expert.builder()
+                .expertNo(expertNo)
+                .intro("수정된 소개")
+                .activityCareer("수정된 경력")
+                .activityAreas(List.of(ActivityArea.SEOUL_GWANAKGU))
+                .activityCount(15)
+                .lastActivityAt(LocalDateTime.of(2025, 1, 1, 12, 0))
+                .portfolios(List.of(Portfolio.builder().link("http://new-portfolio.com").build()))
+                .approvalStatus(ApprovalStatus.APPROVAL)
+                .build();
+
+        // when
+        expertPersistenceAdapter.updateExpert(updatedExpert);
+
+        // then
+        ExpertEntity updatedEntity = expertJpaRepository.findById(expertNo).orElseThrow();
+        assertThat(updatedEntity).satisfies(expertEntity -> {
+            assertThat(expertEntity.getIntro()).isEqualTo("수정된 소개");
+            assertThat(expertEntity.getActivityCareer()).isEqualTo("수정된 경력");
+            assertThat(expertEntity.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GWANAKGU);
+            assertThat(expertEntity.getActivityCount()).isEqualTo(15);
+            assertThat(expertEntity.getLastActivityAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 12, 0));
+            assertThat(expertEntity.getPortfolioLinks()).containsExactly("http://new-portfolio.com");
+            assertThat(expertEntity.getApprovalStatus()).isEqualTo(ApprovalStatus.APPROVAL);
+        });
+
+    }
+
     private ExpertEntity givenExpertEntity() {
         return ExpertEntity.builder()
                 .backgroundImageKey("img-key")
