@@ -1,5 +1,6 @@
 package com.picus.core.expert.domain.model;
 
+import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -55,4 +56,21 @@ class ExpertTest {
         assertThat(activityDuration).isEqualTo("1년");
     }
 
+    //
+
+    @Test
+    @DisplayName("Expert의 ApprovalStatus를 바꾼다.")
+    public void approve() throws Exception {
+        // given
+        Expert expert = Expert.builder()
+                .approvalStatus(ApprovalStatus.PENDING)
+                .build();
+
+        // when
+        expert.approve();
+
+        // then
+        assertThat(expert.getApprovalStatus())
+                .isEqualTo(ApprovalStatus.APPROVAL);
+    }
 }
