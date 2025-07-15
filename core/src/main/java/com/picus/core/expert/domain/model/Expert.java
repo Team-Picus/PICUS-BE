@@ -17,6 +17,8 @@ public class Expert {
 
     private final String backgroundImageKey;
 
+    private final String backgroundImageUrl;
+
     private final String intro;
 
     private final String activityCareer;
@@ -47,7 +49,7 @@ public class Expert {
 
     @Builder
     public Expert(String expertNo,
-                  String backgroundImageKey,
+                  String backgroundImageKey, String backgroundImageUrl,
                   String intro,
                   String activityCareer,
                   List<ActivityArea> activityAreas,
@@ -64,6 +66,7 @@ public class Expert {
 
         this.expertNo = expertNo;
         this.backgroundImageKey = backgroundImageKey;
+        this.backgroundImageUrl = backgroundImageUrl;
         this.intro = intro;
         this.activityCareer = activityCareer;
         this.activityAreas = activityAreas;
