@@ -47,13 +47,12 @@ public class RequestApprovalIntegrationTest {
         String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
         RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
 
-        // when
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-
         HttpEntity<RequestApprovalWebRequest> httpEntity = new HttpEntity<>(webRequest, headers);
 
+        // when
         ResponseEntity<BaseResponse<RequestApprovalWebResponse>> response = restTemplate.exchange(
                 "/api/v1/experts/approval-requests",
                 HttpMethod.POST,

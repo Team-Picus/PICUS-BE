@@ -4,11 +4,8 @@ import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.user.application.port.in.TokenValidationQuery;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
