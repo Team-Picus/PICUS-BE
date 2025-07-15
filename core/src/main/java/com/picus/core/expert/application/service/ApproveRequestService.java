@@ -4,12 +4,13 @@ import com.picus.core.expert.application.port.in.ApproveRequestUseCase;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.shared.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
 @RequiredArgsConstructor
-@Service // TODO: @UseCase로 변경
+@UseCase
 public class ApproveRequestService implements ApproveRequestUseCase {
 
     private final LoadExpertPort loadExpertPort;

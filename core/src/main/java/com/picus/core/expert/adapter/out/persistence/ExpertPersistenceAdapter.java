@@ -20,6 +20,7 @@ import com.picus.core.expert.adapter.out.persistence.mapper.SkillPersistenceMapp
 import com.picus.core.expert.adapter.out.persistence.mapper.StudioPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
+import com.picus.core.shared.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Repository
+@PersistenceAdapter
 public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort, UpdateExpertPort {
 
     // Jpa Repository
