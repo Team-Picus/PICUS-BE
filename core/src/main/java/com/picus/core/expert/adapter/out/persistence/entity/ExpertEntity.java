@@ -43,7 +43,6 @@ public class ExpertEntity extends BaseEntity {
     @Column(nullable = false)
     private Integer activityCount;
 
-    @Column(nullable = false)
     private LocalDateTime lastActivityAt;
 
     @Convert(converter = StringConverter.class)
