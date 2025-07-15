@@ -1,4 +1,4 @@
-package com.picus.core.expert.adapter.in;
+package com.picus.core.expert.adapter.in.web;
 
 import com.picus.core.expert.adapter.in.web.mapper.RequestApprovalWebMapper;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;

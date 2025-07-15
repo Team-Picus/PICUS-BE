@@ -1,4 +1,4 @@
-package com.picus.core.expert.adapter.in;
+package com.picus.core.expert.adapter.in.web;
 
 import com.picus.core.expert.application.port.in.RejectRequestUseCase;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = RejectRequestController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
 class RejectRequestControllerTest extends AbstractSecurityMockSetup {
 
     @Autowired

@@ -1,4 +1,4 @@
-package com.picus.core.expert.adapter.in;
+package com.picus.core.expert.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
@@ -22,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -37,7 +36,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest(controllers = RequestApprovalController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
 class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
 
     @Autowired
@@ -51,14 +49,11 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     @MockitoBean
     private RequestApprovalWebMapper webMapper;
 
-    @Autowired
-    private TokenProvider tokenProvider;
 
     @Test
     @DisplayName("전문가 승인 요청을 한다.")
     public void requestApproval() throws Exception {
         // given
-        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
         RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
 
         // stubbing
@@ -69,7 +64,6 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
                         post("/api/v1/experts/approval-requests")
                                 .content(objectMapper.writeValueAsString(webRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

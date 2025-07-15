@@ -35,9 +35,8 @@ class RejectRequestServiceTest {
         rejectRequestService.rejectRequest(expertNo);
 
         // then
-        assertThat(expert.getApprovalStatus())
-                .isEqualTo(ApprovalStatus.REJECT);
-
+        then(expert).should()
+                .rejectApprovalRequest();
         then(loadExpertPort).should()
                 .loadExpertByExpertNo(eq(expertNo));
         then(updateExpertPort).should()
@@ -45,10 +44,7 @@ class RejectRequestServiceTest {
     }
 
     private Expert stubLoadExpertByExpertNo(String expertNo) {
-        Expert expert = Expert.builder()
-                .expertNo(expertNo)
-                .approvalStatus(ApprovalStatus.PENDING)
-                .build();
+        Expert expert = Mockito.mock(Expert.class);
         given(loadExpertPort.loadExpertByExpertNo(expertNo))
                 .willReturn(Optional.of(expert));
         return expert;

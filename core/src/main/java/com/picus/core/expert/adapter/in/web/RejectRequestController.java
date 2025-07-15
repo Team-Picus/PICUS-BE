@@ -1,6 +1,5 @@
-package com.picus.core.expert.adapter.in;
+package com.picus.core.expert.adapter.in.web;
 
-import com.picus.core.expert.application.port.in.ApproveRequestUseCase;
 import com.picus.core.expert.application.port.in.RejectRequestUseCase;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
