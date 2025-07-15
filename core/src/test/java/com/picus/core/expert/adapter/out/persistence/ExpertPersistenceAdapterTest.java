@@ -20,8 +20,10 @@ import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaReposit
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,8 +37,9 @@ import static org.assertj.core.api.Assertions.assertThat;
         SkillPersistenceMapper.class,
         StudioPersistenceMapper.class
 })
-// TODO: 테스트 환경 데이터베이스 설정
 @DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ExpertPersistenceAdapterTest {
 
     @Autowired
