@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +37,7 @@ class RequestApprovalServiceTest {
         Expert request = givenExpert();
 
         // saveExpertPort.saveExpert() stubbing
-        givenSaveExpertPortResult(request);
+        stubSaveExpertPortResult(request);
 
         // when
         Expert response = requestApprovalService.requestApproval(request);
@@ -100,7 +99,7 @@ class RequestApprovalServiceTest {
                 .build();
     }
 
-    private void givenSaveExpertPortResult(Expert expert) {
+    private void stubSaveExpertPortResult(Expert expert) {
         Expert savedExpert = Expert.builder()
                 .expertNo("expert_no1")
                 .activityCareer(expert.getActivityCareer())

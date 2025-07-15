@@ -88,7 +88,7 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("expertNo로 Expert를 조회한다.")
     public void loadExpertByExpertNo_success() throws Exception {
         // given
-        ExpertEntity savedExpertEntity = saveEntities();
+        ExpertEntity savedExpertEntity = settingDefaultEntityData();
         String savedExpertNo = savedExpertEntity.getExpertNo();
 
         // when
@@ -174,7 +174,7 @@ class ExpertPersistenceAdapterTest {
     }
 
 
-    private ExpertEntity saveEntities() {
+    private ExpertEntity settingDefaultEntityData() {
         ExpertEntity expertEntity = givenExpertEntity();
         ExpertEntity savedExpertEntity = expertJpaRepository.save(expertEntity);
 

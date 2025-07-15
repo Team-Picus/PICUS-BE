@@ -13,18 +13,13 @@ import com.picus.core.expert.domain.model.vo.ActivityArea;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
-import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties;
-import com.picus.core.infrastructure.security.jwt.JwtProperties;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.user.application.port.in.TokenValidationQuery;
-import com.picus.core.user.application.service.TokenValidationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -67,7 +62,7 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
         RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
 
         // stubbing
-        stubbingMethodInController();
+        stubMethodInController();
 
         // when then
         mockMvc.perform(
@@ -92,7 +87,7 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
                 .toWebResponse(any(Expert.class));
     }
 
-    private void stubbingMethodInController() {
+    private void stubMethodInController() {
         Expert mockExpert = Mockito.mock(Expert.class);
         RequestApprovalWebResponse mockResponse = Mockito.mock(RequestApprovalWebResponse.class);
         given(webMapper.toDomain(any(RequestApprovalWebRequest.class)))
