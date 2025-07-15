@@ -66,8 +66,19 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
 
     @Override
     public Optional<Expert> loadExpertByExpertNo(String expertNo) {
+
+        // expert의 Project 가져오기
+        List<Project> projects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo).stream()
+                .map(projectPersistenceMapper::mapToDomain).toList();
+        // expert의 Skill 가져오기
+        List<Skill> skills = skillJpaRepository.findByExpertEntity_ExpertNo(expertNo).stream()
+                .map(skillPersistenceMapper::mapToDomain).toList();
+        // expert의 Studio 가져오기
+        Studio studio = studioPersistenceMapper
+                .mapToDomain(studioJpaRepository.findByExpertEntity_ExpertNo(expertNo).get());
+
         return expertJpaRepository.findById(expertNo)
-                .map(expertPersistenceMapper::mapToDomain);
+                .map(expertEntity -> expertPersistenceMapper.mapToDomain(expertEntity, projects, skills, studio));
     }
 
     @Override

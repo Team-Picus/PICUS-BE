@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StudioPersistenceMapper {
 
-    public Studio mapToStudio(StudioEntity entity) {
+    public Studio mapToDomain(StudioEntity entity) {
         return Studio.builder()
                 .studioName(entity.getStudioName())
                 .employeesCount(entity.getEmployeesCount())

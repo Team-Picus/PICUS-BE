@@ -1,6 +1,9 @@
 package com.picus.core.expert.adapter.out.persistence;
 
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -27,8 +30,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @Import({
         ExpertPersistenceAdapter.class,
@@ -83,25 +88,52 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("expertNo로 Expert를 조회한다.")
     public void loadExpertByExpertNo_success() throws Exception {
         // given
-        ExpertEntity testEntity = givenExpertEntity();
-        ExpertEntity savedTestEntity  = expertJpaRepository.save(testEntity);
-        String testExpertNo = savedTestEntity.getExpertNo();
+        ExpertEntity savedExpertEntity = saveEntities();
+        String savedExpertNo = savedExpertEntity.getExpertNo();
 
         // when
-        Expert result = expertPersistenceAdapter.loadExpertByExpertNo(testExpertNo).get();
+        Optional<Expert> optionalResult = expertPersistenceAdapter.loadExpertByExpertNo(savedExpertNo);
 
         // then
-        assertThat(result.getExpertNo()).isEqualTo(testExpertNo);
-        assertThat(result).satisfies(expert -> {
-            assertThat(expert.getBackgroundImageKey()).isEqualTo("img-key");
-            assertThat(expert.getIntro()).isEqualTo("전문가 소개");
-            assertThat(expert.getActivityCareer()).isEqualTo("경력 5년");
-            assertThat(expert.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GANGBUKGU);
-            assertThat(expert.getActivityCount()).isEqualTo(8);
-            assertThat(expert.getLastActivityAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
-            assertThat(expert.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING);
-        });
+        assertThat(optionalResult).isPresent();
+        Expert expert = optionalResult.get();
+
+        assertThat(expert.getExpertNo()).isEqualTo(savedExpertNo);
+        assertThat(expert.getBackgroundImageKey()).isEqualTo("img-key");
+        assertThat(expert.getIntro()).isEqualTo("전문가 소개");
+        assertThat(expert.getActivityCareer()).isEqualTo("경력 5년");
+        assertThat(expert.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GANGBUKGU);
+        assertThat(expert.getActivityCount()).isEqualTo(8);
+        assertThat(expert.getLastActivityAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
+        assertThat(expert.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING);
+
+        // projects 검증
+        assertThat(expert.getProjects()).hasSize(2)
+                .extracting("projectName", "startDate", "endDate")
+                .containsExactlyInAnyOrder(
+                        tuple("단편영화 촬영 프로젝트",
+                                LocalDateTime.of(2022, 5, 1, 0, 0),
+                                LocalDateTime.of(2022, 8, 15, 0, 0)),
+                        tuple("뮤직비디오 조명 작업",
+                                LocalDateTime.of(2023, 1, 10, 0, 0),
+                                LocalDateTime.of(2023, 2, 20, 0, 0))
+                );
+
+        // skills 검증
+        assertThat(expert.getSkills()).hasSize(2)
+                .extracting("skillType", "content")
+                .containsExactlyInAnyOrder(
+                        tuple(SkillType.CAMERA, "시네마 카메라 운용 가능 (RED, Blackmagic)"),
+                        tuple(SkillType.EDIT, "프리미어 프로 및 다빈치 리졸브 활용 편집 가능")
+                );
+
+        // studio 검증
+        assertThat(expert.getStudio()).isNotNull();
+        assertThat(expert.getStudio())
+                .extracting("studioName", "employeesCount", "businessHours", "address")
+                .containsExactly("크리에이티브 필름", 5, "10:00 - 19:00", "서울특별시 마포구 월드컵북로 400");
     }
+
 
     @Test
     @DisplayName("ExpertEntity를 수정한다.")
@@ -109,8 +141,8 @@ class ExpertPersistenceAdapterTest {
         // given
         ExpertEntity originalEntity = givenExpertEntity();
         ExpertEntity savedEntity = expertJpaRepository.save(originalEntity);
-
         String expertNo = savedEntity.getExpertNo();
+
 
         // 수정할 도메인 Expert 생성
         Expert updatedExpert = Expert.builder()
@@ -141,6 +173,22 @@ class ExpertPersistenceAdapterTest {
 
     }
 
+
+    private ExpertEntity saveEntities() {
+        ExpertEntity expertEntity = givenExpertEntity();
+        ExpertEntity savedExpertEntity = expertJpaRepository.save(expertEntity);
+
+        List<ProjectEntity> projectEntities = givenProjectEntity(savedExpertEntity);
+        projectJpaRepository.saveAll(projectEntities);
+
+        List<SkillEntity> skillEntities = givenSkillsEntity(savedExpertEntity);
+        skillJpaRepository.saveAll(skillEntities);
+
+        StudioEntity studioEntity = givenStudioEntity(savedExpertEntity);
+        studioJpaRepository.save(studioEntity);
+        return savedExpertEntity;
+    }
+
     private ExpertEntity givenExpertEntity() {
         return ExpertEntity.builder()
                 .backgroundImageKey("img-key")
@@ -151,6 +199,48 @@ class ExpertPersistenceAdapterTest {
                 .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
                 .portfolioLinks(List.of("http://myportfolio.com"))
                 .approvalStatus(ApprovalStatus.PENDING)
+                .build();
+    }
+
+    private List<ProjectEntity> givenProjectEntity(ExpertEntity expertEntity) {
+        return List.of(
+                ProjectEntity.builder()
+                        .expertEntity(expertEntity)
+                        .projectName("단편영화 촬영 프로젝트")
+                        .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
+                        .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
+                        .build(),
+                ProjectEntity.builder()
+                        .expertEntity(expertEntity)
+                        .projectName("뮤직비디오 조명 작업")
+                        .startDate(LocalDateTime.of(2023, 1, 10, 0, 0))
+                        .endDate(LocalDateTime.of(2023, 2, 20, 0, 0))
+                        .build()
+        );
+    }
+
+    private List<SkillEntity> givenSkillsEntity(ExpertEntity expertEntity) {
+        return List.of(
+                SkillEntity.builder()
+                        .expertEntity(expertEntity)
+                        .skillType(SkillType.CAMERA)
+                        .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
+                        .build(),
+                SkillEntity.builder()
+                        .expertEntity(expertEntity)
+                        .skillType(SkillType.EDIT)
+                        .content("프리미어 프로 및 다빈치 리졸브 활용 편집 가능")
+                        .build()
+        );
+    }
+
+    private StudioEntity givenStudioEntity(ExpertEntity expertEntity) {
+        return StudioEntity.builder()
+                .expertEntity(expertEntity)
+                .studioName("크리에이티브 필름")
+                .employeesCount(5)
+                .businessHours("10:00 - 19:00")
+                .address("서울특별시 마포구 월드컵북로 400")
                 .build();
     }
 

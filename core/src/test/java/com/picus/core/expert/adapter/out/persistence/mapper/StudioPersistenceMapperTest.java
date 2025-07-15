@@ -1,6 +1,5 @@
 package com.picus.core.expert.adapter.out.persistence.mapper;
 
-import com.picus.core.expert.adapter.out.persistence.mapper.StudioPersistenceMapper;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +23,7 @@ class StudioPersistenceMapperTest {
                 .build();
 
         // When
-        Studio result = mapper.mapToStudio(entity);
+        Studio result = mapper.mapToDomain(entity);
 
         // Then
         assertThat(result).isNotNull();
