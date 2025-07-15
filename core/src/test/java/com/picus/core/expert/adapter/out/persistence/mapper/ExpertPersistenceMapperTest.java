@@ -89,7 +89,6 @@ class ExpertPersistenceMapperTest {
 
         // Then
         assertThat(entity).isNotNull();
-        assertThat(entity.getExpertNo()).isEqualTo("EXP123");
         assertThat(entity.getBackgroundImageKey()).isEqualTo("bg-key");
         assertThat(entity.getIntro()).isEqualTo("소개입니다");
         assertThat(entity.getActivityCareer()).isEqualTo("10년 경력");
@@ -100,9 +99,8 @@ class ExpertPersistenceMapperTest {
         assertThat(entity.getApprovalStatus()).isEqualTo(ApprovalStatus.APPROVAL);
     }
 
-    private static Expert givenExpertDomain() {
+    private Expert givenExpertDomain() {
         Expert domain = Expert.builder()
-                .expertNo("EXP123")
                 .backgroundImageKey("bg-key")
                 .intro("소개입니다")
                 .activityCareer("10년 경력")

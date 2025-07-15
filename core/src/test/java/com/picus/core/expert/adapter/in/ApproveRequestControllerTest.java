@@ -2,12 +2,15 @@ package com.picus.core.expert.adapter.in;
 
 import com.picus.core.expert.application.port.in.ApproveRequestUseCase;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
+import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,7 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest(controllers = ApproveRequestController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class ApproveRequestControllerTest {
+@ActiveProfiles("test")
+class ApproveRequestControllerTest extends AbstractSecurityMockSetup {
     @Autowired
     private MockMvc mockMvc;
 

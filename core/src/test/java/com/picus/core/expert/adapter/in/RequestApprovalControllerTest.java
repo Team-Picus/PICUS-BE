@@ -12,13 +12,22 @@ import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.domain.model.vo.ActivityArea;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties;
+import com.picus.core.infrastructure.security.jwt.JwtProperties;
+import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import com.picus.core.user.application.port.in.TokenValidationQuery;
+import com.picus.core.user.application.service.TokenValidationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -33,7 +42,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest(controllers = RequestApprovalController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class RequestApprovalControllerTest {
+@ActiveProfiles("test")
+class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,10 +56,14 @@ class RequestApprovalControllerTest {
     @MockitoBean
     private RequestApprovalWebMapper webMapper;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
     @Test
     @DisplayName("전문가 승인 요청을 한다.")
     public void requestApproval() throws Exception {
         // given
+        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
         RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
 
         // stubbing
@@ -60,6 +74,7 @@ class RequestApprovalControllerTest {
                         post("/api/v1/experts/approval-requests")
                                 .content(objectMapper.writeValueAsString(webRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
