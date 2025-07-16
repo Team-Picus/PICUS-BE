@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Option {
-    private String optionsNo;
+    private String optionNo;
 
-    private String themeNo;
+    private String priceNo;
     private String name;
     private Integer count;
     private Integer price;

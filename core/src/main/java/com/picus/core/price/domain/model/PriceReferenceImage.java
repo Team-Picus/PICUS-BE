@@ -1,8 +1,6 @@
 package com.picus.core.price.domain.model;
 
-import java.util.List;
-
-public class ThemeImage {
+public class PriceReferenceImage {
     private String fileKeys;
     private Integer imageOrder;
 }

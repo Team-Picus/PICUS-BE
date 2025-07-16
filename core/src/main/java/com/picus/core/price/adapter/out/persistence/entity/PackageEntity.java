@@ -18,8 +18,8 @@ public class PackageEntity {
     private String packageNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "theme_no", nullable = false)
-    private ThemeEntity themeEntity;
+    @JoinColumn(name = "price_no", nullable = false)
+    private PriceEntity priceEntity;
 
     @Column(nullable = false)
     private String name;

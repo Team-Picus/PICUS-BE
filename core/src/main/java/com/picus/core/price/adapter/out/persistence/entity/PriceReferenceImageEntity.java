@@ -7,16 +7,16 @@ import lombok.NoArgsConstructor;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Table(name = "theme_images")
+@Table(name = "price_reference_images")
 @NoArgsConstructor(access = PROTECTED)
-public class ThemeImageEntity {
+public class PriceReferenceImageEntity {
 
     @Id @Tsid
-    private Long themeImageNo;
+    private Long priceReferenceImageNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "theme_no", nullable = false)
-    private ThemeEntity themeEntity;
+    @JoinColumn(name = "price_no", nullable = false)
+    private PriceEntity priceEntity;
 
     @Column(nullable = false)
     private String fileKey;
