@@ -5,7 +5,7 @@ import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMap
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
-import com.picus.core.expert.application.port.out.SaveExpertPort;
+import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
@@ -26,14 +26,13 @@ import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort, UpdateExpertPort {
+public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPort, UpdateExpertPort {
 
     // Jpa Repository
     private final ExpertJpaRepository expertJpaRepository;

@@ -2,7 +2,7 @@ package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
 import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
-import com.picus.core.expert.application.port.out.SaveExpertPort;
+import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -21,16 +21,15 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 class RequestApprovalServiceTest {
 
-    private final SaveExpertPort saveExpertPort = Mockito.mock(SaveExpertPort.class);
+    private final CreateExpertPort createExpertPort = Mockito.mock(CreateExpertPort.class);
     private final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(saveExpertPort, appMapper);
+            = new RequestApprovalService(createExpertPort, appMapper);
 
 
     @Test
@@ -45,7 +44,7 @@ class RequestApprovalServiceTest {
         // then
         ArgumentCaptor<Expert> captor = ArgumentCaptor.forClass(Expert.class);
 
-        then(saveExpertPort).should().saveExpert(captor.capture(), any(String.class)); // out port를 호출했는지 검증
+        then(createExpertPort).should().saveExpert(captor.capture(), any(String.class)); // out port를 호출했는지 검증
 
         Expert captured = captor.getValue();
         assertThat(captured.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING); // PENDING인 Expert가 생성됐는지 검증
