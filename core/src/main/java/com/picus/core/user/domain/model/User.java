@@ -19,4 +19,12 @@ public class User {
     private String expertNo;
     private Auth auth;
 
+    public void update(String nickname, String email, String tel) {
+        if(nickname != null)
+            this.nickname = nickname;
+        if(email != null)
+            this.email = email;
+        if(tel != null)
+            this.tel = tel;
+    }
 }
