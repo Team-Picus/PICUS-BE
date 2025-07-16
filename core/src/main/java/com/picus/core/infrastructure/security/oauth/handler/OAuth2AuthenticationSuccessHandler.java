@@ -8,6 +8,7 @@ import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.shared.util.CookieUtil;
 import com.picus.core.user.application.port.in.TokenManagementCommand;
 import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
+import com.picus.core.user.application.port.in.command.InitSocialUserCommand;
 import com.picus.core.user.domain.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,11 +44,15 @@ public class OAuth2AuthenticationSuccessHandler
 
         // 1) 소셜 로그인 → 도메인 User auth / upsert
         User user = socialAuthUseCase
-                .authenticate(principal.getProviderId(),
-                        principal.getProvider(),
-                        principal.getEmail(),
-                        principal.getName(),
-                        principal.getTel());
+                .authenticate(
+                        new InitSocialUserCommand(
+                                principal.getProviderId(),
+                                principal.getProvider(),
+                                principal.getEmail(),
+                                principal.getName(),
+                                principal.getTel()
+                        )
+                );
 
         // 2) JWT 발급
         String accessToken = tokenProvider.createAccessToken(user.getUserNo(), user.getRole().name());
