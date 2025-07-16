@@ -7,6 +7,7 @@ import com.picus.core.expert.adapter.out.persistence.converter.ActivityAreasConv
 import com.picus.core.expert.adapter.out.persistence.converter.StringConverter;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.shared.common.BaseEntity;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,6 +29,11 @@ public class ExpertEntity extends BaseEntity {
     @Id
     @Tsid
     private String expertNo;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "expert_no")  // User와 PK 공유
+    private UserEntity user;
 
     private String backgroundImageKey;
 
