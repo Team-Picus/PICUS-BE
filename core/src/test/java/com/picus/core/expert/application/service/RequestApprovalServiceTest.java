@@ -1,6 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
+import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
 import com.picus.core.expert.application.port.out.SaveExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
@@ -26,9 +27,10 @@ import static org.mockito.BDDMockito.then;
 class RequestApprovalServiceTest {
 
     private final SaveExpertPort saveExpertPort = Mockito.mock(SaveExpertPort.class);
+    private final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(saveExpertPort);
+            = new RequestApprovalService(saveExpertPort, appMapper);
 
 
     @Test
