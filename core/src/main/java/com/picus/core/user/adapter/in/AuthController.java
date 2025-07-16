@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/token")
-public class TokenReissueController {
+@RequestMapping("/api/v1/auth")
+public class AuthController {
 
     private final TokenReissueWebMapper tokenReissueWebMapper;
     private final TokenManagementCommand tokenManagementCommand;
     private final TokenValidationQuery tokenValidationQuery;
     private final UserManagementUseCase userManagementUseCase;
 
-    @PostMapping("/reissue")
+    @PostMapping("/token/reissue")
     public BaseResponse<TokenReissueResponse> reissue(@RefreshToken String refreshToken, @CurrentUser String userNo) {
         tokenValidationQuery.validate(userNo, refreshToken);
         Role role = userManagementUseCase.findRoleById(userNo);
