@@ -6,7 +6,6 @@ import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class ApproveRequestService implements ApproveRequestUseCase {
     public void approveRequest(String expertNo) {
 
         // 받은 expertNo로 expert를 가져옴
-        Expert expert = loadExpertPort.loadExpertByExpertNo(expertNo)
+        Expert expert = loadExpertPort.findById(expertNo)
                 .orElseThrow(RuntimeException::new);// TODO: 예외 클래스 정의
 
         // 해당 expert의 approval status를 Approval로 변경함

@@ -37,13 +37,13 @@ class GetExpertServiceTest {
 
         // then
         then(loadExpertPort).should()
-                .loadExpertByExpertNo(eq(expertNo));
+                .findById(eq(expertNo));
     }
 
     private void stubLoadExpertPortResult(String expertNo) {
         Expert expert = givenExpertDomain();
 
-        given(loadExpertPort.loadExpertByExpertNo(expertNo))
+        given(loadExpertPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
     }
 

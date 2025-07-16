@@ -40,7 +40,7 @@ class ApproveRequestServiceTest {
                 .isEqualTo(ApprovalStatus.APPROVAL);
 
         then(loadExpertPort).should()
-                .loadExpertByExpertNo(eq(expertNo));
+                .findById(eq(expertNo));
         then(updateExpertPort).should()
                 .updateExpert(eq(expert));
     }
@@ -50,7 +50,7 @@ class ApproveRequestServiceTest {
                 .expertNo(expertNo)
                 .approvalStatus(ApprovalStatus.PENDING)
                 .build();
-        given(loadExpertPort.loadExpertByExpertNo(expertNo))
+        given(loadExpertPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
         return expert;
     }

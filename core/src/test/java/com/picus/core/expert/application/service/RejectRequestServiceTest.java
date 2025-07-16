@@ -3,7 +3,6 @@ package com.picus.core.expert.application.service;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,14 +37,14 @@ class RejectRequestServiceTest {
         then(expert).should()
                 .rejectApprovalRequest();
         then(loadExpertPort).should()
-                .loadExpertByExpertNo(eq(expertNo));
+                .findById(eq(expertNo));
         then(updateExpertPort).should()
                 .updateExpert(eq(expert));
     }
 
     private Expert stubLoadExpertByExpertNo(String expertNo) {
         Expert expert = Mockito.mock(Expert.class);
-        given(loadExpertPort.loadExpertByExpertNo(expertNo))
+        given(loadExpertPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
         return expert;
     }

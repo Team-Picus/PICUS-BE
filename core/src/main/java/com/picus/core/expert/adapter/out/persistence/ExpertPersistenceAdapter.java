@@ -4,6 +4,7 @@ package com.picus.core.expert.adapter.out.persistence;
 import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
+import com.picus.core.expert.application.port.in.response.SearchExpertResponse;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
@@ -71,7 +72,7 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     }
 
     @Override
-    public Optional<Expert> loadExpertByExpertNo(String expertNo) {
+    public Optional<Expert> findById(String expertNo) {
 
         // expert의 Project 가져오기
         List<Project> projects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo).stream()
@@ -86,6 +87,16 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
 
         return expertJpaRepository.findById(expertNo)
                 .map(expertEntity -> expertPersistenceMapper.mapToDomain(expertEntity, projects, skills, studio));
+    }
+
+    @Override
+    public List<SearchExpertResponse> findByNicknameContaining(String keyword) {
+        return expertJpaRepository.findByNicknameContaining(keyword).stream()
+                .map(expertEntity -> SearchExpertResponse.builder()
+                        .expertNo(expertEntity.getExpertNo())
+                        .nickname(expertEntity.getUserEntity().getNickname())
+                        .build())
+                .toList();
     }
 
     @Override

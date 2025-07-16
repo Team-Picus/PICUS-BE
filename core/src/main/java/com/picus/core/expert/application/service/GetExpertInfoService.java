@@ -18,7 +18,7 @@ public class GetExpertInfoService implements GetExpertInfoQuery {
     @Override
     public Expert getExpertInfo(String expertNo) {
         // expertNo로 Expert 조회
-        return loadExpertPort.loadExpertByExpertNo(expertNo)
+        return loadExpertPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
 }
