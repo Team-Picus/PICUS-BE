@@ -11,7 +11,6 @@ import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ class GetExpertServiceTest {
 
     private final LoadExpertPort loadExpertPort = Mockito.mock(LoadExpertPort.class);
 
-    private final GetExpertService getExpertService = new GetExpertService(loadExpertPort);
+    private final GetExpertInfoService getExpertService = new GetExpertInfoService(loadExpertPort);
 
     @Test
     @DisplayName("특정 아이디를 가진 Expert를 조회한다.")

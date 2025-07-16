@@ -3,7 +3,7 @@ package com.picus.core.expert.adapter.in.web;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
-import com.picus.core.expert.application.port.in.GetExpertQuery;
+import com.picus.core.expert.application.port.in.GetExpertInfoQuery;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
@@ -37,7 +37,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private GetExpertQuery getExpertQuery;
+    private GetExpertInfoQuery getExpertInfoQuery;
     @MockitoBean
     private GetExpertWebMapper getExpertWebMapper;
 
@@ -66,7 +66,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
 
 
         // then - 메서드 호출 검증
-        then(getExpertQuery).should()
+        then(getExpertInfoQuery).should()
                 .getExpertInfo(expertNo);
         then(getExpertWebMapper).should()
                 .toBasicInfo(any(Expert.class));
@@ -96,7 +96,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.studio").exists());
 
         // then - 메서드 호출 검증
-        then(getExpertQuery).should()
+        then(getExpertInfoQuery).should()
                 .getExpertInfo(expertNo);
         then(getExpertWebMapper).should()
                 .toDetailInfo(any(Expert.class));
@@ -113,7 +113,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .backgroundImageUrl("")
                 .build();
 
-        given(getExpertQuery.getExpertInfo(expertNo))
+        given(getExpertInfoQuery.getExpertInfo(expertNo))
                 .willReturn(mockExpert);
         given(getExpertWebMapper.toBasicInfo(mockExpert))
                 .willReturn(mockWebResponse);
@@ -131,7 +131,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                         .studio(Studio.builder().build())
                         .build();
 
-        given(getExpertQuery.getExpertInfo(expertNo))
+        given(getExpertInfoQuery.getExpertInfo(expertNo))
                 .willReturn(mockExpert);
         given(getExpertWebMapper.toDetailInfo(mockExpert))
                 .willReturn(webResponse);
