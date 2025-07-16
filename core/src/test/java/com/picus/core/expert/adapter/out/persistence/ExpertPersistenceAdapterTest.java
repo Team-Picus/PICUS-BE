@@ -4,6 +4,7 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
+import com.picus.core.expert.application.port.in.response.SearchExpertResponse;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -73,7 +74,8 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장되며 기본키는 연관맺은 UserEntity의 기본키가 된다.")
     public void saveExpert() throws Exception {
         // given
-        UserEntity userEntity = settingTestUserEntityData();
+        UserEntity userEntity = settingTestUserEntity();
+        userJpaRepository.save(userEntity);
         Expert expert = givenExpertDomain();
 
         // when
@@ -98,14 +100,14 @@ class ExpertPersistenceAdapterTest {
 
     @Test
     @DisplayName("expertNo로 Expert를 조회한다.")
-    public void loadExpertByExpertNo_success() throws Exception {
+    public void findById_success() throws Exception {
         // given
-        UserEntity userEntity = settingTestUserEntityData();
+        UserEntity userEntity = settingTestUserEntity();
         ExpertEntity savedExpertEntity = settingTestExpertEntityData(userEntity);
         String savedExpertNo = savedExpertEntity.getExpertNo();
 
         // when
-        Optional<Expert> optionalResult = expertPersistenceAdapter.loadExpertByExpertNo(savedExpertNo);
+        Optional<Expert> optionalResult = expertPersistenceAdapter.findById(savedExpertNo);
 
         // then
         assertThat(optionalResult).isPresent();
@@ -152,7 +154,7 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("ExpertEntity를 수정한다.")
     public void updateExpert_success() throws Exception {
         // given
-        UserEntity userEntity = settingTestUserEntityData();
+        UserEntity userEntity = settingTestUserEntity();
         ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
         String expertNo = expertEntity.getExpertNo();
 
@@ -185,8 +187,40 @@ class ExpertPersistenceAdapterTest {
 
     }
 
-    private UserEntity settingTestUserEntityData() {
-        UserEntity userEntity = UserEntity.builder()
+    @Test
+    @DisplayName("특정 닉네임 키워드가 포함된 전문가를 조회한다.")
+    public void findByNicknameContaining() throws Exception {
+        // given
+        String keyword = "nickname";
+        String testNickname1 = "xxnickname";
+        String testNickname2 = "xnicknamex";
+        String testNickname3 = "nicknamexx";
+        String testNickname4 = "xnicknamx";
+
+        // 데이터 셋팅
+        UserEntity userEntity1 = settingTestUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
+        settingTestExpertEntityData(userEntity1);
+        UserEntity userEntity2 = settingTestUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
+        settingTestExpertEntityData(userEntity2);
+        UserEntity userEntity3 = settingTestUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
+        settingTestExpertEntityData(userEntity3);
+        UserEntity userEntity4 = settingTestUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
+        settingTestExpertEntityData(userEntity4);
+
+        // when
+        List<SearchExpertResponse> results = expertPersistenceAdapter.findByNicknameContaining(keyword);
+
+        // then
+        assertThat(results).hasSize(3);
+        assertThat(results).extracting("nickname")
+                .containsExactlyInAnyOrder(testNickname1, testNickname2, testNickname3);
+    }
+
+
+    /* 헬퍼 메서드 */
+
+    private UserEntity settingTestUserEntity() {
+        return UserEntity.builder()
                 .name("이름")
                 .nickname("닉네임")
                 .tel("01012345678")
@@ -199,7 +233,22 @@ class ExpertPersistenceAdapterTest {
                 .myMoodboardCount(2)
                 .expertNo(null)
                 .build();
-        return userJpaRepository.save(userEntity);
+    }
+
+    private UserEntity settingTestUserEntityWithParam(String nickname, String name, String email, String providerId) {
+        return UserEntity.builder()
+                .name(name)
+                .nickname(nickname)
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email(email)
+                .providerId(providerId)
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo(null)
+                .build();
     }
 
     private ExpertEntity settingTestExpertEntityData(UserEntity userEntity) {
