@@ -2,6 +2,14 @@ package com.picus.core.expert.integration;
 
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
 import com.picus.core.expert.adapter.in.web.data.response.RequestApprovalWebResponse;
+import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
+import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
+import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
+import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
+import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
@@ -12,6 +20,10 @@ import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.shared.common.BaseResponse;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
+import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
+import com.picus.core.user.domain.model.Provider;
+import com.picus.core.user.domain.model.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,13 +50,23 @@ public class RequestApprovalIntegrationTest {
     @Autowired
     private TokenProvider tokenProvider;
     @Autowired
-    private LoadExpertPort loadExpertPort;
+    private UserJpaRepository userJpaRepository;
+    @Autowired
+    private ExpertJpaRepository expertJpaRepository;
+    @Autowired
+    private ProjectJpaRepository projectJpaRepository;
+    @Autowired
+    private SkillJpaRepository skillJpaRepository;
+    @Autowired
+    private StudioJpaRepository studioJpaRepository;
 
     @Test
     @DisplayName("사용자는 전문가 승인요청을 보낼 수 있다.")
     public void requestApproval() throws Exception {
         // given
-        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
+        UserEntity userEntity = settingTestUserEntityData();
+        String expertNo = userEntity.getUserNo(); // UserEntity의 PK와 ExpertEntity의 PK는 같음
+        String accessToken = tokenProvider.createAccessToken(expertNo, userEntity.getRole().toString());
         RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
 
         HttpHeaders headers = new HttpHeaders();
@@ -53,7 +75,7 @@ public class RequestApprovalIntegrationTest {
         HttpEntity<RequestApprovalWebRequest> httpEntity = new HttpEntity<>(webRequest, headers);
 
         // when
-        ResponseEntity<BaseResponse<RequestApprovalWebResponse>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
                 "/api/v1/experts/approval-requests",
                 HttpMethod.POST,
                 httpEntity,
@@ -61,24 +83,41 @@ public class RequestApprovalIntegrationTest {
                 }
         );
 
-        // then
+        // then - Response
+        assertResponse(response);
+        // then - Expert
+        assertExpert(expertNo);
+        // then - Projects
+        assertProjects(expertNo);
+        // then - Skills
+        assertSkills(expertNo);
+        // then - Studio
+        assertStudio(expertNo);
+    }
+
+    private void assertResponse(ResponseEntity<BaseResponse<Void>> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<RequestApprovalWebResponse> body = response.getBody();
-        assertThat(body).isNotNull();
+    }
 
-        RequestApprovalWebResponse result = body.getResult();
-        Optional<Expert> findExpert = loadExpertPort.loadExpertByExpertNo(result.expertNo());
-
-        assertThat(findExpert).isPresent();
-        Expert expert = findExpert.get();
-
-        assertThat(expert.getActivityCareer()).isEqualTo("3년차");
-        assertThat(expert.getActivityAreas()).containsExactlyInAnyOrder(
+    private void assertExpert(String expertNo) {
+        Optional<ExpertEntity> optionalSavedExpertEntity = expertJpaRepository.findById(expertNo);
+        assertThat(optionalSavedExpertEntity).isPresent();
+        ExpertEntity savedExpertEntity = optionalSavedExpertEntity.get();
+        assertThat(savedExpertEntity.getActivityCareer()).isEqualTo("3년차");
+        assertThat(savedExpertEntity.getActivityAreas()).containsExactlyInAnyOrder(
                 ActivityArea.SEOUL_GANGBUKGU,
                 ActivityArea.SEOUL_GANGDONGGU
         );
-        // Projects
-        assertThat(expert.getProjects()).hasSize(2)
+        assertThat(savedExpertEntity.getPortfolioLinks()).hasSize(2)
+                .containsExactlyInAnyOrder(
+                        "https://myportfolio.com/project1",
+                        "https://myportfolio.com/project2"
+                );
+    }
+
+    private void assertProjects(String expertNo) {
+        List<ProjectEntity> projects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(projects).hasSize(2)
                 .extracting("projectName", "startDate", "endDate")
                 .containsExactlyInAnyOrder(
                         tuple("단편영화 촬영 프로젝트",
@@ -88,28 +127,41 @@ public class RequestApprovalIntegrationTest {
                                 LocalDateTime.of(2023, 1, 10, 0, 0),
                                 LocalDateTime.of(2023, 2, 20, 0, 0))
                 );
+    }
 
-        // Skills
-        assertThat(expert.getSkills()).hasSize(2)
+    private void assertSkills(String expertNo) {
+        List<SkillEntity> skills = skillJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(skills).hasSize(2)
                 .extracting("skillType", "content")
                 .containsExactlyInAnyOrder(
                         tuple(SkillType.CAMERA, "시네마 카메라 운용 가능 (RED, Blackmagic)"),
                         tuple(SkillType.EDIT, "프리미어 프로 및 다빈치 리졸브 활용 편집 가능")
                 );
+    }
 
-        // Studio
-        assertThat(expert.getStudio()).isNotNull();
-        assertThat(expert.getStudio())
+    private void assertStudio(String expertNo) {
+        Optional<StudioEntity> studio = studioJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(studio).isPresent();
+        assertThat(studio.get())
                 .extracting("studioName", "employeesCount", "businessHours", "address")
                 .containsExactly("크리에이티브 필름", 5, "10:00 - 19:00", "서울특별시 마포구 월드컵북로 400");
+    }
 
-        // Portfolios
-        assertThat(expert.getPortfolios()).hasSize(2)
-                .extracting("link")
-                .containsExactlyInAnyOrder(
-                        "https://myportfolio.com/project1",
-                        "https://myportfolio.com/project2"
-                );
+    private UserEntity settingTestUserEntityData() {
+        UserEntity userEntity = UserEntity.builder()
+                .name("이름")
+                .nickname("닉네임")
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo(null)
+                .build();
+        return userJpaRepository.save(userEntity);
     }
 
     private RequestApprovalWebRequest givenRequestApprovalWebRequest() {

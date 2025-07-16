@@ -20,6 +20,10 @@ import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaReposit
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
+import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
+import com.picus.core.user.domain.model.Provider;
+import com.picus.core.user.domain.model.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,17 +66,25 @@ class ExpertPersistenceAdapterTest {
     @Autowired
     private StudioJpaRepository studioJpaRepository;
 
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+
     @Test
-    @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장된다")
+    @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장되며 기본키는 연관맺은 UserEntity의 기본키가 된다.")
     public void saveExpert() throws Exception {
         // given
+        UserEntity userEntity = settingTestUserEntityData();
         Expert expert = givenExpertDomain();
 
         // when
-        Expert saved = expertPersistenceAdapter.saveExpert(expert);
+        Expert saved = expertPersistenceAdapter.saveExpert(expert, userEntity.getUserNo());
 
         // then
-        assertThat(expertJpaRepository.findById(saved.getExpertNo())).isPresent();
+        Optional<ExpertEntity> optionalResult = expertJpaRepository.findById(saved.getExpertNo());
+        assertThat(optionalResult).isPresent();
+
+        // 기본키가 관계 맺은 UserEntity의 기본키와 같은지
+        assertThat(optionalResult.get().getExpertNo()).isEqualTo(userEntity.getUserNo());
 
         assertThat(projectJpaRepository.findAll())
                 .anyMatch(p -> p.getProjectName().equals("프로젝트 A"));
@@ -88,7 +100,7 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("expertNo로 Expert를 조회한다.")
     public void loadExpertByExpertNo_success() throws Exception {
         // given
-        ExpertEntity savedExpertEntity = settingDefaultEntityData();
+        ExpertEntity savedExpertEntity = settingTestExpertEntityData();
         String savedExpertNo = savedExpertEntity.getExpertNo();
 
         // when
@@ -173,8 +185,24 @@ class ExpertPersistenceAdapterTest {
 
     }
 
+    private UserEntity settingTestUserEntityData() {
+        UserEntity userEntity = UserEntity.builder()
+                .name("이름")
+                .nickname("닉네임")
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo(null)
+                .build();
+        return userJpaRepository.save(userEntity);
+    }
 
-    private ExpertEntity settingDefaultEntityData() {
+    private ExpertEntity settingTestExpertEntityData() {
         ExpertEntity expertEntity = givenExpertEntity();
         ExpertEntity savedExpertEntity = expertJpaRepository.save(expertEntity);
 

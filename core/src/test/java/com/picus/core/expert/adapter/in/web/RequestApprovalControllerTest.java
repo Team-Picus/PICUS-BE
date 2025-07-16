@@ -2,10 +2,9 @@ package com.picus.core.expert.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.adapter.in.web.data.response.RequestApprovalWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.RequestApprovalWebMapper;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
-import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
@@ -13,14 +12,12 @@ import com.picus.core.expert.domain.model.vo.ActivityArea;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
-import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,6 +40,8 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+
 
     @MockitoBean
     private RequestApprovalUseCase requestApprovalUseCase;
@@ -68,28 +67,21 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("COMMON200"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isNotEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("요청에 성공하였습니다."));
 
 
         // then - 메서드 호출 검증
         then(webMapper).should()
-                .toDomain(eq(webRequest));
+                .toCommand(eq(webRequest), eq(TEST_USER_ID));
         then(requestApprovalUseCase).should()
-                .requestApproval(any(Expert.class));
-        then(webMapper).should()
-                .toWebResponse(any(Expert.class));
+                .requestApproval(any(RequestApprovalCommand.class));
+
     }
 
     private void stubMethodInController() {
-        Expert mockExpert = Mockito.mock(Expert.class);
-        RequestApprovalWebResponse mockResponse = Mockito.mock(RequestApprovalWebResponse.class);
-        given(webMapper.toDomain(any(RequestApprovalWebRequest.class)))
-                .willReturn(mockExpert);
-        given(requestApprovalUseCase.requestApproval(any(Expert.class)))
-                .willReturn(mockExpert);
-        given(webMapper.toWebResponse(any(Expert.class)))
-                .willReturn(mockResponse);
+        RequestApprovalCommand mockCommand = Mockito.mock(RequestApprovalCommand.class);
+        given(webMapper.toCommand(any(RequestApprovalWebRequest.class), eq(TEST_USER_ID)))
+                .willReturn(mockCommand);
     }
 
     private RequestApprovalWebRequest givenRequestApprovalWebRequest() {

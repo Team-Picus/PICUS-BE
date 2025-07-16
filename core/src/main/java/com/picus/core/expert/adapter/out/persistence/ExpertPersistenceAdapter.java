@@ -21,6 +21,10 @@ import com.picus.core.expert.adapter.out.persistence.mapper.StudioPersistenceMap
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
 import com.picus.core.shared.annotation.PersistenceAdapter;
+import com.picus.core.shared.exception.RestApiException;
+import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
+import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -37,6 +41,8 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
     private final SkillJpaRepository skillJpaRepository;
     private final StudioJpaRepository studioJpaRepository;
 
+    private final UserJpaRepository userJpaRepository;
+
     // Mapper
     private final ExpertPersistenceMapper expertPersistenceMapper;
     private final ProjectPersistenceMapper projectPersistenceMapper;
@@ -45,10 +51,10 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
 
 
     @Override
-    public Expert saveExpert(Expert expert) {
+    public Expert saveExpert(Expert expert, String userNo) {
 
         // ExpertEntity 저장
-        ExpertEntity saved = saveExpertEntity(expert);
+        ExpertEntity saved = saveExpertEntity(expert, userNo);
 
         // ProjectEntity 저장
         saveProjectEntity(expert, saved);
@@ -93,8 +99,11 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
      * private 메서드
      */
 
-    private ExpertEntity saveExpertEntity(Expert expert) {
+    private ExpertEntity saveExpertEntity(Expert expert, String userNo) {
+        UserEntity userEntity = userJpaRepository.findById(userNo)
+                .orElseThrow(() -> new RestApiException(GlobalErrorStatus._NOT_FOUND));
         ExpertEntity expertEntity = expertPersistenceMapper.mapToEntity(expert);
+        expertEntity.bindUserEntity(userEntity);
         return expertJpaRepository.save(expertEntity);
     }
 

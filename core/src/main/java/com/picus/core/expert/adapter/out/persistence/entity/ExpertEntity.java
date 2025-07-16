@@ -33,7 +33,7 @@ public class ExpertEntity extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "expert_no")  // User와 PK 공유
-    private UserEntity user;
+    private UserEntity userEntity;
 
     private String backgroundImageKey;
 
@@ -68,6 +68,10 @@ public class ExpertEntity extends BaseEntity {
         this.portfolioLinks = newExpert.getPortfolios().stream()
                 .map(Portfolio::getLink).toList();
         this.approvalStatus = newExpert.getApprovalStatus();
+    }
+
+    public void bindUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
 }

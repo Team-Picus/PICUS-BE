@@ -15,6 +15,8 @@ import static org.mockito.BDDMockito.given;
 
 public abstract class AbstractSecurityMockSetup {
 
+    public static final String TEST_USER_ID = "test_user_id";
+
     @MockitoBean
     protected TokenProvider tokenProvider;
 
@@ -27,6 +29,7 @@ public abstract class AbstractSecurityMockSetup {
     @BeforeEach
     void setupSecurityMocks() {
         given(tokenProvider.getToken(any())).willReturn(Optional.of("mock-jwt-token"));
+        given(tokenProvider.getId(any())).willReturn(Optional.of(TEST_USER_ID));
         given(tokenProvider.validateToken("mock-jwt-token")).willReturn(true);
         given(tokenProvider.getAuthentication("mock-jwt-token"))
                 .willReturn(new UsernamePasswordAuthenticationToken("user", null, List.of()));
