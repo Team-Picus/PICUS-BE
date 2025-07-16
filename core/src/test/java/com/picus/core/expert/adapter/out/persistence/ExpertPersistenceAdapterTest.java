@@ -100,7 +100,8 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("expertNo로 Expert를 조회한다.")
     public void loadExpertByExpertNo_success() throws Exception {
         // given
-        ExpertEntity savedExpertEntity = settingTestExpertEntityData();
+        UserEntity userEntity = settingTestUserEntityData();
+        ExpertEntity savedExpertEntity = settingTestExpertEntityData(userEntity);
         String savedExpertNo = savedExpertEntity.getExpertNo();
 
         // when
@@ -151,9 +152,9 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("ExpertEntity를 수정한다.")
     public void updateExpert_success() throws Exception {
         // given
-        ExpertEntity originalEntity = givenExpertEntity();
-        ExpertEntity savedEntity = expertJpaRepository.save(originalEntity);
-        String expertNo = savedEntity.getExpertNo();
+        UserEntity userEntity = settingTestUserEntityData();
+        ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
+        String expertNo = expertEntity.getExpertNo();
 
 
         // 수정할 도메인 Expert 생성
@@ -173,15 +174,14 @@ class ExpertPersistenceAdapterTest {
 
         // then
         ExpertEntity updatedEntity = expertJpaRepository.findById(expertNo).orElseThrow();
-        assertThat(updatedEntity).satisfies(expertEntity -> {
-            assertThat(expertEntity.getIntro()).isEqualTo("수정된 소개");
-            assertThat(expertEntity.getActivityCareer()).isEqualTo("수정된 경력");
-            assertThat(expertEntity.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GWANAKGU);
-            assertThat(expertEntity.getActivityCount()).isEqualTo(15);
-            assertThat(expertEntity.getLastActivityAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 12, 0));
-            assertThat(expertEntity.getPortfolioLinks()).containsExactly("http://new-portfolio.com");
-            assertThat(expertEntity.getApprovalStatus()).isEqualTo(ApprovalStatus.APPROVAL);
-        });
+
+        assertThat(updatedEntity.getIntro()).isEqualTo("수정된 소개");
+        assertThat(updatedEntity.getActivityCareer()).isEqualTo("수정된 경력");
+        assertThat(updatedEntity.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GWANAKGU);
+        assertThat(updatedEntity.getActivityCount()).isEqualTo(15);
+        assertThat(updatedEntity.getLastActivityAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 12, 0));
+        assertThat(updatedEntity.getPortfolioLinks()).containsExactly("http://new-portfolio.com");
+        assertThat(updatedEntity.getApprovalStatus()).isEqualTo(ApprovalStatus.APPROVAL);
 
     }
 
@@ -202,8 +202,9 @@ class ExpertPersistenceAdapterTest {
         return userJpaRepository.save(userEntity);
     }
 
-    private ExpertEntity settingTestExpertEntityData() {
+    private ExpertEntity settingTestExpertEntityData(UserEntity userEntity) {
         ExpertEntity expertEntity = givenExpertEntity();
+        expertEntity.bindUserEntity(userEntity);
         ExpertEntity savedExpertEntity = expertJpaRepository.save(expertEntity);
 
         List<ProjectEntity> projectEntities = givenProjectEntity(savedExpertEntity);

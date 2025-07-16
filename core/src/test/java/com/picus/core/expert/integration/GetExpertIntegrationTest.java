@@ -15,6 +15,12 @@ import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.shared.common.BaseResponse;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
+import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
+import com.picus.core.user.domain.model.Provider;
+import com.picus.core.user.domain.model.Role;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +29,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.transaction.AfterTransaction;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 @ActiveProfiles("test")
 public class GetExpertIntegrationTest {
 
@@ -47,13 +57,28 @@ public class GetExpertIntegrationTest {
     private SkillJpaRepository skillJpaRepository;
     @Autowired
     private StudioJpaRepository studioJpaRepository;
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+    @Autowired
+    private EntityManager entityManager;
+
+    @AfterTransaction
+    void tearDown() {
+        projectJpaRepository.deleteAllInBatch();
+        skillJpaRepository.deleteAllInBatch();
+        studioJpaRepository.deleteAllInBatch();
+        expertJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("사용자는 전문가의 기본정보를 조회할 수 있다.")
     public void getExpertBasicInfo() throws Exception {
         // given
-        ExpertEntity expertEntity = settingDefaultEntityData();
-        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
+        UserEntity userEntity = settingTestUserEntityData();
+        ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
+
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
@@ -88,7 +113,8 @@ public class GetExpertIntegrationTest {
     @DisplayName("사용자는 전문가의 상세정보를 조회할 수 있다.")
     public void getExpertDetailInfo() throws Exception {
         // given
-        ExpertEntity expertEntity = settingDefaultEntityData();
+        UserEntity userEntity = settingTestUserEntityData();
+        ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
         String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
 
         HttpHeaders headers = new HttpHeaders();
@@ -144,8 +170,26 @@ public class GetExpertIntegrationTest {
 
     }
 
-    private ExpertEntity settingDefaultEntityData() {
+    private UserEntity settingTestUserEntityData() {
+        UserEntity userEntity = UserEntity.builder()
+                .name("이름")
+                .nickname("닉네임")
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo(null)
+                .build();
+        return userJpaRepository.save(userEntity);
+    }
+
+    private ExpertEntity settingTestExpertEntityData(UserEntity userEntity) {
         ExpertEntity expertEntity = givenExpertEntity();
+        expertEntity.bindUserEntity(userEntity);
         ExpertEntity savedExpertEntity = expertJpaRepository.save(expertEntity);
 
         List<ProjectEntity> projectEntities = givenProjectEntity(savedExpertEntity);
@@ -156,6 +200,14 @@ public class GetExpertIntegrationTest {
 
         StudioEntity studioEntity = givenStudioEntity(savedExpertEntity);
         studioJpaRepository.save(studioEntity);
+        entityManager.flush();
+        // 지금까지 열린 테스트 트랜잭션을 커밋
+        TestTransaction.flagForCommit();  // 커밋하도록 표시
+        TestTransaction.end();            // 실제 커밋 수행
+
+        // 새로운 트랜잭션 시작 (다시 @Transactional 범위로 돌아가기 위해)
+        TestTransaction.start();
+
         return savedExpertEntity;
     }
 
