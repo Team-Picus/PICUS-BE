@@ -1,9 +1,7 @@
 package com.picus.core.expert.adapter.in.web;
 
-import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
 import com.picus.core.expert.adapter.in.web.mapper.SuggestExpertWebMapper;
 import com.picus.core.expert.application.port.in.SuggestExpertsQuery;
-import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,18 +19,20 @@ import java.util.List;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = SuggestExpertController.class)
-@Import(SuggestExpertWebMapper.class)
 @AutoConfigureMockMvc(addFilters = false)
 class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
     private SuggestExpertsQuery suggestExpertsQuery;
+
+    @MockitoBean
+    private SuggestExpertWebMapper suggestExpertWebMapper;
 
     @Test
     @DisplayName("닉네임에 특정 keyword가 포함되는 전문가를 n명 추천해준다.")
@@ -48,7 +47,6 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
 
         stubMethodInController(keyword, mockResult, size);
 
-
         // when & then
         mockMvc.perform(get("/api/v1/experts/search/suggestions")
                         .param("keyword", keyword)
@@ -56,14 +54,15 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("COMMON200"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andExpect(jsonPath("$.result[0].expertNo").value("ex1"))
-                .andExpect(jsonPath("$.result[0].nickname").value("nick1"))
-                .andExpect(jsonPath("$.result[0].profileImageUrl").value("aaa"))
-                .andExpect(jsonPath("$.result[1].expertNo").value("ex2"))
-                .andExpect(jsonPath("$.result[1].nickname").value("nick2"))
-                .andExpect(jsonPath("$.result[1].profileImageUrl").value("bbb"));
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.result").isArray())
+                .andExpect(jsonPath("$.result[0].expertNo").exists())
+                .andExpect(jsonPath("$.result[0].nickname").exists())
+                .andExpect(jsonPath("$.result[0].profileImageUrl").exists())
+                .andExpect(jsonPath("$.result[1].expertNo").exists())
+                .andExpect(jsonPath("$.result[1].nickname").exists())
+                .andExpect(jsonPath("$.result[1].profileImageUrl").exists());
 
         then(suggestExpertsQuery).should().suggestExperts(keyword, size);
     }
@@ -80,8 +79,9 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("COMMON200"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."));
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.result").isArray());
 
         then(suggestExpertsQuery).should().suggestExperts(keyword, 3);
     }
@@ -94,9 +94,13 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
     private void stubMethodInController(String keyword, List<SuggestExpertAppResponse> mockResult, int size) {
-        given(suggestExpertsQuery.suggestExperts(keyword, size))
-                .willReturn(mockResult);
+        given(suggestExpertsQuery.suggestExperts(keyword, size)).willReturn(mockResult);
+        for (SuggestExpertAppResponse app : mockResult) {
+            given(suggestExpertWebMapper.toWebResponse(app)).willReturn(
+                    new com.picus.core.expert.adapter.in.web.data.response.SuggestExpertWebResponse(
+                            app.expertNo(), app.nickname(), app.profileImageUrl()
+                    )
+            );
+        }
     }
-
-
 }

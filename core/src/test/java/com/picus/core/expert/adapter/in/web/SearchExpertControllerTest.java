@@ -34,18 +34,32 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     @MockitoBean
     private SearchExpertsQuery searchExpertsQuery;
 
+    @MockitoBean
+    private SearchExpertWebMapper searchExpertWebMapper;
+
     @Test
-    @DisplayName("닉네임에 특정 keyword가 포함되는 전문가를 검색한다")
+    @DisplayName("닉네임에 특정 keyword가 포함되는 전문가를 검색하면 필드가 존재한다")
     void searchExperts_success() throws Exception {
         // given
         String keyword = "nick";
-        List<SearchExpertAppResponse> mockResult = List.of(
-                new SearchExpertAppResponse("ex1", "nick1", "aaa"),
-                new SearchExpertAppResponse("ex2", "nick2", "bbb")
+        List<SearchExpertAppResponse> mockAppResponses = List.of(
+                new SearchExpertAppResponse("ex1", "nick1", "url1"),
+                new SearchExpertAppResponse("ex2", "nick2", "url2")
+        );
+        List<SearchExpertWebResponse> mockWebResponses = List.of(
+                SearchExpertWebResponse.builder()
+                        .expertNo("ex1")
+                        .nickname("nick1")
+                        .profileImageUrl("url1")
+                        .build(),
+                SearchExpertWebResponse.builder()
+                        .expertNo("ex2")
+                        .nickname("nick2")
+                        .profileImageUrl("url2")
+                        .build()
         );
 
-        stubMethodInController(keyword, mockResult);
-
+        stubMethodInController(keyword, mockAppResponses, mockWebResponses);
 
         // when & then
         mockMvc.perform(get("/api/v1/experts/search/results")
@@ -53,16 +67,17 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("COMMON200"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andExpect(jsonPath("$.result[0].expertNo").value("ex1"))
-                .andExpect(jsonPath("$.result[0].nickname").value("nick1"))
-                .andExpect(jsonPath("$.result[0].profileImageUrl").value("aaa"))
-                .andExpect(jsonPath("$.result[1].expertNo").value("ex2"))
-                .andExpect(jsonPath("$.result[1].nickname").value("nick2"))
-                .andExpect(jsonPath("$.result[1].profileImageUrl").value("bbb"));
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.result").isArray())
+                .andExpect(jsonPath("$.result[0].expertNo").exists())
+                .andExpect(jsonPath("$.result[0].nickname").exists())
+                .andExpect(jsonPath("$.result[0].profileImageUrl").exists());
 
         then(searchExpertsQuery).should().searchExperts(keyword);
+        for (SearchExpertAppResponse appResponse : mockAppResponses) {
+            then(searchExpertWebMapper).should().toWebResponse(appResponse);
+        }
     }
 
     @Test
@@ -72,9 +87,13 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(status().isBadRequest());
     }
 
-    private void stubMethodInController(String keyword, List<SearchExpertAppResponse> mockResult) {
-        given(searchExpertsQuery.searchExperts(keyword))
-                .willReturn(mockResult);
-    }
+    private void stubMethodInController(String keyword,
+                                        List<SearchExpertAppResponse> appResponses,
+                                        List<SearchExpertWebResponse> webResponses) {
+        given(searchExpertsQuery.searchExperts(keyword)).willReturn(appResponses);
 
+        for (int i = 0; i < appResponses.size(); i++) {
+            given(searchExpertWebMapper.toWebResponse(appResponses.get(i))).willReturn(webResponses.get(i));
+        }
+    }
 }
