@@ -81,8 +81,7 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     }
 
     @Override
-    public UserWithProfileImageDto findUserInfoByExpertNo(String expertNo) {
-        Optional<UserWithProfileImageDto> userWithProfileImageDto = userJpaRepository.findUserInfoByExpertNo(expertNo);
-        return userWithProfileImageDto.orElseThrow(() -> new RestApiException(_NOT_FOUND));
+    public Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo) {
+        return userJpaRepository.findUserInfoByExpertNo(expertNo);
     }
 }
