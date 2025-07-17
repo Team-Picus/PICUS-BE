@@ -33,7 +33,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @ActiveProfiles("test")
-public class SearchExpertIntegrationTest {
+public class SuggestExpertIntegrationTest {
+
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
@@ -54,14 +55,16 @@ public class SearchExpertIntegrationTest {
 
     private record SetupSearchData(
             String expertNo1,
-            String expertNo2
+            String expertNo2,
+            String expertNo3
     ) {}
 
     @Test
-    @DisplayName("사용자는 특정 키워드가 포함된 전문가들을 검색할 수 있다.")
+    @DisplayName("사용자는 특정 키워드가 포함된 전문가들을 n명을 추천받을 수 있다")
     public void searchExpert() throws Exception {
         // given
         String testKeyword = "nick";
+        int size = 2;
 
         String testExpertNo1;
         String testNickname1 = "xxnick1";
@@ -71,26 +74,32 @@ public class SearchExpertIntegrationTest {
         String testNickname2 = "xnick2x";
 //        String testProfileImageUrl2 = "img2.com";
 
+        String testExpertNo3;
+        String testNickname3 = "nick3xx";
+//        String testProfileImageUrl3 = "img3.com";
+
         SetupSearchData d = setUpData(
                 testNickname1, "email1@example.com", "social1",
-                testNickname2, "email2@example.com", "social2"
+                testNickname2, "email2@example.com", "social2",
+                testNickname3, "email3@example.com", "social3"
         );
         testExpertNo1 = d.expertNo1;
         testExpertNo2 = d.expertNo2;
+        testExpertNo3 = d.expertNo3;
 
-        commitTestTransaction();
+        commitTestTransaction(); // 데이터베이스에 저장
 
         // 요청값 셋팅
         HttpEntity<Void> request = setUpRequest();
 
         // when
         ResponseEntity<BaseResponse<List<SearchExpertWebResponse>>> response = restTemplate.exchange(
-                "/api/v1/experts/search/results?keyword={keyword}",
+                "/api/v1/experts/search/suggestions?keyword={keyword}&size={size}",
                 HttpMethod.GET,
                 request,
                 new ParameterizedTypeReference<>() {
                 },
-                testKeyword
+                testKeyword, size
         );
 
         // then
@@ -103,8 +112,8 @@ public class SearchExpertIntegrationTest {
         assertThat(result).hasSize(2)
                 .extracting("expertNo", "nickname")
                 .containsExactly(
-                        Tuple.tuple(testExpertNo2, testNickname2),
-                        Tuple.tuple(testExpertNo1, testNickname1)
+                        Tuple.tuple(testExpertNo3, testNickname3),
+                        Tuple.tuple(testExpertNo2, testNickname2)
                 );
         result.forEach(r ->
                 assertThat(r.profileImageUrl())
@@ -114,7 +123,8 @@ public class SearchExpertIntegrationTest {
 
     private SetupSearchData setUpData(
             String nickname1, String email1, String providerId1,
-            String nickname2, String email2, String providerId2
+            String nickname2, String email2, String providerId2,
+            String nickname3, String email3, String providerId3
     ) {
         // User + ProfileImage + Expert 엔티티 생성 및 저장
         UserEntity user1 = givenUserEntity(nickname1, email1, providerId1);
@@ -127,6 +137,11 @@ public class SearchExpertIntegrationTest {
         ProfileImageEntity pi2 = givenProfileImageEntity("file_key2", user2.getUserNo());
         profileImageJpaRepository.save(pi2);
 
+        UserEntity user3 = givenUserEntity(nickname3, email3, providerId3);
+        userJpaRepository.save(user3);
+        ProfileImageEntity pi3 = givenProfileImageEntity("file_key3", user3.getUserNo());
+        profileImageJpaRepository.save(pi3);
+
         ExpertEntity exp1 = givenExpertEntity();
         exp1.bindUserEntity(user1);
         expertJpaRepository.save(exp1);
@@ -135,13 +150,19 @@ public class SearchExpertIntegrationTest {
         exp2.bindUserEntity(user2);
         expertJpaRepository.save(exp2);
 
+        ExpertEntity exp3 = givenExpertEntity();
+        exp3.bindUserEntity(user3);
+        expertJpaRepository.save(exp3);
+
         // expertNo 필드 연결
         user1.assignExpertNo(exp1.getExpertNo());
         user2.assignExpertNo(exp2.getExpertNo());
+        user3.assignExpertNo(exp3.getExpertNo());
 
         return new SetupSearchData(
                 exp1.getExpertNo(),
-                exp2.getExpertNo()
+                exp2.getExpertNo(),
+                exp3.getExpertNo()
         );
     }
 
@@ -193,5 +214,4 @@ public class SearchExpertIntegrationTest {
         TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
         TestTransaction.end(); // 실제 커밋 수행
     }
-
 }

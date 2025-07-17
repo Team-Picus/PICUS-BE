@@ -25,6 +25,7 @@ import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +46,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Transactional
 public class RequestApprovalIntegrationTest {
 
     @Autowired
@@ -60,11 +64,22 @@ public class RequestApprovalIntegrationTest {
     @Autowired
     private StudioJpaRepository studioJpaRepository;
 
+    @AfterEach
+    void tearDown() {
+        projectJpaRepository.deleteAllInBatch();
+        skillJpaRepository.deleteAllInBatch();
+        studioJpaRepository.deleteAllInBatch();
+        expertJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
+
     @Test
     @DisplayName("사용자는 전문가 승인요청을 보낼 수 있다.")
     public void requestApproval() throws Exception {
         // given
         UserEntity userEntity = settingTestUserEntityData();
+        commitTestTransaction();
+
         String expertNo = userEntity.getUserNo(); // UserEntity의 PK와 ExpertEntity의 PK는 같음
         String accessToken = tokenProvider.createAccessToken(expertNo, userEntity.getRole().toString());
         RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
@@ -205,5 +220,9 @@ public class RequestApprovalIntegrationTest {
                                 .build()
                 )
         );
+    }
+    private void commitTestTransaction() {
+        TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
+        TestTransaction.end(); // 실제 커밋 수행
     }
 }
