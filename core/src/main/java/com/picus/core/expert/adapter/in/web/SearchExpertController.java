@@ -2,7 +2,7 @@ package com.picus.core.expert.adapter.in.web;
 
 import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
-import com.picus.core.expert.application.port.in.SearchExpertQuery;
+import com.picus.core.expert.application.port.in.SearchExpertsQuery;
 import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 public class SearchExpertController {
 
-    private final SearchExpertQuery searchExpertQuery;
+    private final SearchExpertsQuery searchExpertsQuery;
     private final SearchExpertWebMapper searchExpertWebMapper;
 
     /**
@@ -24,7 +24,7 @@ public class SearchExpertController {
      */
     @GetMapping("/api/v1/experts/search/results")
     public BaseResponse<List<SearchExpertWebResponse>> searchExpert(@RequestParam String keyword) {
-        List<SearchExpertAppResponse> searchExpertAppResponses = searchExpertQuery.searchExpert(keyword);
+        List<SearchExpertAppResponse> searchExpertAppResponses = searchExpertsQuery.searchExperts(keyword);
 
         return BaseResponse.onSuccess(
                 searchExpertAppResponses.stream()

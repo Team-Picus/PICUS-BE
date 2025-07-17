@@ -2,7 +2,7 @@ package com.picus.core.expert.adapter.in.web;
 
 import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
-import com.picus.core.expert.application.port.in.SearchExpertQuery;
+import com.picus.core.expert.application.port.in.SearchExpertsQuery;
 import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private SearchExpertQuery searchExpertQuery;
+    private SearchExpertsQuery searchExpertsQuery;
     @MockitoBean
     private SearchExpertWebMapper searchExpertWebMapper;
 
@@ -59,7 +59,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andExpect(jsonPath("$.result").exists());
 
-        then(searchExpertQuery).should().searchExpert(keyword);
+        then(searchExpertsQuery).should().searchExperts(keyword);
         then(searchExpertWebMapper).should(times(2))
                 .toWebResponse(any(SearchExpertAppResponse.class));
     }
@@ -72,7 +72,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
     private void stubMethodInController(String keyword, List<SearchExpertAppResponse> mockResult) {
-        given(searchExpertQuery.searchExpert(keyword))
+        given(searchExpertsQuery.searchExperts(keyword))
                 .willReturn(mockResult);
         mockResult.forEach(searchExpertAppResponse ->
                 given(searchExpertWebMapper.toWebResponse(searchExpertAppResponse))

@@ -20,11 +20,11 @@ class SearchExpertServiceTest {
 
     private final LoadExpertPort loadExpertPort = Mockito.mock(LoadExpertPort.class);
     private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
-    private final SearchExpertService searchExpertService = new SearchExpertService(loadExpertPort, userQueryPort);
+    private final SearchExpertsService searchExpertService = new SearchExpertsService(loadExpertPort, userQueryPort);
 
     @Test
     @DisplayName("특정 키워드가 포함된 닉네임을 가진 전문가 찾기 서비스 메서드의 리턴값 및 상호작용 검증")
-    public void searchExpert_success() throws Exception {
+    public void searchExperts_success() throws Exception {
         // given
         List<SearchExpertAppResponse> sampleResponses = List.of(
                 SearchExpertAppResponse.builder()
@@ -38,7 +38,7 @@ class SearchExpertServiceTest {
                 .willReturn(any(ProfileImage.class));
 
         // when
-        List<SearchExpertAppResponse> results = searchExpertService.searchExpert("any_keyword");
+        List<SearchExpertAppResponse> results = searchExpertService.searchExperts("any_keyword");
 
         // then
         assertThat(results).hasSize(1)

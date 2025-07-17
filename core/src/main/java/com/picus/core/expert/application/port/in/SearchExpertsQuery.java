@@ -7,6 +7,6 @@ import java.util.List;
 /**
  * 특정 키워드가 포함되는 닉네임을 가진 전문가를 검색한다.
  */
-public interface SearchExpertQuery {
-    List<SearchExpertAppResponse> searchExpert(String keyword);
+public interface SearchExpertsQuery {
+    List<SearchExpertAppResponse> searchExperts(String keyword);
 }
