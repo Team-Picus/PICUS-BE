@@ -1,10 +1,9 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.response.SearchExpertResponse;
+import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.ProfileImage;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 
@@ -28,8 +26,8 @@ class SearchExpertServiceTest {
     @DisplayName("특정 키워드가 포함된 닉네임을 가진 전문가 찾기 서비스 메서드의 리턴값 및 상호작용 검증")
     public void searchExpert_success() throws Exception {
         // given
-        List<SearchExpertResponse> sampleResponses = List.of(
-                SearchExpertResponse.builder()
+        List<SearchExpertAppResponse> sampleResponses = List.of(
+                SearchExpertAppResponse.builder()
                         .expertNo("test_expert_no")
                         .nickname("test_nickname")
                         .build()
@@ -40,7 +38,7 @@ class SearchExpertServiceTest {
                 .willReturn(any(ProfileImage.class));
 
         // when
-        List<SearchExpertResponse> results = searchExpertService.searchExpert("any_keyword");
+        List<SearchExpertAppResponse> results = searchExpertService.searchExpert("any_keyword");
 
         // then
         assertThat(results).hasSize(1)
