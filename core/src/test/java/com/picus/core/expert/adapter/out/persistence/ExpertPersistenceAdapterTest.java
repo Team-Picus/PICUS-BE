@@ -5,6 +5,7 @@ import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
 import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
+import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -188,7 +189,7 @@ class ExpertPersistenceAdapterTest {
     }
 
     @Test
-    @DisplayName("특정 닉네임 키워드가 포함된 전문가를 조회한다.")
+    @DisplayName("특정 닉네임 키워드가 포함된 전문가를 오름차순 조회한다.")
     public void findByNicknameContaining() throws Exception {
         // given
         String keyword = "nickname";
@@ -213,7 +214,36 @@ class ExpertPersistenceAdapterTest {
         // then
         assertThat(results).hasSize(3);
         assertThat(results).extracting("nickname")
-                .containsExactlyInAnyOrder(testNickname1, testNickname2, testNickname3);
+                .containsExactly(testNickname3, testNickname2, testNickname1);
+    }
+
+    @Test
+    @DisplayName("특정 닉네임 키워드가 포함된 전문가를 n개를 이름순으로 오름차순 조회한다.")
+    public void findByNicknameContainingLimited() throws Exception {
+        // given
+        String keyword = "nickname";
+        String testNickname1 = "xxnickname";
+        String testNickname2 = "xnicknamex";
+        String testNickname3 = "nicknamexx";
+        String testNickname4 = "xnicknamx";
+
+        // 데이터 셋팅
+        UserEntity userEntity1 = settingTestUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
+        settingTestExpertEntityData(userEntity1);
+        UserEntity userEntity2 = settingTestUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
+        settingTestExpertEntityData(userEntity2);
+        UserEntity userEntity3 = settingTestUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
+        settingTestExpertEntityData(userEntity3);
+        UserEntity userEntity4 = settingTestUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
+        settingTestExpertEntityData(userEntity4);
+
+        // when
+        List<SuggestExpertAppResponse> results = expertPersistenceAdapter.findByNicknameContainingLimited(keyword, 2);
+
+        // then
+        assertThat(results).hasSize(2);
+        assertThat(results).extracting("nickname")
+                .containsExactly(testNickname3, testNickname2);
     }
 
 
