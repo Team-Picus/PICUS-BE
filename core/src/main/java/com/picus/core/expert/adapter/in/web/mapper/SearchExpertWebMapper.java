@@ -9,7 +9,7 @@ public class SearchExpertWebMapper {
 
     public SearchExpertWebResponse toWebResponse(SearchExpertAppResponse searchExpertAppResponse) {
         return SearchExpertWebResponse.builder()
-                .expertNo(searchExpertAppResponse.nickname())
+                .expertNo(searchExpertAppResponse.expertNo())
                 .nickname(searchExpertAppResponse.nickname())
                 .profileImageUrl(searchExpertAppResponse.profileImageUrl())
                 .build();

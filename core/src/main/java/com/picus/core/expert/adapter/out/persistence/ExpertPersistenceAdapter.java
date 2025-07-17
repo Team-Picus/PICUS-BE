@@ -5,6 +5,7 @@ import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMap
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
 import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
+import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
@@ -27,6 +28,7 @@ import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,6 +95,16 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     public List<SearchExpertAppResponse> findByNicknameContaining(String keyword) {
         return expertJpaRepository.findByNicknameContaining(keyword).stream()
                 .map(expertEntity -> SearchExpertAppResponse.builder()
+                        .expertNo(expertEntity.getExpertNo())
+                        .nickname(expertEntity.getUserEntity().getNickname())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<SuggestExpertAppResponse> findByNicknameContainingLimited(String keyword, int size) {
+        return expertJpaRepository.findByNicknameContainingLimited(keyword, PageRequest.of(0, size)).stream()
+                .map(expertEntity -> SuggestExpertAppResponse.builder()
                         .expertNo(expertEntity.getExpertNo())
                         .nickname(expertEntity.getUserEntity().getNickname())
                         .build())

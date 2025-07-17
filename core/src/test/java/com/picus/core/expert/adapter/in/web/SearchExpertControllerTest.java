@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,15 +18,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = SearchExpertController.class)
+@Import(SearchExpertWebMapper.class)
 @AutoConfigureMockMvc(addFilters = false)
 class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     @Autowired
@@ -33,8 +33,6 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
 
     @MockitoBean
     private SearchExpertsQuery searchExpertsQuery;
-    @MockitoBean
-    private SearchExpertWebMapper searchExpertWebMapper;
 
     @Test
     @DisplayName("닉네임에 특정 keyword가 포함되는 전문가를 검색한다")
@@ -57,11 +55,14 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("COMMON200"))
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andExpect(jsonPath("$.result").exists());
+                .andExpect(jsonPath("$.result[0].expertNo").value("ex1"))
+                .andExpect(jsonPath("$.result[0].nickname").value("nick1"))
+                .andExpect(jsonPath("$.result[0].profileImageUrl").value("aaa"))
+                .andExpect(jsonPath("$.result[1].expertNo").value("ex2"))
+                .andExpect(jsonPath("$.result[1].nickname").value("nick2"))
+                .andExpect(jsonPath("$.result[1].profileImageUrl").value("bbb"));
 
         then(searchExpertsQuery).should().searchExperts(keyword);
-        then(searchExpertWebMapper).should(times(2))
-                .toWebResponse(any(SearchExpertAppResponse.class));
     }
 
     @Test
@@ -74,12 +75,6 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     private void stubMethodInController(String keyword, List<SearchExpertAppResponse> mockResult) {
         given(searchExpertsQuery.searchExperts(keyword))
                 .willReturn(mockResult);
-        mockResult.forEach(searchExpertAppResponse ->
-                given(searchExpertWebMapper.toWebResponse(searchExpertAppResponse))
-                        .willReturn(new SearchExpertWebResponse(
-                                searchExpertAppResponse.expertNo(),
-                                searchExpertAppResponse.nickname(),
-                                searchExpertAppResponse.profileImageUrl())));
     }
 
 }

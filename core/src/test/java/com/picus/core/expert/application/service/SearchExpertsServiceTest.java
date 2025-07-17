@@ -14,9 +14,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
-class SearchExpertServiceTest {
+class SearchExpertsServiceTest {
 
     private final LoadExpertPort loadExpertPort = Mockito.mock(LoadExpertPort.class);
     private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
@@ -32,10 +33,11 @@ class SearchExpertServiceTest {
                         .nickname("test_nickname")
                         .build()
         );
-        BDDMockito.given(loadExpertPort.findByNicknameContaining(any(String.class)))
+        ProfileImage mockImage = Mockito.mock(ProfileImage.class);
+        given(loadExpertPort.findByNicknameContaining(any(String.class)))
                 .willReturn(sampleResponses);
-        BDDMockito.given(userQueryPort.findProfileImageByExpertNo(any(String.class)))
-                .willReturn(any(ProfileImage.class));
+        given(userQueryPort.findProfileImageByExpertNo(any(String.class)))
+                .willReturn(mockImage);
 
         // when
         List<SearchExpertAppResponse> results = searchExpertService.searchExperts("any_keyword");

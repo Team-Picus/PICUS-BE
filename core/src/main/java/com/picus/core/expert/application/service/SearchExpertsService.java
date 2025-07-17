@@ -22,10 +22,10 @@ public class SearchExpertsService implements SearchExpertsQuery {
     @Override
     public List<SearchExpertAppResponse> searchExperts(String keyword) {
         // 해당 Keyword를 닉네임으로 가진 Expert를 조회
-        List<SearchExpertAppResponse> searchExpertAppRespons = loadExpertPort.findByNicknameContaining(keyword);
+        List<SearchExpertAppResponse> searchExpertAppResponses = loadExpertPort.findByNicknameContaining(keyword);
 
         // 프로필 이미지 조회 및 응답 반환
-        return searchExpertAppRespons.stream()
+        return searchExpertAppResponses.stream()
                 .map(searchExpertResponse -> {
                             ProfileImage profileImage = userQueryPort.findProfileImageByExpertNo(searchExpertResponse.expertNo());
                             return SearchExpertAppResponse.builder()
