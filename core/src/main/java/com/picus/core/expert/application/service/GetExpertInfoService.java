@@ -22,7 +22,14 @@ public class GetExpertInfoService implements GetExpertInfoQuery {
     private final UserQueryPort userQueryPort;
 
     @Override
-    public GetExpertBasicInfoAppResponse getExpertInfo(String expertNo) {
+    public Expert getExpertDetailInfo(String expertNo) {
+        // expertNo로 Expert 조회
+        return loadExpertPort.findById(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+    }
+
+    @Override
+    public GetExpertBasicInfoAppResponse getExpertBasicInfo(String expertNo) {
         // expertNo로 Expert 조회
         Expert expert = loadExpertPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));

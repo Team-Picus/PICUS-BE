@@ -2,19 +2,22 @@ package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
+import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.domain.model.Expert;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GetExpertWebMapper {
 
-    public GetExpertBasicInfoWebResponse toBasicInfo(Expert expert) {
+    public GetExpertBasicInfoWebResponse toBasicInfo(GetExpertBasicInfoAppResponse appResponse) {
         return GetExpertBasicInfoWebResponse.builder()
-                .activityDuration(expert.getActivityDuration())
-                .activityCount(expert.getActivityCount())
-                .lastActivityAt(expert.getLastActivityAt())
-                .intro(expert.getIntro())
-                .backgroundImageUrl(expert.getBackgroundImageUrl())
+                .activityDuration(appResponse.activityDuration())
+                .activityCount(appResponse.activityCount())
+                .lastActivityAt(appResponse.lastActivityAt())
+                .intro(appResponse.intro())
+                .backgroundImageUrl(appResponse.backgroundImageUrl())
+                .nickname(appResponse.nickname())
+                .profileImageUrl(appResponse.profileImageUrl())
                 .build();
     }
 

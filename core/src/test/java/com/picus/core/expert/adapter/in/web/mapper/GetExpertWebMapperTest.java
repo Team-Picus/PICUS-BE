@@ -2,8 +2,10 @@ package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
+import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.domain.model.*;
 import com.picus.core.expert.domain.model.vo.*;
+import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,23 +22,28 @@ class GetExpertWebMapperTest {
     @DisplayName("Expert 도메인 객체를 기본 정보 WebResponse로 매핑한다")
     void toBasicInfo_shouldMapCorrectly() {
         // given
-        Expert expert = Expert.builder()
-                .intro("자기소개입니다")
-                .activityCount(5)
-                .lastActivityAt(LocalDateTime.of(2024, 12, 10, 10, 0))
-                .backgroundImageUrl("https://cdn.com/bg.jpg")
-                .createdAt(LocalDateTime.of(2023, 1, 1, 0, 0)) // 활동 기간 계산용
+        GetExpertBasicInfoAppResponse appResponse = GetExpertBasicInfoAppResponse.builder()
+                .activityDuration("3년")
+                .activityCount(12)
+                .lastActivityAt(LocalDateTime.of(2024, 7, 1, 15, 0))
+                .intro("소개입니다")
+                .backgroundImageUrl("https://image.com/bg.png")
+                .nickname("전문가닉네임")
+                .profileImageUrl("https://image.com/profile.png")
                 .build();
 
         // when
-        GetExpertBasicInfoWebResponse response = mapper.toBasicInfo(expert);
+        GetExpertBasicInfoWebResponse result = mapper.toBasicInfo(appResponse);
 
         // then
-        assertThat(response.activityCount()).isEqualTo(5);
-        assertThat(response.lastActivityAt()).isEqualTo(LocalDateTime.of(2024, 12, 10, 10, 0));
-        assertThat(response.intro()).isEqualTo("자기소개입니다");
-        assertThat(response.backgroundImageUrl()).isEqualTo("https://cdn.com/bg.jpg");
-        assertThat(response.activityDuration()).isNotNull(); // 실제 계산값은 날짜 기준이므로 생략
+        assertThat(result).isNotNull();
+        assertThat(result.activityDuration()).isEqualTo("3년");
+        assertThat(result.activityCount()).isEqualTo(12);
+        assertThat(result.lastActivityAt()).isEqualTo(LocalDateTime.of(2024, 7, 1, 15, 0));
+        assertThat(result.intro()).isEqualTo("소개입니다");
+        assertThat(result.backgroundImageUrl()).isEqualTo("https://image.com/bg.png");
+        assertThat(result.nickname()).isEqualTo("전문가닉네임");
+        assertThat(result.profileImageUrl()).isEqualTo("https://image.com/profile.png");
     }
 
     @Test

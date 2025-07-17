@@ -25,7 +25,7 @@ class GetExpertInfoServiceTest {
 
     @Test
     @DisplayName("특정 전문가를 조회하는 서비스 메서드의 리턴값 및 상호작용을 검증한다.")
-    public void getExpertInfo_success() throws Exception {
+    public void getExpertBasicInfo_success() throws Exception {
         // given
         String expertNo = "expertNo1";
         Expert expert = givenExpertDomain(
@@ -44,7 +44,7 @@ class GetExpertInfoServiceTest {
         stubPortResult(expert, dto, expertNo);
 
         // when
-        GetExpertBasicInfoAppResponse result = getExpertService.getExpertInfo(expertNo);
+        GetExpertBasicInfoAppResponse result = getExpertService.getExpertBasicInfo(expertNo);
 
         // then - 리턴값 검증
         // TODO: 이미지 key -> url 변환 로직 추가 후 다시 검증

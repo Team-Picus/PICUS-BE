@@ -10,6 +10,8 @@ public record GetExpertBasicInfoWebResponse(
         Integer activityCount,
         LocalDateTime lastActivityAt,
         String intro,
-        String backgroundImageUrl
+        String backgroundImageUrl,
+        String nickname,
+        String profileImageUrl
 ) {
 }

@@ -4,6 +4,7 @@ import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebR
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.GetExpertInfoQuery;
+import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,13 @@ public class GetExpertController {
     @GetMapping("/api/v1/experts/{expert_no}/basic_info")
     public BaseResponse<GetExpertBasicInfoWebResponse> getExpertBasicInfo(@PathVariable("expert_no") String expertNo) {
 
-        Expert expert = getExpertInfoQuery.getExpertInfo(expertNo);
-        return BaseResponse.onSuccess(getExpertWebMapper.toBasicInfo(expert));
+        GetExpertBasicInfoAppResponse appResponse = getExpertInfoQuery.getExpertBasicInfo(expertNo);
+        return BaseResponse.onSuccess(getExpertWebMapper.toBasicInfo(appResponse));
     }
 
     @GetMapping("/api/v1/experts/{expert_no}/detail_info")
     public BaseResponse<GetExpertDetailInfoWebResponse> getExpertDetailInfo(@PathVariable("expert_no") String expertNo) {
-        Expert expert = getExpertInfoQuery.getExpertInfo(expertNo);
+        Expert expert = getExpertInfoQuery.getExpertDetailInfo(expertNo);
         return BaseResponse.onSuccess(getExpertWebMapper.toDetailInfo(expert));
     }
 

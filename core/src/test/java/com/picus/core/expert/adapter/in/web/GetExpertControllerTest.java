@@ -4,6 +4,7 @@ import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebR
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.GetExpertInfoQuery;
+import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
@@ -26,7 +27,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(controllers = GetExpertController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -62,14 +62,16 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.activityCount").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.lastActivityAt").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.intro").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.backgroundImageUrl").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.backgroundImageUrl").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.nickname").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.profileImageUrl").exists());
 
 
         // then - 메서드 호출 검증
         then(getExpertInfoQuery).should()
-                .getExpertInfo(expertNo);
+                .getExpertBasicInfo(expertNo);
         then(getExpertWebMapper).should()
-                .toBasicInfo(any(Expert.class));
+                .toBasicInfo(any(GetExpertBasicInfoAppResponse.class));
     }
 
     @Test
@@ -97,13 +99,21 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
 
         // then - 메서드 호출 검증
         then(getExpertInfoQuery).should()
-                .getExpertInfo(expertNo);
+                .getExpertDetailInfo(expertNo);
         then(getExpertWebMapper).should()
                 .toDetailInfo(any(Expert.class));
     }
 
     private void stubMethodAboutBasicInfo(String expertNo) {
-        Expert mockExpert = mock(Expert.class);
+        GetExpertBasicInfoAppResponse mockAppResponse = GetExpertBasicInfoAppResponse.builder()
+                .activityDuration("")
+                .activityCount(100)
+                .lastActivityAt(LocalDateTime.now())
+                .intro("")
+                .backgroundImageUrl("")
+                .nickname("")
+                .profileImageUrl("")
+                .build();
         // Mock이면 값들이 Null로 채워지는데, 그러면 exists()검증이 안됨
         GetExpertBasicInfoWebResponse mockWebResponse = GetExpertBasicInfoWebResponse.builder()
                 .activityDuration("")
@@ -111,11 +121,13 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .lastActivityAt(LocalDateTime.now())
                 .intro("")
                 .backgroundImageUrl("")
+                .nickname("")
+                .profileImageUrl("")
                 .build();
 
-        given(getExpertInfoQuery.getExpertInfo(expertNo))
-                .willReturn(mockExpert);
-        given(getExpertWebMapper.toBasicInfo(mockExpert))
+        given(getExpertInfoQuery.getExpertBasicInfo(expertNo))
+                .willReturn(mockAppResponse);
+        given(getExpertWebMapper.toBasicInfo(mockAppResponse))
                 .willReturn(mockWebResponse);
     }
 
@@ -131,7 +143,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                         .studio(Studio.builder().build())
                         .build();
 
-        given(getExpertInfoQuery.getExpertInfo(expertNo))
+        given(getExpertInfoQuery.getExpertDetailInfo(expertNo))
                 .willReturn(mockExpert);
         given(getExpertWebMapper.toDetailInfo(mockExpert))
                 .willReturn(webResponse);

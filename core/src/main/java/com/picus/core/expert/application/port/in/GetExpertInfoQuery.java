@@ -5,6 +5,8 @@ import com.picus.core.expert.domain.model.Expert;
 
 public interface GetExpertInfoQuery {
 
-    GetExpertBasicInfoAppResponse getExpertInfo(String expertNo);
+    Expert getExpertDetailInfo(String expertNo);
+
+    GetExpertBasicInfoAppResponse getExpertBasicInfo(String expertNo);
 
 }
