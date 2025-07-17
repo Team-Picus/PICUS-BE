@@ -87,7 +87,7 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     private RequestApprovalWebRequest givenRequestApprovalWebRequest() {
         return new RequestApprovalWebRequest(
                 "3년차",
-                List.of(ActivityArea.SEOUL_GANGBUKGU, ActivityArea.SEOUL_GANGDONGGU),
+                List.of("서울 강북구", "서울 강동구"),
                 List.of(
                         Project.builder()
                                 .projectName("단편영화 촬영 프로젝트")

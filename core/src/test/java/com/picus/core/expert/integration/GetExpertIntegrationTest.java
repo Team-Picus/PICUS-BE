@@ -139,7 +139,7 @@ public class GetExpertIntegrationTest {
         GetExpertDetailInfoWebResponse result = body.getResult();
 
         assertThat(result.activityCareer()).isEqualTo("경력 5년");
-        assertThat(result.activityAreas()).isEqualTo(List.of(ActivityArea.SEOUL_GANGBUKGU));
+        assertThat(result.activityAreas()).isEqualTo(List.of("서울 강북구"));
 
         // Projects
         assertThat(result.projects()).hasSize(2)
@@ -216,7 +216,7 @@ public class GetExpertIntegrationTest {
                 .backgroundImageKey("img-key")
                 .intro("전문가 소개")
                 .activityCareer("경력 5년")
-                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
+                .activityAreas(List.of("서울 강북구"))
                 .activityCount(8)
                 .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
                 .portfolioLinks(List.of("http://myportfolio.com"))

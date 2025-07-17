@@ -42,7 +42,7 @@ class ExpertPersistenceMapperTest {
         assertThat(domain.getBackgroundImageKey()).isEqualTo("img-key");
         assertThat(domain.getIntro()).isEqualTo("전문가 소개");
         assertThat(domain.getActivityCareer()).isEqualTo("경력 5년");
-        assertThat(domain.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GANGBUKGU);
+        assertThat(domain.getActivityAreas()).containsExactly("서울 강북구");
         assertThat(domain.getActivityCount()).isEqualTo(8);
         assertThat(domain.getLastActivityAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
         assertThat(domain.getPortfolios()).extracting(Portfolio::getLink).containsExactly("http://myportfolio.com");
@@ -92,7 +92,7 @@ class ExpertPersistenceMapperTest {
         assertThat(entity.getBackgroundImageKey()).isEqualTo("bg-key");
         assertThat(entity.getIntro()).isEqualTo("소개입니다");
         assertThat(entity.getActivityCareer()).isEqualTo("10년 경력");
-        assertThat(entity.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GANGBUKGU);
+        assertThat(entity.getActivityAreas()).containsExactly("서울 강북구");
         assertThat(entity.getActivityCount()).isEqualTo(15);
         assertThat(entity.getLastActivityAt()).isEqualTo(LocalDateTime.of(2023, 1, 1, 12, 0));
         assertThat(entity.getPortfolioLinks()).containsExactly("http://portfolio.com");
@@ -104,7 +104,7 @@ class ExpertPersistenceMapperTest {
                 .backgroundImageKey("bg-key")
                 .intro("소개입니다")
                 .activityCareer("10년 경력")
-                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
+                .activityAreas(List.of("서울 강북구"))
                 .activityCount(15)
                 .lastActivityAt(LocalDateTime.of(2023, 1, 1, 12, 0))
                 .portfolios(List.of(Portfolio.builder().link("http://portfolio.com").build()))
@@ -119,7 +119,7 @@ class ExpertPersistenceMapperTest {
                 .backgroundImageKey("img-key")
                 .intro("전문가 소개")
                 .activityCareer("경력 5년")
-                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
+                .activityAreas(List.of("서울 강북구"))
                 .activityCount(8)
                 .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
                 .portfolioLinks(List.of("http://myportfolio.com"))

@@ -23,7 +23,7 @@ public class Expert {
 
     private final String activityCareer;
 
-    private final List<ActivityArea> activityAreas;
+    private final List<String> activityAreas;
 
     private final String activityDuration;
 
@@ -52,7 +52,7 @@ public class Expert {
                   String backgroundImageKey, String backgroundImageUrl,
                   String intro,
                   String activityCareer,
-                  List<ActivityArea> activityAreas,
+                  List<String> activityAreas,
                   Integer activityCount,
                   LocalDateTime lastActivityAt,
                   List<Portfolio> portfolios,

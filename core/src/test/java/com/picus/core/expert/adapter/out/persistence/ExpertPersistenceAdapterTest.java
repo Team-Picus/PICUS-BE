@@ -117,7 +117,7 @@ class ExpertPersistenceAdapterTest {
         assertThat(expert.getBackgroundImageKey()).isEqualTo("img-key");
         assertThat(expert.getIntro()).isEqualTo("전문가 소개");
         assertThat(expert.getActivityCareer()).isEqualTo("경력 5년");
-        assertThat(expert.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GANGBUKGU);
+        assertThat(expert.getActivityAreas()).containsExactly("서울 강북구");
         assertThat(expert.getActivityCount()).isEqualTo(8);
         assertThat(expert.getLastActivityAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
         assertThat(expert.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING);
@@ -164,7 +164,7 @@ class ExpertPersistenceAdapterTest {
                 .expertNo(expertNo)
                 .intro("수정된 소개")
                 .activityCareer("수정된 경력")
-                .activityAreas(List.of(ActivityArea.SEOUL_GWANAKGU))
+                .activityAreas(List.of("서울 관악구"))
                 .activityCount(15)
                 .lastActivityAt(LocalDateTime.of(2025, 1, 1, 12, 0))
                 .portfolios(List.of(Portfolio.builder().link("http://new-portfolio.com").build()))
@@ -179,7 +179,7 @@ class ExpertPersistenceAdapterTest {
 
         assertThat(updatedEntity.getIntro()).isEqualTo("수정된 소개");
         assertThat(updatedEntity.getActivityCareer()).isEqualTo("수정된 경력");
-        assertThat(updatedEntity.getActivityAreas()).containsExactly(ActivityArea.SEOUL_GWANAKGU);
+        assertThat(updatedEntity.getActivityAreas()).containsExactly("서울 관악구");
         assertThat(updatedEntity.getActivityCount()).isEqualTo(15);
         assertThat(updatedEntity.getLastActivityAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 12, 0));
         assertThat(updatedEntity.getPortfolioLinks()).containsExactly("http://new-portfolio.com");
@@ -272,7 +272,7 @@ class ExpertPersistenceAdapterTest {
                 .backgroundImageKey("img-key")
                 .intro("전문가 소개")
                 .activityCareer("경력 5년")
-                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
+                .activityAreas(List.of("서울 강북구"))
                 .activityCount(8)
                 .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
                 .portfolioLinks(List.of("http://myportfolio.com"))
@@ -326,7 +326,7 @@ class ExpertPersistenceAdapterTest {
         return Expert.builder()
                 .intro("소개입니다")
                 .activityCareer("5년")
-                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU))
+                .activityAreas(List.of("서울 강북구"))
                 .activityCount(10)
                 .lastActivityAt(LocalDateTime.of(2024, 5, 10, 10, 0))
                 .portfolios(List.of(Portfolio.builder().link("http://portfolio.com").build()))

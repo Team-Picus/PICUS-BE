@@ -67,7 +67,7 @@ class RequestApprovalServiceTest {
                                 .endDate(LocalDateTime.of(2023, 2, 20, 0, 0))
                                 .build()
                 ))
-                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU, ActivityArea.SEOUL_GANGDONGGU))
+                .activityAreas(List.of("서울 강북구", "서울 강동구"))
                 .skills(List.of(
                         Skill.builder()
                                 .skillType(SkillType.CAMERA)

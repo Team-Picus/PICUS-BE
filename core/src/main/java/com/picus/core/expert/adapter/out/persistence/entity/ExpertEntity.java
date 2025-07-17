@@ -42,9 +42,9 @@ public class ExpertEntity extends BaseEntity {
     @Column(nullable = false)
     private String activityCareer;
 
-    @Convert(converter = ActivityAreasConverter.class)
+    @Convert(converter = StringConverter.class)
     @Column(nullable = false)
-    private List<ActivityArea> activityAreas;
+    private List<String> activityAreas;
 
     @Column(nullable = false)
     private Integer activityCount;

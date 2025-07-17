@@ -13,7 +13,7 @@ public record GetExpertDetailInfoWebResponse(
         String activityCareer,
         List<Project> projects,
         List<Skill> skills,
-        List<ActivityArea> activityAreas,
+        List<String> activityAreas,
         Studio studio
 ) {
 }

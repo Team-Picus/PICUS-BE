@@ -105,8 +105,8 @@ public class RequestApprovalIntegrationTest {
         ExpertEntity savedExpertEntity = optionalSavedExpertEntity.get();
         assertThat(savedExpertEntity.getActivityCareer()).isEqualTo("3년차");
         assertThat(savedExpertEntity.getActivityAreas()).containsExactlyInAnyOrder(
-                ActivityArea.SEOUL_GANGBUKGU,
-                ActivityArea.SEOUL_GANGDONGGU
+                "서울 강북구",
+                "서울 강동구"
         );
         assertThat(savedExpertEntity.getPortfolioLinks()).hasSize(2)
                 .containsExactlyInAnyOrder(
@@ -167,7 +167,7 @@ public class RequestApprovalIntegrationTest {
     private RequestApprovalWebRequest givenRequestApprovalWebRequest() {
         return new RequestApprovalWebRequest(
                 "3년차",
-                List.of(ActivityArea.SEOUL_GANGBUKGU, ActivityArea.SEOUL_GANGDONGGU),
+                List.of("서울 강북구", "서울 강동구"),
                 List.of(
                         Project.builder()
                                 .projectName("단편영화 촬영 프로젝트")

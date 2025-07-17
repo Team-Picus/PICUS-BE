@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public record RequestApprovalCommand(
         String activityCareer,
-        List<ActivityArea> activityAreas,
+        List<String> activityAreas,
         List<Project> projects,
         List<Skill> skills,
         Studio studio,
