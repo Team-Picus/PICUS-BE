@@ -10,7 +10,6 @@ import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.ActivityArea;
 import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
@@ -57,25 +56,25 @@ class ExpertPersistenceAdapterTest {
     ExpertPersistenceAdapter expertPersistenceAdapter;
 
     @Autowired
-    private ExpertJpaRepository expertJpaRepository;
+    ExpertJpaRepository expertJpaRepository;
 
     @Autowired
-    private ProjectJpaRepository projectJpaRepository;
+    ProjectJpaRepository projectJpaRepository;
 
     @Autowired
-    private SkillJpaRepository skillJpaRepository;
+    SkillJpaRepository skillJpaRepository;
 
     @Autowired
-    private StudioJpaRepository studioJpaRepository;
+    StudioJpaRepository studioJpaRepository;
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    UserJpaRepository userJpaRepository;
 
     @Test
     @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장되며 기본키는 연관맺은 UserEntity의 기본키가 된다.")
     public void saveExpert() throws Exception {
         // given
-        UserEntity userEntity = settingTestUserEntity();
+        UserEntity userEntity = givenUserEntity();
         userJpaRepository.save(userEntity);
         Expert expert = givenExpertDomain();
 
@@ -103,7 +102,7 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("expertNo로 Expert를 조회한다.")
     public void findById_success() throws Exception {
         // given
-        UserEntity userEntity = settingTestUserEntity();
+        UserEntity userEntity = givenUserEntity();
         ExpertEntity savedExpertEntity = settingTestExpertEntityData(userEntity);
         String savedExpertNo = savedExpertEntity.getExpertNo();
 
@@ -155,7 +154,7 @@ class ExpertPersistenceAdapterTest {
     @DisplayName("ExpertEntity를 수정한다.")
     public void updateExpert_success() throws Exception {
         // given
-        UserEntity userEntity = settingTestUserEntity();
+        UserEntity userEntity = givenUserEntity();
         ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
         String expertNo = expertEntity.getExpertNo();
 
@@ -199,13 +198,13 @@ class ExpertPersistenceAdapterTest {
         String testNickname4 = "xnicknamx";
 
         // 데이터 셋팅
-        UserEntity userEntity1 = settingTestUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
+        UserEntity userEntity1 = givenUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
         settingTestExpertEntityData(userEntity1);
-        UserEntity userEntity2 = settingTestUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
+        UserEntity userEntity2 = givenUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
         settingTestExpertEntityData(userEntity2);
-        UserEntity userEntity3 = settingTestUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
+        UserEntity userEntity3 = givenUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
         settingTestExpertEntityData(userEntity3);
-        UserEntity userEntity4 = settingTestUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
+        UserEntity userEntity4 = givenUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
         settingTestExpertEntityData(userEntity4);
 
         // when
@@ -228,13 +227,13 @@ class ExpertPersistenceAdapterTest {
         String testNickname4 = "xnicknamx";
 
         // 데이터 셋팅
-        UserEntity userEntity1 = settingTestUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
+        UserEntity userEntity1 = givenUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
         settingTestExpertEntityData(userEntity1);
-        UserEntity userEntity2 = settingTestUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
+        UserEntity userEntity2 = givenUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
         settingTestExpertEntityData(userEntity2);
-        UserEntity userEntity3 = settingTestUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
+        UserEntity userEntity3 = givenUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
         settingTestExpertEntityData(userEntity3);
-        UserEntity userEntity4 = settingTestUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
+        UserEntity userEntity4 = givenUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
         settingTestExpertEntityData(userEntity4);
 
         // when
@@ -249,7 +248,7 @@ class ExpertPersistenceAdapterTest {
 
     /* 헬퍼 메서드 */
 
-    private UserEntity settingTestUserEntity() {
+    private UserEntity givenUserEntity() {
         return UserEntity.builder()
                 .name("이름")
                 .nickname("닉네임")
@@ -265,7 +264,7 @@ class ExpertPersistenceAdapterTest {
                 .build();
     }
 
-    private UserEntity settingTestUserEntityWithParam(String nickname, String name, String email, String providerId) {
+    private UserEntity givenUserEntityWithParam(String nickname, String name, String email, String providerId) {
         return UserEntity.builder()
                 .name(name)
                 .nickname(nickname)

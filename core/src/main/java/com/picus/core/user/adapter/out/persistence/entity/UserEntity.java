@@ -3,7 +3,6 @@ package com.picus.core.user.adapter.out.persistence.entity;
 import com.picus.core.shared.common.BaseEntity;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
-import com.picus.core.user.domain.model.SocialType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
@@ -78,5 +77,9 @@ public class UserEntity extends BaseEntity {
             this.name = name;
         if(this.tel == null)
             this.tel = tel;
+    }
+
+    public void assignExpertNo(String expertNo) {
+        this.expertNo = expertNo;
     }
 }

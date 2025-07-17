@@ -2,7 +2,6 @@ package com.picus.core.user.adapter.out.persistence;
 
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.mapper.ProfileImagePersistenceMapper;
@@ -11,10 +10,13 @@ import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRep
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.application.port.out.UserCommandPort;
 import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.ProfileImage;
 import com.picus.core.user.domain.model.Role;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
@@ -51,6 +53,13 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     }
 
     @Override
+    public void assignExpertNo(String userNo, String expertNo) {
+        UserEntity userEntity = userJpaRepository.findById(userNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        userEntity.assignExpertNo(expertNo);
+    }
+
+    @Override
     public User findById(String userNo) {
         return userJpaRepository.findById(userNo)
                 .map(userPersistenceMapper::toDomainModel)
@@ -66,8 +75,14 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     @Override
     public ProfileImage findProfileImageByExpertNo(String expertNo) {
         ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByExpertNo(expertNo)
-                .orElseThrow(() -> new RestApiException(GlobalErrorStatus._NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         return profileMapper.toDomain(profileImageEntity);
+    }
+
+    @Override
+    public UserWithProfileImageDto findUserInfoByExpertNo(String expertNo) {
+        Optional<UserWithProfileImageDto> userWithProfileImageDto = userJpaRepository.findUserInfoByExpertNo(expertNo);
+        return userWithProfileImageDto.orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
 }
