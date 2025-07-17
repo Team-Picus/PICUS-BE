@@ -4,7 +4,7 @@ package com.picus.core.expert.adapter.out.persistence;
 import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
-import com.picus.core.expert.application.port.in.response.SearchExpertResponse;
+import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
@@ -90,9 +90,9 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     }
 
     @Override
-    public List<SearchExpertResponse> findByNicknameContaining(String keyword) {
+    public List<SearchExpertAppResponse> findByNicknameContaining(String keyword) {
         return expertJpaRepository.findByNicknameContaining(keyword).stream()
-                .map(expertEntity -> SearchExpertResponse.builder()
+                .map(expertEntity -> SearchExpertAppResponse.builder()
                         .expertNo(expertEntity.getExpertNo())
                         .nickname(expertEntity.getUserEntity().getNickname())
                         .build())

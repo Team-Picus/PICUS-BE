@@ -1,9 +1,9 @@
-package com.picus.core.expert.application.port.in.response;
+package com.picus.core.expert.adapter.in.web.data.response;
 
 import lombok.Builder;
 
 @Builder
-public record SearchExpertResponse(
+public record SearchExpertWebResponse(
         String expertNo,
         String nickname,
         String profileImageUrl

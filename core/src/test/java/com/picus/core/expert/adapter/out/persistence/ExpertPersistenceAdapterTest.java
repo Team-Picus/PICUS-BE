@@ -4,7 +4,7 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
-import com.picus.core.expert.application.port.in.response.SearchExpertResponse;
+import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -208,7 +208,7 @@ class ExpertPersistenceAdapterTest {
         settingTestExpertEntityData(userEntity4);
 
         // when
-        List<SearchExpertResponse> results = expertPersistenceAdapter.findByNicknameContaining(keyword);
+        List<SearchExpertAppResponse> results = expertPersistenceAdapter.findByNicknameContaining(keyword);
 
         // then
         assertThat(results).hasSize(3);

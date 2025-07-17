@@ -20,16 +20,4 @@ public class RequestApprovalWebMapper {
                 .userNo(userNo)
                 .build();
     }
-
-    public RequestApprovalWebResponse toWebResponse(Expert domain) {
-        return RequestApprovalWebResponse.builder()
-                .expertNo(domain.getExpertNo())
-                .activityCareer(domain.getActivityCareer())
-                .projects(domain.getProjects())
-                .activityAreas(domain.getActivityAreas())
-                .skills(domain.getSkills())
-                .studio(domain.getStudio())
-                .portfolios(domain.getPortfolios())
-                .build();
-    }
 }

@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.port.out;
 
-import com.picus.core.expert.application.port.in.response.SearchExpertResponse;
+import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.expert.domain.model.Expert;
 
 import java.util.List;
@@ -13,5 +13,5 @@ public interface LoadExpertPort {
 
     Optional<Expert> findById(String expertNo);
 
-    List<SearchExpertResponse> findByNicknameContaining(String keyword);
+    List<SearchExpertAppResponse> findByNicknameContaining(String keyword);
 }
