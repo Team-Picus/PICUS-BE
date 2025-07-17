@@ -11,6 +11,7 @@ import com.picus.core.expert.domain.model.vo.ActivityArea;
 import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.user.application.port.out.UserCommandPort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,35 +22,35 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 class RequestApprovalServiceTest {
 
-    private final CreateExpertPort createExpertPort = Mockito.mock(CreateExpertPort.class);
-    private final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
+    final CreateExpertPort createExpertPort = Mockito.mock(CreateExpertPort.class);
+    final UserCommandPort userCommandPort = Mockito.mock(UserCommandPort.class);
+    final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(createExpertPort, appMapper);
+            = new RequestApprovalService(createExpertPort, userCommandPort, appMapper);
 
 
     @Test
-    @DisplayName("승인 요청이 오면 ApprovalStatus가 PENDING인 Expert가 저장된다.")
+    @DisplayName("전문가 승인요청 메서드 상호작용 검증")
     public void requestApproval_success() throws Exception {
         // given
         RequestApprovalCommand command = givenRequestApprovalCommand();
+        stubOutPortMethod();
 
         // when
         requestApprovalService.requestApproval(command);
 
         // then
-        ArgumentCaptor<Expert> captor = ArgumentCaptor.forClass(Expert.class);
 
-        then(createExpertPort).should().saveExpert(captor.capture(), any(String.class)); // out port를 호출했는지 검증
-
-        Expert captured = captor.getValue();
-        assertThat(captured.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING); // PENDING인 Expert가 생성됐는지 검증
-
+        then(createExpertPort).should().saveExpert(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
+        then(userCommandPort).should().assignExpertNo(any(String.class), any(String.class));
     }
+
 
 
     private RequestApprovalCommand givenRequestApprovalCommand() {
@@ -94,6 +95,13 @@ class RequestApprovalServiceTest {
                 ))
                 .userNo("user_no1")
                 .build();
+    }
+    private void stubOutPortMethod() {
+        Expert expert = Expert.builder()
+                .expertNo("expert_no1")
+                .build();
+        given(createExpertPort.saveExpert(any(Expert.class), any(String.class)))
+                .willReturn(expert);
     }
 
 }

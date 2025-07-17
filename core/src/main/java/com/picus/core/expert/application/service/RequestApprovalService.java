@@ -6,6 +6,7 @@ import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper
 import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.annotation.UseCase;
+import com.picus.core.user.application.port.out.UserCommandPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RequestApprovalService implements RequestApprovalUseCase {
 
     private final CreateExpertPort createExpertPort;
+    private final UserCommandPort userCommandPort;
     private final RequestApprovalAppMapper appMapper;
 
     /**
@@ -24,7 +26,10 @@ public class RequestApprovalService implements RequestApprovalUseCase {
     @Override
     public void requestApproval(RequestApprovalCommand command) {
         Expert expert = appMapper.toDomain(command); // command -> domain
-        createExpertPort.saveExpert(expert, command.userNo());
+
+        Expert savedExpert = createExpertPort.saveExpert(expert, command.userNo());// Expert 저장
+
+        userCommandPort.assignExpertNo(command.userNo(), savedExpert.getExpertNo());// User expertNo 할당
     }
 
 
