@@ -25,8 +25,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @Import({
         UserPersistenceAdapter.class,
@@ -98,11 +98,99 @@ class UserPersistenceAdapterTest {
         // then
         assertThat(optionalResult).isPresent();
         UserWithProfileImageDto result = optionalResult.get();
-        
+
         assertThat(result.nickname()).isEqualTo(testNickname);
         assertThat(result.profileImageFileKey()).isEqualTo(testProfileImageFileKey);
         assertThat(result.expertNo()).isEqualTo(expertNo);
     }
+
+    @Test
+    @DisplayName("특정 닉네임 키워드가 포함된 사용자의 정보를 오름차순 조회한다.")
+    public void findUserInfoByNicknameContaining() throws Exception {
+        // given
+        String keyword = "nickname";
+
+        String testNickname1 = "xxnickname";
+        String testFileKey1 = "file_key1";
+        String testExpertNo1 = "exp1";
+
+        String testNickname2 = "xnicknamex";
+        String testFileKey2 = "file_key2";
+        String testExpertNo2 = "exp2";
+
+        String testNickname3 = "nicknamexx";
+        String testFileKey3 = "file_key3";
+        String testExpertNo3 = "exp3";
+
+        String testNickname4 = "xnicknamx";
+        String testFileKey4 = "file_key4";
+        String testExpertNo4 = "exp4";
+
+        // 데이터 셋팅
+        settingDataAtFindUserInfoByNicknameContaining(
+                testNickname1, testExpertNo1,
+                testNickname2, testExpertNo2,
+                testNickname3, testExpertNo3,
+                testNickname4, testExpertNo4,
+                testFileKey1, testFileKey2, testFileKey3, testFileKey4);
+
+
+        // when
+        List<UserWithProfileImageDto> results = userPersistenceAdapter.findUserInfoByNicknameContaining(keyword);
+
+        // then
+        assertThat(results).hasSize(3);
+        assertThat(results).extracting("nickname", "profileImageFileKey", "expertNo")
+                .containsExactly(
+                        tuple(testNickname3, testFileKey3, testExpertNo3),
+                        tuple(testNickname2, testFileKey2, testExpertNo2),
+                        tuple(testNickname1, testFileKey1, testExpertNo1)
+                );
+    }
+
+    @Test
+    @DisplayName("특정 닉네임 키워드가 포함된 전문가를 n개를 이름순으로 오름차순 조회한다.")
+    public void findUserInfoByNicknameContainingLimited() throws Exception {
+        // given
+        String keyword = "nickname";
+        int size = 2;
+
+        String testNickname1 = "xxnickname";
+        String testFileKey1 = "file_key1";
+        String testExpertNo1 = "exp1";
+
+        String testNickname2 = "xnicknamex";
+        String testFileKey2 = "file_key2";
+        String testExpertNo2 = "exp2";
+
+        String testNickname3 = "nicknamexx";
+        String testFileKey3 = "file_key3";
+        String testExpertNo3 = "exp3";
+
+        String testNickname4 = "xnicknamx";
+        String testFileKey4 = "file_key4";
+        String testExpertNo4 = "exp4";
+
+        // 데이터 셋팅
+        settingDataAtFindUserInfoByNicknameContaining(
+                testNickname1, testExpertNo1,
+                testNickname2, testExpertNo2,
+                testNickname3, testExpertNo3,
+                testNickname4, testExpertNo4,
+                testFileKey1, testFileKey2, testFileKey3, testFileKey4);
+
+        // when
+        List<UserWithProfileImageDto> results = userPersistenceAdapter.findUserInfoByNicknameContainingLimited(keyword, size);
+
+        // then
+        assertThat(results).hasSize(2);
+        assertThat(results).extracting("nickname", "profileImageFileKey", "expertNo")
+                .containsExactlyInAnyOrder(
+                        tuple(testNickname3, testFileKey3, testExpertNo3),
+                        tuple(testNickname2, testFileKey2, testExpertNo2)
+                );
+    }
+
 
     private UserEntity givenUserEntity() {
         return UserEntity.builder()
@@ -119,6 +207,23 @@ class UserPersistenceAdapterTest {
                 .expertNo(null)
                 .build();
     }
+
+    private UserEntity givenUserEntity(String nickname, String name, String email, String providerId, String expertNo) {
+        return UserEntity.builder()
+                .name(name)
+                .nickname(nickname)
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email(email)
+                .providerId(providerId)
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo(expertNo)
+                .build();
+    }
+
 
     private UserEntity givenUserEntity(String nickname) {
         return UserEntity.builder()
@@ -154,5 +259,19 @@ class UserPersistenceAdapterTest {
                 .portfolioLinks(List.of("http://myportfolio.com"))
                 .approvalStatus(ApprovalStatus.PENDING)
                 .build();
+    }
+
+    private void settingDataAtFindUserInfoByNicknameContaining(String testNickname1, String testExpertNo1, String testNickname2, String testExpertNo2, String testNickname3, String testExpertNo3, String testNickname4, String testExpertNo4, String testFileKey1, String testFileKey2, String testFileKey3, String testFileKey4) {
+        UserEntity userEntity1 = givenUserEntity(testNickname1, "name1", "email1@example.com", "social1", testExpertNo1);
+        UserEntity userEntity2 = givenUserEntity(testNickname2, "name2", "email2@example.com", "social2", testExpertNo2);
+        UserEntity userEntity3 = givenUserEntity(testNickname3, "name3", "email3@example.com", "social3", testExpertNo3);
+        UserEntity userEntity4 = givenUserEntity(testNickname4, "name4", "email4@example.com", "social4", testExpertNo4);
+        userJpaRepository.saveAll(List.of(userEntity1, userEntity2, userEntity3, userEntity4));
+
+        ProfileImageEntity profileImageEntity1 = givenProfileImageEntity(testFileKey1, userEntity1.getUserNo());
+        ProfileImageEntity profileImageEntity2 = givenProfileImageEntity(testFileKey2, userEntity2.getUserNo());
+        ProfileImageEntity profileImageEntity3 = givenProfileImageEntity(testFileKey3, userEntity3.getUserNo());
+        ProfileImageEntity profileImageEntity4 = givenProfileImageEntity(testFileKey4, userEntity4.getUserNo());
+        profileImageJpaRepository.saveAll(List.of(profileImageEntity1, profileImageEntity2, profileImageEntity3, profileImageEntity4));
     }
 }

@@ -1,12 +1,10 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
-import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.user.application.port.out.UserQueryPort;
-import com.picus.core.user.domain.model.ProfileImage;
+import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -19,38 +17,38 @@ import static org.mockito.BDDMockito.then;
 
 class SearchExpertsServiceTest {
 
-    private final LoadExpertPort loadExpertPort = Mockito.mock(LoadExpertPort.class);
     private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
-    private final SearchExpertsService searchExpertService = new SearchExpertsService(loadExpertPort, userQueryPort);
+    private final SearchExpertsService searchExpertService = new SearchExpertsService(userQueryPort);
 
     @Test
     @DisplayName("특정 키워드가 포함된 닉네임을 가진 전문가 찾기 서비스 메서드의 리턴값 및 상호작용 검증")
     public void searchExperts_success() throws Exception {
         // given
-        List<SearchExpertAppResponse> sampleResponses = List.of(
-                SearchExpertAppResponse.builder()
-                        .expertNo("test_expert_no")
-                        .nickname("test_nickname")
+        String testExpertNo = "test_expert_no";
+        String testNickname = "test_nickname";
+        String testFileKey = "test_file_key";
+        List<UserWithProfileImageDto> testDtos = List.of(
+                UserWithProfileImageDto.builder()
+                        .expertNo(testExpertNo)
+                        .nickname(testNickname)
+                        .profileImageFileKey(testFileKey)
                         .build()
         );
-        ProfileImage mockImage = Mockito.mock(ProfileImage.class);
-        given(loadExpertPort.findByNicknameContaining(any(String.class)))
-                .willReturn(sampleResponses);
-        given(userQueryPort.findProfileImageByExpertNo(any(String.class)))
-                .willReturn(mockImage);
+
+        given(userQueryPort.findUserInfoByNicknameContaining(any(String.class)))
+                .willReturn(testDtos);
 
         // when
         List<SearchExpertAppResponse> results = searchExpertService.searchExperts("any_keyword");
 
         // then
+        // TODO: profileImageUrl 검증
         assertThat(results).hasSize(1)
                 .extracting("expertNo", "nickname")
-                .containsExactlyInAnyOrder(tuple("test_expert_no", "test_nickname"));
+                .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
-        then(loadExpertPort).should()
-                .findByNicknameContaining(any(String.class));
         then(userQueryPort).should()
-                .findProfileImageByExpertNo(any(String.class));
+                .findUserInfoByNicknameContaining(any(String.class));
     }
 
 }

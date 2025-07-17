@@ -4,6 +4,7 @@ import com.picus.core.expert.application.port.in.response.SearchExpertAppRespons
 import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.ProfileImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,39 +20,38 @@ import static org.mockito.BDDMockito.then;
 
 class SuggestExpertsServiceTest {
 
-    private final LoadExpertPort loadExpertPort = Mockito.mock(LoadExpertPort.class);
     private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
-    private final SuggestExpertsService suggestExpertsService = new SuggestExpertsService(loadExpertPort, userQueryPort);
+    private final SuggestExpertsService suggestExpertsService = new SuggestExpertsService(userQueryPort);
 
     @Test
     @DisplayName("특정 키워드가 포함된 닉네임을 가진 전문가 n명 찾기 서비스 메서드의 리턴값 및 상호작용을 검증")
     public void suggestExperts_success() throws Exception {
         // given
-        List<SuggestExpertAppResponse> sampleResponses = List.of(
-                SuggestExpertAppResponse.builder()
-                        .expertNo("test_expert_no")
-                        .nickname("test_nickname")
+        String testExpertNo = "test_expert_no";
+        String testNickname = "test_nickname";
+        String testFileKey = "test_file_key";
+        List<UserWithProfileImageDto> testDtos = List.of(
+                UserWithProfileImageDto.builder()
+                        .expertNo(testExpertNo)
+                        .nickname(testNickname)
+                        .profileImageFileKey(testFileKey)
                         .build()
         );
-        ProfileImage mockImage = Mockito.mock(ProfileImage.class);
-        given(loadExpertPort.findByNicknameContainingLimited(any(String.class), any(Integer.class)))
-                .willReturn(sampleResponses);
-        given(userQueryPort.findProfileImageByExpertNo(any(String.class)))
-                .willReturn(mockImage);
 
+        given(userQueryPort.findUserInfoByNicknameContainingLimited(any(String.class), any(Integer.class)))
+                .willReturn(testDtos);
 
         // when
         List<SuggestExpertAppResponse> results
                 = suggestExpertsService.suggestExperts("any_keyword", 1);
 
         // then
+        // TODO: profileImageUrl 검증
         assertThat(results).hasSize(1)
                 .extracting("expertNo", "nickname")
-                .containsExactlyInAnyOrder(tuple("test_expert_no", "test_nickname"));
+                .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
-        then(loadExpertPort).should()
-                .findByNicknameContainingLimited(any(String.class), any(Integer.class));
         then(userQueryPort).should()
-                .findProfileImageByExpertNo(any(String.class));
+                .findUserInfoByNicknameContainingLimited(any(String.class), any(Integer.class));
     }
 }

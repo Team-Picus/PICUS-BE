@@ -5,6 +5,7 @@ import com.picus.core.user.domain.model.ProfileImage;
 import com.picus.core.user.domain.model.Role;
 import com.picus.core.user.domain.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserQueryPort {
@@ -13,7 +14,9 @@ public interface UserQueryPort {
 
     Role findRoleById(String userNo);
 
-    ProfileImage findProfileImageByExpertNo(String expertNo);
-
     Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo);
+
+    List<UserWithProfileImageDto> findUserInfoByNicknameContaining(String keyword);
+
+    List<UserWithProfileImageDto> findUserInfoByNicknameContainingLimited(String keyword, int size);
 }

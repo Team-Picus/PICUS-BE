@@ -321,7 +321,6 @@ public class GetExpertIntegrationTest {
         return ExpertEntity.builder()
                 .activityCareer(activityCareer)
                 .activityAreas(activityAreas)
-                // ... 다른 필드는 고정값 or 추가 파라미터화
                 .intro("전문가 소개")
                 .activityCount(8)
                 .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))

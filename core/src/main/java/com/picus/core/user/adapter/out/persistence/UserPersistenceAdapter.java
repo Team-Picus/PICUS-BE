@@ -1,5 +1,6 @@
 package com.picus.core.user.adapter.out.persistence;
 
+import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
@@ -15,7 +16,9 @@ import com.picus.core.user.domain.model.ProfileImage;
 import com.picus.core.user.domain.model.Role;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
@@ -73,15 +76,17 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     }
 
     @Override
-    public ProfileImage findProfileImageByExpertNo(String expertNo) {
-        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByExpertNo(expertNo)
-                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-
-        return profileMapper.toDomain(profileImageEntity);
+    public Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo) {
+        return userJpaRepository.findUserInfoByExpertNo(expertNo);
     }
 
     @Override
-    public Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo) {
-        return userJpaRepository.findUserInfoByExpertNo(expertNo);
+    public List<UserWithProfileImageDto> findUserInfoByNicknameContaining(String keyword) {
+        return userJpaRepository.findByNicknameContaining(keyword);
+    }
+
+    @Override
+    public List<UserWithProfileImageDto> findUserInfoByNicknameContainingLimited(String keyword, int size) {
+        return userJpaRepository.findByNicknameContainingLimited(keyword, PageRequest.of(0, size));
     }
 }
