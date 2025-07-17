@@ -7,10 +7,12 @@ import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.ProfileImage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @UseCase
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SearchExpertsService implements SearchExpertsQuery {
 

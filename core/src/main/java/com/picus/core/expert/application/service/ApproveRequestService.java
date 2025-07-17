@@ -6,10 +6,12 @@ import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RequiredArgsConstructor
 @UseCase
+@Transactional
 public class ApproveRequestService implements ApproveRequestUseCase {
 
     private final LoadExpertPort loadExpertPort;

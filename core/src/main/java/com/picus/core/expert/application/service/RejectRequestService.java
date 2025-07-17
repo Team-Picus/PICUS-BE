@@ -7,11 +7,13 @@ import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @RequiredArgsConstructor
 @UseCase
+@Transactional
 public class RejectRequestService implements RejectRequestUseCase {
     private final LoadExpertPort loadExpertPort;
     private final UpdateExpertPort updateExpertPort;
