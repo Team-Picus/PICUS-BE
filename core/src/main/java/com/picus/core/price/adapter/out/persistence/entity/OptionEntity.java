@@ -3,15 +3,20 @@ package com.picus.core.price.adapter.out.persistence.entity;
 import com.picus.core.expert.adapter.out.persistence.converter.StringConverter;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
+@Builder
+@Getter
 @Table(name = "options")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PRIVATE)
 public class OptionEntity {
 
     @Id @Tsid

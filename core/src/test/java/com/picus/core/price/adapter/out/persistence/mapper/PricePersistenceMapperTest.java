@@ -23,9 +23,9 @@ class PricePersistenceMapperTest {
 
         PriceEntity priceEntity = createPriceEntity(testPriceNo, testPriceThemeType);
 
-        List<Package> packages = createPackages(testPriceNo);
+        List<Package> packages = createPackages();
 
-        List<Option> options = createOptions(testPriceNo);
+        List<Option> options = createOptions();
 
         // when
         Price result = mapper.toDomain(priceEntity, packages, options);
@@ -45,11 +45,9 @@ class PricePersistenceMapperTest {
                 .build();
     }
 
-    private List<Package> createPackages(String testPriceNo) {
+    private List<Package> createPackages() {
         return List.of(
                 Package.builder()
-                        .packageNo("pkg1")
-                        .priceNo(testPriceNo)
                         .name("기본 패키지")
                         .price(10000)
                         .contents(List.of("내용1"))
@@ -58,11 +56,9 @@ class PricePersistenceMapperTest {
         );
     }
 
-    private List<Option> createOptions(String testPriceNo) {
+    private List<Option> createOptions() {
         return List.of(
                 Option.builder()
-                        .optionNo("opt1")
-                        .priceNo(testPriceNo)
                         .name("옵션1")
                         .count(1)
                         .price(1000)

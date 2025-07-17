@@ -4,9 +4,9 @@ import com.picus.core.price.domain.model.Price;
 
 import java.util.List;
 
-public interface LoadPricesByExpertPort {
+public interface LoadPricePort {
 
-    List<Price> loadPricesByExpert(String expertNo);
+    List<Price> findByExpertNo(String expertNo);
 
 
 }
