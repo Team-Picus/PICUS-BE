@@ -5,6 +5,7 @@ import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
 import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.model.PriceReferenceImage;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,14 +28,17 @@ class PricePersistenceMapperTest {
 
         List<Option> options = createOptions();
 
+        List<PriceReferenceImage> referenceImages = createReferenceImages();
+
         // when
-        Price result = mapper.toDomain(priceEntity, packages, options);
+        Price result = mapper.toDomain(priceEntity, packages, options, referenceImages);
 
         // then
         assertThat(result.getPriceNo()).isEqualTo(testPriceNo);
         assertThat(result.getPriceThemeType()).isEqualTo(testPriceThemeType);
         assertThat(result.getPackages()).isEqualTo(packages);
         assertThat(result.getOptions()).isEqualTo(options);
+        assertThat(result.getPriceReferenceImages()).isEqualTo(referenceImages);
     }
 
     private PriceEntity createPriceEntity(String testPriceNo, PriceThemeType testPriceThemeType) {
@@ -63,6 +67,15 @@ class PricePersistenceMapperTest {
                         .count(1)
                         .price(1000)
                         .content(List.of("추가1"))
+                        .build()
+        );
+    }
+
+    private List<PriceReferenceImage> createReferenceImages() {
+        return List.of(
+                PriceReferenceImage.builder()
+                        .fileKey("file-key-123")
+                        .imageOrder(1)
                         .build()
         );
     }

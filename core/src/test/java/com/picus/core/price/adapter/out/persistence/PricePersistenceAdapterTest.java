@@ -4,15 +4,19 @@ import com.picus.core.expert.domain.model.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
+import com.picus.core.price.adapter.out.persistence.entity.PriceReferenceImageEntity;
 import com.picus.core.price.adapter.out.persistence.mapper.OptionPersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.mapper.PackagePersistenceMapper;
+import com.picus.core.price.adapter.out.persistence.mapper.PricePersistenceAdapter;
 import com.picus.core.price.adapter.out.persistence.mapper.PricePersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.repository.OptionJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
+import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
 import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.model.PriceReferenceImage;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         PricePersistenceAdapter.class,
         PricePersistenceMapper.class,
         PackagePersistenceMapper.class,
-        OptionPersistenceMapper.class
+        OptionPersistenceMapper.class,
+        PriceReferenceImagePersistenceMapper.class
 })
 @DataJpaTest
 @ActiveProfiles("test")
@@ -45,6 +50,8 @@ class PricePersistenceAdapterTest {
     PackageJpaRepository packageJpaRepository;
     @Autowired
     OptionJpaRepository optionJpaRepository;
+    @Autowired
+    PriceReferenceImageJpaRepository priceReferenceImageJpaRepository;
 
     @Autowired
     EntityManager em;
@@ -56,6 +63,7 @@ class PricePersistenceAdapterTest {
         PriceEntity priceEntity = createPriceEntity("expert001", PriceThemeType.BEAUTY);
         PackageEntity pkgEntity = createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
         OptionEntity optEntity = createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
+        PriceReferenceImageEntity imgEntity = createReferenceImageEntity(priceEntity, "file-key-123", 1);
 
         clearPersistenceContext();
 
@@ -85,6 +93,11 @@ class PricePersistenceAdapterTest {
         assertThat(opt.getPrice()).isEqualTo(5000);
         assertThat(opt.getContent()).isEqualTo(List.of("마사지 추가"));
 
+        // PriceReferenceImage 검증
+        assertThat(result.getPriceReferenceImages()).hasSize(1);
+        PriceReferenceImage referenceImg = result.getPriceReferenceImages().getFirst();
+        assertThat(referenceImg.getFileKey()).isEqualTo("file-key-123");
+        assertThat(referenceImg.getImageOrder()).isEqualTo(1);
     }
 
     private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
@@ -115,6 +128,15 @@ class PricePersistenceAdapterTest {
                 .content(content)
                 .build();
         return optionJpaRepository.save(optionEntity);
+    }
+
+    private PriceReferenceImageEntity createReferenceImageEntity(PriceEntity priceEntity, String fileKey, int imageOrder) {
+        PriceReferenceImageEntity referenceImageEntity = PriceReferenceImageEntity.builder()
+                .priceEntity(priceEntity)
+                .fileKey(fileKey)
+                .imageOrder(imageOrder)
+                .build();
+        return priceReferenceImageJpaRepository.save(referenceImageEntity);
     }
 
     private void clearPersistenceContext() {

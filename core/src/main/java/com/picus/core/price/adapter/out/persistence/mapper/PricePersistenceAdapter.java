@@ -1,18 +1,16 @@
-package com.picus.core.price.adapter.out.persistence;
+package com.picus.core.price.adapter.out.persistence.mapper;
 
-import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
-import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
+import com.picus.core.price.adapter.out.persistence.PriceReferenceImagePersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
-import com.picus.core.price.adapter.out.persistence.mapper.OptionPersistenceMapper;
-import com.picus.core.price.adapter.out.persistence.mapper.PackagePersistenceMapper;
-import com.picus.core.price.adapter.out.persistence.mapper.PricePersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.repository.OptionJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
+import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
 import com.picus.core.price.application.port.out.LoadPricePort;
 import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.model.PriceReferenceImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
@@ -26,10 +24,13 @@ public class PricePersistenceAdapter implements LoadPricePort {
     private final PriceJpaRepository priceJpaRepository;
     private final PackageJpaRepository packageJpaRepository;
     private final OptionJpaRepository optionJpaRepository;
+    private final PriceReferenceImageJpaRepository priceReferenceImageJpaRepository;
+    ;
 
     private final PricePersistenceMapper pricePersistenceMapper;
     private final PackagePersistenceMapper packagePersistenceMapper;
     private final OptionPersistenceMapper optionPersistenceMapper;
+    private final PriceReferenceImagePersistenceMapper priceReferenceImagePersistenceMapper;
 
     @Override
     public List<Price> findByExpertNo(String expertNo) {
@@ -43,7 +44,10 @@ public class PricePersistenceAdapter implements LoadPricePort {
             List<Option> options = optionJpaRepository.findByPriceEntity(priceEntity).stream()
                     .map(optionPersistenceMapper::toDomain)
                     .toList();
-            result.add(pricePersistenceMapper.toDomain(priceEntity, packages, options));
+            List<PriceReferenceImage> referenceImages = priceReferenceImageJpaRepository.findByPriceEntity(priceEntity).stream()
+                    .map(priceReferenceImagePersistenceMapper::toDomain)
+                    .toList();
+            result.add(pricePersistenceMapper.toDomain(priceEntity, packages, options, referenceImages));
         }
 
         return result;
