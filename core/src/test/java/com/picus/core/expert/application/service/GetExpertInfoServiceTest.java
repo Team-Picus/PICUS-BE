@@ -29,6 +29,7 @@ class GetExpertInfoServiceTest {
         // given
         String expertNo = "expertNo1";
         Expert expert = givenExpertDomain(
+                expertNo,
                 "소개입니다",
                 "back_key",
                 "5년",
@@ -48,6 +49,7 @@ class GetExpertInfoServiceTest {
 
         // then - 리턴값 검증
         // TODO: 이미지 key -> url 변환 로직 추가 후 다시 검증
+        assertThat(result.expertNo()).isEqualTo(expert.getExpertNo());
         assertThat(result.activityDuration()).isEqualTo(expert.getActivityDuration());
         assertThat(result.activityCount()).isEqualTo(expert.getActivityCount());
         assertThat(result.lastActivityAt()).isEqualTo(expert.getLastActivityAt());
@@ -70,6 +72,7 @@ class GetExpertInfoServiceTest {
     }
 
     private Expert givenExpertDomain(
+            String expertNo,
             String intro,
             String backgroundImageKey,
             String activityCareer,
@@ -78,6 +81,7 @@ class GetExpertInfoServiceTest {
             LocalDateTime lastActivityAt
     ) {
         return Expert.builder()
+                .expertNo(expertNo)
                 .intro(intro)
                 .backgroundImageKey(backgroundImageKey)
                 .activityCareer(activityCareer)

@@ -41,6 +41,7 @@ public class GetExpertInfoService implements GetExpertInfoQuery {
         // TODO: 배경 이미지, 프로필 이미지 key->url 변환
 
         return GetExpertBasicInfoAppResponse.builder()
+                .expertNo(expert.getExpertNo())
                 .activityDuration(expert.getActivityDuration())
                 .activityCount(expert.getActivityCount())
                 .lastActivityAt(expert.getLastActivityAt())

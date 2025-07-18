@@ -93,6 +93,7 @@ public class GetExpertIntegrationTest {
                 testActivityCount,
                 testLastActivityAt
         );
+        String expertNo = expertEntity.getExpertNo();
 
         commitTestTransaction();
 
@@ -110,7 +111,7 @@ public class GetExpertIntegrationTest {
                 request,
                 new ParameterizedTypeReference<>() {
                 },
-                expertEntity.getExpertNo()
+                expertNo
         );
 
         // then
@@ -120,6 +121,7 @@ public class GetExpertIntegrationTest {
 
         GetExpertBasicInfoWebResponse result = body.getResult();
 
+        assertThat(result.expertNo()).isEqualTo(expertNo);
         assertThat(result.activityDuration()).isNotNull(); // 현재 시간 기반으로 계산되는거라 정확한 값 검증 힘듦
         assertThat(result.activityCount()).isEqualTo(testActivityCount);
         assertThat(result.lastActivityAt()).isEqualTo(testLastActivityAt);

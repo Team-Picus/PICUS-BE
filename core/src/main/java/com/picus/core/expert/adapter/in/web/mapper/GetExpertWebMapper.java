@@ -19,6 +19,7 @@ public class GetExpertWebMapper {
 
     public GetExpertBasicInfoWebResponse toBasicInfo(GetExpertBasicInfoAppResponse appResponse) {
         return GetExpertBasicInfoWebResponse.builder()
+                .expertNo(appResponse.expertNo())
                 .activityDuration(appResponse.activityDuration())
                 .activityCount(appResponse.activityCount())
                 .lastActivityAt(appResponse.lastActivityAt())

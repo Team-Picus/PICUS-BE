@@ -59,6 +59,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("COMMON200"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.expertNo").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.activityDuration").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.activityCount").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.lastActivityAt").exists())
@@ -107,6 +108,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
 
     private void stubMethodAboutBasicInfo(String expertNo) {
         GetExpertBasicInfoAppResponse mockAppResponse = GetExpertBasicInfoAppResponse.builder()
+                .expertNo("")
                 .activityDuration("")
                 .activityCount(100)
                 .lastActivityAt(LocalDateTime.now())
@@ -117,6 +119,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .build();
         // Mock이면 값들이 Null로 채워지는데, 그러면 exists()검증이 안됨
         GetExpertBasicInfoWebResponse mockWebResponse = GetExpertBasicInfoWebResponse.builder()
+                .expertNo("")
                 .activityDuration("")
                 .activityCount(100)
                 .lastActivityAt(LocalDateTime.now())

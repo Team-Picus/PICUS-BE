@@ -23,6 +23,7 @@ class GetExpertWebMapperTest {
     void toBasicInfo_shouldMapCorrectly() {
         // given
         GetExpertBasicInfoAppResponse appResponse = GetExpertBasicInfoAppResponse.builder()
+                .expertNo("expert_no")
                 .activityDuration("3년")
                 .activityCount(12)
                 .lastActivityAt(LocalDateTime.of(2024, 7, 1, 15, 0))
@@ -37,6 +38,7 @@ class GetExpertWebMapperTest {
 
         // then
         assertThat(result).isNotNull();
+        assertThat(result.expertNo()).isEqualTo("expert_no");
         assertThat(result.activityDuration()).isEqualTo("3년");
         assertThat(result.activityCount()).isEqualTo(12);
         assertThat(result.lastActivityAt()).isEqualTo(LocalDateTime.of(2024, 7, 1, 15, 0));

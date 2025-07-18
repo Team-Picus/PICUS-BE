@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record GetExpertBasicInfoAppResponse(
+        String expertNo,
         String activityDuration,
         Integer activityCount,
         LocalDateTime lastActivityAt,
