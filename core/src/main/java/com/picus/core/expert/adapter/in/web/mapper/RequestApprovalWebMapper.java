@@ -1,9 +1,7 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.adapter.in.web.data.response.RequestApprovalWebResponse;
 import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
-import com.picus.core.expert.domain.model.Expert;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,7 +1,6 @@
 package com.picus.core.expert.integration;
 
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.adapter.in.web.data.response.RequestApprovalWebResponse;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
@@ -10,12 +9,9 @@ import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaReposit
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
-import com.picus.core.expert.application.port.out.LoadExpertPort;
-import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.ActivityArea;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
@@ -24,7 +20,6 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
