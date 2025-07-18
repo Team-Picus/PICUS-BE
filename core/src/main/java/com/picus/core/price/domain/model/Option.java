@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -14,5 +13,5 @@ public class Option {
     private String name;
     private Integer count;
     private Integer price;
-    private List<String> content;
+    private List<String> contents;
 }

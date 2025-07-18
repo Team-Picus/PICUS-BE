@@ -91,7 +91,7 @@ class PricePersistenceAdapterTest {
         assertThat(opt.getName()).isEqualTo("옵션 A");
         assertThat(opt.getCount()).isEqualTo(1);
         assertThat(opt.getPrice()).isEqualTo(5000);
-        assertThat(opt.getContent()).isEqualTo(List.of("마사지 추가"));
+        assertThat(opt.getContents()).isEqualTo(List.of("마사지 추가"));
 
         // PriceReferenceImage 검증
         assertThat(result.getPriceReferenceImages()).hasSize(1);

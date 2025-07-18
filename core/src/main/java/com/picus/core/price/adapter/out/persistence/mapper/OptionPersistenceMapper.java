@@ -12,7 +12,7 @@ public class OptionPersistenceMapper {
                 .name(optionEntity.getName())
                 .count(optionEntity.getCount())
                 .price(optionEntity.getPrice())
-                .content(optionEntity.getContent())
+                .contents(optionEntity.getContent())
                 .build();
     }
 }

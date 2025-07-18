@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OptionPersistenceMapperTest {
 
@@ -30,6 +29,6 @@ class OptionPersistenceMapperTest {
         assertThat(result.getName()).isEqualTo("옵션A");
         assertThat(result.getCount()).isEqualTo(2);
         assertThat(result.getPrice()).isEqualTo(5000);
-        assertThat(result.getContent()).isEqualTo(List.of("기본 제공 1", "기본 제공 2"));
+        assertThat(result.getContents()).isEqualTo(List.of("기본 제공 1", "기본 제공 2"));
     }
 }

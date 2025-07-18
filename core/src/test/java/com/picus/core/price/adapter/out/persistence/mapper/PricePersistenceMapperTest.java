@@ -66,7 +66,7 @@ class PricePersistenceMapperTest {
                         .name("옵션1")
                         .count(1)
                         .price(1000)
-                        .content(List.of("추가1"))
+                        .contents(List.of("추가1"))
                         .build()
         );
     }
