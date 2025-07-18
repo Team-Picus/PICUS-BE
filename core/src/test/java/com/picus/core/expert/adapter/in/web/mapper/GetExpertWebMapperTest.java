@@ -50,9 +50,20 @@ class GetExpertWebMapperTest {
     @DisplayName("Expert 도메인 객체를 상세 정보 WebResponse로 매핑한다")
     void toDetailInfo_shouldMapCorrectly() {
         // given
-        List<Project> projects = List.of(Project.builder().projectName("프로젝트1").build());
-        List<Skill> skills = List.of(Skill.builder().content("Java").skillType(SkillType.EDIT).build());
+
+        List<Project> projects = List.of(Project.builder()
+                .projectName("프로젝트1")
+                .startDate(LocalDateTime.of(2023, 1, 1, 10, 0))
+                .endDate(LocalDateTime.of(2023, 6, 1, 18, 0))
+                .build());
+
+        List<Skill> skills = List.of(Skill.builder()
+                .skillType(SkillType.EDIT)
+                .content("Java")
+                .build());
+
         List<String> activityAreas = List.of("서울", "부산");
+
         Studio studio = Studio.builder()
                 .studioName("스튜디오A")
                 .employeesCount(3)
@@ -73,9 +84,21 @@ class GetExpertWebMapperTest {
 
         // then
         assertThat(response.activityCareer()).isEqualTo("5년차 백엔드 개발자");
-        assertThat(response.projects()).isEqualTo(projects);
-        assertThat(response.skills()).isEqualTo(skills);
+
+        assertThat(response.projects()).hasSize(1);
+        assertThat(response.projects().get(0).projectName()).isEqualTo("프로젝트1");
+        assertThat(response.projects().get(0).startDate()).isEqualTo(LocalDateTime.of(2023, 1, 1, 10, 0));
+        assertThat(response.projects().get(0).endDate()).isEqualTo(LocalDateTime.of(2023, 6, 1, 18, 0));
+
+        assertThat(response.skills()).hasSize(1);
+        assertThat(response.skills().get(0).skillType()).isEqualTo(SkillType.EDIT);
+        assertThat(response.skills().get(0).content()).isEqualTo("Java");
+
         assertThat(response.activityAreas()).containsExactly("서울", "부산");
-        assertThat(response.studio()).isEqualTo(studio);
+
+        assertThat(response.studio().studioName()).isEqualTo("스튜디오A");
+        assertThat(response.studio().employeesCount()).isEqualTo(3);
+        assertThat(response.studio().businessHours()).isEqualTo("10-6");
+        assertThat(response.studio().address()).isEqualTo("강남");
     }
 }

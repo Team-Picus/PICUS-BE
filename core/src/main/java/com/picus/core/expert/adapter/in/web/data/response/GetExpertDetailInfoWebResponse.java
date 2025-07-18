@@ -4,16 +4,39 @@ import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.domain.model.vo.ActivityArea;
+import com.picus.core.expert.domain.model.vo.SkillType;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
 public record GetExpertDetailInfoWebResponse(
         String activityCareer,
-        List<Project> projects,
-        List<Skill> skills,
+        List<ProjectWebResponse> projects,
+        List<SkillWebResponse> skills,
         List<String> activityAreas,
-        Studio studio
+        StudioWebResponse studio
 ) {
+    @Builder
+    public record ProjectWebResponse(
+            String projectName,
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    ) {}
+
+
+    @Builder
+    public record SkillWebResponse(
+            SkillType skillType,
+            String content
+    ) {}
+
+    @Builder
+    public record StudioWebResponse(
+            String studioName,
+            Integer employeesCount,
+            String businessHours,
+            String address
+    ) {}
 }

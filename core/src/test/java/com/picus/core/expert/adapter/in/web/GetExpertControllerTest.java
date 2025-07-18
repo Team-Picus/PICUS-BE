@@ -2,6 +2,7 @@ package com.picus.core.expert.adapter.in.web;
 
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.StudioWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.GetExpertInfoQuery;
 import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
@@ -140,7 +141,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                         .projects(List.of())
                         .skills(List.of())
                         .activityAreas(List.of())
-                        .studio(Studio.builder().build())
+                        .studio(StudioWebResponse.builder().build())
                         .build();
 
         given(getExpertInfoQuery.getExpertDetailInfo(expertNo))
