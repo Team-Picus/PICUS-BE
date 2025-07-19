@@ -44,7 +44,9 @@ class SearchExpertsServiceTest {
         // then
         // TODO: profileImageUrl 검증
         assertThat(results).hasSize(1)
-                .extracting("expertNo", "nickname")
+                .extracting(
+                        SearchExpertAppResponse::expertNo,
+                        SearchExpertAppResponse::nickname)
                 .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
         then(userQueryPort).should()

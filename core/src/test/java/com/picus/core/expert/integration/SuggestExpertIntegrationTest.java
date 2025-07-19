@@ -110,7 +110,8 @@ public class SuggestExpertIntegrationTest {
         List<SearchExpertWebResponse> result = body.getResult();
 
         assertThat(result).hasSize(2)
-                .extracting("expertNo", "nickname")
+                .extracting(SearchExpertWebResponse::expertNo,
+                        SearchExpertWebResponse::nickname)
                 .containsExactly(
                         Tuple.tuple(testExpertNo3, testNickname3),
                         Tuple.tuple(testExpertNo2, testNickname2)
@@ -199,7 +200,7 @@ public class SuggestExpertIntegrationTest {
 
     private ExpertEntity givenExpertEntity() {
         return ExpertEntity.builder()
-                .backgroundImageKey("backgroundImageKey")
+                .backgroundImageKey("backgroundImageFileKey")
                 .intro("intro")
                 .activityCareer("경력 5년")
                 .activityAreas(List.of("서울 강북구"))

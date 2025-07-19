@@ -139,7 +139,10 @@ class UserPersistenceAdapterTest {
 
         // then
         assertThat(results).hasSize(3);
-        assertThat(results).extracting("nickname", "profileImageFileKey", "expertNo")
+        assertThat(results).extracting(
+                UserWithProfileImageDto::nickname,
+                UserWithProfileImageDto::profileImageFileKey,
+                UserWithProfileImageDto::expertNo)
                 .containsExactly(
                         tuple(testNickname3, testFileKey3, testExpertNo3),
                         tuple(testNickname2, testFileKey2, testExpertNo2),
@@ -183,7 +186,10 @@ class UserPersistenceAdapterTest {
 
         // then
         assertThat(results).hasSize(2);
-        assertThat(results).extracting("nickname", "profileImageFileKey", "expertNo")
+        assertThat(results).extracting(
+                        UserWithProfileImageDto::nickname,
+                        UserWithProfileImageDto::profileImageFileKey,
+                        UserWithProfileImageDto::expertNo)
                 .containsExactlyInAnyOrder(
                         tuple(testNickname3, testFileKey3, testExpertNo3),
                         tuple(testNickname2, testFileKey2, testExpertNo2)

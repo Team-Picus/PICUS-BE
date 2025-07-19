@@ -45,7 +45,10 @@ class SuggestExpertsServiceTest {
         // then
         // TODO: profileImageUrl 검증
         assertThat(results).hasSize(1)
-                .extracting("expertNo", "nickname")
+                .extracting(
+                        SuggestExpertAppResponse::expertNo,
+                        SuggestExpertAppResponse::nickname
+                        )
                 .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
         then(userQueryPort).should()
