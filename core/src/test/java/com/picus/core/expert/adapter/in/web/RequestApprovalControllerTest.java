@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
 import com.picus.core.expert.adapter.in.web.mapper.RequestApprovalWebMapper;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
-import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
+import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.ActivityArea;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
@@ -74,12 +73,12 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
         then(webMapper).should()
                 .toCommand(eq(webRequest), eq(TEST_USER_ID));
         then(requestApprovalUseCase).should()
-                .requestApproval(any(RequestApprovalCommand.class));
+                .requestApproval(any(RequestApprovalRequest.class));
 
     }
 
     private void stubMethodInController() {
-        RequestApprovalCommand mockCommand = Mockito.mock(RequestApprovalCommand.class);
+        RequestApprovalRequest mockCommand = Mockito.mock(RequestApprovalRequest.class);
         given(webMapper.toCommand(any(RequestApprovalWebRequest.class), eq(TEST_USER_ID)))
                 .willReturn(mockCommand);
     }

@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
+import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RequestApprovalWebMapperTest {
 
@@ -49,7 +48,7 @@ class RequestApprovalWebMapperTest {
         String userNo = "user-001";
 
         // when
-        RequestApprovalCommand command = mapper.toCommand(request, userNo);
+        RequestApprovalRequest command = mapper.toCommand(request, userNo);
 
         // then
         assertThat(command.userNo()).isEqualTo("user-001");

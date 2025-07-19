@@ -1,26 +1,22 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
+import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
 import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
 import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.ActivityArea;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.user.application.port.out.UserCommandPort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -39,7 +35,7 @@ class RequestApprovalServiceTest {
     @DisplayName("전문가 승인요청 메서드 상호작용 검증")
     public void requestApproval_success() throws Exception {
         // given
-        RequestApprovalCommand command = givenRequestApprovalCommand();
+        RequestApprovalRequest command = givenRequestApprovalCommand();
         stubOutPortMethod();
 
         // when
@@ -53,8 +49,8 @@ class RequestApprovalServiceTest {
 
 
 
-    private RequestApprovalCommand givenRequestApprovalCommand() {
-        return RequestApprovalCommand.builder()
+    private RequestApprovalRequest givenRequestApprovalCommand() {
+        return RequestApprovalRequest.builder()
                 .activityCareer("3년차")
                 .projects(List.of(
                         Project.builder()
