@@ -17,7 +17,7 @@ import static com.picus.core.shared.exception.code.status.AuthErrorStatus.EXPIRE
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class TokenManagementServicePort implements TokenManagementCommandPort {
+public class TokenManagementService implements TokenManagementCommandPort {
 
     private final TokenLifecycleCommandPort tokenLifecycleCommandPort;
     private final TokenProvider tokenProvider;
