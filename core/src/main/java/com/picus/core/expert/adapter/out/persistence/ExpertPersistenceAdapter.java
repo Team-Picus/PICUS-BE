@@ -92,26 +92,6 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     }
 
     @Override
-    public List<SearchExpertAppResponse> findByNicknameContaining(String keyword) {
-        return expertJpaRepository.findByNicknameContaining(keyword).stream()
-                .map(expertEntity -> SearchExpertAppResponse.builder()
-                        .expertNo(expertEntity.getExpertNo())
-                        .nickname(expertEntity.getUserEntity().getNickname())
-                        .build())
-                .toList();
-    }
-
-    @Override
-    public List<SuggestExpertAppResponse> findByNicknameContainingLimited(String keyword, int size) {
-        return expertJpaRepository.findByNicknameContainingLimited(keyword, PageRequest.of(0, size)).stream()
-                .map(expertEntity -> SuggestExpertAppResponse.builder()
-                        .expertNo(expertEntity.getExpertNo())
-                        .nickname(expertEntity.getUserEntity().getNickname())
-                        .build())
-                .toList();
-    }
-
-    @Override
     public void updateExpert(Expert expert) {
         Optional<ExpertEntity> expertEntity = expertJpaRepository.findById(expert.getExpertNo());
         expertEntity.ifPresent(entity -> entity.updateEntity(expert));

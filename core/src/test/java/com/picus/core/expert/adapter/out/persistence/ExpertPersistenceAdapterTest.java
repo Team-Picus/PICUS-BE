@@ -25,6 +25,7 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,9 @@ class ExpertPersistenceAdapterTest {
 
     @Autowired
     UserJpaRepository userJpaRepository;
+
+    @Autowired
+    EntityManager em;
 
     @Test
     @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장되며 기본키는 연관맺은 UserEntity의 기본키가 된다.")
@@ -158,6 +162,7 @@ class ExpertPersistenceAdapterTest {
         ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
         String expertNo = expertEntity.getExpertNo();
 
+        clearPersistenceContext();
 
         // 수정할 도메인 Expert 생성
         Expert updatedExpert = Expert.builder()
@@ -173,6 +178,7 @@ class ExpertPersistenceAdapterTest {
 
         // when
         expertPersistenceAdapter.updateExpert(updatedExpert);
+        clearPersistenceContext();
 
         // then
         ExpertEntity updatedEntity = expertJpaRepository.findById(expertNo).orElseThrow();
@@ -187,67 +193,8 @@ class ExpertPersistenceAdapterTest {
 
     }
 
-    @Test
-    @DisplayName("특정 닉네임 키워드가 포함된 전문가를 오름차순 조회한다.")
-    public void findByNicknameContaining() throws Exception {
-        // given
-        String keyword = "nickname";
-        String testNickname1 = "xxnickname";
-        String testNickname2 = "xnicknamex";
-        String testNickname3 = "nicknamexx";
-        String testNickname4 = "xnicknamx";
-
-        // 데이터 셋팅
-        UserEntity userEntity1 = givenUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
-        settingTestExpertEntityData(userEntity1);
-        UserEntity userEntity2 = givenUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
-        settingTestExpertEntityData(userEntity2);
-        UserEntity userEntity3 = givenUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
-        settingTestExpertEntityData(userEntity3);
-        UserEntity userEntity4 = givenUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
-        settingTestExpertEntityData(userEntity4);
-
-        // when
-        List<SearchExpertAppResponse> results = expertPersistenceAdapter.findByNicknameContaining(keyword);
-
-        // then
-        assertThat(results).hasSize(3);
-        assertThat(results).extracting("nickname")
-                .containsExactly(testNickname3, testNickname2, testNickname1);
-    }
-
-    @Test
-    @DisplayName("특정 닉네임 키워드가 포함된 전문가를 n개를 이름순으로 오름차순 조회한다.")
-    public void findByNicknameContainingLimited() throws Exception {
-        // given
-        String keyword = "nickname";
-        String testNickname1 = "xxnickname";
-        String testNickname2 = "xnicknamex";
-        String testNickname3 = "nicknamexx";
-        String testNickname4 = "xnicknamx";
-
-        // 데이터 셋팅
-        UserEntity userEntity1 = givenUserEntityWithParam(testNickname1, "name1", "email1@example.com", "social1");
-        settingTestExpertEntityData(userEntity1);
-        UserEntity userEntity2 = givenUserEntityWithParam(testNickname2, "name2", "email2@example.com", "social2");
-        settingTestExpertEntityData(userEntity2);
-        UserEntity userEntity3 = givenUserEntityWithParam(testNickname3, "name3", "email3@example.com", "social3");
-        settingTestExpertEntityData(userEntity3);
-        UserEntity userEntity4 = givenUserEntityWithParam(testNickname4, "name4", "email4@example.com", "social4");
-        settingTestExpertEntityData(userEntity4);
-
-        // when
-        List<SuggestExpertAppResponse> results = expertPersistenceAdapter.findByNicknameContainingLimited(keyword, 2);
-
-        // then
-        assertThat(results).hasSize(2);
-        assertThat(results).extracting("nickname")
-                .containsExactly(testNickname3, testNickname2);
-    }
-
 
     /* 헬퍼 메서드 */
-
     private UserEntity givenUserEntity() {
         return UserEntity.builder()
                 .name("이름")
@@ -384,4 +331,9 @@ class ExpertPersistenceAdapterTest {
                 .build();
     }
 
+
+    private void clearPersistenceContext() {
+        em.flush();
+        em.clear();
+    }
 }

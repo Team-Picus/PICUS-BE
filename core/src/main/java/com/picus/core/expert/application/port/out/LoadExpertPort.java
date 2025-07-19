@@ -13,8 +13,4 @@ import java.util.Optional;
 public interface LoadExpertPort {
 
     Optional<Expert> findById(String expertNo);
-
-    List<SearchExpertAppResponse> findByNicknameContaining(String keyword);
-
-    List<SuggestExpertAppResponse> findByNicknameContainingLimited(String keyword, int size);
 }
