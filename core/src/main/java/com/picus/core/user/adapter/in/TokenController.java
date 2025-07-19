@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/token")
-public class TokenReissueController {
+public class TokenController {
 
     private final TokenReissueWebMapper tokenReissueWebMapper;
     private final TokenManagementCommand tokenManagementCommand;
@@ -32,11 +32,5 @@ public class TokenReissueController {
         Role role = userManagementUseCase.findRoleById(userNo);
         String reissuedToken = tokenManagementCommand.reissue(userNo, role);
         return BaseResponse.onSuccess(tokenReissueWebMapper.mapToTokenReissueResponse(reissuedToken));
-    }
-
-    @DeleteMapping("/logout")
-    public BaseResponse<Void> logout(@AccessToken String accessToken, @CurrentUser String userNo) {
-        tokenManagementCommand.blacklist(userNo, accessToken);
-        return BaseResponse.onSuccess();
     }
 }
