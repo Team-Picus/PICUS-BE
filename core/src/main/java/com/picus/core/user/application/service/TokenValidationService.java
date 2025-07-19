@@ -13,7 +13,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class TokenValidationServicePort implements TokenValidationQueryPort {
+public class TokenValidationService implements TokenValidationQueryPort {
 
     private final TokenPrefixProperties tokenPrefixProperties;
     private final TokenLifecycleQueryPort tokenLifecycleQueryPort;
