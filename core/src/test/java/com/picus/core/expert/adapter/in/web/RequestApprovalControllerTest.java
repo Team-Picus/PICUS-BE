@@ -36,11 +36,8 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-
 
     @MockitoBean
     private RequestApprovalUseCase requestApprovalUseCase;
@@ -53,6 +50,7 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     public void requestApproval() throws Exception {
         // given
         RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
+        String currentUserId = TEST_USER_ID;
 
         // stubbing
         stubMethodInController();
