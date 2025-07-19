@@ -6,7 +6,7 @@ import com.picus.core.infrastructure.security.oauth.repository.OAuth2Authorizati
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.shared.util.CookieUtil;
-import com.picus.core.user.application.port.in.TokenManagementCommand;
+import com.picus.core.user.application.port.in.TokenManagementCommandPort;
 import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
 import com.picus.core.user.application.port.in.command.InitSocialUserCommand;
 import com.picus.core.user.domain.model.User;
@@ -30,7 +30,7 @@ public class OAuth2AuthenticationSuccessHandler
 
     private final SocialAuthenticationUseCase socialAuthUseCase;
     private final TokenProvider tokenProvider;
-    private final TokenManagementCommand tokenManagementCommand;
+    private final TokenManagementCommandPort tokenManagementCommandPort;
     private final OAuth2AuthorizationRequestRepository cookieRepository;
 
     @Override
@@ -61,7 +61,7 @@ public class OAuth2AuthenticationSuccessHandler
                 .orElseThrow(() -> new RestApiException(EXPIRED_REFRESH_TOKEN));
 
         // 3) RefreshToken 저장 (Port 호출)
-        tokenManagementCommand.refreshToken(user.getUserNo(), refreshToken, duration);
+        tokenManagementCommandPort.refreshToken(user.getUserNo(), refreshToken, duration);
 
         // 4) Response(쿠키/헤더/JSON) 반영
         CookieUtil.createSecureCookie(response, "refresh_token", refreshToken, (int) duration.getSeconds());

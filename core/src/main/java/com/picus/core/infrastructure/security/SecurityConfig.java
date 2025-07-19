@@ -9,9 +9,9 @@ import com.picus.core.infrastructure.security.oauth.handler.OAuth2Authentication
 import com.picus.core.infrastructure.security.oauth.repository.OAuth2AuthorizationRequestRepository;
 import com.picus.core.infrastructure.security.oauth.service.CustomOAuth2UserService;
 import com.picus.core.infrastructure.security.oauth.service.CustomUserDetailsService;
-import com.picus.core.user.application.port.in.TokenManagementCommand;
+import com.picus.core.user.application.port.in.TokenManagementCommandPort;
 import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
-import com.picus.core.user.application.port.in.TokenValidationQuery;
+import com.picus.core.user.application.port.in.TokenValidationQueryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,10 +44,10 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final SocialAuthenticationUseCase socialAuthenticationUseCase;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final TokenManagementCommand tokenManagementCommand;
+    private final TokenManagementCommandPort tokenManagementCommandPort;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
     private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
-    private final TokenValidationQuery tokenValidationQuery;
+    private final TokenValidationQueryPort tokenValidationQueryPort;
 
     /**
      * 1) Define the PasswordEncoder bean.
@@ -134,7 +134,7 @@ public class SecurityConfig {
      */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties, excludeWhitelistPathProperties, tokenValidationQuery, tokenManagementCommand);
+        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties, excludeWhitelistPathProperties, tokenValidationQueryPort, tokenManagementCommandPort);
     }
 
     /**
@@ -153,7 +153,7 @@ public class SecurityConfig {
         return new OAuth2AuthenticationSuccessHandler(
                 socialAuthenticationUseCase,
                 tokenProvider,
-                tokenManagementCommand,
+                tokenManagementCommandPort,
                 oAuth2AuthorizationRequestRepository()
         );
     }
