@@ -39,7 +39,6 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-//    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)

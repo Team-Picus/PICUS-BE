@@ -6,6 +6,7 @@ import com.picus.core.infrastructure.security.oauth.provider.kakao.KakaoPrincipa
 import com.picus.core.infrastructure.security.oauth.provider.kakao.KakaoProfile;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
+import com.picus.core.user.application.port.in.command.InitSocialUserCommand;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class SocialPrincipalFactory {
 //    public
 
     private SocialPrincipal fromKakao(KakaoProfile kakaoProfile) {
-        User user = socialAuthenticationUseCase.authenticate(kakaoProfile.providerId(), Provider.KAKAO, kakaoProfile.email(), kakaoProfile.name(), kakaoProfile.tel());
+        User user = socialAuthenticationUseCase.authenticate(new InitSocialUserCommand(kakaoProfile.providerId(), Provider.KAKAO, kakaoProfile.email(), kakaoProfile.name(), kakaoProfile.tel()));
         return new KakaoPrincipal(user, kakaoProfile);
     }
 }

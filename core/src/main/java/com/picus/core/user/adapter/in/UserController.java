@@ -21,6 +21,4 @@ public class UserController {
         tokenManagementCommand.blacklist(userNo, accessToken);
         return BaseResponse.onSuccess();
     }
-
-
 }

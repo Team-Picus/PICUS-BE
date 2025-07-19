@@ -7,7 +7,6 @@ import com.picus.core.user.adapter.out.persistence.mapper.UserPersistenceMapper;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.application.port.out.UserCommandPort;
 import com.picus.core.user.application.port.out.UserQueryPort;
-import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -22,25 +21,31 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
-    public User upsert(String providerId, Provider provider, String email, String name, String tel) {
+    public User upsert(User user) {
         UserEntity entity = userJpaRepository
-                .findByProviderAndProviderId(provider, providerId)
+                .findByProviderAndProviderId(user.getAuth().getProvider(), user.getAuth().getProviderId())
                 .map(existing -> {
-                    existing.updateSocialProfile(email, name, tel);
+                    existing.updateSocialProfile(user.getEmail(), user.getName(), user.getTel());
                     return existing;
                 })
                 .orElseGet(() ->
-                        userPersistenceMapper.mapToUserEntity(providerId, provider, email, name, tel)
+                        userPersistenceMapper.toEntity(user)
                 );
 
         UserEntity savedEntity = userJpaRepository.save(entity);
-        return userPersistenceMapper.mapToUser(savedEntity);
+        return userPersistenceMapper.toDomainModel(savedEntity);
+    }
+
+    @Override
+    public void save(User user) {
+        UserEntity entity = userPersistenceMapper.toEntity(user);
+        userJpaRepository.save(entity);
     }
 
     @Override
     public User findById(String userNo) {
         return userJpaRepository.findById(userNo)
-                .map(userPersistenceMapper::mapToUser)
+                .map(userPersistenceMapper::toDomainModel)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
 
