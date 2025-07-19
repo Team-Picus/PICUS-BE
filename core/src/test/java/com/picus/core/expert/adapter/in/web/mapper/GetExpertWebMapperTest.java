@@ -5,7 +5,6 @@ import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWeb
 import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.domain.model.*;
 import com.picus.core.expert.domain.model.vo.*;
-import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

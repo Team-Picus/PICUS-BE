@@ -7,7 +7,7 @@ import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;
-import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
+import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 

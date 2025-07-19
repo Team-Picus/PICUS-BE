@@ -1,4 +1,4 @@
-package com.picus.core.user.application.port.out.response;
+package com.picus.core.user.application.port.out.join_dto;
 
 import lombok.Builder;
 

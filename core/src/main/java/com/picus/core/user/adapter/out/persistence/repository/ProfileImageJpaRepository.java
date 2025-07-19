@@ -1,6 +1,7 @@
 package com.picus.core.user.adapter.out.persistence.repository;
 
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,4 +11,7 @@ public interface ProfileImageJpaRepository extends JpaRepository<ProfileImageEnt
 
     @Query("select p from ProfileImageEntity p join UserEntity u where p.userNo = u.userNo and u.expertNo = :expertNo")
     Optional<ProfileImageEntity> findByExpertNo(String expertNo);
+
+
+    Optional<ProfileImageEntity> findByUserNo(String userNo);
 }

@@ -1,18 +1,15 @@
 package com.picus.core.user.adapter.out.persistence;
 
-import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
-import com.picus.core.user.adapter.out.persistence.mapper.ProfileImagePersistenceMapper;
 import com.picus.core.user.adapter.out.persistence.mapper.UserPersistenceMapper;
 import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRepository;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.application.port.out.UserCommandPort;
 import com.picus.core.user.application.port.out.UserQueryPort;
-import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
-import com.picus.core.user.domain.model.ProfileImage;
+import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.Role;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +28,6 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     private final ProfileImageJpaRepository profileImageJpaRepository;
 
     private final UserPersistenceMapper userPersistenceMapper;
-    private final ProfileImagePersistenceMapper profileMapper;
 
     @Override
     public User upsert(User user) {
@@ -60,6 +56,21 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
         UserEntity userEntity = userJpaRepository.findById(userNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
         userEntity.assignExpertNo(expertNo);
+    }
+
+    @Override
+    public void updateNicknameAndImageByExpertNo(UserWithProfileImageDto userWithProfileImageDto) {
+        String expertNo = userWithProfileImageDto.expertNo();
+
+        // 닉네임 수정
+        UserEntity userEntity = userJpaRepository.findByExpertNo(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        userEntity.updateNickname(userWithProfileImageDto.nickname());
+
+        // 프로필 이미지 수정
+        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByUserNo(userEntity.getUserNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        profileImageEntity.updateFileKey(userWithProfileImageDto.profileImageFileKey());
     }
 
     @Override

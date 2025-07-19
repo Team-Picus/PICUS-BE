@@ -4,7 +4,7 @@ import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppR
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.user.application.port.out.UserQueryPort;
-import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
+import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

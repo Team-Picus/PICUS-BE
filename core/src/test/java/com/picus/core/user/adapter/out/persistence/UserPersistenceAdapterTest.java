@@ -9,7 +9,7 @@ import com.picus.core.user.adapter.out.persistence.mapper.ProfileImagePersistenc
 import com.picus.core.user.adapter.out.persistence.mapper.UserPersistenceMapper;
 import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRepository;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
-import com.picus.core.user.application.port.out.response.UserWithProfileImageDto;
+import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
 import jakarta.persistence.EntityManager;
@@ -57,8 +57,8 @@ class UserPersistenceAdapterTest {
         UserEntity userEntity = givenUserEntity();
         UserEntity saved = userJpaRepository.save(userEntity);
         String userNo = saved.getUserNo();
-        em.flush();
-        em.clear();
+
+        clearPersistenceContext();
 
         // when
         userPersistenceAdapter.assignExpertNo(userNo, expertNo);
@@ -89,8 +89,7 @@ class UserPersistenceAdapterTest {
         String expertNo = expertEntity.getExpertNo();
         userEntity.assignExpertNo(expertNo); // UserEntity에 ExpertNo 할당
 
-        em.flush(); // 영속성 컨텍스트 정리
-        em.clear();
+        clearPersistenceContext();
 
         // when
         Optional<UserWithProfileImageDto> optionalResult = userPersistenceAdapter.findUserInfoByExpertNo(expertNo);
@@ -191,6 +190,34 @@ class UserPersistenceAdapterTest {
                 );
     }
 
+    @Test
+    @DisplayName("User의 nickname과 ProfileImage의 file_key를 업데이트 한다.")
+    public void updateNicknameAndImageByExpertNo() throws Exception {
+        // given
+        UserEntity userEntity = givenUserEntity("old_nick", "expert_no");
+        userJpaRepository.save(userEntity);
+        ProfileImageEntity profileImageEntity = givenProfileImageEntity("old_file_key", userEntity.getUserNo());
+        profileImageJpaRepository.save(profileImageEntity);
+        clearPersistenceContext();
+
+        UserWithProfileImageDto dto = UserWithProfileImageDto.builder()
+                .nickname("new_nick")
+                .profileImageFileKey("new_file_key")
+                .expertNo("expert_no")
+                .build();
+
+        // when
+        userPersistenceAdapter.updateNicknameAndImageByExpertNo(dto);
+        clearPersistenceContext();
+
+        // then
+        UserEntity updatedUser = userJpaRepository.findById(userEntity.getUserNo()).orElseThrow();
+        assertThat(updatedUser.getNickname()).isEqualTo("new_nick");
+
+        ProfileImageEntity updatedProfile = profileImageJpaRepository.findById(profileImageEntity.getProfileImageNo()).orElseThrow();
+        assertThat(updatedProfile.getFile_key()).isEqualTo("new_file_key");
+    }
+
 
     private UserEntity givenUserEntity() {
         return UserEntity.builder()
@@ -241,6 +268,22 @@ class UserPersistenceAdapterTest {
                 .build();
     }
 
+    private UserEntity givenUserEntity(String nickname, String expertNo) {
+        return UserEntity.builder()
+                .name("이름")
+                .nickname(nickname)
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo(expertNo)
+                .build();
+    }
+
     private ProfileImageEntity givenProfileImageEntity(String fileKey, String userNo) {
         return ProfileImageEntity.builder()
                 .file_key(fileKey)
@@ -273,5 +316,10 @@ class UserPersistenceAdapterTest {
         ProfileImageEntity profileImageEntity3 = givenProfileImageEntity(testFileKey3, userEntity3.getUserNo());
         ProfileImageEntity profileImageEntity4 = givenProfileImageEntity(testFileKey4, userEntity4.getUserNo());
         profileImageJpaRepository.saveAll(List.of(profileImageEntity1, profileImageEntity2, profileImageEntity3, profileImageEntity4));
+    }
+
+    private void clearPersistenceContext() {
+        em.flush();
+        em.clear();
     }
 }

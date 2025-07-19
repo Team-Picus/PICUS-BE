@@ -82,4 +82,8 @@ public class UserEntity extends BaseEntity {
     public void assignExpertNo(String expertNo) {
         this.expertNo = expertNo;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
