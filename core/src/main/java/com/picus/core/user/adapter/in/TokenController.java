@@ -1,6 +1,5 @@
 package com.picus.core.user.adapter.in;
 
-import com.picus.core.shared.annotation.AccessToken;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.annotation.RefreshToken;
 import com.picus.core.shared.common.BaseResponse;
@@ -11,7 +10,6 @@ import com.picus.core.user.application.port.in.TokenValidationQuery;
 import com.picus.core.user.application.port.in.UserManagementUseCase;
 import com.picus.core.user.domain.model.Role;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +24,7 @@ public class TokenController {
     private final TokenValidationQuery tokenValidationQuery;
     private final UserManagementUseCase userManagementUseCase;
 
-    @PostMapping("/reissue")
+    @PostMapping("/token/reissue")
     public BaseResponse<TokenReissueResponse> reissue(@RefreshToken String refreshToken, @CurrentUser String userNo) {
         tokenValidationQuery.validate(userNo, refreshToken);
         Role role = userManagementUseCase.findRoleById(userNo);
