@@ -8,6 +8,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,11 +16,11 @@ import java.util.List;
 public class Expert {
     private String expertNo;
 
-    private final String backgroundImageKey;
+    private String backgroundImageKey;
 
     private final String backgroundImageUrl;
 
-    private final String intro;
+    private String intro;
 
     private final String activityCareer;
 
@@ -31,7 +32,7 @@ public class Expert {
 
     private final LocalDateTime lastActivityAt;
 
-    private final List<Portfolio> portfolios;
+    private List<Portfolio> portfolios;
 
     private ApprovalStatus approvalStatus;
 
@@ -111,5 +112,22 @@ public class Expert {
     }
     public void rejectApprovalRequest() {
         this.approvalStatus = ApprovalStatus.REJECT;
+    }
+
+    public void updateBasicInfo(String backgroundImageKey, String link, String intro) {
+        if (backgroundImageKey != null) {
+            this.backgroundImageKey = backgroundImageKey;
+        }
+
+        if (link != null) {
+            if (this.portfolios == null) {
+                this.portfolios = new ArrayList<>();
+            }
+            this.portfolios.add(Portfolio.builder().link(link).build());
+        }
+
+        if (intro != null) {
+            this.intro = intro;
+        }
     }
 }
