@@ -33,11 +33,13 @@ public class ExpertPersistenceMapper {
                 .activityCount(entity.getActivityCount())
                 .lastActivityAt(entity.getLastActivityAt())
                 .portfolios(
-                        Optional.ofNullable(entity.getPortfolioLinks())
-                                .orElse(new ArrayList<>())
-                                .stream()
-                                .map(link -> Portfolio.builder().link(link).build()) // URL → Portfolio 객체 생성
-                                .toList()
+                        new ArrayList<>(
+                                Optional.ofNullable(entity.getPortfolioLinks())
+                                        .orElse(new ArrayList<>())
+                                        .stream()
+                                        .map(link -> Portfolio.builder().link(link).build())
+                                        .toList()
+                        )
                 )
                 .approvalStatus(entity.getApprovalStatus())
                 .createdAt(entity.getCreatedAt())
