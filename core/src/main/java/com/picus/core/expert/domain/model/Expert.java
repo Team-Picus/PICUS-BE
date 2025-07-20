@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode
@@ -134,20 +135,76 @@ public class Expert {
     public void updateDetailInfo(
             String activityCareer, List<String> activityAreas, List<Project> projects,
             List<Skill> skills, Studio studio) {
+        // activityCareer 업데이트
         if(activityCareer != null)
             this.activityCareer = activityCareer;
 
+        // activityAreas 업데이트 (덮어 씌움)
         if(activityAreas != null)
             this.activityAreas = activityAreas;
 
-        if(projects != null)
-            this.projects = projects;
+        // projects 업데이트
+        if (projects != null) {
+            updateProjects(projects);
+        }
 
-        if(skills != null)
-            this.skills = skills;
+        // skills 업데이트
+        if(skills != null){
+            updateSkills(skills);
+        }
 
-        if(studio != null)
-            this.studio = studio;
+        // studio 업데이트
+        if(studio != null) {
+            updateStudio(studio);
+        }
+    }
 
+    private void updateProjects(List<Project> projects) {
+        for (Project incoming : projects) {
+            if (incoming.getProjectNo() != null) {
+                // 수정: 기존 projectNo 찾기
+                Optional<Project> target = this.projects.stream()
+                        .filter(p -> p.getProjectNo().equals(incoming.getProjectNo()))
+                        .findFirst();
+
+                target.ifPresent(existing -> {
+                    existing.updateProject(
+                            incoming.getProjectName(),
+                            incoming.getStartDate(),
+                            incoming.getEndDate()
+                    );
+                });
+            } else {
+                // 추가
+                this.projects.add(incoming);
+            }
+        }
+    }
+
+    private void updateSkills(List<Skill> skills) {
+        for (Skill incoming : skills) {
+            if(incoming.getSkillNo() != null) {
+                // 수정: 기존 skillNo 찾기
+                Optional<Skill> target = this.skills.stream()
+                        .filter(s -> s.getSkillNo().equals(incoming.getSkillNo()))
+                        .findFirst();
+
+                target.ifPresent(existing -> {
+                    existing.updateSkill(incoming.getSkillType(), incoming.getContent());
+                });
+            } else {
+                // 추가
+                this.skills.add(incoming);
+            }
+        }
+    }
+
+    private void updateStudio(Studio studio) {
+        this.studio.updateStudio(
+                studio.getStudioName(),
+                studio.getEmployeesCount(),
+                studio.getBusinessHours(),
+                studio.getAddress()
+        );
     }
 }
