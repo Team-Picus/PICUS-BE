@@ -135,7 +135,7 @@ class UpdateExpertInfoControllerTest extends AbstractSecurityMockSetup {
     private UpdateExpertBasicInfoWebRequest givenWebRequest() {
         return UpdateExpertBasicInfoWebRequest.builder()
                 .backgroundImageFileKey("new-background")
-                .link("https://new.link")
+                .link(List.of("https://new.link"))
                 .intro("New intro")
                 .nickname("NewNickname")
                 .profileImageFileKey("new-profile-img")

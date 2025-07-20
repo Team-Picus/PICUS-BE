@@ -81,6 +81,7 @@ class ExpertTest {
         assertThat(expert.getApprovalStatus())
                 .isEqualTo(ApprovalStatus.REJECT);
     }
+
     @Test
     @DisplayName("Expert의 기본정보를 바꾼다.")
     void updateBasicInfo_portfolios_not_null() {
@@ -91,11 +92,12 @@ class ExpertTest {
                 "Old intro"
         );
         // when
-        expert.updateBasicInfo("new-key", "https://new.link", "Updated intro");
+        expert.updateBasicInfo("new-key", List.of("https://changed.link", "https://new.link"), "Updated intro");
 
         // then
-        assertThat(expert.getPortfolios()).hasSize(2);
-        assertThat(expert.getPortfolios().get(1).getLink()).isEqualTo("https://new.link");
+        assertThat(expert.getPortfolios()).hasSize(2)
+                .extracting(Portfolio::getLink)
+                .containsExactlyInAnyOrder("https://changed.link", "https://new.link");
         assertThat(expert.getBackgroundImageKey()).isEqualTo("new-key");
         assertThat(expert.getIntro()).isEqualTo("Updated intro");
     }

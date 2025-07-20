@@ -42,7 +42,7 @@ class ExpertInfoCommandServiceTest {
         UpdateExpertBasicInfoAppRequest request = UpdateExpertBasicInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .backgroundImageFileKey("new-background")
-                .link("https://new.link")
+                .link(List.of("https://new.link"))
                 .intro("New intro")
                 .nickname("NewNickname")
                 .profileImageFileKey("new-profile-img")
@@ -69,7 +69,7 @@ class ExpertInfoCommandServiceTest {
         // then
         then(userQueryPort).should().findById(userNo);
         then(loadExpertPort).should().findById(expertNo);
-        then(expert).should().updateBasicInfo("new-background", "https://new.link", "New intro");
+        then(expert).should().updateBasicInfo("new-background", List.of("https://new.link"), "New intro");
         then(updateExpertPort).should().updateExpert(expert);
         then(userQueryPort).should().findUserInfoByExpertNo(expertNo);
         then(userCommandPort).should().updateNicknameAndImageByExpertNo(Mockito.argThat(updatedDto ->
@@ -89,7 +89,7 @@ class ExpertInfoCommandServiceTest {
         UpdateExpertBasicInfoAppRequest request = UpdateExpertBasicInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .backgroundImageFileKey("bg-key") // expert 관련 필드만 있음
-                .link("https://new.link")
+                .link(List.of("https://new.link"))
                 .intro("new intro")
                 .build();
 
@@ -106,7 +106,7 @@ class ExpertInfoCommandServiceTest {
         // then
         then(userQueryPort).should().findById(userNo);
         then(loadExpertPort).should().findById(expertNo);
-        then(expert).should().updateBasicInfo("bg-key", "https://new.link", "new intro");
+        then(expert).should().updateBasicInfo("bg-key", List.of("https://new.link"), "new intro");
         then(updateExpertPort).should().updateExpert(expert);
         then(userCommandPort).shouldHaveNoInteractions();
     }

@@ -99,7 +99,7 @@ public class UpdateExpertInfoIntegrationTest {
                 "new_profile_key",
                 "new_back_key",
                 "new_nick",
-                "new_link",
+                List.of("new_link"),
                 "new_intro"));
 
         // when
@@ -134,7 +134,7 @@ public class UpdateExpertInfoIntegrationTest {
                 ExpertEntity::getBackgroundImageKey,
                 ExpertEntity::getPortfolioLinks,
                 ExpertEntity::getIntro
-        ).containsExactly("new_back_key", List.of("old_link", "new_link"), "new_intro");
+        ).containsExactly("new_back_key", List.of("new_link"), "new_intro");
     }
 
     @Test
@@ -349,12 +349,12 @@ public class UpdateExpertInfoIntegrationTest {
                 .build();
     }
 
-    private UpdateExpertBasicInfoWebRequest givenWebRequest(String profileKey, String backgroundImageFileKey, String nickname, String link, String intro) {
+    private UpdateExpertBasicInfoWebRequest givenWebRequest(String profileKey, String backgroundImageFileKey, String nickname, List<String> links, String intro) {
         return UpdateExpertBasicInfoWebRequest.builder()
                 .profileImageFileKey(profileKey)
                 .backgroundImageFileKey(backgroundImageFileKey)
                 .nickname(nickname)
-                .link(link)
+                .link(links)
                 .intro(intro)
                 .build();
     }

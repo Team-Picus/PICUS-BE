@@ -117,16 +117,15 @@ public class Expert {
         this.approvalStatus = ApprovalStatus.REJECT;
     }
 
-    public void updateBasicInfo(String backgroundImageKey, String link, String intro) {
+    public void updateBasicInfo(String backgroundImageKey, List<String> links, String intro) {
         if (backgroundImageKey != null) {
             this.backgroundImageKey = backgroundImageKey;
         }
 
-        if (link != null) {
-            if (this.portfolios == null) {
-                this.portfolios = new ArrayList<>();
-            }
-            this.portfolios.add(Portfolio.builder().link(link).build());
+        if (links != null) {
+            this.portfolios = links.stream()
+                    .map(link -> Portfolio.builder().link(link).build())
+                    .toList();
         }
 
         if (intro != null) {

@@ -33,7 +33,7 @@ class UpdateExpertWebMapperTest {
                 "profile-img-key",
                 "background-img-key",
                 "test-nickname",
-                "https://my.link",
+                List.of("https://my.link"),
                 "소개 글입니다"
         );
 
@@ -45,7 +45,7 @@ class UpdateExpertWebMapperTest {
         assertThat(result.profileImageFileKey()).isEqualTo("profile-img-key");
         assertThat(result.backgroundImageFileKey()).isEqualTo("background-img-key");
         assertThat(result.nickname()).isEqualTo("test-nickname");
-        assertThat(result.link()).isEqualTo("https://my.link");
+        assertThat(result.link()).isEqualTo(List.of("https://my.link"));
         assertThat(result.intro()).isEqualTo("소개 글입니다");
     }
 
