@@ -1,9 +1,18 @@
 package com.picus.core.expert.integration;
 
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
+import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
+import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
+import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
 import com.picus.core.expert.domain.model.vo.ApprovalStatus;
+import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -11,6 +20,7 @@ import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRep
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +36,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.*;
+import static com.picus.core.expert.domain.model.vo.SkillType.EDIT;
+import static com.picus.core.expert.domain.model.vo.SkillType.LIGHT;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -44,6 +57,22 @@ public class UpdateExpertInfoIntegrationTest {
     private ProfileImageJpaRepository profileImageJpaRepository;
     @Autowired
     private ExpertJpaRepository expertJpaRepository;
+    @Autowired
+    private ProjectJpaRepository projectJpaRepository;
+    @Autowired
+    private SkillJpaRepository skillJpaRepository;
+    @Autowired
+    private StudioJpaRepository studioJpaRepository;
+
+    @AfterEach
+    void tearDown() {
+        studioJpaRepository.deleteAllInBatch();
+        skillJpaRepository.deleteAllInBatch();
+        projectJpaRepository.deleteAllInBatch();
+        expertJpaRepository.deleteAllInBatch();
+        profileImageJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("사용자는 전문가의 기본정보를 수정할 수 있다.")
@@ -108,7 +137,118 @@ public class UpdateExpertInfoIntegrationTest {
         ).containsExactly("new_back_key", List.of("old_link", "new_link"), "new_intro");
     }
 
-    private HttpEntity<UpdateExpertBasicInfoWebRequest> settingWebRequest(String userNo, UpdateExpertBasicInfoWebRequest webRequest) {
+    @Test
+    @DisplayName("사용자는 전문가의 상세정보를 수정할 수 있다.")
+    public void updateExpertDetailInfo() throws Exception {
+        // given
+        // 테스트 데이터 셋팅
+        UserEntity userEntity = givenUserEntity();
+        userJpaRepository.save(userEntity);
+        String userNo = userEntity.getUserNo();
+
+        ExpertEntity expertEntity = givenExpertEntity("수정 전 경력", List.of("수정 전 지역"), userEntity);
+        expertJpaRepository.save(expertEntity);
+        String expertNo = expertEntity.getExpertNo();
+
+        userEntity.assignExpertNo(expertNo);
+
+        ProjectEntity projectEntity = givenProjectEntity(expertEntity, "수정 전 프로젝트명");
+        projectJpaRepository.save(projectEntity);
+
+        SkillEntity skillEntity = givenSkillEntity(expertEntity, SkillType.CAMERA, "수정 전 내용");
+        skillJpaRepository.save(skillEntity);
+
+        StudioEntity studioEntity = givenStudioEntity(expertEntity,
+                "수정 전 스튜디오명", 5);
+        studioJpaRepository.save(studioEntity);
+
+        commitTestTransaction();
+
+        // 요청 셋팅
+        UpdateExpertDetailInfoWebRequest request = builder()
+                .activityCareer("수정 후 경력")
+                .activityAreas(List.of("수정 후 지역", "새로운 지역"))
+                .projects(List.of(
+                        ProjectWebRequest.builder()
+                                .projectNo(projectEntity.getProjectNo())
+                                .projectName("수정된 프로젝트명")
+                                .build(),
+                        ProjectWebRequest.builder()
+                                .projectName("새로운 프로젝트명")
+                                .startDate(LocalDateTime.of(2025, 6, 6, 12, 0))
+                                .endDate(LocalDateTime.of(2025, 6, 6, 12, 15))
+                                .build()
+                ))
+                .skills(List.of(
+                                SkillWebRequest.builder()
+                                        .skillNo(skillEntity.getSkillNo())
+                                        .skillType("LIGHT")
+                                        .content("수정된 내용")
+                                        .build(),
+                                SkillWebRequest.builder()
+                                        .skillType("EDIT")
+                                        .content("새로운 내용")
+                                        .build()
+                        )
+                )
+                .studio(
+                        StudioWebRequest.builder()
+                                .studioNo(studioEntity.getStudioNo())
+                                .studioName("수정된 이름")
+                                .employeesCount(10)
+                                .build())
+                .build();
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+
+        // when
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "/api/v1/experts/detail_info",
+                HttpMethod.PATCH,
+                httpEntity,
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Expert 검증
+        Optional<ExpertEntity> optionalUpdatedExpert = expertJpaRepository.findById(expertNo);
+        assertThat(optionalUpdatedExpert).isPresent();
+        ExpertEntity updatedExpert = optionalUpdatedExpert.get();
+        assertThat(updatedExpert.getActivityCareer()).isEqualTo("수정 후 경력");
+        assertThat(updatedExpert.getActivityAreas()).isEqualTo(List.of("수정 후 지역", "새로운 지역"));
+
+        // Project 검증
+        List<ProjectEntity> updatedProjects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(updatedProjects).hasSize(2)
+                .extracting(
+                        ProjectEntity::getProjectName
+                ).containsExactlyInAnyOrder("수정된 프로젝트명", "새로운 프로젝트명");
+
+        // Skill 검증
+        List<SkillEntity> updatedSkills = skillJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(updatedSkills).hasSize(2)
+                .extracting(
+                        SkillEntity::getSkillType,
+                        SkillEntity::getContent
+                ).containsExactlyInAnyOrder(
+                        tuple(LIGHT, "수정된 내용"),
+                        tuple(EDIT, "새로운 내용")
+                );
+
+        // Studio 검증
+        Optional<StudioEntity> optionalUpdatedStudio = studioJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(optionalUpdatedStudio).isPresent();
+        StudioEntity updateStudio = optionalUpdatedStudio.get();
+        assertThat(updateStudio)
+                .extracting(
+                        StudioEntity::getStudioName,
+                        StudioEntity::getEmployeesCount
+                ).contains("수정된 이름", 10);
+    }
+
+    private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
         String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
@@ -119,6 +259,22 @@ public class UpdateExpertInfoIntegrationTest {
         return UserEntity.builder()
                 .name("이름")
                 .nickname(nickname)
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo(null)
+                .build();
+    }
+
+    private UserEntity givenUserEntity() {
+        return UserEntity.builder()
+                .name("이름")
+                .nickname("nickname")
                 .tel("01012345678")
                 .role(Role.CLIENT)
                 .email("email@example.com")
@@ -149,6 +305,47 @@ public class UpdateExpertInfoIntegrationTest {
                 .portfolioLinks(List.of(link))
                 .approvalStatus(ApprovalStatus.PENDING)
                 .userEntity(userEntity)
+                .build();
+    }
+
+    private ExpertEntity givenExpertEntity(String activityCareer, List<String> activityAreas, UserEntity userEntity) {
+        return ExpertEntity.builder()
+                .backgroundImageKey("backgroundImageKey")
+                .intro("intro")
+                .activityCareer(activityCareer)
+                .activityAreas(activityAreas)
+                .activityCount(0)
+                .lastActivityAt(LocalDateTime.of(2020, 10, 10, 1, 0))
+                .portfolioLinks(List.of("link"))
+                .approvalStatus(ApprovalStatus.PENDING)
+                .userEntity(userEntity)
+                .build();
+    }
+
+    private ProjectEntity givenProjectEntity(ExpertEntity expertEntity, String projectName) {
+        return ProjectEntity.builder()
+                .expertEntity(expertEntity)
+                .projectName(projectName)
+                .startDate(LocalDateTime.of(2025, 5, 5, 10, 10))
+                .endDate(LocalDateTime.of(2025, 5, 5, 10, 15))
+                .build();
+    }
+
+    private SkillEntity givenSkillEntity(ExpertEntity expertEntity, SkillType skillType, String content) {
+        return SkillEntity.builder()
+                .expertEntity(expertEntity)
+                .skillType(skillType)
+                .content(content)
+                .build();
+    }
+
+    private StudioEntity givenStudioEntity(ExpertEntity expertEntity, String studioName, int employeesCount) {
+        return StudioEntity.builder()
+                .expertEntity(expertEntity)
+                .studioName(studioName)
+                .employeesCount(employeesCount)
+                .businessHours("10:00 - 19:00")
+                .address("서울시 은평구")
                 .build();
     }
 

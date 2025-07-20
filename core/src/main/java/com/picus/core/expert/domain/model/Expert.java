@@ -162,6 +162,10 @@ public class Expert {
     }
 
     private void updateProjects(List<Project> projects) {
+        // 이뮤터블 리스트 방어 (불변 객체가 들어와도 안전하게)
+        if (!(this.projects instanceof ArrayList)) {
+            this.projects = new ArrayList<>(this.projects);
+        }
         for (Project incoming : projects) {
             if (incoming.getProjectNo() != null) {
                 // 수정: 기존 projectNo 찾기
@@ -184,6 +188,9 @@ public class Expert {
     }
 
     private void updateSkills(List<Skill> skills) {
+        if (!(this.skills instanceof ArrayList)) {
+            this.skills = new ArrayList<>(this.skills);
+        }
         for (Skill incoming : skills) {
             if (incoming.getSkillNo() != null) {
                 // 수정: 기존 skillNo 찾기
