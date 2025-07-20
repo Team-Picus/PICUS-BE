@@ -18,6 +18,7 @@ class PriceReferenceImagePersistenceMapperTest {
     void toDomain_shouldMapCorrectly() {
         // given
         PriceReferenceImageEntity entity = PriceReferenceImageEntity.builder()
+                .priceReferenceImageNo("img_no")
                 .fileKey("file-key-123")
                 .imageOrder(1)
                 .build();
@@ -26,6 +27,7 @@ class PriceReferenceImagePersistenceMapperTest {
         PriceReferenceImage domain = mapper.toDomain(entity);
 
         // then
+        assertThat(domain.getPriceRefImageNo()).isEqualTo("img_no");
         assertThat(domain.getFileKey()).isEqualTo("file-key-123");
         assertThat(domain.getImageOrder()).isEqualTo(1);
     }

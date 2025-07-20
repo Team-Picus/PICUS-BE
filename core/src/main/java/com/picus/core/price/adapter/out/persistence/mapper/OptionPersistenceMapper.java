@@ -9,6 +9,7 @@ public class OptionPersistenceMapper {
 
     public Option toDomain(OptionEntity optionEntity) {
         return Option.builder()
+                .optionNo(optionEntity.getOptionNo())
                 .name(optionEntity.getName())
                 .count(optionEntity.getCount())
                 .price(optionEntity.getPrice())

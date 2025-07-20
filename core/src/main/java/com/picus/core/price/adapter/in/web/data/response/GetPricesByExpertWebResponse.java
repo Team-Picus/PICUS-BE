@@ -1,7 +1,5 @@
 package com.picus.core.price.adapter.in.web.data.response;
 
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
-import com.picus.core.price.domain.model.PriceReferenceImage;
 import lombok.Builder;
 
 import java.util.List;
@@ -17,12 +15,14 @@ public record GetPricesByExpertWebResponse(
 
     @Builder
     public record PriceReferenceImageWebResponse(
+        String priceRefImageNo,
         String imageUrl,
         Integer imageOrder
     ) {}
 
     @Builder
     public record PackageWebResponse(
+        String packageNo,
         String name,
         Integer price,
         List<String> contents,
@@ -31,6 +31,7 @@ public record GetPricesByExpertWebResponse(
 
     @Builder
     public record OptionWebResponse(
+            String optionNo,
             String name,
             Integer count,
             Integer price,

@@ -55,9 +55,9 @@ public class GetPricesByExpertIntegrationTest {
         // given
         String expertNo = "expert001";
         PriceEntity priceEntity = createPriceEntity(expertNo, PriceThemeType.BEAUTY);
-        createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
-        createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
-        createReferenceImageEntity(priceEntity, "file-key-123", 1);
+        PackageEntity packageEntity = createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
+        OptionEntity optionEntity = createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
+        PriceReferenceImageEntity referenceImageEntity = createReferenceImageEntity(priceEntity, "file-key-123", 1);
 
         commitTestTransaction();
 
@@ -92,19 +92,40 @@ public class GetPricesByExpertIntegrationTest {
         // package
         List<PackageWebResponse> packageResult = first.packages();
         assertThat(packageResult).hasSize(1)
-                .extracting("name", "price", "contents", "notice")
-                .contains(tuple("기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수"));
+                .extracting(
+                        PackageWebResponse::packageNo,
+                        PackageWebResponse::name,
+                        PackageWebResponse::price,
+                        PackageWebResponse::contents,
+                        PackageWebResponse::notice)
+                .contains(tuple(
+                        packageEntity.getPackageNo(),
+                        "기본 패키지",
+                        20000,
+                        List.of("헤어컷", "드라이"),
+                        "사전 예약 필수"));
         // option
         List<OptionWebResponse> optionResult = first.options();
         assertThat(optionResult).hasSize(1)
-                .extracting("name", "count", "price", "contents")
-                .contains(tuple("옵션 A", 1, 5000, List.of("마사지 추가")));
+                .extracting(OptionWebResponse::optionNo,
+                        OptionWebResponse::name,
+                        OptionWebResponse::count,
+                        OptionWebResponse::price,
+                        OptionWebResponse::contents)
+                .contains(tuple(
+                        optionEntity.getOptionNo(),
+                        "옵션 A",
+                        1,
+                        5000,
+                        List.of("마사지 추가")));
 
         // PriceReferenceImage TODO: key -> url 후 재검증 필요
         List<PriceReferenceImageWebResponse> imageResults = first.priceReferenceImages();
         assertThat(imageResults).hasSize(1)
-                .extracting("imageUrl", "imageOrder")
-                .contains(tuple(null, 1));
+                .extracting(PriceReferenceImageWebResponse::priceRefImageNo,
+                        PriceReferenceImageWebResponse::imageUrl,
+                        PriceReferenceImageWebResponse::imageOrder)
+                .contains(tuple(referenceImageEntity.getPriceReferenceImageNo(), null, 1));
     }
 
     private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {

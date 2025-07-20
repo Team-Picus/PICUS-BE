@@ -9,6 +9,7 @@ public class PriceReferenceImagePersistenceMapper {
 
     public PriceReferenceImage toDomain(PriceReferenceImageEntity entity) {
         return PriceReferenceImage.builder()
+                .priceRefImageNo(entity.getPriceReferenceImageNo())
                 .fileKey(entity.getFileKey())
                 .imageOrder(entity.getImageOrder())
                 .build();

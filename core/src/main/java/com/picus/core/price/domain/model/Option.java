@@ -10,6 +10,8 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode
 public class Option {
+    private String optionNo;
+
     private String name;
     private Integer count;
     private Integer price;

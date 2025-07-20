@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 class GetPricesByExpertWebMapperTest {
     private final GetPricesByExpertWebMapper mapper = new GetPricesByExpertWebMapper();
@@ -23,12 +24,14 @@ class GetPricesByExpertWebMapperTest {
     void toWebResponse_shouldMapCorrectly() {
         // given
         PriceReferenceImage image = PriceReferenceImage.builder()
+                .priceRefImageNo("img_no")
                 .fileKey("file-key")
                 .imageUrl("https://cdn.picus.com/image.jpg")
                 .imageOrder(1)
                 .build();
 
         Package pkg = Package.builder()
+                .packageNo("pkg_no")
                 .name("기본 패키지")
                 .price(100000)
                 .contents(List.of("내용1", "내용2"))
@@ -36,6 +39,7 @@ class GetPricesByExpertWebMapperTest {
                 .build();
 
         Option option = Option.builder()
+                .optionNo("opt_no")
                 .name("옵션A")
                 .count(2)
                 .price(20000)
@@ -57,23 +61,38 @@ class GetPricesByExpertWebMapperTest {
         assertThat(response.priceNo()).isEqualTo("P123");
         assertThat(response.priceThemeType()).isEqualTo("BEAUTY");
 
-        assertThat(response.priceReferenceImages()).hasSize(1);
-        PriceReferenceImageWebResponse imageResponse = response.priceReferenceImages().getFirst();
-        assertThat(imageResponse.imageUrl()).isEqualTo("https://cdn.picus.com/image.jpg");
-        assertThat(imageResponse.imageOrder()).isEqualTo(1);
+        List<PriceReferenceImageWebResponse> imageResponses = response.priceReferenceImages();
+        assertThat(imageResponses).hasSize(1)
+                .extracting(
+                        PriceReferenceImageWebResponse::priceRefImageNo,
+                        PriceReferenceImageWebResponse::imageUrl,
+                        PriceReferenceImageWebResponse::imageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple("img_no", "https://cdn.picus.com/image.jpg", 1)
+                );
 
-        assertThat(response.packages()).hasSize(1);
-        PackageWebResponse pkgResponse = response.packages().getFirst();
-        assertThat(pkgResponse.name()).isEqualTo("기본 패키지");
-        assertThat(pkgResponse.price()).isEqualTo(100000);
-        assertThat(pkgResponse.contents()).containsExactly("내용1", "내용2");
-        assertThat(pkgResponse.notice()).isEqualTo("주의사항");
+        List<PackageWebResponse> packageResponses = response.packages();
+        assertThat(packageResponses).hasSize(1)
+                .extracting(
+                        PackageWebResponse::packageNo,
+                        PackageWebResponse::name,
+                        PackageWebResponse::price,
+                        PackageWebResponse::contents,
+                        PackageWebResponse::notice
+                ).containsExactlyInAnyOrder(
+                        tuple("pkg_no", "기본 패키지", 100000, List.of("내용1", "내용2"), "주의사항")
+                );
 
-        assertThat(response.options()).hasSize(1);
-        OptionWebResponse optionResponse = response.options().getFirst();
-        assertThat(optionResponse.name()).isEqualTo("옵션A");
-        assertThat(optionResponse.count()).isEqualTo(2);
-        assertThat(optionResponse.price()).isEqualTo(20000);
-        assertThat(optionResponse.contents()).containsExactly("옵션내용1", "옵션내용2");
+        List<OptionWebResponse> optionResponses = response.options();
+        assertThat(optionResponses).hasSize(1)
+                .extracting(
+                        OptionWebResponse::optionNo,
+                        OptionWebResponse::name,
+                        OptionWebResponse::count,
+                        OptionWebResponse::price,
+                        OptionWebResponse::contents
+                ).containsExactlyInAnyOrder(
+                        tuple("opt_no", "옵션A", 2, 20000, List.of("옵션내용1", "옵션내용2"))
+                );
     }
 }

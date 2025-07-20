@@ -19,7 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class PriceReferenceImageEntity {
 
     @Id @Tsid
-    private Long priceReferenceImageNo;
+    private String priceReferenceImageNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "price_no", nullable = false)

@@ -9,6 +9,7 @@ public class PackagePersistenceMapper {
 
     public Package toDomain(PackageEntity packageEntity) {
         return Package.builder()
+                .packageNo(packageEntity.getPackageNo())
                 .name(packageEntity.getName())
                 .price(packageEntity.getPrice())
                 .contents(packageEntity.getContents())

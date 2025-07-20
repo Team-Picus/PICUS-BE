@@ -16,6 +16,7 @@ class OptionPersistenceMapperTest {
     void toDomain_shouldMapFieldsCorrectly() {
         // given
         OptionEntity entity = OptionEntity.builder()
+                .optionNo("opt_no")
                 .name("옵션A")
                 .count(2)
                 .price(5000)
@@ -26,6 +27,7 @@ class OptionPersistenceMapperTest {
         Option result = mapper.toDomain(entity);
 
         // then
+        assertThat(result.getOptionNo()).isEqualTo("opt_no");
         assertThat(result.getName()).isEqualTo("옵션A");
         assertThat(result.getCount()).isEqualTo(2);
         assertThat(result.getPrice()).isEqualTo(5000);

@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class OptionEntity {
 
     @Id @Tsid
-    private String optionsNo;
+    private String optionNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "price_no", nullable = false)

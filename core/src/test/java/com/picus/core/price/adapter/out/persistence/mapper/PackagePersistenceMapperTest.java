@@ -27,6 +27,7 @@ class PackagePersistenceMapperTest {
         Package result = mapper.toDomain(entity);
 
         // then
+        assertThat(result.getPackageNo()).isEqualTo("pkg001");
         assertThat(result.getName()).isEqualTo("기본 패키지");
         assertThat(result.getPrice()).isEqualTo(15000);
         assertThat(result.getContents()).isEqualTo(List.of("제공 항목 1", "제공 항목 2"));

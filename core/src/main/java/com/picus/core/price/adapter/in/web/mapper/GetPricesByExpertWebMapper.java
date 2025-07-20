@@ -28,6 +28,7 @@ public class GetPricesByExpertWebMapper {
     private List<PriceReferenceImageWebResponse> toPriceReferenceImageWebResponse(List<PriceReferenceImage> priceReferenceImages) {
         return priceReferenceImages.stream()
                 .map(priceReferenceImage -> PriceReferenceImageWebResponse.builder()
+                        .priceRefImageNo(priceReferenceImage.getPriceRefImageNo())
                         .imageUrl(priceReferenceImage.getImageUrl())
                         .imageOrder(priceReferenceImage.getImageOrder())
                         .build()
@@ -37,6 +38,7 @@ public class GetPricesByExpertWebMapper {
     private List<PackageWebResponse> toPackageWebResponse(List<Package> packages) {
         return packages.stream()
                 .map(p -> PackageWebResponse.builder()
+                        .packageNo(p.getPackageNo())
                         .name(p.getName())
                         .price(p.getPrice())
                         .contents(p.getContents())
@@ -48,6 +50,7 @@ public class GetPricesByExpertWebMapper {
     private List<OptionWebResponse> toOptionWebResponse(List<Option> options) {
         return options.stream()
                 .map(option -> OptionWebResponse.builder()
+                        .optionNo(option.getOptionNo())
                         .name(option.getName())
                         .count(option.getCount())
                         .price(option.getPrice())

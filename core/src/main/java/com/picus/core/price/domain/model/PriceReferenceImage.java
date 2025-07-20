@@ -9,6 +9,9 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 public class PriceReferenceImage {
+
+    private String priceRefImageNo;
+
     private String fileKey;
     private String imageUrl;
     private Integer imageOrder;

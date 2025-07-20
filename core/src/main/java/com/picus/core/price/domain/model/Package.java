@@ -12,6 +12,8 @@ import java.util.List;
 @EqualsAndHashCode
 public class Package {
 
+    private String packageNo;
+
     private String name;
     private Integer price;
     private List<String> contents;
