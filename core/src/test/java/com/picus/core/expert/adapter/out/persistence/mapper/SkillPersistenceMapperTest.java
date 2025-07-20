@@ -18,6 +18,7 @@ class SkillPersistenceMapperTest {
     void mapToDomain() {
         // Given
         SkillEntity entity = SkillEntity.builder()
+                .skillNo("skill_no")
                 .skillType(SkillType.CAMERA)
                 .content("캐논 5D 촬영 가능")
                 .build();
@@ -27,6 +28,7 @@ class SkillPersistenceMapperTest {
 
         // Then
         assertThat(result).isNotNull();
+        assertThat(result.getSkillNo()).isEqualTo("skill_no");
         assertThat(result.getSkillType()).isEqualTo(SkillType.CAMERA);
         assertThat(result.getContent()).isEqualTo("캐논 5D 촬영 가능");
     }

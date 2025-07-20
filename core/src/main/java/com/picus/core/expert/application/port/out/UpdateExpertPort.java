@@ -7,5 +7,13 @@ import com.picus.core.expert.domain.model.Expert;
  */
 public interface UpdateExpertPort {
 
+    /**
+     * Expert 도메인만 수정
+     */
     void updateExpert(Expert expert);
+
+    /**
+     * Expert의 서브도메인인 Project, Skill, Studio까지 업데이트
+     */
+    void updateExpertWithDetail(Expert expert);
 }

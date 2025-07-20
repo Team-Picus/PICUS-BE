@@ -193,6 +193,104 @@ class ExpertPersistenceAdapterTest {
 
     }
 
+    @Test
+    @DisplayName("하나의 Expert의 ExpertEntity, ProjectEntity, SkillEntity, StudioEntity를 수정한다.")
+    public void updateExpertWithDetail_success() throws Exception {
+        // given
+        UserEntity userEntity = givenUserEntity();
+        ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
+        String expertNo = expertEntity.getExpertNo();
+
+        clearPersistenceContext();
+
+        // 기존 데이터 조회 (PK들 얻기 위해)
+        Expert existing = expertPersistenceAdapter.findById(expertNo).orElseThrow();
+        String existingProjectNo = existing.getProjects().get(0).getProjectNo();
+        String existingSkillNo = existing.getSkills().get(0).getSkillNo();
+        String existingStudioNo = existing.getStudio().getStudioNo();
+
+        // 수정할 Expert 도메인 준비
+        Expert updatedExpert = Expert.builder()
+                .expertNo(expertNo)
+                .intro("수정된 소개")
+                .activityCareer("수정된 경력")
+                .activityAreas(List.of("서울 강남구", "부산 해운대"))
+                .activityCount(20)
+                .lastActivityAt(LocalDateTime.of(2025, 1, 1, 12, 0))
+                .portfolios(List.of(Portfolio.builder().link("http://updated-portfolio.com").build()))
+                .approvalStatus(ApprovalStatus.APPROVAL)
+                .projects(List.of(
+                        Project.builder() // 기존 프로젝트 수정
+                                .projectNo(existingProjectNo)
+                                .projectName("수정된 프로젝트명")
+                                .startDate(LocalDateTime.of(2023, 1, 1, 10, 0))
+                                .endDate(LocalDateTime.of(2023, 12, 31, 18, 0))
+                                .build(),
+                        Project.builder() // 신규 프로젝트
+                                .projectName("새 프로젝트")
+                                .startDate(LocalDateTime.of(2024, 2, 1, 9, 0))
+                                .endDate(LocalDateTime.of(2024, 3, 1, 18, 0))
+                                .build()
+                ))
+                .skills(List.of(
+                        Skill.builder() // 기존 스킬 수정
+                                .skillNo(existingSkillNo)
+                                .skillType(SkillType.EDIT)
+                                .content("편집 가능 (Final Cut)")
+                                .build(),
+                        Skill.builder() // 신규 스킬
+                                .skillType(SkillType.LIGHT)
+                                .content("LED 조명 운용")
+                                .build()
+                ))
+                .studio(Studio.builder()
+                        .studioNo(existingStudioNo)
+                        .studioName("업데이트된 스튜디오")
+                        .employeesCount(10)
+                        .businessHours("08:00~17:00")
+                        .address("서울 용산구")
+                        .build()
+                )
+                .build();
+
+        // when
+        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert);
+        clearPersistenceContext();
+
+        // then
+        // Expert 검증
+        ExpertEntity updatedEntity = expertJpaRepository.findById(expertNo).orElseThrow();
+        assertThat(updatedEntity.getIntro()).isEqualTo("수정된 소개");
+        assertThat(updatedEntity.getActivityCareer()).isEqualTo("수정된 경력");
+        assertThat(updatedEntity.getActivityAreas()).containsExactly("서울 강남구", "부산 해운대");
+        assertThat(updatedEntity.getActivityCount()).isEqualTo(20);
+        assertThat(updatedEntity.getLastActivityAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 12, 0));
+        assertThat(updatedEntity.getPortfolioLinks()).containsExactly("http://updated-portfolio.com");
+        assertThat(updatedEntity.getApprovalStatus()).isEqualTo(ApprovalStatus.APPROVAL);
+
+        // Project 검증
+        List<ProjectEntity> projects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(projects).hasSize(3); // 기존 2개 + 신규 1개
+        assertThat(projects).extracting("projectName")
+                .contains("수정된 프로젝트명", "새 프로젝트");
+
+        // Skill 검증
+        List<SkillEntity> skills = skillJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(skills).hasSize(3); // 기존 2개 + 신규 1개
+        assertThat(skills).extracting("skillType", "content")
+                .contains(
+                        tuple(SkillType.EDIT, "편집 가능 (Final Cut)"),
+                        tuple(SkillType.LIGHT, "LED 조명 운용")
+                );
+
+        // Studio 검증
+        StudioEntity studio = studioJpaRepository.findByExpertEntity_ExpertNo(expertNo).orElseThrow();
+        assertThat(studio.getStudioName()).isEqualTo("업데이트된 스튜디오");
+        assertThat(studio.getEmployeesCount()).isEqualTo(10);
+        assertThat(studio.getBusinessHours()).isEqualTo("08:00~17:00");
+        assertThat(studio.getAddress()).isEqualTo("서울 용산구");
+    }
+
 
     /* 헬퍼 메서드 */
     private UserEntity givenUserEntity() {

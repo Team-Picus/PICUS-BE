@@ -1,6 +1,6 @@
 package com.picus.core.expert.integration;
 
-import com.picus.core.expert.adapter.in.web.ExpertBasicInfoCommandWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.ExpertBasicInfoCommandWebRequest;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.model.vo.ApprovalStatus;
@@ -11,7 +11,6 @@ import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRep
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

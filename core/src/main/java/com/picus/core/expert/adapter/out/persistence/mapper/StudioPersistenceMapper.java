@@ -9,6 +9,7 @@ public class StudioPersistenceMapper {
 
     public Studio mapToDomain(StudioEntity entity) {
         return Studio.builder()
+                .studioNo(entity.getStudioNo())
                 .studioName(entity.getStudioName())
                 .employeesCount(entity.getEmployeesCount())
                 .businessHours(entity.getBusinessHours())

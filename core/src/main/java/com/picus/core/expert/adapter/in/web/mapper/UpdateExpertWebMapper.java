@@ -1,6 +1,6 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.ExpertBasicInfoCommandWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.ExpertBasicInfoCommandWebRequest;
 import com.picus.core.expert.application.port.in.command.ExpertBasicInfoCommandRequest;
 import org.springframework.stereotype.Component;
 

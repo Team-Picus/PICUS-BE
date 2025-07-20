@@ -1,6 +1,7 @@
 package com.picus.core.expert.adapter.in.web;
 
 
+import com.picus.core.expert.adapter.in.web.data.request.ExpertBasicInfoCommandWebRequest;
 import com.picus.core.expert.adapter.in.web.mapper.UpdateExpertWebMapper;
 import com.picus.core.expert.application.port.in.ExpertInfoCommand;
 import com.picus.core.shared.annotation.CurrentUser;

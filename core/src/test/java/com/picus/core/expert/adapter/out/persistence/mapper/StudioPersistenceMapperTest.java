@@ -16,6 +16,7 @@ class StudioPersistenceMapperTest {
     void mapToDomain() {
         // Given
         StudioEntity entity = StudioEntity.builder()
+                .studioNo("studio_no")
                 .studioName("스튜디오 포토")
                 .employeesCount(4)
                 .businessHours("10:00~19:00")
@@ -27,6 +28,7 @@ class StudioPersistenceMapperTest {
 
         // Then
         assertThat(result).isNotNull();
+        assertThat(result.getStudioNo()).isEqualTo("studio_no");
         assertThat(result.getStudioName()).isEqualTo("스튜디오 포토");
         assertThat(result.getEmployeesCount()).isEqualTo(4);
         assertThat(result.getBusinessHours()).isEqualTo("10:00~19:00");

@@ -77,13 +77,14 @@ public class Expert {
         this.portfolios = portfolios;
         this.approvalStatus = approvalStatus;
         this.studio = studio;
-        this.skills = skills;
-        this.projects = projects;
+        this.skills = skills == null ? new ArrayList<>() : skills;
+        this.projects = projects == null ? new ArrayList<>() : projects;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
         this.activityDuration = calculateActivityDuration(LocalDate.now());
     }
+
     public void bindExpertNo(String expertNo) {
         this.expertNo = expertNo;
     }
@@ -111,6 +112,7 @@ public class Expert {
     public void approveApprovalRequest() {
         this.approvalStatus = ApprovalStatus.APPROVAL;
     }
+
     public void rejectApprovalRequest() {
         this.approvalStatus = ApprovalStatus.REJECT;
     }
@@ -136,11 +138,11 @@ public class Expert {
             String activityCareer, List<String> activityAreas, List<Project> projects,
             List<Skill> skills, Studio studio) {
         // activityCareer 업데이트
-        if(activityCareer != null)
+        if (activityCareer != null)
             this.activityCareer = activityCareer;
 
         // activityAreas 업데이트 (덮어 씌움)
-        if(activityAreas != null)
+        if (activityAreas != null)
             this.activityAreas = activityAreas;
 
         // projects 업데이트
@@ -149,12 +151,12 @@ public class Expert {
         }
 
         // skills 업데이트
-        if(skills != null){
+        if (skills != null) {
             updateSkills(skills);
         }
 
         // studio 업데이트
-        if(studio != null) {
+        if (studio != null) {
             updateStudio(studio);
         }
     }
@@ -183,7 +185,7 @@ public class Expert {
 
     private void updateSkills(List<Skill> skills) {
         for (Skill incoming : skills) {
-            if(incoming.getSkillNo() != null) {
+            if (incoming.getSkillNo() != null) {
                 // 수정: 기존 skillNo 찾기
                 Optional<Skill> target = this.skills.stream()
                         .filter(s -> s.getSkillNo().equals(incoming.getSkillNo()))
@@ -200,11 +202,18 @@ public class Expert {
     }
 
     private void updateStudio(Studio studio) {
-        this.studio.updateStudio(
-                studio.getStudioName(),
-                studio.getEmployeesCount(),
-                studio.getBusinessHours(),
-                studio.getAddress()
-        );
+        if (this.studio == null) {
+            this.studio = Studio.builder()
+                    .studioName(studio.getStudioName())
+                    .employeesCount(studio.getEmployeesCount())
+                    .address(studio.getAddress())
+                    .build();
+        } else {
+            this.studio.updateStudio(
+                    studio.getStudioName(),
+                    studio.getEmployeesCount(),
+                    studio.getBusinessHours(),
+                    studio.getAddress());
+        }
     }
 }

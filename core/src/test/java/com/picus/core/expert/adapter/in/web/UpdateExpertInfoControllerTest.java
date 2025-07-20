@@ -1,13 +1,13 @@
 package com.picus.core.expert.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.picus.core.expert.adapter.in.web.data.request.ExpertBasicInfoCommandWebRequest;
 import com.picus.core.expert.adapter.in.web.mapper.UpdateExpertWebMapper;
 import com.picus.core.expert.application.port.in.ExpertInfoCommand;
 import com.picus.core.expert.application.port.in.command.ExpertBasicInfoCommandRequest;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,11 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
