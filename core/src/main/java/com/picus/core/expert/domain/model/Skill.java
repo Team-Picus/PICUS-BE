@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 @EqualsAndHashCode
 public class Skill {
+    private String skillNo;
     private SkillType skillType;
     private String content;
 }

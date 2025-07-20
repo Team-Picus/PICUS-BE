@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @EqualsAndHashCode
 public class Studio {
+    private String studioNo;
     private String studioName;
     private Integer employeesCount;
     private String businessHours;

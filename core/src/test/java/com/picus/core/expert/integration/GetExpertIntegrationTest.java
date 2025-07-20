@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -202,15 +203,23 @@ public class GetExpertIntegrationTest {
         assertThat(result.activityAreas()).isEqualTo(testActivityAreas);
 
         // Projects
-        assertThat(result.projects()).hasSize(testProjects.size())
-                .extracting("projectName", "startDate", "endDate")
+        List<ProjectWebResponse> projectWebResponses = result.projects();
+        assertThat(projectWebResponses).hasSize(2)
+                .extracting(
+                        ProjectWebResponse::projectNo,
+                        ProjectWebResponse::projectName,
+                        ProjectWebResponse::startDate,
+                        ProjectWebResponse::endDate
+                )
                 .containsExactlyInAnyOrder(
                         tuple(
+                                testProjects.get(0).getProjectNo(),
                                 testProjects.get(0).getProjectName(),
                                 testProjects.get(0).getStartDate(),
                                 testProjects.get(0).getEndDate()
                         ),
                         tuple(
+                                testProjects.get(1).getProjectNo(),
                                 testProjects.get(1).getProjectName(),
                                 testProjects.get(1).getStartDate(),
                                 testProjects.get(1).getEndDate()
@@ -218,18 +227,37 @@ public class GetExpertIntegrationTest {
                 );
 
         // Skills
-        assertThat(result.skills()).hasSize(testSkills.size())
-                .extracting("skillType", "content")
+        List<SkillWebResponse> skillWebResponses = result.skills();
+        assertThat(skillWebResponses).hasSize(2)
+                .extracting(
+                        SkillWebResponse::skillNo,
+                        SkillWebResponse::skillType,
+                        SkillWebResponse::content
+                )
                 .containsExactlyInAnyOrder(
-                        tuple(testSkills.get(0).getSkillType(), testSkills.get(0).getContent()),
-                        tuple(testSkills.get(1).getSkillType(), testSkills.get(1).getContent())
+                        tuple(
+                                testSkills.get(0).getSkillNo(),
+                                testSkills.get(0).getSkillType(),
+                                testSkills.get(0).getContent()),
+                        tuple(
+                                testSkills.get(1).getSkillNo(),
+                                testSkills.get(1).getSkillType(),
+                                testSkills.get(1).getContent())
                 );
 
         // Studio
-        assertThat(result.studio()).isNotNull();
-        assertThat(result.studio())
-                .extracting("studioName", "employeesCount", "businessHours", "address")
+        StudioWebResponse studioWebResponse = result.studio();
+        assertThat(studioWebResponse).isNotNull();
+        assertThat(studioWebResponse)
+                .extracting(
+                        StudioWebResponse::studioNo,
+                        StudioWebResponse::studioName,
+                        StudioWebResponse::employeesCount,
+                        StudioWebResponse::businessHours,
+                        StudioWebResponse::address
+                )
                 .containsExactly(
+                        testStudio.getStudioNo(),
                         testStudio.getStudioName(),
                         testStudio.getEmployeesCount(),
                         testStudio.getBusinessHours(),

@@ -44,6 +44,7 @@ public class GetExpertWebMapper {
     private List<ProjectWebResponse> toProjectWebResponse(List<Project> projects) {
         return projects.stream()
                 .map(project -> ProjectWebResponse.builder()
+                        .projectNo(project.getProjectNo())
                         .projectName(project.getProjectName())
                         .startDate(project.getStartDate())
                         .endDate(project.getEndDate())
@@ -54,6 +55,7 @@ public class GetExpertWebMapper {
     private List<SkillWebResponse> toSkillWebResponse(List<Skill> skills) {
         return skills.stream()
                 .map(skill -> SkillWebResponse.builder()
+                        .skillNo(skill.getSkillNo())
                         .skillType(skill.getSkillType())
                         .content(skill.getContent())
                         .build()
@@ -62,6 +64,7 @@ public class GetExpertWebMapper {
 
     private StudioWebResponse toStudioWebResponse(Studio studio) {
         return StudioWebResponse.builder()
+                .studioNo(studio.getStudioNo())
                 .studioName(studio.getStudioName())
                 .employeesCount(studio.getEmployeesCount())
                 .businessHours(studio.getBusinessHours())

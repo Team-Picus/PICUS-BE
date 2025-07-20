@@ -22,9 +22,9 @@ public class Expert {
 
     private String intro;
 
-    private final String activityCareer;
+    private String activityCareer;
 
-    private final List<String> activityAreas;
+    private List<String> activityAreas;
 
     private final String activityDuration;
 
@@ -36,11 +36,11 @@ public class Expert {
 
     private ApprovalStatus approvalStatus;
 
-    private final Studio studio;
+    private Studio studio;
 
-    private final List<Skill> skills;
+    private List<Skill> skills;
 
-    private final List<Project> projects;
+    private List<Project> projects;
 
     private final LocalDateTime createdAt;
 
@@ -129,5 +129,25 @@ public class Expert {
         if (intro != null) {
             this.intro = intro;
         }
+    }
+
+    public void updateDetailInfo(
+            String activityCareer, List<String> activityAreas, List<Project> projects,
+            List<Skill> skills, Studio studio) {
+        if(activityCareer != null)
+            this.activityCareer = activityCareer;
+
+        if(activityAreas != null)
+            this.activityAreas = activityAreas;
+
+        if(projects != null)
+            this.projects = projects;
+
+        if(skills != null)
+            this.skills = skills;
+
+        if(studio != null)
+            this.studio = studio;
+
     }
 }

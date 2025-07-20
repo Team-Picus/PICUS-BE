@@ -20,6 +20,7 @@ public record GetExpertDetailInfoWebResponse(
 ) {
     @Builder
     public record ProjectWebResponse(
+            String projectNo,
             String projectName,
             LocalDateTime startDate,
             LocalDateTime endDate
@@ -28,12 +29,14 @@ public record GetExpertDetailInfoWebResponse(
 
     @Builder
     public record SkillWebResponse(
+            String skillNo,
             SkillType skillType,
             String content
     ) {}
 
     @Builder
     public record StudioWebResponse(
+            String studioNo,
             String studioName,
             Integer employeesCount,
             String businessHours,
