@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.command.ExpertBasicInfoCommandRequest;
-import com.picus.core.expert.application.port.in.command.ExpertDetailInfoCommandRequest;
+import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoAppRequest;
+import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoAppRequest;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
@@ -39,7 +39,7 @@ class ExpertInfoCommandServiceTest {
         String userNo = "USER001";
         String expertNo = "EXP001";
 
-        ExpertBasicInfoCommandRequest request = ExpertBasicInfoCommandRequest.builder()
+        UpdateExpertBasicInfoAppRequest request = UpdateExpertBasicInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .backgroundImageFileKey("new-background")
                 .link("https://new.link")
@@ -86,7 +86,7 @@ class ExpertInfoCommandServiceTest {
         String userNo = "USER001";
         String expertNo = "EXP001";
 
-        ExpertBasicInfoCommandRequest request = ExpertBasicInfoCommandRequest.builder()
+        UpdateExpertBasicInfoAppRequest request = UpdateExpertBasicInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .backgroundImageFileKey("bg-key") // expert 관련 필드만 있음
                 .link("https://new.link")
@@ -118,7 +118,7 @@ class ExpertInfoCommandServiceTest {
         String userNo = "USER002";
         String expertNo = "EXP002";
 
-        ExpertBasicInfoCommandRequest request = ExpertBasicInfoCommandRequest.builder()
+        UpdateExpertBasicInfoAppRequest request = UpdateExpertBasicInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .nickname("UpdatedNickname")
                 .profileImageFileKey("updated-profile-img")
@@ -157,7 +157,7 @@ class ExpertInfoCommandServiceTest {
         // given
         String userNo = "USER003";
 
-        ExpertBasicInfoCommandRequest request = ExpertBasicInfoCommandRequest.builder()
+        UpdateExpertBasicInfoAppRequest request = UpdateExpertBasicInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .build(); // 모든 필드가 null
 
@@ -178,8 +178,8 @@ class ExpertInfoCommandServiceTest {
         String userNo = "USER001";
         String expertNo = "EXP001";
 
-        // ExpertDetailInfoCommandRequest 생성
-        ExpertDetailInfoCommandRequest request = ExpertDetailInfoCommandRequest.builder()
+        // UpdateExpertDetailInfoAppRequest 생성
+        UpdateExpertDetailInfoAppRequest request = UpdateExpertDetailInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .activityCareer("촬영 5년 경력")
                 .activityAreas(List.of("서울", "부산"))
@@ -217,7 +217,7 @@ class ExpertInfoCommandServiceTest {
         // given
         String userNo = "USER003";
 
-        ExpertDetailInfoCommandRequest request = ExpertDetailInfoCommandRequest.builder()
+        UpdateExpertDetailInfoAppRequest request = UpdateExpertDetailInfoAppRequest.builder()
                 .currentUserNo(userNo)
                 .build(); // 모든 필드가 null
 

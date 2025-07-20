@@ -1,8 +1,8 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.ExpertInfoCommand;
-import com.picus.core.expert.application.port.in.command.ExpertBasicInfoCommandRequest;
-import com.picus.core.expert.application.port.in.command.ExpertDetailInfoCommandRequest;
+import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoAppRequest;
+import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoAppRequest;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
@@ -28,7 +28,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
     private final UpdateExpertPort updateExpertPort;
 
     @Override
-    public void updateExpertBasicInfo(ExpertBasicInfoCommandRequest basicInfoRequest) {
+    public void updateExpertBasicInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
 
         if(!shouldUpdate(basicInfoRequest))
             return;
@@ -68,7 +68,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
     }
 
     @Override
-    public void updateExpertDetailInfo(ExpertDetailInfoCommandRequest detailInfoRequest) {
+    public void updateExpertDetailInfo(UpdateExpertDetailInfoAppRequest detailInfoRequest) {
 
         // 수정할 필요가 있는지 확인
         if(!shouldUpdateExpertDetailInfo(detailInfoRequest))
@@ -100,20 +100,20 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         return currentUser.getExpertNo();
     }
 
-    private boolean shouldUpdate(ExpertBasicInfoCommandRequest basicInfoRequest) {
+    private boolean shouldUpdate(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
         return shouldUpdateExpertBasicInfo(basicInfoRequest) || shouldUpdateUserInfo(basicInfoRequest);
     }
 
-    private boolean shouldUpdateExpertBasicInfo(ExpertBasicInfoCommandRequest basicInfoRequest) {
+    private boolean shouldUpdateExpertBasicInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
         return basicInfoRequest.backgroundImageFileKey() != null ||
                 basicInfoRequest.link() != null ||
                 basicInfoRequest.intro() != null;
     }
-    private boolean shouldUpdateUserInfo(ExpertBasicInfoCommandRequest basicInfoRequest) {
+    private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
         return basicInfoRequest.profileImageFileKey() != null || basicInfoRequest.nickname() != null;
     }
 
-    private boolean shouldUpdateExpertDetailInfo(ExpertDetailInfoCommandRequest detailInfoRequest) {
+    private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoAppRequest detailInfoRequest) {
         return detailInfoRequest.activityCareer() != null ||
                 detailInfoRequest.activityAreas() != null ||
                 detailInfoRequest.projects() != null ||

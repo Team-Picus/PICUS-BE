@@ -1,6 +1,6 @@
 package com.picus.core.expert.integration;
 
-import com.picus.core.expert.adapter.in.web.data.request.ExpertBasicInfoCommandWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoWebRequest;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.model.vo.ApprovalStatus;
@@ -66,7 +66,7 @@ public class UpdateExpertInfoIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        HttpEntity<ExpertBasicInfoCommandWebRequest> request = settingWebRequest(userNo, givenWebRequest(
+        HttpEntity<UpdateExpertBasicInfoWebRequest> request = settingWebRequest(userNo, givenWebRequest(
                 "new_profile_key",
                 "new_back_key",
                 "new_nick",
@@ -108,7 +108,7 @@ public class UpdateExpertInfoIntegrationTest {
         ).containsExactly("new_back_key", List.of("old_link", "new_link"), "new_intro");
     }
 
-    private HttpEntity<ExpertBasicInfoCommandWebRequest> settingWebRequest(String userNo, ExpertBasicInfoCommandWebRequest webRequest) {
+    private HttpEntity<UpdateExpertBasicInfoWebRequest> settingWebRequest(String userNo, UpdateExpertBasicInfoWebRequest webRequest) {
         String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
@@ -152,8 +152,8 @@ public class UpdateExpertInfoIntegrationTest {
                 .build();
     }
 
-    private ExpertBasicInfoCommandWebRequest givenWebRequest(String profileKey, String backgroundImageFileKey, String nickname, String link, String intro) {
-        return ExpertBasicInfoCommandWebRequest.builder()
+    private UpdateExpertBasicInfoWebRequest givenWebRequest(String profileKey, String backgroundImageFileKey, String nickname, String link, String intro) {
+        return UpdateExpertBasicInfoWebRequest.builder()
                 .profileImageFileKey(profileKey)
                 .backgroundImageFileKey(backgroundImageFileKey)
                 .nickname(nickname)

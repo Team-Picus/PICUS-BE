@@ -8,7 +8,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ExpertDetailInfoCommandRequest(
+public record UpdateExpertDetailInfoAppRequest(
         String currentUserNo,
         String activityCareer,
         List<String> activityAreas,
