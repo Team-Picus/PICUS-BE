@@ -7,7 +7,6 @@ import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.GetExpertInfoQuery;
 import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,7 +65,8 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.intro").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.backgroundImageUrl").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.nickname").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.profileImageUrl").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.profileImageUrl").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.links").exists());
 
 
         // then - 메서드 호출 검증
@@ -127,6 +127,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .backgroundImageUrl("")
                 .nickname("")
                 .profileImageUrl("")
+                .links(List.of())
                 .build();
 
         given(getExpertInfoQuery.getExpertBasicInfo(expertNo))

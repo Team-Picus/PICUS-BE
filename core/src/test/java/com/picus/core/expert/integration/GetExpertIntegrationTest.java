@@ -85,6 +85,7 @@ public class GetExpertIntegrationTest {
         LocalDateTime testLastActivityAt = LocalDateTime.of(2024, 5, 20, 10, 30);
         String testIntro = "소개";
         String testBackgroundImageKey = "back_key";
+        List<String> testLinks = List.of("link");
 
         ExpertEntity expertEntity = settingBasicData(
                 testNickname,
@@ -92,7 +93,8 @@ public class GetExpertIntegrationTest {
                 testBackgroundImageKey,
                 testIntro,
                 testActivityCount,
-                testLastActivityAt
+                testLastActivityAt,
+                testLinks
         );
         String expertNo = expertEntity.getExpertNo();
 
@@ -128,6 +130,7 @@ public class GetExpertIntegrationTest {
         assertThat(result.lastActivityAt()).isEqualTo(testLastActivityAt);
         assertThat(result.intro()).isEqualTo(testIntro);
         assertThat(result.nickname()).isEqualTo(testNickname);
+        assertThat(result.links()).isEqualTo(testLinks);
         // TODO: backgroundImageUrl, profileImageUrl 검증
     }
 
@@ -272,8 +275,8 @@ public class GetExpertIntegrationTest {
             String testBackgroundImageKey,
             String testIntro,
             int testActivityCount,
-            LocalDateTime testLastActivityAt
-    ) {
+            LocalDateTime testLastActivityAt,
+            List<String> links) {
         UserEntity userEntity = givenUserEntity(testNickname);
         userJpaRepository.save(userEntity);
 
@@ -282,7 +285,7 @@ public class GetExpertIntegrationTest {
         profileImageJpaRepository.save(profileImageEntity);
 
         ExpertEntity expertEntity =
-                givenExpertEntity(testBackgroundImageKey, testIntro, testActivityCount, testLastActivityAt);
+                givenExpertEntity(testBackgroundImageKey, testIntro, testActivityCount, testLastActivityAt, links);
         expertEntity.bindUserEntity(userEntity);
         expertJpaRepository.save(expertEntity);
 
@@ -381,7 +384,7 @@ public class GetExpertIntegrationTest {
                 .build();
     }
 
-    private ExpertEntity givenExpertEntity(String backgroundImageKey, String intro, int activityCount, LocalDateTime lastActivityAt) {
+    private ExpertEntity givenExpertEntity(String backgroundImageKey, String intro, int activityCount, LocalDateTime lastActivityAt, List<String> portfolioLinks) {
         return ExpertEntity.builder()
                 .backgroundImageKey(backgroundImageKey)
                 .intro(intro)
@@ -389,7 +392,7 @@ public class GetExpertIntegrationTest {
                 .activityAreas(List.of("서울 강북구"))
                 .activityCount(activityCount)
                 .lastActivityAt(lastActivityAt)
-                .portfolioLinks(List.of("http://myportfolio.com"))
+                .portfolioLinks(portfolioLinks)
                 .approvalStatus(ApprovalStatus.PENDING)
                 .build();
     }

@@ -3,6 +3,7 @@ package com.picus.core.expert.application.service;
 import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +36,8 @@ class GetExpertInfoServiceTest {
                 "5년",
                 List.of("서울 강북구"),
                 10,
-                LocalDateTime.of(2024, 5, 10, 10, 0)
+                LocalDateTime.of(2024, 5, 10, 10, 0),
+                List.of(Portfolio.builder().link("link").build())
         );
         UserWithProfileImageDto dto = givenUserWithProfileImageDto(
                 "nickname",
@@ -55,6 +57,10 @@ class GetExpertInfoServiceTest {
         assertThat(result.lastActivityAt()).isEqualTo(expert.getLastActivityAt());
         assertThat(result.intro()).isEqualTo(expert.getIntro());
         assertThat(result.nickname()).isEqualTo(dto.nickname());
+        assertThat(result.links())
+                .isEqualTo(expert.getPortfolios().stream()
+                        .map(Portfolio::getLink)
+                        .toList());
 
         // then - 메서드 상호작용 검증
         then(loadExpertPort).should().findById(eq(expertNo));
@@ -78,7 +84,8 @@ class GetExpertInfoServiceTest {
             String activityCareer,
             List<String> activityAreas,
             int activityCount,
-            LocalDateTime lastActivityAt
+            LocalDateTime lastActivityAt,
+            List<Portfolio> portfolios
     ) {
         return Expert.builder()
                 .expertNo(expertNo)
@@ -88,6 +95,7 @@ class GetExpertInfoServiceTest {
                 .activityAreas(activityAreas)
                 .activityCount(activityCount)
                 .lastActivityAt(lastActivityAt)
+                .portfolios(portfolios)
                 .build();
     }
 

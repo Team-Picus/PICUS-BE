@@ -30,6 +30,7 @@ class GetExpertWebMapperTest {
                 .backgroundImageUrl("https://image.com/bg.png")
                 .nickname("전문가닉네임")
                 .profileImageUrl("https://image.com/profile.png")
+                .links(List.of("https://insta.com"))
                 .build();
 
         // when
@@ -45,6 +46,7 @@ class GetExpertWebMapperTest {
         assertThat(result.backgroundImageUrl()).isEqualTo("https://image.com/bg.png");
         assertThat(result.nickname()).isEqualTo("전문가닉네임");
         assertThat(result.profileImageUrl()).isEqualTo("https://image.com/profile.png");
+        assertThat(result.links()).isEqualTo(List.of("https://insta.com"));
     }
 
     @Test

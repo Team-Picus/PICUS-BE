@@ -27,6 +27,7 @@ public class GetExpertWebMapper {
                 .backgroundImageUrl(appResponse.backgroundImageUrl())
                 .nickname(appResponse.nickname())
                 .profileImageUrl(appResponse.profileImageUrl())
+                .links(appResponse.links())
                 .build();
     }
 

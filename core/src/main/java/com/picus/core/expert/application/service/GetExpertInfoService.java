@@ -4,6 +4,7 @@ import com.picus.core.expert.application.port.in.GetExpertInfoQuery;
 import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;
@@ -49,6 +50,9 @@ public class GetExpertInfoService implements GetExpertInfoQuery {
                 .backgroundImageUrl("")
                 .nickname(userInfo.nickname())
                 .profileImageUrl("")
+                .links(expert.getPortfolios().stream()
+                        .map(Portfolio::getLink)
+                        .toList())
                 .build();
     }
 }
