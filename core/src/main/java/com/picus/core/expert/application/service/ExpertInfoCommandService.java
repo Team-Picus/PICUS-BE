@@ -33,7 +33,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         if(!shouldUpdate(basicInfoRequest))
             return;
 
-        String expertNo = getExpertNo(basicInfoRequest);
+        String expertNo = getExpertNo(basicInfoRequest.currentUserNo());
 
         // Expert쪽 수정될 필요가 있는지 확인
         if (shouldUpdateExpertBasicInfo(basicInfoRequest)) {
@@ -67,9 +67,36 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         }
     }
 
-    private String getExpertNo(ExpertBasicInfoCommandRequest basicInfoRequest) {
+    @Override
+    public void updateExpertDetailInfo(ExpertDetailInfoCommandRequest detailInfoRequest) {
+
+        // 수정할 필요가 있는지 확인
+        if(!shouldUpdateExpertDetailInfo(detailInfoRequest))
+            return;
+
+        // 전문가 인덱스 가져오기
+        String expertNo = getExpertNo(detailInfoRequest.currentUserNo());
+
+        // 전문가 불러오기
+        Expert expert = loadExpertPort.findById(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        // 전문가 정보 수정하기
+        expert.updateDetailInfo(
+                detailInfoRequest.activityCareer(),
+                detailInfoRequest.activityAreas(),
+                detailInfoRequest.projects(),
+                detailInfoRequest.skills(),
+                detailInfoRequest.studio()
+        );
+
+        // 수정된 정보 데이터베이스에 반영하기
+        updateExpertPort.updateExpertWithDetail(expert);
+    }
+
+    private String getExpertNo(String userNo) {
         // ExpertNo를 알기 위해 현재 User 로드
-        User currentUser = userQueryPort.findById(basicInfoRequest.currentUserNo());
+        User currentUser = userQueryPort.findById(userNo);
         return currentUser.getExpertNo();
     }
 
@@ -82,13 +109,15 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                 basicInfoRequest.link() != null ||
                 basicInfoRequest.intro() != null;
     }
-
     private boolean shouldUpdateUserInfo(ExpertBasicInfoCommandRequest basicInfoRequest) {
         return basicInfoRequest.profileImageFileKey() != null || basicInfoRequest.nickname() != null;
     }
 
-    @Override
-    public void updateExpertDetailInfo(ExpertDetailInfoCommandRequest detailInfoRequest) {
-
+    private boolean shouldUpdateExpertDetailInfo(ExpertDetailInfoCommandRequest detailInfoRequest) {
+        return detailInfoRequest.activityCareer() != null ||
+                detailInfoRequest.activityAreas() != null ||
+                detailInfoRequest.projects() != null ||
+                detailInfoRequest.skills() != null ||
+                detailInfoRequest.studio() != null;
     }
 }

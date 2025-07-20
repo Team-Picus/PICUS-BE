@@ -136,8 +136,7 @@ public class GetExpertIntegrationTest {
     @DisplayName("사용자는 전문가의 상세정보를 조회할 수 있다.")
     public void getExpertDetailInfo() throws Exception {
         // given
-        String testActivityCareer = "경력 5년"; // 테스트 데이터 셋팅
-        List<String> testActivityAreas = List.of("서울 강북구");
+        // 테스트 데이터 셋팅
 
         List<Project> testProjects = List.of(
                 Project.builder()
@@ -170,7 +169,9 @@ public class GetExpertIntegrationTest {
                 .address("서울특별시 마포구 월드컵북로 400")
                 .build();
 
-        ExpertEntity expertEntity = settingDetailData(testActivityCareer, testActivityAreas, testProjects, testSkills, testStudio);
+        SettingDetailDataResult settingDetailDataResult = settingDetailData(
+                "경력 5년", List.of("서울 강북구"), testProjects, testSkills, testStudio);
+
 
         commitTestTransaction();
 
@@ -189,7 +190,7 @@ public class GetExpertIntegrationTest {
                 request,
                 new ParameterizedTypeReference<>() {
                 },
-                expertEntity.getExpertNo()
+                settingDetailDataResult.expertNo()
         );
 
         // then
@@ -199,51 +200,51 @@ public class GetExpertIntegrationTest {
 
         GetExpertDetailInfoWebResponse result = body.getResult();
 
-        assertThat(result.activityCareer()).isEqualTo(testActivityCareer);
-        assertThat(result.activityAreas()).isEqualTo(testActivityAreas);
+        assertThat(result.activityCareer()).isEqualTo("경력 5년");
+        assertThat(result.activityAreas()).isEqualTo(List.of("서울 강북구"));
 
         // Projects
         List<ProjectWebResponse> projectWebResponses = result.projects();
         assertThat(projectWebResponses).hasSize(2)
                 .extracting(
-                        ProjectWebResponse::projectNo,
                         ProjectWebResponse::projectName,
                         ProjectWebResponse::startDate,
                         ProjectWebResponse::endDate
                 )
                 .containsExactlyInAnyOrder(
                         tuple(
-                                testProjects.get(0).getProjectNo(),
                                 testProjects.get(0).getProjectName(),
                                 testProjects.get(0).getStartDate(),
                                 testProjects.get(0).getEndDate()
                         ),
                         tuple(
-                                testProjects.get(1).getProjectNo(),
                                 testProjects.get(1).getProjectName(),
                                 testProjects.get(1).getStartDate(),
                                 testProjects.get(1).getEndDate()
                         )
                 );
+        assertThat(projectWebResponses)
+                .extracting(ProjectWebResponse::projectNo)
+                .containsExactlyInAnyOrder(settingDetailDataResult.projectNos.get(0), settingDetailDataResult.projectNos.get(1));
 
         // Skills
         List<SkillWebResponse> skillWebResponses = result.skills();
         assertThat(skillWebResponses).hasSize(2)
                 .extracting(
-                        SkillWebResponse::skillNo,
                         SkillWebResponse::skillType,
                         SkillWebResponse::content
                 )
                 .containsExactlyInAnyOrder(
                         tuple(
-                                testSkills.get(0).getSkillNo(),
                                 testSkills.get(0).getSkillType(),
                                 testSkills.get(0).getContent()),
                         tuple(
-                                testSkills.get(1).getSkillNo(),
                                 testSkills.get(1).getSkillType(),
                                 testSkills.get(1).getContent())
                 );
+        assertThat(skillWebResponses)
+                .extracting(SkillWebResponse::skillNo)
+                .containsExactlyInAnyOrder(settingDetailDataResult.skillNos.get(0), settingDetailDataResult.skillNos.get(1));
 
         // Studio
         StudioWebResponse studioWebResponse = result.studio();
@@ -257,7 +258,7 @@ public class GetExpertIntegrationTest {
                         StudioWebResponse::address
                 )
                 .containsExactly(
-                        testStudio.getStudioNo(),
+                        settingDetailDataResult.studioNo,
                         testStudio.getStudioName(),
                         testStudio.getEmployeesCount(),
                         testStudio.getBusinessHours(),
@@ -289,7 +290,16 @@ public class GetExpertIntegrationTest {
         return expertEntity;
     }
 
-    private ExpertEntity settingDetailData(
+
+    private record SettingDetailDataResult(
+            String expertNo,
+            List<String> projectNos,
+            List<String> skillNos,
+            String studioNo
+    ) {
+    }
+
+    private SettingDetailDataResult settingDetailData(
             String testActivityCareer,
             List<String> testActivityAreas,
             List<Project> testProjects,
@@ -306,13 +316,18 @@ public class GetExpertIntegrationTest {
         List<ProjectEntity> projectEntities = givenProjectEntity(expertEntity, testProjects); // Project 저장
         projectJpaRepository.saveAll(projectEntities);
 
-
         List<SkillEntity> skillEntities = givenSkillsEntity(expertEntity, testSkills); // Skill 저장
         skillJpaRepository.saveAll(skillEntities);
 
         StudioEntity studioEntity = givenStudioEntity(expertEntity, testStudio); // Studio 저장
         studioJpaRepository.save(studioEntity);
-        return expertEntity;
+
+        return new SettingDetailDataResult(
+                expertEntity.getExpertNo(),
+                projectEntities.stream().map(ProjectEntity::getProjectNo).toList(),
+                skillEntities.stream().map(SkillEntity::getSkillNo).toList(),
+                studioEntity.getStudioNo()
+        );
     }
 
     private UserEntity givenUserEntity() {
