@@ -9,7 +9,7 @@ public class OptionCommandAppMapper {
 
     public Option toDomain(OptionCommand optionCommand) {
         return Option.builder()
-                .optionNo(optionCommand.optionsNo())
+                .optionNo(optionCommand.optionNo())
                 .name(optionCommand.name())
                 .count(optionCommand.count())
                 .price(optionCommand.price())

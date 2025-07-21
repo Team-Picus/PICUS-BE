@@ -19,7 +19,7 @@ class OptionCommandAppMapperTest {
     public void toDomain() throws Exception {
         // given
         OptionCommand command = OptionCommand.builder()
-                .optionsNo("opt_no")
+                .optionNo("opt_no")
                 .name("opt_name")
                 .count(3)
                 .price(10000)

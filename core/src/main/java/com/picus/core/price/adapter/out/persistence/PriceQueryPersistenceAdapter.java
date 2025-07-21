@@ -1,11 +1,15 @@
-package com.picus.core.price.adapter.out.persistence.mapper;
+package com.picus.core.price.adapter.out.persistence;
 
-import com.picus.core.price.adapter.out.persistence.PriceReferenceImagePersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
+import com.picus.core.price.adapter.out.persistence.mapper.OptionPersistenceMapper;
+import com.picus.core.price.adapter.out.persistence.mapper.PackagePersistenceMapper;
+import com.picus.core.price.adapter.out.persistence.mapper.PricePersistenceMapper;
+import com.picus.core.price.adapter.out.persistence.mapper.PriceReferenceImagePersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.repository.OptionJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
+import com.picus.core.price.application.port.out.PriceCommandPort;
 import com.picus.core.price.application.port.out.PriceQueryPort;
 import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
@@ -16,10 +20,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class PriceQueryPersistenceAdapter implements PriceQueryPort {
+public class PriceQueryPersistenceAdapter implements PriceQueryPort, PriceCommandPort {
 
     private final PriceJpaRepository priceJpaRepository;
     private final PackageJpaRepository packageJpaRepository;
@@ -51,5 +56,15 @@ public class PriceQueryPersistenceAdapter implements PriceQueryPort {
         }
 
         return result;
+    }
+
+    @Override
+    public Optional<Price> findById(String priceNo) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Price save(Price price, String expertNo) {
+        return null;
     }
 }

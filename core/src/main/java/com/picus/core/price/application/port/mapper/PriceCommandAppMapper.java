@@ -50,7 +50,7 @@ public class PriceCommandAppMapper {
     private List<Option> toOptionDomain(List<OptionCommand> optionCommands) {
         return optionCommands.stream()
                 .map(optionCommand -> Option.builder()
-                        .optionNo(optionCommand.optionsNo())
+                        .optionNo(optionCommand.optionNo())
                         .name(optionCommand.name())
                         .count(optionCommand.count())
                         .price(optionCommand.price())
