@@ -11,8 +11,10 @@ import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
 import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.User;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.BDDMockito.*;
 
@@ -126,7 +127,7 @@ class ApplyPriceChangesServiceTest {
         then(user).should(order).getExpertNo();
         then(priceQueryPort).should(order).findById("price-2");
         then(price).should(order).changePriceTheme("FASHION");
-        then(priceCommandPort).should(order).update(price);
+        then(priceCommandPort).should(order).update(price, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         then(priceCommandPort).shouldHaveNoMoreInteractions();
     }
 
@@ -226,8 +227,41 @@ class ApplyPriceChangesServiceTest {
         then(price).should(order).updateOption(optUpd);
         then(price).should(order).deleteOption("opt-3");
 
-        then(priceCommandPort).should(order).update(price);
+        then(priceCommandPort).should(order).update(price, List.of("img-3"), List.of("pkg-3"), List.of("opt-3"));
         then(priceCommandPort).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    @DisplayName("Price를 추가/수정/삭제할 때, 이미지의 순서가 겹친다면 예외가 발생한다.")
+    void apply_image_order_wrong() {
+        // given
+        String currentUserNo = "user-4";
+        User user = mock(User.class);
+        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(user.getExpertNo()).willReturn("expert-4");
+
+        // 이미지 커맨드
+        PriceReferenceImageCommand newImgCmd1 = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
+        PriceReferenceImageCommand newImgCmd2 = createPriceRefImageCommand(null, "file-2", 1, ChangeStatus.NEW);
+        List<PriceReferenceImageCommand> imgCmds =
+                List.of(newImgCmd1, newImgCmd2);
+
+
+        PriceCommand cmd = new PriceCommand(
+                "price-4",
+                "FASHION",
+                imgCmds,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                ChangeStatus.UPDATE
+        );
+        ApplyPriceChangesCommand command =
+                new ApplyPriceChangesCommand(List.of(cmd));
+
+
+        // when // then
+        Assertions.assertThatThrownBy(() -> service.apply(command, currentUserNo))
+                .isInstanceOf(RestApiException.class);
     }
 
     @Test
