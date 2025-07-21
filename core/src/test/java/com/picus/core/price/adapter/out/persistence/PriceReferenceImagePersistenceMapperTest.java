@@ -1,8 +1,7 @@
 package com.picus.core.price.adapter.out.persistence;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.picus.core.price.adapter.out.persistence.entity.PriceReferenceImageEntity;
+import com.picus.core.price.adapter.out.persistence.mapper.PriceReferenceImagePersistenceMapper;
 import com.picus.core.price.domain.model.PriceReferenceImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
