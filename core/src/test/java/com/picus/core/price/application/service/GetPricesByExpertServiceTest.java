@@ -1,8 +1,7 @@
 package com.picus.core.price.application.service;
 
-import com.picus.core.price.application.port.out.LoadPricePort;
+import com.picus.core.price.application.port.out.PriceQueryPort;
 import com.picus.core.price.domain.model.Price;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -16,8 +15,8 @@ import static org.mockito.BDDMockito.then;
 
 class GetPricesByExpertServiceTest {
 
-    private final LoadPricePort loadPricePort = Mockito.mock(LoadPricePort.class);
-    private final GetPricesByExpertService getPricesByExpertService = new GetPricesByExpertService(loadPricePort);
+    private final PriceQueryPort priceQueryPort = Mockito.mock(PriceQueryPort.class);
+    private final GetPricesByExpertService getPricesByExpertService = new GetPricesByExpertService(priceQueryPort);
 
     @Test
     @DisplayName("특정 전문가의 가격정보를 조회하는 서비스 메서드의 리턴값 및 상호작용을 검증한다.")
@@ -26,15 +25,15 @@ class GetPricesByExpertServiceTest {
         String testExpertNo = "test_expert_no";
         Price mockPrice = Mockito.mock(Price.class);
         List<Price> mockPriceList = List.of(mockPrice);
-        BDDMockito.given(loadPricePort.findByExpertNo(testExpertNo))
+        BDDMockito.given(priceQueryPort.findByExpertNo(testExpertNo))
                 .willReturn(mockPriceList);
 
         // when
-        List<Price> result = loadPricePort.findByExpertNo(testExpertNo);
+        List<Price> result = priceQueryPort.findByExpertNo(testExpertNo);
 
         // then
         assertThat(result).isEqualTo(mockPriceList);
-        then(loadPricePort).should().findByExpertNo(testExpertNo);
+        then(priceQueryPort).should().findByExpertNo(testExpertNo);
     }
 
 }

@@ -7,7 +7,7 @@ import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceReferenceImageEntity;
 import com.picus.core.price.adapter.out.persistence.mapper.OptionPersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.mapper.PackagePersistenceMapper;
-import com.picus.core.price.adapter.out.persistence.mapper.PricePersistenceAdapter;
+import com.picus.core.price.adapter.out.persistence.mapper.PriceQueryPersistenceAdapter;
 import com.picus.core.price.adapter.out.persistence.mapper.PricePersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.repository.OptionJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
@@ -31,7 +31,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import({
-        PricePersistenceAdapter.class,
+        PriceQueryPersistenceAdapter.class,
         PricePersistenceMapper.class,
         PackagePersistenceMapper.class,
         OptionPersistenceMapper.class,
@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PricePersistenceAdapterTest {
 
     @Autowired
-    PricePersistenceAdapter pricePersistenceAdapter;
+    PriceQueryPersistenceAdapter pricePersistenceAdapter;
     @Autowired
     PriceJpaRepository priceJpaRepository;
     @Autowired

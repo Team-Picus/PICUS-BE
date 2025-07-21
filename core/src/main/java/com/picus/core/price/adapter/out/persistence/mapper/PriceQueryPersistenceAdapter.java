@@ -6,7 +6,7 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
-import com.picus.core.price.application.port.out.LoadPricePort;
+import com.picus.core.price.application.port.out.PriceQueryPort;
 import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class PricePersistenceAdapter implements LoadPricePort {
+public class PriceQueryPersistenceAdapter implements PriceQueryPort {
 
     private final PriceJpaRepository priceJpaRepository;
     private final PackageJpaRepository packageJpaRepository;
