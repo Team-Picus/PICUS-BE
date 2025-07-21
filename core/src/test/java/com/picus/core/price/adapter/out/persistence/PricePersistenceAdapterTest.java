@@ -31,7 +31,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Import({
-        PriceQueryPersistenceAdapter.class,
+        PricePersistenceAdapter.class,
         PricePersistenceMapper.class,
         PackagePersistenceMapper.class,
         OptionPersistenceMapper.class,
@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PricePersistenceAdapterTest {
 
     @Autowired
-    PriceQueryPersistenceAdapter pricePersistenceAdapter;
+    PricePersistenceAdapter pricePersistenceAdapter;
     @Autowired
     PriceJpaRepository priceJpaRepository;
     @Autowired
@@ -73,6 +73,48 @@ class PricePersistenceAdapterTest {
         // then
         assertThat(results).hasSize(1);
         Price result = results.getFirst();
+
+        // Price 필드 검증
+        assertThat(result.getPriceThemeType()).isEqualTo(PriceThemeType.BEAUTY);
+
+        // Package 검증
+        assertThat(result.getPackages()).hasSize(1);
+        Package pkg = result.getPackages().getFirst();
+        assertThat(pkg.getName()).isEqualTo("기본 패키지");
+        assertThat(pkg.getPrice()).isEqualTo(20000);
+        assertThat(pkg.getContents()).isEqualTo(List.of("헤어컷", "드라이"));
+        assertThat(pkg.getNotice()).isEqualTo("사전 예약 필수");
+
+        // Option 검증
+        assertThat(result.getOptions()).hasSize(1);
+        Option opt = result.getOptions().getFirst();
+        assertThat(opt.getName()).isEqualTo("옵션 A");
+        assertThat(opt.getCount()).isEqualTo(1);
+        assertThat(opt.getPrice()).isEqualTo(5000);
+        assertThat(opt.getContents()).isEqualTo(List.of("마사지 추가"));
+
+        // PriceReferenceImage 검증
+        assertThat(result.getPriceReferenceImages()).hasSize(1);
+        PriceReferenceImage referenceImg = result.getPriceReferenceImages().getFirst();
+        assertThat(referenceImg.getFileKey()).isEqualTo("file-key-123");
+        assertThat(referenceImg.getImageOrder()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("특정 priceNo를 가진 Price를 조회한다.")
+    public void findById_success() {
+        // given
+        PriceEntity priceEntity = createPriceEntity("expert001", PriceThemeType.BEAUTY);
+        createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
+        createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
+        createReferenceImageEntity(priceEntity, "file-key-123", 1);
+
+        clearPersistenceContext();
+
+        // when
+        Price result = pricePersistenceAdapter.findById(priceEntity.getPriceNo());
+
+        // then
 
         // Price 필드 검증
         assertThat(result.getPriceThemeType()).isEqualTo(PriceThemeType.BEAUTY);

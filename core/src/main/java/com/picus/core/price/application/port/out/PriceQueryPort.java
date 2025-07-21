@@ -9,6 +9,6 @@ public interface PriceQueryPort {
 
     List<Price> findByExpertNo(String expertNo);
 
-    Optional<Price> findById(String priceNo);
+    Price findById(String priceNo);
 
 }

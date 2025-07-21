@@ -6,6 +6,7 @@ import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
 import com.picus.core.price.domain.model.PriceReferenceImage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -17,6 +18,7 @@ class PricePersistenceMapperTest {
     private final PricePersistenceMapper mapper = new PricePersistenceMapper();
 
     @Test
+    @DisplayName("PriceEntity -> Price 매핑")
     void toDomain_shouldMapCorrectly() {
         // given
         String testPriceNo = "price123";
@@ -39,6 +41,21 @@ class PricePersistenceMapperTest {
         assertThat(result.getPackages()).isEqualTo(packages);
         assertThat(result.getOptions()).isEqualTo(options);
         assertThat(result.getPriceReferenceImages()).isEqualTo(referenceImages);
+    }
+
+    @Test
+    @DisplayName("Price -> PriceEntity 매핑")
+    void toEntity_shouldMapCorrectly() {
+        // given
+        Price price = Price.builder()
+                .priceThemeType(PriceThemeType.FASHION)
+                .build();
+
+        // when
+        PriceEntity entity = mapper.toEntity(price);
+
+        // then
+        assertThat(entity.getPriceThemeType()).isEqualTo(PriceThemeType.FASHION);
     }
 
     private PriceEntity createPriceEntity(String testPriceNo, PriceThemeType testPriceThemeType) {

@@ -27,4 +27,10 @@ public class PricePersistenceMapper {
                 .priceReferenceImages(referenceImages)
                 .build();
     }
+
+    public PriceEntity toEntity(Price price) {
+        return PriceEntity.builder()
+                .priceThemeType(price.getPriceThemeType())
+                .build();
+    }
 }
