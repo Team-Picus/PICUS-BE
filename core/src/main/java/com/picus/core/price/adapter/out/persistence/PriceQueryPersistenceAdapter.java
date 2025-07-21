@@ -67,4 +67,14 @@ public class PriceQueryPersistenceAdapter implements PriceQueryPort, PriceComman
     public Price save(Price price, String expertNo) {
         return null;
     }
+
+    @Override
+    public void delete(String priceNo) {
+
+    }
+
+    @Override
+    public void update(Price price) {
+
+    }
 }
