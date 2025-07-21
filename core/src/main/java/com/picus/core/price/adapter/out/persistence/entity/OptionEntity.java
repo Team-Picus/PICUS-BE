@@ -42,4 +42,11 @@ public class OptionEntity {
     public void assignPriceEntity(PriceEntity priceEntity) {
         this.priceEntity = priceEntity;
     }
+
+    public void updateEntity(String name, int count, int price, List<String> contents) {
+        this.name = name;
+        this.count = count;
+        this.price = price;
+        this.contents = contents;
+    }
 }

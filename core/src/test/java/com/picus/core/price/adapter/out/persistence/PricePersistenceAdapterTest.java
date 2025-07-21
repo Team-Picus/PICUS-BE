@@ -150,16 +150,16 @@ class PricePersistenceAdapterTest {
         Price price = createPriceDomain(
                 FASHION,
                 List.of(
-                        createPriceReferenceImage("fileKey1", 1),
-                        createPriceReferenceImage("fileKey2", 2)
+                        createPriceReferenceImage(null, "fileKey1", 1),
+                        createPriceReferenceImage(null, "fileKey2", 2)
                 ),
                 List.of(
-                        createPackage("패키지1", 1000, List.of("A", "B"), "노티스1"),
-                        createPackage("패키지2", 2000, List.of("C"), "노티스2")
+                        createPackage(null, "패키지1", 1000, List.of("A", "B"), "노티스1"),
+                        createPackage(null, "패키지2", 2000, List.of("C"), "노티스2")
                 ),
                 List.of(
-                        createOption("옵션1", 1, 100, List.of("X")),
-                        createOption("옵션2", 2, 200, List.of("Y"))
+                        createOption(null, "옵션1", 1, 100, List.of("X")),
+                        createOption(null, "옵션2", 2, 200, List.of("Y"))
                 )
         );
         String expertNo = "expert_no";
@@ -251,6 +251,102 @@ class PricePersistenceAdapterTest {
 
     }
 
+    @Test
+    @DisplayName("Price를 수정한다. 이때 PriceRefImage, Package, Option은 경우에 따라 추가/수정/삭제 된다.")
+    public void update() throws Exception {
+        // given
+
+        // 데이터베이스에 데이터 셋팅
+        PriceEntity priceEntity = createPriceEntity("expert_no", PriceThemeType.BEAUTY);
+        String priceNo = priceEntity.getPriceNo();
+
+        PackageEntity packageEntity1 = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
+        PackageEntity packageEntity2 = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
+
+        PriceReferenceImageEntity referenceImageEntity1 = createReferenceImageEntity(priceEntity, "file_key", 1);
+        PriceReferenceImageEntity referenceImageEntity2 = createReferenceImageEntity(priceEntity, "file_key", 2);
+
+        OptionEntity optionEntity1 = createOptionEntity(priceEntity, "name", 0, 0, List.of("content"));
+        OptionEntity optionEntity2 = createOptionEntity(priceEntity, "name", 0, 0, List.of("content"));
+
+        clearPersistenceContext();
+
+        // 수정할 Price 객체
+        Price updatedPrice = Price.builder()
+                .priceNo(priceNo)
+                .priceThemeType(FASHION)
+                .priceReferenceImages(List.of(
+                        createPriceReferenceImage(null, "new_file_key", 1), // 추가된 PriceReferenceImage
+                        createPriceReferenceImage(referenceImageEntity1.getPriceReferenceImageNo(), "file_key", 2) // 수정된 PriceReferenceImage. file_key자체는 수정이 불가능함
+                ))
+                .packages(List.of(
+                        createPackage(null, "new_pkg_name", 10, List.of("new_cnt"), "new_notice"), // 추가된 Package
+                        createPackage(packageEntity1.getPackageNo(), "changed_pkg_name", 10, List.of("changed_cnt"), "changed_notice") // 수정된 Package
+                ))
+                .options(List.of(
+                        createOption(null, "new_opt_name", 2, 10, List.of("new_cnt")), // 추가된 Option
+                        createOption(optionEntity1.getOptionNo(), "changed_opt_name", 1, 5, List.of("changed_cnt")) // 수정된 Option
+                ))
+                .build();
+
+        // 삭제할 No들
+        List<String> deletedImageNos = List.of(referenceImageEntity2.getPriceReferenceImageNo());
+        List<String> deletedPackageNos = List.of(packageEntity2.getPackageNo());
+        List<String> deletedOptionNos = List.of(optionEntity2.getOptionNo());
+
+        // when
+        pricePersistenceAdapter.update(updatedPrice, deletedImageNos, deletedPackageNos, deletedOptionNos);
+        clearPersistenceContext();
+
+        // then
+
+        // PriceEntity 검증
+        PriceEntity priceResult = priceJpaRepository.findById(priceNo)
+                .orElseThrow();
+        assertThat(priceResult.getPriceThemeType()).isEqualTo(FASHION);
+
+        // PriceReferenceImageEntity 검증
+        List<PriceReferenceImageEntity> imageResults = priceReferenceImageJpaRepository.findByPriceEntity_PriceNo(priceNo);
+        assertThat(imageResults).hasSize(2)
+                .extracting(
+                        PriceReferenceImageEntity::getFileKey,
+                        PriceReferenceImageEntity::getImageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple("new_file_key", 1),
+                        tuple("file_key", 2)
+                );
+
+        // PackageEntity 검증
+        List<PackageEntity> packageResults = packageJpaRepository.findByPriceEntity_PriceNo(priceNo);
+        assertThat(packageResults).hasSize(2)
+                .extracting(
+                        PackageEntity::getName,
+                        PackageEntity::getPrice,
+                        PackageEntity::getContents,
+                        PackageEntity::getNotice
+                ).containsExactlyInAnyOrder(
+                        tuple("new_pkg_name", 10, List.of("new_cnt"), "new_notice"),
+                        tuple("changed_pkg_name", 10, List.of("changed_cnt"), "changed_notice")
+                );
+
+        // OptionEntity 검증
+        List<OptionEntity> optionResults = optionJpaRepository.findByPriceEntity_PriceNo(priceNo);
+        assertThat(optionResults).hasSize(2)
+                .extracting(
+                        OptionEntity::getName,
+                        OptionEntity::getCount,
+                        OptionEntity::getPrice,
+                        OptionEntity::getContents
+                ).containsExactlyInAnyOrder(
+                        tuple("new_opt_name", 2, 10, List.of("new_cnt")),
+                        tuple("changed_opt_name", 1, 5, List.of("changed_cnt"))
+                );
+    }
+
+
+    /**
+     * private 메서드
+     */
     private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
         PriceEntity priceEntity = PriceEntity.builder()
                 .expertNo(expertNo)
@@ -303,15 +399,17 @@ class PricePersistenceAdapterTest {
                 .build();
     }
 
-    private PriceReferenceImage createPriceReferenceImage(String fileKey, int imageOrder) {
+    private PriceReferenceImage createPriceReferenceImage(String imageNo, String fileKey, int imageOrder) {
         return PriceReferenceImage.builder()
+                .priceRefImageNo(imageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
                 .build();
     }
 
-    private Package createPackage(String name, int price, List<String> contents, String notice) {
+    private Package createPackage(String packageNo, String name, int price, List<String> contents, String notice) {
         return Package.builder()
+                .packageNo(packageNo)
                 .name(name)
                 .price(price)
                 .contents(contents)
@@ -319,8 +417,9 @@ class PricePersistenceAdapterTest {
                 .build();
     }
 
-    private Option createOption(String name, int count, int price, List<String> contents) {
+    private Option createOption(String optionNo, String name, int count, int price, List<String> contents) {
         return Option.builder()
+                .optionNo(optionNo)
                 .name(name)
                 .count(count)
                 .price(price)

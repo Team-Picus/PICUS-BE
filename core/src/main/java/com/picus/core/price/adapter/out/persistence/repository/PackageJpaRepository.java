@@ -7,7 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PackageJpaRepository extends JpaRepository<PackageEntity, String> {
-    List<PackageEntity> findByPriceEntity(PriceEntity priceEntity);
+
+    List<PackageEntity> findByPriceEntity_PriceNo(String priceNo);
 
     void deleteByPriceEntity_PriceNo(String priceNo);
+
+    void deleteByPackageNoIn(List<String> deletedPackageNos);
 }

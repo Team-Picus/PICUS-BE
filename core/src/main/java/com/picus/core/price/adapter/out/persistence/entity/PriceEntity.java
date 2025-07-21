@@ -34,4 +34,8 @@ public class PriceEntity {
         this.expertNo = expertNo;
     }
 
+    public void updateEntity(PriceThemeType priceThemeType) {
+        this.priceThemeType = priceThemeType;
+    }
+
 }

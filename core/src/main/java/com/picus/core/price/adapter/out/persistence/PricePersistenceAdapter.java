@@ -20,11 +20,12 @@ import com.picus.core.price.domain.model.Price;
 import com.picus.core.price.domain.model.PriceReferenceImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -61,7 +62,7 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
     @Override
     public Price findById(String priceNo) {
         PriceEntity priceEntity = priceJpaRepository.findById(priceNo)
-                .orElseThrow(() -> new RestApiException(GlobalErrorStatus._NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         List<Package> packages = findPackagesByPriceNo(priceEntity); // 해당 Price의 Package 불러오기
 
@@ -100,27 +101,41 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
     }
 
     @Override
-    public void update(Price price) {
+    public void update(Price price,
+                       List<String> deletedPriceRefImageNos, List<String> deletedPackageNos, List<String> deletedOptionNos
+    ) {
+        PriceEntity priceEntity = priceJpaRepository.findById(price.getPriceNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
+        priceEntity.updateEntity(price.getPriceThemeType());
+
+        // PricePreference 추가/수정/삭제
+        updatePriceReferenceImageEntities(price, deletedPriceRefImageNos, priceEntity);
+
+        // Package 추가/수정/삭제
+        updatePackageEntities(price, deletedPackageNos, priceEntity);
+
+        // Option 추가/수정/삭제
+        updateOptionEntities(price, deletedOptionNos, priceEntity);
     }
 
     /**
      * private 메서드
      */
     private List<Package> findPackagesByPriceNo(PriceEntity priceEntity) {
-        return packageJpaRepository.findByPriceEntity(priceEntity).stream()
+        return packageJpaRepository.findByPriceEntity_PriceNo(priceEntity.getPriceNo()).stream()
                 .map(packagePersistenceMapper::toDomain)
                 .toList();
     }
 
     private List<Option> findOptionsByPriceNo(PriceEntity priceEntity) {
-        return optionJpaRepository.findByPriceEntity(priceEntity).stream()
+        return optionJpaRepository.findByPriceEntity_PriceNo(priceEntity.getPriceNo()).stream()
                 .map(optionPersistenceMapper::toDomain)
                 .toList();
     }
 
     private List<PriceReferenceImage> findPriceRefImagesByPriceNo(PriceEntity priceEntity) {
-        return priceReferenceImageJpaRepository.findByPriceEntity(priceEntity).stream()
+        return priceReferenceImageJpaRepository.findByPriceEntity_PriceNo(priceEntity.getPriceNo()).stream()
                 .map(priceReferenceImagePersistenceMapper::toDomain)
                 .toList();
     }
@@ -165,5 +180,89 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
         return priceReferenceImageJpaRepository.saveAll(priceReferenceImageEntities).stream()
                 .map(priceReferenceImagePersistenceMapper::toDomain)
                 .toList();
+    }
+
+    private void updatePackageEntities(Price price, List<String> deletedPackageNos, PriceEntity priceEntity) {
+        // 삭제
+        packageJpaRepository.deleteByPackageNoIn(deletedPackageNos);
+
+        // 추가/수정
+        List<Package> packages = price.getPackages();
+        for (Package domain : packages) {
+            String packageNo = domain.getPackageNo();
+            if(packageNo != null) {
+                // PK가 있다 = 수정
+                PackageEntity entity = packageJpaRepository.findById(packageNo)
+                        .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                entity.updateEntity(domain.getName(), domain.getPrice(), domain.getContents(), domain.getNotice());
+            } else {
+                // PK가 없다 = 저장
+                PackageEntity entity = packagePersistenceMapper.toEntity(domain);
+                entity.assignPriceEntity(priceEntity);
+                packageJpaRepository.save(entity);
+            }
+        }
+    }
+
+    private void updatePriceReferenceImageEntities(Price price, List<String> deletedPriceRefImageNos, PriceEntity priceEntity) {
+        // 삭제
+        priceReferenceImageJpaRepository.deleteByPriceReferenceImageNoIn(deletedPriceRefImageNos);
+
+        // 삭제 후 이미지 순서 재정렬
+        List<PriceReferenceImageEntity> images =
+                priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo());
+
+        for (int i = 0; i < images.size(); i++) {
+            images.get(i).assignImageOrder(i + 1);
+        }
+
+        // 추가/수정
+        priceReferenceImageJpaRepository.shiftAllImageOrdersToNegative(priceEntity.getPriceNo()); // 추가/수정 전에 모든 imageOrder 값을 임시값으로 변경
+
+        List<PriceReferenceImage> priceReferenceImages = price.getPriceReferenceImages();
+        for (PriceReferenceImage domain : priceReferenceImages) {
+            String priceRefImageNo = domain.getPriceRefImageNo();
+            if(priceRefImageNo != null) {
+                // PK가 있다 = 수정
+                PriceReferenceImageEntity entity = priceReferenceImageJpaRepository.findById(priceRefImageNo)
+                        .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                entity.updateEntity(domain.getFileKey(), domain.getImageOrder());
+            } else {
+                // PK가 없다 = 저장
+                PriceReferenceImageEntity entity = priceReferenceImagePersistenceMapper.toEntity(domain);
+                entity.assignPriceEntity(priceEntity);
+                priceReferenceImageJpaRepository.save(entity);
+            }
+        }
+
+        // 최종적으로 재정렬
+        List<PriceReferenceImageEntity> finalImages =
+                priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo());
+
+        for (int i = 0; i < finalImages.size(); i++) {
+            finalImages.get(i).assignImageOrder(i + 1);
+        }
+    }
+
+    private void updateOptionEntities(Price price, List<String> deletedOptionNos, PriceEntity priceEntity) {
+        // 삭제
+        optionJpaRepository.deleteByOptionNoIn(deletedOptionNos);
+
+        // 추가/수정
+        List<Option> options = price.getOptions();
+        for (Option domain : options) {
+            String optionNo = domain.getOptionNo();
+            if(optionNo != null) {
+                // PK가 있다 = 수정
+                OptionEntity entity = optionJpaRepository.findById(optionNo)
+                        .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                entity.updateEntity(domain.getName(), domain.getCount(), domain.getPrice(), domain.getContents());
+            } else {
+                // PK가 없다 = 저장
+                OptionEntity entity = optionPersistenceMapper.toEntity(domain);
+                entity.assignPriceEntity(priceEntity);
+                optionJpaRepository.save(entity);
+            }
+        }
     }
 }

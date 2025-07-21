@@ -42,4 +42,11 @@ public class PackageEntity {
     public void assignPriceEntity(PriceEntity priceEntity) {
         this.priceEntity = priceEntity;
     }
+
+    public void updateEntity(String name, int price, List<String> contents, String notice) {
+        this.name = name;
+        this.price = price;
+        this.contents = contents;
+        this.notice = notice;
+    }
 }

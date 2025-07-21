@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface OptionJpaRepository extends JpaRepository<OptionEntity, String> {
-    List<OptionEntity> findByPriceEntity(PriceEntity priceEntity);
+    List<OptionEntity> findByPriceEntity_PriceNo(String priceNo);
 
     void deleteByPriceEntity_PriceNo(String priceNo);
+
+    void deleteByOptionNoIn(List<String> deletedOptionNos);
 }

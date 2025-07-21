@@ -39,4 +39,13 @@ public class PriceReferenceImageEntity {
     public void assignPriceEntity(PriceEntity priceEntity) {
         this.priceEntity = priceEntity;
     }
+
+    public void updateEntity(String fileKey, int imageOrder) {
+        this.fileKey = fileKey;
+        this.imageOrder = imageOrder;
+    }
+
+    public void assignImageOrder(int imageOrder) {
+        this.imageOrder = imageOrder;
+    }
 }
