@@ -13,7 +13,12 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Builder
 @Getter
-@Table(name = "price_reference_images")
+@Table(
+        name = "price_reference_images",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"price_no", "image_order"})
+        }
+)
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PRIVATE)
 public class PriceReferenceImageEntity {
