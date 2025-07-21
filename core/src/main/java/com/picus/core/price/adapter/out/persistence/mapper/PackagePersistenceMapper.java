@@ -16,4 +16,13 @@ public class PackagePersistenceMapper {
                 .notice(packageEntity.getNotice())
                 .build();
     }
+
+    public PackageEntity toEntity(Package p) {
+        return PackageEntity.builder()
+                .name(p.getName())
+                .price(p.getPrice())
+                .contents(p.getContents())
+                .notice(p.getNotice())
+                .build();
+    }
 }

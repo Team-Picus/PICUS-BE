@@ -69,8 +69,7 @@ public class ApplyPriceChangesService implements ApplyPriceChangesUseCase {
 
     // Price 수정
     private void updatePrice(PriceCommand priceCommand) {
-        Price price = priceQueryPort.findById(priceCommand.priceNo())
-                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        Price price = priceQueryPort.findById(priceCommand.priceNo());
 
         // Price 정보 업데이트
         price.changePriceTheme(priceCommand.priceThemeType());

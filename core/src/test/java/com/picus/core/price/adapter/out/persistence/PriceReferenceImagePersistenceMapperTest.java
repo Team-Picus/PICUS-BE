@@ -30,4 +30,21 @@ class PriceReferenceImagePersistenceMapperTest {
         assertThat(domain.getFileKey()).isEqualTo("file-key-123");
         assertThat(domain.getImageOrder()).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("PriceReferenceImage -> PriceReferenceImageEntity 매핑")
+    public void toEntity() throws Exception {
+        // given
+        PriceReferenceImage priceReferenceImage = PriceReferenceImage.builder()
+                .fileKey("file-key-123")
+                .imageOrder(1)
+                .build();
+
+        // when
+        PriceReferenceImageEntity entity = mapper.toEntity(priceReferenceImage);
+
+        // then
+        assertThat(entity.getFileKey()).isEqualTo("file-key-123");
+        assertThat(entity.getImageOrder()).isEqualTo(1);
+    }
 }

@@ -28,7 +28,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.picus.core.expert.domain.model.vo.PriceThemeType.FASHION;
+import static org.assertj.core.api.Assertions.*;
 
 @Import({
         PricePersistenceAdapter.class,
@@ -142,6 +143,93 @@ class PricePersistenceAdapterTest {
         assertThat(referenceImg.getImageOrder()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("Price와 그 Price의 Package, Option, PriceRefImage들을 저장한다.")
+    public void save() throws Exception {
+        // given
+        Price price = createPriceDomain(
+                FASHION,
+                List.of(
+                        createPriceReferenceImage("fileKey1", 1),
+                        createPriceReferenceImage("fileKey2", 2)
+                ),
+                List.of(
+                        createPackage("패키지1", 1000, List.of("A", "B"), "노티스1"),
+                        createPackage("패키지2", 2000, List.of("C"), "노티스2")
+                ),
+                List.of(
+                        createOption("옵션1", 1, 100, List.of("X")),
+                        createOption("옵션2", 2, 200, List.of("Y"))
+                )
+        );
+        String expertNo = "expert_no";
+
+        // when
+        Price saved = pricePersistenceAdapter.save(price, expertNo);
+
+        // then
+
+        // Price
+        assertThat(saved.getPriceNo()).isNotNull();
+        assertThat(saved.getPriceThemeType()).isEqualTo(FASHION);
+
+        // PriceRefImage
+        assertThat(saved.getPriceReferenceImages())
+                .hasSize(2)
+                .satisfiesExactlyInAnyOrder(
+                        image -> {
+                            assertThat(image.getPriceRefImageNo()).isNotNull();
+                            assertThat(image.getFileKey()).isEqualTo("fileKey1");
+                            assertThat(image.getImageOrder()).isEqualTo(1);
+                        },
+                        image -> {
+                            assertThat(image.getPriceRefImageNo()).isNotNull();
+                            assertThat(image.getFileKey()).isEqualTo("fileKey2");
+                            assertThat(image.getImageOrder()).isEqualTo(2);
+                        }
+                );
+
+        // Package
+        assertThat(saved.getPackages())
+                .hasSize(2)
+                .satisfiesExactlyInAnyOrder(
+                        p -> {
+                            assertThat(p.getPackageNo()).isNotNull();
+                            assertThat(p.getName()).isEqualTo("패키지1");
+                            assertThat(p.getPrice()).isEqualTo(1000);
+                            assertThat(p.getContents()).isEqualTo(List.of("A", "B"));
+                            assertThat(p.getNotice()).isEqualTo("노티스1");
+                        },
+                        p -> {
+                            assertThat(p.getPackageNo()).isNotNull();
+                            assertThat(p.getName()).isEqualTo("패키지2");
+                            assertThat(p.getPrice()).isEqualTo(2000);
+                            assertThat(p.getContents()).isEqualTo(List.of("C"));
+                            assertThat(p.getNotice()).isEqualTo("노티스2");
+                        }
+                );
+
+        // Option
+        assertThat(saved.getOptions())
+                .hasSize(2)
+                .satisfiesExactlyInAnyOrder(
+                        o -> {
+                            assertThat(o.getOptionNo()).isNotNull();
+                            assertThat(o.getName()).isEqualTo("옵션1");
+                            assertThat(o.getCount()).isEqualTo(1);
+                            assertThat(o.getPrice()).isEqualTo(100);
+                            assertThat(o.getContents()).isEqualTo(List.of("X"));
+                        },
+                        o -> {
+                            assertThat(o.getOptionNo()).isNotNull();
+                            assertThat(o.getName()).isEqualTo("옵션2");
+                            assertThat(o.getCount()).isEqualTo(2);
+                            assertThat(o.getPrice()).isEqualTo(200);
+                            assertThat(o.getContents()).isEqualTo(List.of("Y"));
+                        }
+                );
+    }
+
     private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
         PriceEntity priceEntity = PriceEntity.builder()
                 .expertNo(expertNo)
@@ -167,7 +255,7 @@ class PricePersistenceAdapterTest {
                 .name(name)
                 .count(count)
                 .price(price)
-                .content(content)
+                .contents(content)
                 .build();
         return optionJpaRepository.save(optionEntity);
     }
@@ -179,6 +267,44 @@ class PricePersistenceAdapterTest {
                 .imageOrder(imageOrder)
                 .build();
         return priceReferenceImageJpaRepository.save(referenceImageEntity);
+    }
+
+
+    private Price createPriceDomain(PriceThemeType priceThemeType,
+                                    List<PriceReferenceImage> priceReferenceImages,
+                                    List<Package> packages,
+                                    List<Option> options) {
+        return Price.builder()
+                .priceThemeType(priceThemeType)
+                .priceReferenceImages(priceReferenceImages)
+                .packages(packages)
+                .options(options)
+                .build();
+    }
+
+    private PriceReferenceImage createPriceReferenceImage(String fileKey, int imageOrder) {
+        return PriceReferenceImage.builder()
+                .fileKey(fileKey)
+                .imageOrder(imageOrder)
+                .build();
+    }
+
+    private Package createPackage(String name, int price, List<String> contents, String notice) {
+        return Package.builder()
+                .name(name)
+                .price(price)
+                .contents(contents)
+                .notice(notice)
+                .build();
+    }
+
+    private Option createOption(String name, int count, int price, List<String> contents) {
+        return Option.builder()
+                .name(name)
+                .count(count)
+                .price(price)
+                .contents(contents)
+                .build();
     }
 
     private void clearPersistenceContext() {

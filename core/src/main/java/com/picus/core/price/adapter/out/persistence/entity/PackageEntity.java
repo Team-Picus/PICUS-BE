@@ -38,4 +38,8 @@ public class PackageEntity {
 
     @Column(nullable = false)
     private String notice;
+
+    public void assignPriceEntity(PriceEntity priceEntity) {
+        this.priceEntity = priceEntity;
+    }
 }

@@ -14,4 +14,11 @@ public class PriceReferenceImagePersistenceMapper {
                 .imageOrder(entity.getImageOrder())
                 .build();
     }
+
+    public PriceReferenceImageEntity toEntity(PriceReferenceImage refImage) {
+        return PriceReferenceImageEntity.builder()
+                .fileKey(refImage.getFileKey())
+                .imageOrder(refImage.getImageOrder())
+                .build();
+    }
 }

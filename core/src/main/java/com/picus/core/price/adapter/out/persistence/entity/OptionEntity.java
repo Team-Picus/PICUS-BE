@@ -37,5 +37,9 @@ public class OptionEntity {
 
     @Column(nullable = false)
     @Convert(converter = StringConverter.class)
-    private List<String> content = new ArrayList<>();
+    private List<String> contents = new ArrayList<>();
+
+    public void assignPriceEntity(PriceEntity priceEntity) {
+        this.priceEntity = priceEntity;
+    }
 }

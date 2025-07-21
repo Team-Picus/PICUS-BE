@@ -153,7 +153,7 @@ public class GetPricesByExpertIntegrationTest {
                 .name(name)
                 .count(count)
                 .price(price)
-                .content(content)
+                .contents(content)
                 .build();
         return optionJpaRepository.save(optionEntity);
     }

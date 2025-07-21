@@ -19,7 +19,8 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PRIVATE)
 public class PriceEntity {
 
-    @Id @Tsid
+    @Id
+    @Tsid
     private String priceNo;
 
     @Column(nullable = false)
@@ -28,5 +29,9 @@ public class PriceEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PriceThemeType priceThemeType;
+
+    public void bindExpertNo(String expertNo) {
+        this.expertNo = expertNo;
+    }
 
 }

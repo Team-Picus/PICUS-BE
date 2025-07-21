@@ -113,7 +113,7 @@ class ApplyPriceChangesServiceTest {
         );
 
         Price price = mock(Price.class);
-        given(priceQueryPort.findById("price-2")).willReturn(Optional.of(price));
+        given(priceQueryPort.findById("price-2")).willReturn(price);
 
         // when
         service.apply(command, currentUserNo);
@@ -173,7 +173,7 @@ class ApplyPriceChangesServiceTest {
 
         // 도메인 객체 및 매핑 설정
         Price price = mock(Price.class);
-        given(priceQueryPort.findById("price-4")).willReturn(Optional.of(price));
+        given(priceQueryPort.findById("price-4")).willReturn(price);
 
         PriceReferenceImage imgNew = mock(PriceReferenceImage.class);
         PriceReferenceImage imgUpd = mock(PriceReferenceImage.class);
@@ -230,6 +230,36 @@ class ApplyPriceChangesServiceTest {
         then(priceCommandPort).shouldHaveNoMoreInteractions();
     }
 
+    @Test
+    @DisplayName("Price를 삭제한다.")
+    void apply_shouldDeletePrice_whenStatusIsDelete() {
+        // given
+        String currentUserNo = "user-3";
+        User user = mock(User.class);
+        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(user.getExpertNo()).willReturn("expert-3");
+
+        PriceCommand cmd = new PriceCommand(
+                "price-3",
+                "THEME_C",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                ChangeStatus.DELETE
+        );
+        ApplyPriceChangesCommand command = new ApplyPriceChangesCommand(
+                Collections.singletonList(cmd)
+        );
+
+        // when
+        service.apply(command, currentUserNo);
+
+        // then: delete만 호출하고, update/create 관련 포트는 호출 안 함
+        then(priceCommandPort).should().delete("price-3");
+        then(priceCommandPort).shouldHaveNoMoreInteractions();
+        then(priceQueryPort).shouldHaveNoInteractions();
+    }
+
     private  PriceReferenceImageCommand createPriceRefImageCommand(String priceRefImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
         return PriceReferenceImageCommand.builder()
                 .priceRefImageNo(priceRefImageNo)
@@ -259,35 +289,5 @@ class ApplyPriceChangesServiceTest {
                 .contents(contents)
                 .status(changeStatus)
                 .build();
-    }
-
-    @Test
-    @DisplayName("Price를 삭제한다.")
-    void apply_shouldDeletePrice_whenStatusIsDelete() {
-        // given
-        String currentUserNo = "user-3";
-        User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn("expert-3");
-
-        PriceCommand cmd = new PriceCommand(
-                "price-3",
-                "THEME_C",
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.emptyList(),
-                ChangeStatus.DELETE
-        );
-        ApplyPriceChangesCommand command = new ApplyPriceChangesCommand(
-                Collections.singletonList(cmd)
-        );
-
-        // when
-        service.apply(command, currentUserNo);
-
-        // then: delete만 호출하고, update/create 관련 포트는 호출 안 함
-        then(priceCommandPort).should().delete("price-3");
-        then(priceCommandPort).shouldHaveNoMoreInteractions();
-        then(priceQueryPort).shouldHaveNoInteractions();
     }
 }

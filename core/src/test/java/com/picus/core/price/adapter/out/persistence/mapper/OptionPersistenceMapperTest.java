@@ -2,6 +2,7 @@ package com.picus.core.price.adapter.out.persistence.mapper;
 
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.domain.model.Option;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,7 +21,7 @@ class OptionPersistenceMapperTest {
                 .name("옵션A")
                 .count(2)
                 .price(5000)
-                .content(List.of("기본 제공 1", "기본 제공 2"))
+                .contents(List.of("기본 제공 1", "기본 제공 2"))
                 .build();
 
         // when
@@ -32,5 +33,26 @@ class OptionPersistenceMapperTest {
         assertThat(result.getCount()).isEqualTo(2);
         assertThat(result.getPrice()).isEqualTo(5000);
         assertThat(result.getContents()).isEqualTo(List.of("기본 제공 1", "기본 제공 2"));
+    }
+
+    @Test
+    @DisplayName("Option -> OptionEntity 매핑")
+    public void toEntity() throws Exception {
+        // given
+        Option option = Option.builder()
+                .name("옵션A")
+                .count(2)
+                .price(5000)
+                .contents(List.of("기본 제공 1", "기본 제공 2"))
+                .build();
+
+        // when
+        OptionEntity entity = mapper.toEntity(option);
+
+        // then
+        assertThat(entity.getName()).isEqualTo("옵션A");
+        assertThat(entity.getCount()).isEqualTo(2);
+        assertThat(entity.getPrice()).isEqualTo(5000);
+        assertThat(entity.getContents()).isEqualTo(List.of("기본 제공 1", "기본 제공 2"));
     }
 }

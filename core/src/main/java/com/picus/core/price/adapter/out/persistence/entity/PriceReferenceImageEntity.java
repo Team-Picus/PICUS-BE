@@ -30,4 +30,8 @@ public class PriceReferenceImageEntity {
 
     @Column(nullable = false)
     private Integer imageOrder;
+
+    public void assignPriceEntity(PriceEntity priceEntity) {
+        this.priceEntity = priceEntity;
+    }
 }
