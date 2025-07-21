@@ -1,33 +1,21 @@
 package com.picus.core.price.adapter.in;
 
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
-import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse;
+import com.picus.core.price.adapter.in.web.GetPricesByExpertController;
 import com.picus.core.price.adapter.in.web.mapper.GetPricesByExpertWebMapper;
 import com.picus.core.price.application.port.in.GetPricesByExpertQuery;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 

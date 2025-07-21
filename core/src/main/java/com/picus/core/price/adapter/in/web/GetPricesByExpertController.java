@@ -1,4 +1,4 @@
-package com.picus.core.price.adapter.in;
+package com.picus.core.price.adapter.in.web;
 
 import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse;
 import com.picus.core.price.adapter.in.web.mapper.GetPricesByExpertWebMapper;
