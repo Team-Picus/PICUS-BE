@@ -168,7 +168,6 @@ class PricePersistenceAdapterTest {
         Price saved = pricePersistenceAdapter.save(price, expertNo);
 
         // then
-
         // Price
         assertThat(saved.getPriceNo()).isNotNull();
         assertThat(saved.getPriceThemeType()).isEqualTo(FASHION);
@@ -228,6 +227,28 @@ class PricePersistenceAdapterTest {
                             assertThat(o.getContents()).isEqualTo(List.of("Y"));
                         }
                 );
+    }
+
+    @Test
+    @DisplayName("Price, PriceRefImage, Package, Option을 삭제한다.")
+    public void delete() throws Exception {
+        // given
+        PriceEntity priceEntity = createPriceEntity("expert_no", PriceThemeType.BEAUTY);
+        PackageEntity packageEntity = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
+        OptionEntity optionEntity = createOptionEntity(priceEntity, "name", 0, 0, List.of("content"));
+        PriceReferenceImageEntity referenceImageEntity = createReferenceImageEntity(priceEntity, "file_key", 1);
+
+        clearPersistenceContext();
+
+        // when
+        pricePersistenceAdapter.delete(priceEntity.getPriceNo());
+
+        // then
+        assertThat(priceJpaRepository.findById(priceEntity.getPriceNo())).isNotPresent();
+        assertThat(packageJpaRepository.findById(packageEntity.getPackageNo())).isNotPresent();
+        assertThat(optionJpaRepository.findById(optionEntity.getOptionNo())).isNotPresent();
+        assertThat(priceReferenceImageJpaRepository.findById(referenceImageEntity.getPriceReferenceImageNo())).isNotPresent();
+
     }
 
     private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {

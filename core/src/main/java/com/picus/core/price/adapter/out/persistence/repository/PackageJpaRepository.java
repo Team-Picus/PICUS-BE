@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface PackageJpaRepository extends JpaRepository<PackageEntity, String> {
     List<PackageEntity> findByPriceEntity(PriceEntity priceEntity);
+
+    void deleteByPriceEntity_PriceNo(String priceNo);
 }
