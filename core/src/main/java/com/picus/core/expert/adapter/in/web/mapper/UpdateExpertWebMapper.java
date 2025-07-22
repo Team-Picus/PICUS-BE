@@ -10,6 +10,7 @@ import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -39,6 +40,9 @@ public class UpdateExpertWebMapper {
     }
 
     private List<ProjectCommand> toProjectCommand(List<ProjectWebRequest> projectWebRequests) {
+        if (projectWebRequests == null)
+            return List.of();
+
         return projectWebRequests.stream()
                 .map(webRequest -> ProjectCommand.builder()
                         .projectNo(webRequest.projectNo())
@@ -51,10 +55,13 @@ public class UpdateExpertWebMapper {
     }
 
     private List<SkillCommand> toSkillCommand(List<SkillWebRequest> skillWebRequests) {
+        if (skillWebRequests == null)
+            return List.of();
+
         return skillWebRequests.stream()
                 .map(webRequest -> SkillCommand.builder()
                         .skillNo(webRequest.skillNo())
-                        .skillType(SkillType.valueOf(webRequest.skillType()))
+                        .skillType(webRequest.skillType() != null ? SkillType.valueOf(webRequest.skillType()) : null) // 수정될 내용이 없어 Null이 넘어올 수도 있음
                         .content(webRequest.content())
                         .changeStatus(webRequest.changeStatus())
                         .build())

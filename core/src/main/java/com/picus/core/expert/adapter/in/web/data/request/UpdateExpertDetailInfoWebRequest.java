@@ -6,12 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
 public record UpdateExpertDetailInfoWebRequest(
         String activityCareer,
-        @NotNull List<String> activityAreas,
+        @NotNull List<String> activityAreas, // 항상 기존값과 함께 넘긴다.
         @Valid List<ProjectWebRequest> projects,
         @Valid List<SkillWebRequest> skills,
         @Valid StudioWebRequest studio

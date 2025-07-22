@@ -133,9 +133,9 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
 
     private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoAppRequest detailInfoRequest) {
         return detailInfoRequest.activityCareer() != null ||
-                detailInfoRequest.activityAreas() != null ||
-                detailInfoRequest.projects() != null ||
-                detailInfoRequest.skills() != null ||
+                !detailInfoRequest.activityAreas().isEmpty() ||
+                !detailInfoRequest.projects().isEmpty() ||
+                !detailInfoRequest.skills().isEmpty() ||
                 detailInfoRequest.studio() != null;
     }
 

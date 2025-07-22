@@ -8,6 +8,7 @@ import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoW
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
 import com.picus.core.expert.adapter.in.web.mapper.UpdateExpertWebMapper;
 import com.picus.core.expert.application.port.in.ExpertInfoCommand;
+import com.picus.core.expert.application.port.in.command.ChangeStatus;
 import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoAppRequest;
 import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoAppRequest;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
@@ -80,9 +81,20 @@ class UpdateExpertInfoControllerTest extends AbstractSecurityMockSetup {
         UpdateExpertDetailInfoWebRequest request = UpdateExpertDetailInfoWebRequest.builder()
                 .activityCareer("촬영 5년 경력")
                 .activityAreas(List.of("서울", "부산"))
-                .projects(List.of(ProjectWebRequest.builder().projectName("프로젝트1").build()))
-                .skills(List.of(SkillWebRequest.builder().skillType("CAMERA").content("소니 카메라 운용").build()))
-                .studio(StudioWebRequest.builder().studioName("필름 스튜디오").employeesCount(5).build())
+                .projects(List.of(ProjectWebRequest.builder()
+                        .projectName("프로젝트1")
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .skills(List.of(SkillWebRequest.builder()
+                        .skillType("CAMERA")
+                        .content("소니 카메라 운용")
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .studio(StudioWebRequest.builder()
+                        .studioName("필름 스튜디오")
+                        .employeesCount(5)
+                        .changeStatus(ChangeStatus.NEW)
+                        .build())
                 .build();
 
         given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
@@ -113,9 +125,46 @@ class UpdateExpertInfoControllerTest extends AbstractSecurityMockSetup {
         String currentUserNo = TEST_USER_ID;
         UpdateExpertDetailInfoWebRequest request = UpdateExpertDetailInfoWebRequest.builder()
                 .activityCareer("촬영 5년 경력")
-                .projects(List.of(ProjectWebRequest.builder().projectName("프로젝트1").build()))
-                .skills(List.of(SkillWebRequest.builder().skillType("CAMERA").content("소니 카메라 운용").build()))
-                .studio(StudioWebRequest.builder().studioName("필름 스튜디오").employeesCount(5).build())
+                .projects(List.of(ProjectWebRequest.builder()
+                        .projectName("프로젝트1")
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .skills(List.of(SkillWebRequest.builder()
+                        .skillType("CAMERA")
+                        .content("소니 카메라 운용")
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .studio(StudioWebRequest.builder()
+                        .studioName("필름 스튜디오")
+                        .employeesCount(5)
+                        .changeStatus(ChangeStatus.NEW)
+                        .build())
+                .build();
+
+        given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
+                .willReturn(Mockito.mock(UpdateExpertDetailInfoAppRequest.class));
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/experts/detail_info")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("전문가의 상세정보를 수정시 Project/Skill/Studio를 수정하려고 할 때 change_status가 누락되면 400 에러가 발생한다.")
+    public void updateExpertDetailInfo_change_status_null() throws Exception {
+        // given
+        String currentUserNo = TEST_USER_ID;
+        UpdateExpertDetailInfoWebRequest request = UpdateExpertDetailInfoWebRequest.builder()
+                .activityCareer("촬영 5년 경력")
+                .activityAreas(List.of("서울", "부산"))
+                .projects(List.of(ProjectWebRequest.builder()
+                        .projectName("프로젝트1")
+                        .build()))
                 .build();
 
         given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))

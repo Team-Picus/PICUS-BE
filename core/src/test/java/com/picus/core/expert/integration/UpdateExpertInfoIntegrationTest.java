@@ -11,6 +11,7 @@ import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaReposit
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
+import com.picus.core.expert.application.port.in.command.ChangeStatus;
 import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.*;
+import static com.picus.core.expert.application.port.in.command.ChangeStatus.*;
 import static com.picus.core.expert.domain.model.vo.SkillType.EDIT;
 import static com.picus.core.expert.domain.model.vo.SkillType.LIGHT;
 import static org.assertj.core.api.Assertions.*;
@@ -152,15 +154,17 @@ public class UpdateExpertInfoIntegrationTest {
 
         userEntity.assignExpertNo(expertNo);
 
-        ProjectEntity projectEntity = givenProjectEntity(expertEntity, "수정 전 프로젝트명");
-        projectJpaRepository.save(projectEntity);
+        ProjectEntity shdUptProjectEntity = givenProjectEntity(expertEntity, "수정 전 프로젝트명");
+        ProjectEntity shddelProjectEntity = givenProjectEntity(expertEntity, "삭제 할 프로젝트명");
+        projectJpaRepository.saveAll(List.of(shdUptProjectEntity, shddelProjectEntity));
 
-        SkillEntity skillEntity = givenSkillEntity(expertEntity, SkillType.CAMERA, "수정 전 내용");
-        skillJpaRepository.save(skillEntity);
+        SkillEntity shdUptskillEntity = givenSkillEntity(expertEntity, SkillType.CAMERA, "수정 전 내용");
+        SkillEntity shdDelSkillEntity = givenSkillEntity(expertEntity, SkillType.CAMERA, "수정 전 내용");
+        skillJpaRepository.saveAll(List.of(shdUptskillEntity, shdDelSkillEntity));
 
-        StudioEntity studioEntity = givenStudioEntity(expertEntity,
-                "수정 전 스튜디오명", 5);
-        studioJpaRepository.save(studioEntity);
+        StudioEntity shdDelStudioEntity = givenStudioEntity(expertEntity,
+                "삭제될 스튜디오명", 5);
+        studioJpaRepository.save(shdDelStudioEntity);
 
         commitTestTransaction();
 
@@ -170,32 +174,45 @@ public class UpdateExpertInfoIntegrationTest {
                 .activityAreas(List.of("수정 후 지역", "새로운 지역"))
                 .projects(List.of(
                         ProjectWebRequest.builder()
-                                .projectNo(projectEntity.getProjectNo())
+                                .projectNo(shdUptProjectEntity.getProjectNo())
                                 .projectName("수정된 프로젝트명")
+                                .changeStatus(UPDATE)
                                 .build(),
                         ProjectWebRequest.builder()
                                 .projectName("새로운 프로젝트명")
                                 .startDate(LocalDateTime.of(2025, 6, 6, 12, 0))
                                 .endDate(LocalDateTime.of(2025, 6, 6, 12, 15))
+                                .changeStatus(NEW)
+                                .build(),
+                        ProjectWebRequest.builder()
+                                .projectNo(shddelProjectEntity.getProjectNo())
+                                .changeStatus(DELETE)
                                 .build()
                 ))
                 .skills(List.of(
                                 SkillWebRequest.builder()
-                                        .skillNo(skillEntity.getSkillNo())
+                                        .skillNo(shdUptskillEntity.getSkillNo())
                                         .skillType("LIGHT")
                                         .content("수정된 내용")
+                                        .changeStatus(UPDATE)
                                         .build(),
                                 SkillWebRequest.builder()
                                         .skillType("EDIT")
                                         .content("새로운 내용")
+                                        .changeStatus(NEW)
+                                        .build(),
+                                SkillWebRequest.builder()
+                                        .skillNo(shdDelSkillEntity.getSkillNo())
+                                        .changeStatus(DELETE)
                                         .build()
                         )
                 )
                 .studio(
                         StudioWebRequest.builder()
-                                .studioNo(studioEntity.getStudioNo())
+                                .studioNo(shdDelStudioEntity.getStudioNo())
                                 .studioName("수정된 이름")
                                 .employeesCount(10)
+                                .changeStatus(UPDATE)
                                 .build())
                 .build();
         HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
@@ -221,14 +238,14 @@ public class UpdateExpertInfoIntegrationTest {
 
         // Project 검증
         List<ProjectEntity> updatedProjects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo);
-        assertThat(updatedProjects).hasSize(2)
+        assertThat(updatedProjects).hasSize(2) // 2개에서 1개 추가 - 1개 삭제 , 1개 수정 = 2개
                 .extracting(
                         ProjectEntity::getProjectName
                 ).containsExactlyInAnyOrder("수정된 프로젝트명", "새로운 프로젝트명");
 
         // Skill 검증
         List<SkillEntity> updatedSkills = skillJpaRepository.findByExpertEntity_ExpertNo(expertNo);
-        assertThat(updatedSkills).hasSize(2)
+        assertThat(updatedSkills).hasSize(2) // 2개에서 1개 추가 - 1개 삭제 , 1개 수정 = 2개
                 .extracting(
                         SkillEntity::getSkillType,
                         SkillEntity::getContent
@@ -247,6 +264,112 @@ public class UpdateExpertInfoIntegrationTest {
                         StudioEntity::getEmployeesCount
                 ).contains("수정된 이름", 10);
     }
+
+    @Test
+    @DisplayName("사용자는 전문가의 스튜디오 정보를 삭제할 수 있다..")
+    public void updateExpertDetailInfo_delete_studio() throws Exception {
+        // given
+        // 테스트 데이터 셋팅
+        UserEntity userEntity = givenUserEntity();
+        userJpaRepository.save(userEntity);
+        String userNo = userEntity.getUserNo();
+
+        ExpertEntity expertEntity = givenExpertEntity("경력", List.of("지역"), userEntity);
+        expertJpaRepository.save(expertEntity);
+        String expertNo = expertEntity.getExpertNo();
+
+        userEntity.assignExpertNo(expertNo);
+
+
+        StudioEntity shdDelStudioEntity = givenStudioEntity(expertEntity,
+                "수정 전 스튜디오명", 5);
+        studioJpaRepository.save(shdDelStudioEntity);
+
+        commitTestTransaction();
+
+        // 요청 셋팅
+        UpdateExpertDetailInfoWebRequest request = builder()
+                .activityAreas(List.of("지역", "새로운 지역")) // activityAreas는 기존값을 함께 넘겨야 함
+                .studio(
+                        StudioWebRequest.builder()
+                                .studioNo(shdDelStudioEntity.getStudioNo())
+                                .changeStatus(DELETE)
+                                .build()
+                )
+                .build();
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+
+        // when
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "/api/v1/experts/detail_info",
+                HttpMethod.PATCH,
+                httpEntity,
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Optional<StudioEntity> optionalUpdatedStudio = studioJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(optionalUpdatedStudio).isNotPresent();
+    }
+
+    @Test
+    @DisplayName("사용자는 전문가의 스튜디오 정보를 추가할 수 있다..")
+    public void updateExpertDetailInfo_add_studio() throws Exception {
+        // given
+        // 테스트 데이터 셋팅
+        UserEntity userEntity = givenUserEntity();
+        userJpaRepository.save(userEntity);
+        String userNo = userEntity.getUserNo();
+
+        ExpertEntity expertEntity = givenExpertEntity("경력", List.of("지역"), userEntity);
+        expertJpaRepository.save(expertEntity);
+        String expertNo = expertEntity.getExpertNo();
+        userEntity.assignExpertNo(expertNo);
+        commitTestTransaction();
+
+        // 요청 셋팅
+        UpdateExpertDetailInfoWebRequest request = builder()
+                .activityAreas(List.of("지역", "새로운 지역")) // activityAreas는 기존값을 함께 넘겨야 함
+                .studio(
+                        StudioWebRequest.builder()
+                                .studioName("새로운 스튜디오")
+                                .employeesCount(10)
+                                .businessHours("10:00~19:00")
+                                .address("서울 강남구")
+                                .changeStatus(NEW)
+                                .build()
+                )
+                .build();
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+
+        // when
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "/api/v1/experts/detail_info",
+                HttpMethod.PATCH,
+                httpEntity,
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Optional<StudioEntity> optionalUpdatedStudio = studioJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(optionalUpdatedStudio).isPresent();
+        assertThat(optionalUpdatedStudio.get())
+                .extracting(
+                        StudioEntity::getStudioName,
+                        StudioEntity::getEmployeesCount,
+                        StudioEntity::getBusinessHours,
+                        StudioEntity::getAddress
+                ).contains(
+                        "새로운 스튜디오", 10, "10:00~19:00", "서울 강남구"
+                );
+    }
+
 
     private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
         String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");

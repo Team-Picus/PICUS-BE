@@ -1,8 +1,5 @@
 package com.picus.core.expert.application.port.in.command;
 
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.Studio;
 import lombok.Builder;
 
 import java.util.List;
@@ -16,4 +13,9 @@ public record UpdateExpertDetailInfoAppRequest(
         List<SkillCommand> skills,
         StudioCommand studio
 ) {
+    public UpdateExpertDetailInfoAppRequest {
+        activityAreas = activityAreas != null ? activityAreas : List.of();
+        projects = projects != null ? projects : List.of();
+        skills = skills != null ? skills : List.of();
+    }
 }
