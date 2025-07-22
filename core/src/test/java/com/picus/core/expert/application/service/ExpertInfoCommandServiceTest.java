@@ -276,7 +276,8 @@ class ExpertInfoCommandServiceTest {
         then(updateExpertPort).should(inOrder).updateExpertWithDetail(
                 eq(expert),
                 eq(List.of("PRJ003")),
-                eq(List.of("SKILL003"))
+                eq(List.of("SKILL003")),
+                eq(null)
         );
 
         then(updateExpertPort).shouldHaveNoMoreInteractions();

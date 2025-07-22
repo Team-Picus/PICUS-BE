@@ -99,7 +99,8 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     }
 
     @Override
-    public void updateExpertWithDetail(Expert expert, List<String> deletedProjectNos, List<String> deletedSkillNos) {
+    public void updateExpertWithDetail(Expert expert,
+                                       List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo) {
 
         ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
@@ -108,13 +109,13 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
         expertEntity.updateEntity(expert);
 
         // Project 수정
-        updateProjectEntities(expert.getProjects(), expertEntity);
+        updateProjectEntities(expert.getProjects(), expertEntity, deletedProjectNos);
 
         // Skill 수정
-        updateSkillEntities(expert.getSkills(), expertEntity);
+        updateSkillEntities(expert.getSkills(), expertEntity, deletedSkillNos);
 
         // Studio 수정
-        updateStudio(expert.getStudio(), expertEntity);
+        updateStudio(expert.getStudio(), expertEntity, deletedStudioNo);
     }
 
     /**
@@ -159,7 +160,12 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
         }
     }
 
-    private void updateProjectEntities(List<Project> projects, ExpertEntity expertEntity) {
+    private void updateProjectEntities(List<Project> projects, ExpertEntity expertEntity, List<String> deletedProjectNos) {
+
+        // 삭제
+        projectJpaRepository.deleteByProjectNoIn(deletedProjectNos);
+
+        // 추가/수정
         for (Project project : projects) {
             String projectNo = project.getProjectNo();
             if (projectNo != null) {
@@ -177,7 +183,12 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
         }
     }
 
-    private void updateSkillEntities(List<Skill> skills, ExpertEntity expertEntity) {
+    private void updateSkillEntities(List<Skill> skills, ExpertEntity expertEntity, List<String> deletedSkillNos) {
+
+        // 삭제
+        skillJpaRepository.deleteBySkillNoIn(deletedSkillNos);
+
+        // 수정/추가
         for (Skill skill : skills) {
             String skillNo = skill.getSkillNo();
             if (skillNo != null) {
@@ -194,21 +205,27 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
         }
     }
 
-    private void updateStudio(Studio studio, ExpertEntity expertEntity) {
-        if (studio != null) {
-            if (studio.getStudioNo() != null) {
-                // PK가 있다 = 수정
-                StudioEntity studioEntity = studioJpaRepository.findById(studio.getStudioNo())
-                        .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-                studioEntity.updateStudio(studio);
-            } else {
-                // PK가 없다 = 저장
-                StudioEntity studioEntity = studioPersistenceMapper.mapToEntity(studio);
-                studioEntity.assignExpert(expertEntity);
-                studioJpaRepository.save(studioEntity);
-            }
+    private void updateStudio(Studio studio, ExpertEntity expertEntity, String deletedStudioNo) {
 
+        // 삭제
+        if(deletedStudioNo != null) {
+            studioJpaRepository.deleteById(deletedStudioNo);
+        } else {
+            if (studio != null) {
+                if (studio.getStudioNo() != null) {
+                    // PK가 있다 = 수정
+                    StudioEntity studioEntity = studioJpaRepository.findById(studio.getStudioNo())
+                            .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                    studioEntity.updateStudio(studio);
+                } else {
+                    // PK가 없다 = 저장
+                    StudioEntity studioEntity = studioPersistenceMapper.mapToEntity(studio);
+                    studioEntity.assignExpert(expertEntity);
+                    studioJpaRepository.save(studioEntity);
+                }
+            }
         }
+
     }
 
 }

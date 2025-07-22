@@ -9,4 +9,6 @@ import java.util.List;
 public interface ProjectJpaRepository extends JpaRepository<ProjectEntity, String> {
 
     List<ProjectEntity> findByExpertEntity_ExpertNo(String expertNo);
+
+    void deleteByProjectNoIn(List<String> deletedProjectNos);
 }

@@ -198,16 +198,29 @@ class ExpertPersistenceAdapterTest {
     public void updateExpertWithDetail_success() throws Exception {
         // given
         UserEntity userEntity = givenUserEntity();
-        ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
+        ExpertEntity expertEntity = givenExpertEntity();
+        expertEntity.bindUserEntity(userEntity);
+        expertJpaRepository.save(expertEntity);
+
+        List<ProjectEntity> projectEntities = givenProjectEntity(expertEntity);
+        projectJpaRepository.saveAll(projectEntities);
+
+        List<SkillEntity> skillEntities = givenSkillsEntity(expertEntity);
+        skillJpaRepository.saveAll(skillEntities);
+
+        StudioEntity studioEntity = givenStudioEntity(expertEntity);
+        studioJpaRepository.save(studioEntity);
+
         String expertNo = expertEntity.getExpertNo();
+        String updatedProjectNo = projectEntities.get(0).getProjectNo();
+        String deletedProjectNo = projectEntities.get(1).getProjectNo();
+
+        String updatedSkillNo = skillEntities.get(0).getSkillNo();
+        String deletedSkillNo = skillEntities.get(1).getSkillNo();
+
+        String updatedStudioNo = studioEntity.getStudioNo();
 
         clearPersistenceContext();
-
-        // 기존 데이터 조회 (PK들 얻기 위해)
-        Expert existing = expertPersistenceAdapter.findById(expertNo).orElseThrow();
-        String existingProjectNo = existing.getProjects().get(0).getProjectNo();
-        String existingSkillNo = existing.getSkills().get(0).getSkillNo();
-        String existingStudioNo = existing.getStudio().getStudioNo();
 
         // 수정할 Expert 도메인 준비
         Expert updatedExpert = Expert.builder()
@@ -221,7 +234,7 @@ class ExpertPersistenceAdapterTest {
                 .approvalStatus(ApprovalStatus.APPROVAL)
                 .projects(List.of(
                         Project.builder() // 기존 프로젝트 수정
-                                .projectNo(existingProjectNo)
+                                .projectNo(updatedProjectNo)
                                 .projectName("수정된 프로젝트명")
                                 .startDate(LocalDateTime.of(2023, 1, 1, 10, 0))
                                 .endDate(LocalDateTime.of(2023, 12, 31, 18, 0))
@@ -234,7 +247,7 @@ class ExpertPersistenceAdapterTest {
                 ))
                 .skills(List.of(
                         Skill.builder() // 기존 스킬 수정
-                                .skillNo(existingSkillNo)
+                                .skillNo(updatedSkillNo)
                                 .skillType(SkillType.EDIT)
                                 .content("편집 가능 (Final Cut)")
                                 .build(),
@@ -244,7 +257,7 @@ class ExpertPersistenceAdapterTest {
                                 .build()
                 ))
                 .studio(Studio.builder()
-                        .studioNo(existingStudioNo)
+                        .studioNo(updatedStudioNo)
                         .studioName("업데이트된 스튜디오")
                         .employeesCount(10)
                         .businessHours("08:00~17:00")
@@ -254,7 +267,8 @@ class ExpertPersistenceAdapterTest {
                 .build();
 
         // when
-        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert, List.of(), List.of());
+        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert,
+                List.of(deletedProjectNo), List.of(deletedSkillNo), null);
         clearPersistenceContext();
 
         // then
@@ -270,13 +284,13 @@ class ExpertPersistenceAdapterTest {
 
         // Project 검증
         List<ProjectEntity> projects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo);
-        assertThat(projects).hasSize(3); // 기존 2개 + 신규 1개
+        assertThat(projects).hasSize(2); // 기존 2개 + 신규 1개 - 삭제 1개
         assertThat(projects).extracting("projectName")
                 .contains("수정된 프로젝트명", "새 프로젝트");
 
         // Skill 검증
         List<SkillEntity> skills = skillJpaRepository.findByExpertEntity_ExpertNo(expertNo);
-        assertThat(skills).hasSize(3); // 기존 2개 + 신규 1개
+        assertThat(skills).hasSize(2); // 기존 2개 + 신규 1개 - 삭제 1개
         assertThat(skills).extracting("skillType", "content")
                 .contains(
                         tuple(SkillType.EDIT, "편집 가능 (Final Cut)"),
@@ -289,6 +303,40 @@ class ExpertPersistenceAdapterTest {
         assertThat(studio.getEmployeesCount()).isEqualTo(10);
         assertThat(studio.getBusinessHours()).isEqualTo("08:00~17:00");
         assertThat(studio.getAddress()).isEqualTo("서울 용산구");
+    }
+
+    @Test
+    @DisplayName("하나의 Expert의 StudioEntity를 삭제한다.")
+    public void updateExpertWithDetail_success_studio_delete() throws Exception {
+        // given
+        UserEntity userEntity = givenUserEntity();
+        ExpertEntity expertEntity = givenExpertEntity();
+        expertEntity.bindUserEntity(userEntity);
+        expertJpaRepository.save(expertEntity);
+
+
+        StudioEntity studioEntity = givenStudioEntity(expertEntity);
+        studioJpaRepository.save(studioEntity);
+
+        String expertNo = expertEntity.getExpertNo();
+
+        String deletedStudioNo = studioEntity.getStudioNo();
+
+        clearPersistenceContext();
+
+        // 수정할 Expert 도메인 준비
+        Expert updatedExpert = Expert.builder()
+                .expertNo(expertNo)
+                .build();
+
+        // when
+        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert,
+                List.of(), List.of(), deletedStudioNo);
+        clearPersistenceContext();
+
+        // then
+        Optional<StudioEntity> studio = studioJpaRepository.findByExpertEntity_ExpertNo(expertNo);
+        assertThat(studio).isNotPresent();
     }
 
 

@@ -9,4 +9,6 @@ import java.util.List;
 public interface SkillJpaRepository extends JpaRepository<SkillEntity, String> {
 
     List<SkillEntity> findByExpertEntity_ExpertNo(String expertNo);
+
+    void deleteBySkillNoIn(List<String> deletedSkillNos);
 }

@@ -59,15 +59,32 @@ public class ExpertEntity extends BaseEntity {
     private ApprovalStatus approvalStatus;
 
     public void updateEntity(Expert newExpert) {
-        this.backgroundImageKey = newExpert.getBackgroundImageKey();
-        this.intro = newExpert.getIntro();
-        this.activityCareer = newExpert.getActivityCareer();
-        this.activityAreas = newExpert.getActivityAreas();
-        this.activityCount = newExpert.getActivityCount();
-        this.lastActivityAt = newExpert.getLastActivityAt();
-        this.portfolioLinks = newExpert.getPortfolios().stream()
-                .map(Portfolio::getLink).toList();
-        this.approvalStatus = newExpert.getApprovalStatus();
+        if (newExpert.getBackgroundImageKey() != null) {
+            this.backgroundImageKey = newExpert.getBackgroundImageKey();
+        }
+        if (newExpert.getIntro() != null) {
+            this.intro = newExpert.getIntro();
+        }
+        if (newExpert.getActivityCareer() != null) {
+            this.activityCareer = newExpert.getActivityCareer();
+        }
+        if (newExpert.getActivityAreas() != null) {
+            this.activityAreas = newExpert.getActivityAreas();
+        }
+        if (newExpert.getActivityCount() != null) {
+            this.activityCount = newExpert.getActivityCount();
+        }
+        if (newExpert.getLastActivityAt() != null) {
+            this.lastActivityAt = newExpert.getLastActivityAt();
+        }
+        if (newExpert.getPortfolios() != null) {
+            this.portfolioLinks = newExpert.getPortfolios().stream()
+                    .map(Portfolio::getLink)
+                    .toList();
+        }
+        if (newExpert.getApprovalStatus() != null) {
+            this.approvalStatus = newExpert.getApprovalStatus();
+        }
     }
 
     public void bindUserEntity(UserEntity userEntity) {

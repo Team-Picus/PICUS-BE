@@ -102,10 +102,10 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         updateSkill(detailInfoRequest, expert, deletedSkillNos);
 
         // Studio 정보 수정하기
-        updateStudio(detailInfoRequest, expert);
+        String deletedStudioNo = updateStudio(detailInfoRequest, expert);
 
         // 수정된 정보 데이터베이스에 반영하기
-        updateExpertPort.updateExpertWithDetail(expert, deletedProjectNos, deletedSkillNos);
+        updateExpertPort.updateExpertWithDetail(expert, deletedProjectNos, deletedSkillNos, deletedStudioNo);
     }
 
     /**
@@ -175,18 +175,16 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         }
     }
 
-    private void updateStudio(UpdateExpertDetailInfoAppRequest detailInfoRequest, Expert expert) {
-        StudioCommand studioCommand = detailInfoRequest.studio();
-        switch (studioCommand.changeStatus()) {
-            case ChangeStatus.NEW:
-                expert.addStudio(studioCommandAppMapper.toDomain(studioCommand));
-                break;
-            case ChangeStatus.UPDATE:
-                expert.updateStudio(studioCommandAppMapper.toDomain(studioCommand));
-                break;
-            case ChangeStatus.DELETE:
+    private String updateStudio(UpdateExpertDetailInfoAppRequest request, Expert expert) {
+        StudioCommand command = request.studio();
+        switch (command.changeStatus()) {
+            case ChangeStatus.NEW -> expert.addStudio(studioCommandAppMapper.toDomain(command));
+            case ChangeStatus.UPDATE -> expert.updateStudio(studioCommandAppMapper.toDomain(command));
+            case ChangeStatus.DELETE -> {
                 expert.deleteStudio();
-                break;
+                return command.studioNo(); // 삭제된 번호 리턴
+            }
         }
+        return null; // 삭제가 아닌 경우 null 리턴
     }
 }

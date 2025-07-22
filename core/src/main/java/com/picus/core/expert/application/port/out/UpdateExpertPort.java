@@ -17,5 +17,6 @@ public interface UpdateExpertPort {
     /**
      * Expert의 서브도메인인 Project, Skill, Studio까지 업데이트
      */
-    void updateExpertWithDetail(Expert expert, List<String> deletedProjectNos, List<String> deletedSkillNos);
+    void updateExpertWithDetail(Expert expert,
+                                List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo);
 }
