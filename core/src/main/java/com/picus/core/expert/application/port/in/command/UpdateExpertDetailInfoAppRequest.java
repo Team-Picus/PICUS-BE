@@ -12,8 +12,8 @@ public record UpdateExpertDetailInfoAppRequest(
         String currentUserNo,
         String activityCareer,
         List<String> activityAreas,
-        List<Project> projects,
-        List<Skill> skills,
-        Studio studio
+        List<ProjectCommand> projects,
+        List<SkillCommand> skills,
+        StudioCommand studio
 ) {
 }

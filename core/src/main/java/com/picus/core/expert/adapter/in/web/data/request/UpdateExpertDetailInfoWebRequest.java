@@ -1,5 +1,7 @@
 package com.picus.core.expert.adapter.in.web.data.request;
 
+import com.picus.core.expert.application.port.in.command.ChangeStatus;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -10,23 +12,25 @@ import java.util.List;
 public record UpdateExpertDetailInfoWebRequest(
         String activityCareer,
         @NotNull List<String> activityAreas,
-        List<ProjectWebRequest> projects,
-        List<SkillWebRequest> skills,
-        StudioWebRequest studio
+        @Valid List<ProjectWebRequest> projects,
+        @Valid List<SkillWebRequest> skills,
+        @Valid StudioWebRequest studio
 ) {
     @Builder
     public record ProjectWebRequest(
             String projectNo,
             String projectName,
             LocalDateTime startDate,
-            LocalDateTime endDate
+            LocalDateTime endDate,
+            @NotNull ChangeStatus changeStatus
     ) {
     }
     @Builder
     public record SkillWebRequest(
             String skillNo,
             String skillType,
-            String content
+            String content,
+            @NotNull ChangeStatus changeStatus
     ) {
     }
     @Builder
@@ -35,7 +39,8 @@ public record UpdateExpertDetailInfoWebRequest(
             String studioName,
             Integer employeesCount,
             String businessHours,
-            String address
+            String address,
+            @NotNull ChangeStatus changeStatus
     ) {
     }
 }

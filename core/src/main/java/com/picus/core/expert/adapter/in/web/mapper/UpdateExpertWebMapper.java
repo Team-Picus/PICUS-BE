@@ -5,10 +5,7 @@ import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoW
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.SkillWebRequest;
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
-import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoAppRequest;
-import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoAppRequest;
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
+import com.picus.core.expert.application.port.in.command.*;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import org.springframework.stereotype.Component;
@@ -35,40 +32,43 @@ public class UpdateExpertWebMapper {
                 .currentUserNo(currentUserNo)
                 .activityCareer(webRequest.activityCareer())
                 .activityAreas(webRequest.activityAreas())
-                .projects(toProjectDomain(webRequest.projects()))
-                .skills(toSkillDomain(webRequest.skills()))
-                .studio(toStudioDomain(webRequest.studio()))
+                .projects(toProjectCommand(webRequest.projects()))
+                .skills(toSkillCommand(webRequest.skills()))
+                .studio(toStudioCommand(webRequest.studio()))
                 .build();
     }
 
-    private List<Project> toProjectDomain(List<ProjectWebRequest> projectWebRequests) {
+    private List<ProjectCommand> toProjectCommand(List<ProjectWebRequest> projectWebRequests) {
         return projectWebRequests.stream()
-                .map(webRequest -> Project.builder()
+                .map(webRequest -> ProjectCommand.builder()
                         .projectNo(webRequest.projectNo())
                         .projectName(webRequest.projectName())
                         .startDate(webRequest.startDate())
                         .endDate(webRequest.endDate())
+                        .changeStatus(webRequest.changeStatus())
                         .build())
                 .toList();
     }
 
-    private List<Skill> toSkillDomain(List<SkillWebRequest> skillWebRequests) {
+    private List<SkillCommand> toSkillCommand(List<SkillWebRequest> skillWebRequests) {
         return skillWebRequests.stream()
-                .map(webRequest -> Skill.builder()
+                .map(webRequest -> SkillCommand.builder()
                         .skillNo(webRequest.skillNo())
                         .skillType(SkillType.valueOf(webRequest.skillType()))
                         .content(webRequest.content())
+                        .changeStatus(webRequest.changeStatus())
                         .build())
                 .toList();
     }
 
-    private Studio toStudioDomain(StudioWebRequest studioWebRequest) {
-        return Studio.builder()
+    private StudioCommand toStudioCommand(StudioWebRequest studioWebRequest) {
+        return StudioCommand.builder()
                 .studioNo(studioWebRequest.studioNo())
                 .studioName(studioWebRequest.studioName())
                 .employeesCount(studioWebRequest.employeesCount())
                 .businessHours(studioWebRequest.businessHours())
                 .address(studioWebRequest.address())
+                .changeStatus(studioWebRequest.changeStatus())
                 .build();
     }
 }

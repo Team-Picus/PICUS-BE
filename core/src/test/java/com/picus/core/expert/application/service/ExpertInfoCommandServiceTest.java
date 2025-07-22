@@ -1,7 +1,9 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoAppRequest;
-import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoAppRequest;
+import com.picus.core.expert.application.port.in.command.*;
+import com.picus.core.expert.application.port.in.mapper.ProjectCommandAppMapper;
+import com.picus.core.expert.application.port.in.mapper.SkillCommandAppMapper;
+import com.picus.core.expert.application.port.in.mapper.StudioCommandAppMapper;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
@@ -15,22 +17,36 @@ import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto
 import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InOrder;
+import org.mockito.Mock;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 class ExpertInfoCommandServiceTest {
-    
-    final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
-    final UserCommandPort userCommandPort = Mockito.mock(UserCommandPort.class);
-    final LoadExpertPort loadExpertPort = Mockito.mock(LoadExpertPort.class);
-    final UpdateExpertPort updateExpertPort = Mockito.mock(UpdateExpertPort.class);
-    final ExpertInfoCommandService expertInfoCommandService = 
-            new ExpertInfoCommandService(userQueryPort, userCommandPort, loadExpertPort, updateExpertPort);
+
+
+    UserQueryPort userQueryPort = mock(UserQueryPort.class);
+    UserCommandPort userCommandPort = mock(UserCommandPort.class);
+    LoadExpertPort loadExpertPort = mock(LoadExpertPort.class);
+    UpdateExpertPort updateExpertPort = mock(UpdateExpertPort.class);
+
+
+    ProjectCommandAppMapper projectCommandAppMapper = mock(ProjectCommandAppMapper.class);
+    SkillCommandAppMapper skillCommandAppMapper = mock(SkillCommandAppMapper.class);
+    StudioCommandAppMapper studioCommandAppMapper = mock(StudioCommandAppMapper.class);
+
+    ExpertInfoCommandService expertInfoCommandService =
+            new ExpertInfoCommandService(userQueryPort, userCommandPort, loadExpertPort, updateExpertPort,
+                    projectCommandAppMapper, skillCommandAppMapper, studioCommandAppMapper);
 
     @Test
     @DisplayName("Expert와 User 기본 정보가 모두 수정되는 경우 update 호출이 수행된다.")
@@ -48,7 +64,7 @@ class ExpertInfoCommandServiceTest {
                 .profileImageFileKey("new-profile-img")
                 .build();
 
-        Expert expert = Mockito.mock(Expert.class);
+        Expert expert = mock(Expert.class);
 
         UserWithProfileImageDto userWithProfile = UserWithProfileImageDto.builder()
                 .expertNo(expertNo)
@@ -56,8 +72,8 @@ class ExpertInfoCommandServiceTest {
                 .profileImageFileKey("old-profile-img")
                 .build();
 
-        User user = Mockito.mock(User.class);
-        Mockito.when(user.getExpertNo()).thenReturn(expertNo);
+        User user = mock(User.class);
+        when(user.getExpertNo()).thenReturn(expertNo);
 
         given(userQueryPort.findById(userNo)).willReturn(user);
         given(loadExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
@@ -72,7 +88,7 @@ class ExpertInfoCommandServiceTest {
         then(expert).should().updateBasicInfo("new-background", List.of("https://new.link"), "New intro");
         then(updateExpertPort).should().updateExpert(expert);
         then(userQueryPort).should().findUserInfoByExpertNo(expertNo);
-        then(userCommandPort).should().updateNicknameAndImageByExpertNo(Mockito.argThat(updatedDto ->
+        then(userCommandPort).should().updateNicknameAndImageByExpertNo(argThat(updatedDto ->
                 updatedDto.nickname().equals("NewNickname") &&
                         updatedDto.profileImageFileKey().equals("new-profile-img") &&
                         updatedDto.expertNo().equals(expertNo)
@@ -93,8 +109,8 @@ class ExpertInfoCommandServiceTest {
                 .intro("new intro")
                 .build();
 
-        Expert expert = Mockito.mock(Expert.class);
-        User user = Mockito.mock(User.class);
+        Expert expert = mock(Expert.class);
+        User user = mock(User.class);
 
         given(userQueryPort.findById(userNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(expertNo);
@@ -124,8 +140,8 @@ class ExpertInfoCommandServiceTest {
                 .profileImageFileKey("updated-profile-img")
                 .build();
 
-        User user = Mockito.mock(User.class);
-        Mockito.when(user.getExpertNo()).thenReturn(expertNo);
+        User user = mock(User.class);
+        when(user.getExpertNo()).thenReturn(expertNo);
 
         UserWithProfileImageDto userWithProfile = UserWithProfileImageDto.builder()
                 .expertNo(expertNo)
@@ -142,7 +158,7 @@ class ExpertInfoCommandServiceTest {
         // then
         then(userQueryPort).should().findById(userNo);
         then(userQueryPort).should().findUserInfoByExpertNo(expertNo);
-        then(userCommandPort).should().updateNicknameAndImageByExpertNo(Mockito.argThat(dto ->
+        then(userCommandPort).should().updateNicknameAndImageByExpertNo(argThat(dto ->
                 dto.nickname().equals("UpdatedNickname") &&
                         dto.profileImageFileKey().equals("updated-profile-img") &&
                         dto.expertNo().equals(expertNo)
@@ -175,40 +191,125 @@ class ExpertInfoCommandServiceTest {
     @DisplayName("Expert 상세 정보가 모두 수정되는 경우 updateExpertWithDetail이 호출된다.")
     void updateExpertDetailInfo_success() {
         // given
-        String userNo = "USER001";
+        String userNo = "USR001";
         String expertNo = "EXP001";
 
-        // UpdateExpertDetailInfoAppRequest 생성
+        // --- 요청 DTO 구성
+        ProjectCommand projectNew = createProjectCommand(null, "추가된 프로젝트",
+                LocalDateTime.of(2024, 1, 1, 10, 0),
+                LocalDateTime.of(2024, 1, 1, 11, 0), ChangeStatus.NEW);
+        ProjectCommand projectUpdate = createProjectCommand("PRJ002", "수정된 프로젝트",
+                LocalDateTime.of(2023, 12, 1, 10, 0),
+                LocalDateTime.of(2023, 12, 1, 11, 0), ChangeStatus.UPDATE);
+        ProjectCommand projectDelete = createProjectCommand("PRJ003", "삭제된 프로젝트",
+                LocalDateTime.of(2022, 11, 1, 10, 0),
+                LocalDateTime.of(2022, 11, 1, 11, 0), ChangeStatus.DELETE);
+
+        SkillCommand skillNew = createSkillCommand(null, SkillType.LIGHT, "조명 가능", ChangeStatus.NEW);
+        SkillCommand skillUpdate = createSkillCommand("SKILL002", SkillType.CAMERA, "카메라 전문가", ChangeStatus.UPDATE);
+        SkillCommand skillDelete = createSkillCommand("SKILL003", SkillType.EDIT, "편집 불필요", ChangeStatus.DELETE);
+
+        StudioCommand studioNew = createStudioCommand(null, "스튜디오 신규", 2, "09:00~18:00", "서울시 강남구", ChangeStatus.NEW);
+
         UpdateExpertDetailInfoAppRequest request = UpdateExpertDetailInfoAppRequest.builder()
                 .currentUserNo(userNo)
-                .activityCareer("촬영 5년 경력")
+                .activityCareer("5년 경력")
                 .activityAreas(List.of("서울", "부산"))
-                .projects(List.of(Project.builder().projectName("프로젝트1").build()))
-                .skills(List.of(Skill.builder().skillType(SkillType.CAMERA).content("소니 카메라 운용").build()))
-                .studio(Studio.builder().studioName("필름 스튜디오").employeesCount(5).build())
+                .projects(List.of(projectNew, projectUpdate, projectDelete))
+                .skills(List.of(skillNew, skillUpdate, skillDelete))
+                .studio(studioNew)
                 .build();
 
-        Expert expert = Mockito.mock(Expert.class);
-        User user = Mockito.mock(User.class);
+        // --- Mock 정의
+        User user = mock(User.class);
+        given(userQueryPort.findById(userNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(expertNo);
 
-        given(userQueryPort.findById(userNo)).willReturn(user);
+        Expert expert = mock(Expert.class);
         given(loadExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
+
+        Project pjNew = mock(Project.class);
+        Project pjUpdate = mock(Project.class);
+        given(projectCommandAppMapper.toDomain(projectNew)).willReturn(pjNew);
+        given(projectCommandAppMapper.toDomain(projectUpdate)).willReturn(pjUpdate);
+
+        Skill skNew = mock(Skill.class);
+        Skill skUpdate = mock(Skill.class);
+        given(skillCommandAppMapper.toDomain(skillNew)).willReturn(skNew);
+        given(skillCommandAppMapper.toDomain(skillUpdate)).willReturn(skUpdate);
+
+        Studio studio = mock(Studio.class);
+        given(studioCommandAppMapper.toDomain(studioNew)).willReturn(studio);
 
         // when
         expertInfoCommandService.updateExpertDetailInfo(request);
 
         // then
-        then(userQueryPort).should().findById(userNo);
-        then(loadExpertPort).should().findById(expertNo);
-        then(expert).should().updateDetailInfo(
-                request.activityCareer(),
-                request.activityAreas(),
-                request.projects(),
-                request.skills(),
-                request.studio()
+        InOrder inOrder = inOrder(
+                userQueryPort, user,
+                loadExpertPort, expert,
+                projectCommandAppMapper, expert,
+                skillCommandAppMapper, expert,
+                studioCommandAppMapper, expert,
+                updateExpertPort
         );
-        then(updateExpertPort).should().updateExpertWithDetail(expert);
+
+        then(userQueryPort).should(inOrder).findById(userNo);
+        then(user).should(inOrder).getExpertNo();
+        then(loadExpertPort).should(inOrder).findById(expertNo);
+
+        then(projectCommandAppMapper).should(inOrder).toDomain(projectNew);
+        then(expert).should(inOrder).addProject(pjNew);
+        then(projectCommandAppMapper).should(inOrder).toDomain(projectUpdate);
+        then(expert).should(inOrder).updateProject(pjUpdate);
+        then(expert).should(inOrder).deleteProject("PRJ003");
+
+        then(skillCommandAppMapper).should(inOrder).toDomain(skillNew);
+        then(expert).should(inOrder).addSkill(skNew);
+        then(skillCommandAppMapper).should(inOrder).toDomain(skillUpdate);
+        then(expert).should(inOrder).updateSkill(skUpdate);
+        then(expert).should(inOrder).deleteSkill("SKILL003");
+
+        then(studioCommandAppMapper).should(inOrder).toDomain(studioNew);
+        then(expert).should(inOrder).addStudio(studio);
+
+        then(updateExpertPort).should(inOrder).updateExpertWithDetail(
+                eq(expert),
+                eq(List.of("PRJ003")),
+                eq(List.of("SKILL003"))
+        );
+
+        then(updateExpertPort).shouldHaveNoMoreInteractions();
+    }
+
+    private ProjectCommand createProjectCommand(String projectNo, String projectName, LocalDateTime startDate, LocalDateTime endDate, ChangeStatus changeStatus) {
+        return ProjectCommand.builder()
+                .projectNo(projectNo)
+                .projectName(projectName)
+                .startDate(startDate)
+                .endDate(endDate)
+                .changeStatus(changeStatus)
+                .build();
+    }
+
+    private SkillCommand createSkillCommand(String skillNo, SkillType skillType, String content, ChangeStatus changeStatus) {
+        return SkillCommand.builder()
+                .skillNo(skillNo)
+                .skillType(skillType)
+                .content(content)
+                .changeStatus(changeStatus)
+                .build();
+    }
+
+    private StudioCommand createStudioCommand(String studioNo, String studioName, int employeesCount, String businessHours, String address, ChangeStatus changeStatus) {
+        return StudioCommand.builder()
+                .studioNo(studioNo)
+                .studioName(studioName)
+                .employeesCount(employeesCount)
+                .businessHours(businessHours)
+                .address(address)
+                .changeStatus(changeStatus)
+                .build();
     }
 
     @Test

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Getter
@@ -134,8 +135,7 @@ public class Expert {
     }
 
     public void updateDetailInfo(
-            String activityCareer, List<String> activityAreas, List<Project> projects,
-            List<Skill> skills, Studio studio) {
+            String activityCareer, List<String> activityAreas) {
         // activityCareer 업데이트
         if (activityCareer != null)
             this.activityCareer = activityCareer;
@@ -143,83 +143,96 @@ public class Expert {
         // activityAreas 업데이트 (덮어 씌움)
         if (activityAreas != null)
             this.activityAreas = activityAreas;
-
-        // projects 업데이트
-        if (projects != null) {
-            updateProjects(projects);
-        }
-
-        // skills 업데이트
-        if (skills != null) {
-            updateSkills(skills);
-        }
-
-        // studio 업데이트
-        if (studio != null) {
-            updateStudio(studio);
-        }
     }
 
-    private void updateProjects(List<Project> projects) {
-        // 이뮤터블 리스트 방어 (불변 객체가 들어와도 안전하게)
+    // 프로젝트 변경
+    public void addProject(Project newProject) {
+        // 이뮤터블 리스트 방어
         if (!(this.projects instanceof ArrayList)) {
             this.projects = new ArrayList<>(this.projects);
         }
-        for (Project incoming : projects) {
-            if (incoming.getProjectNo() != null) {
-                // 수정: 기존 projectNo 찾기
-                Optional<Project> target = this.projects.stream()
-                        .filter(p -> p.getProjectNo().equals(incoming.getProjectNo()))
-                        .findFirst();
+        this.projects.add(newProject);
+    }
 
-                target.ifPresent(existing -> {
-                    existing.updateProject(
-                            incoming.getProjectName(),
-                            incoming.getStartDate(),
-                            incoming.getEndDate()
+    public void updateProject(Project updatedProject) {
+        // 이뮤터블 리스트 방어
+        if (!(this.projects instanceof ArrayList)) {
+            this.projects = new ArrayList<>(this.projects);
+        }
+        if (updatedProject.getProjectNo() != null) {
+            for (Project project : this.projects) {
+                if (updatedProject.getProjectNo().equals(project.getProjectNo())) {
+                    project.updateProject(
+                            updatedProject.getProjectName(), updatedProject.getStartDate(), updatedProject.getEndDate()
                     );
-                });
-            } else {
-                // 추가
-                this.projects.add(incoming);
+                    break;
+                }
             }
         }
     }
 
-    private void updateSkills(List<Skill> skills) {
+    public void deleteProject(String projectNo) {
+        // 이뮤터블 리스트 방어
+        if (!(this.projects instanceof ArrayList)) {
+            this.projects = new ArrayList<>(this.projects);
+        }
+        if (projectNo != null) {
+            this.projects.removeIf(project ->
+                    projectNo.equals(project.getProjectNo()));
+        }
+    }
+
+    // Skill 변경
+    public void addSkill(Skill newSkill) {
+        // 이뮤터블 리스트 방어
         if (!(this.skills instanceof ArrayList)) {
             this.skills = new ArrayList<>(this.skills);
         }
-        for (Skill incoming : skills) {
-            if (incoming.getSkillNo() != null) {
-                // 수정: 기존 skillNo 찾기
-                Optional<Skill> target = this.skills.stream()
-                        .filter(s -> s.getSkillNo().equals(incoming.getSkillNo()))
-                        .findFirst();
+        this.skills.add(newSkill);
+    }
 
-                target.ifPresent(existing -> {
-                    existing.updateSkill(incoming.getSkillType(), incoming.getContent());
-                });
-            } else {
-                // 추가
-                this.skills.add(incoming);
+    public void updateSkill(Skill updatedSkill) {
+        if (!(this.skills instanceof ArrayList)) {
+            this.skills = new ArrayList<>(this.skills);
+        }
+        if (updatedSkill.getSkillNo() != null) {
+            for (Skill skill : this.skills) {
+                if (updatedSkill.getSkillNo().equals(skill.getSkillNo())) {
+                    skill.updateSkill(updatedSkill.getSkillType(), updatedSkill.getContent());
+                    break;
+                }
             }
         }
     }
 
-    private void updateStudio(Studio studio) {
-        if (this.studio == null) {
-            this.studio = Studio.builder()
-                    .studioName(studio.getStudioName())
-                    .employeesCount(studio.getEmployeesCount())
-                    .address(studio.getAddress())
-                    .build();
-        } else {
-            this.studio.updateStudio(
-                    studio.getStudioName(),
-                    studio.getEmployeesCount(),
-                    studio.getBusinessHours(),
-                    studio.getAddress());
+    public void deleteSkill(String skillNo) {
+        // 이뮤터블 리스트 방어
+        if (!(this.skills instanceof ArrayList)) {
+            this.skills = new ArrayList<>(this.skills);
         }
+        if (skillNo != null) {
+            this.skills.removeIf(skill ->
+                    skillNo.equals(skill.getSkillNo()));
+        }
+    }
+
+    // Studio 변경
+    public void addStudio(Studio newStudio) {
+        if (newStudio != null)
+            this.studio = newStudio;
+    }
+    public void updateStudio(Studio updatedStudio) {
+        if (updatedStudio != null && this.studio != null) {
+            if (Objects.equals(updatedStudio.getStudioNo(), this.studio.getStudioNo())) {
+                this.studio.updateStudio(
+                        updatedStudio.getStudioName(),
+                        updatedStudio.getEmployeesCount(),
+                        updatedStudio.getBusinessHours(),
+                        updatedStudio.getAddress());
+            }
+        }
+    }
+    public void deleteStudio() {
+        this.studio = null;
     }
 }

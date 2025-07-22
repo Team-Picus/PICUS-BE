@@ -99,7 +99,7 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     }
 
     @Override
-    public void updateExpertWithDetail(Expert expert) {
+    public void updateExpertWithDetail(Expert expert, List<String> deletedProjectNos, List<String> deletedSkillNos) {
 
         ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));

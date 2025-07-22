@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 class ExpertTest {
 
@@ -108,108 +109,19 @@ class ExpertTest {
         // given
         Expert expert = createExpert(
                 "초기 경력",
-                List.of("서울", "부산"),
-                List.of(Project.builder()
-                        .projectNo("P1")
-                        .projectName("기존 프로젝트")
-                        .startDate(LocalDateTime.of(2024, 1, 1, 0, 0))
-                        .endDate(LocalDateTime.of(2024, 6, 1, 0, 0))
-                        .build()),
-                List.of(Skill.builder()
-                        .skillNo("S1")
-                        .skillType(SkillType.CAMERA)
-                        .content("Sony A7S3")
-                        .build()),
-                Studio.builder()
-                        .studioNo("ST1")
-                        .studioName("기존 스튜디오")
-                        .employeesCount(5)
-                        .businessHours("09:00~18:00")
-                        .address("서울시 강남구")
-                        .build()
+                List.of("서울", "부산")
         );
 
         // when
         expert.updateDetailInfo(
                 "업데이트된 경력",
-                List.of("대전", "광주"),
-                List.of(
-                        Project.builder()
-                                .projectNo("P1")
-                                .projectName("수정된 프로젝트")
-                                .startDate(LocalDateTime.of(2024, 1, 10, 0, 0))
-                                .endDate(LocalDateTime.of(2024, 6, 10, 0, 0))
-                                .build(),
-                        Project.builder()
-                                .projectName("신규 프로젝트")
-                                .startDate(LocalDateTime.of(2025, 1, 1, 0, 0))
-                                .endDate(LocalDateTime.of(2025, 6, 1, 0, 0))
-                                .build()
-                ),
-                List.of(
-                        Skill.builder()
-                                .skillNo("S1")
-                                .content("Canon R5")
-                                .build(),
-                        Skill.builder()
-                                .skillType(SkillType.EDIT)
-                                .content("Premiere Pro")
-                                .build()
-                ),
-                Studio.builder()
-                        .studioNo("ST1")
-                        .studioName("업데이트된 스튜디오")
-                        .employeesCount(8)
-                        .businessHours("10:00~19:00")
-                        .address("서울시 서초구")
-                        .build()
+                List.of("대전", "광주")
         );
 
         // then
         assertThat(expert.getActivityCareer()).isEqualTo("업데이트된 경력");
 
         assertThat(expert.getActivityAreas()).containsExactly("대전", "광주");
-
-        assertThat(expert.getProjects()).hasSize(2);
-        assertThat(expert.getProjects())
-                .anySatisfy(p -> {
-                    if ("P1".equals(p.getProjectNo())) {
-                        assertThat(p.getProjectName()).isEqualTo("수정된 프로젝트");
-                        assertThat(p.getStartDate()).isEqualTo(LocalDateTime.of(2024, 1, 10, 0, 0));
-                        assertThat(p.getEndDate()).isEqualTo(LocalDateTime.of(2024, 6, 10, 0, 0));
-                    }
-                });
-        assertThat(expert.getProjects())
-                .anySatisfy(p -> {
-                    if (p.getProjectNo() == null) {
-                        assertThat(p.getProjectName()).isEqualTo("신규 프로젝트");
-                        assertThat(p.getStartDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 0, 0));
-                        assertThat(p.getEndDate()).isEqualTo(LocalDateTime.of(2025, 6, 1, 0, 0));
-                    }
-                });
-
-        assertThat(expert.getSkills()).hasSize(2);
-        assertThat(expert.getSkills())
-                .anySatisfy(s -> {
-                    if ("S1".equals(s.getSkillNo())) {
-                        assertThat(s.getContent()).isEqualTo("Canon R5");
-                        assertThat(s.getSkillType()).isEqualTo(SkillType.CAMERA);
-                    }
-                });
-        assertThat(expert.getSkills())
-                .anySatisfy(s -> {
-                    if (s.getSkillNo() == null) {
-                        assertThat(s.getContent()).isEqualTo("Premiere Pro");
-                        assertThat(s.getSkillType()).isEqualTo(SkillType.EDIT);
-                    }
-                });
-
-        Studio updatedStudio = expert.getStudio();
-        assertThat(updatedStudio.getStudioNo()).isEqualTo("ST1");
-        assertThat(updatedStudio.getStudioName()).isEqualTo("업데이트된 스튜디오");
-        assertThat(updatedStudio.getEmployeesCount()).isEqualTo(8);
-        assertThat(updatedStudio.getBusinessHours()).isEqualTo("10:00~19:00");
-        assertThat(updatedStudio.getAddress()).isEqualTo("서울시 서초구");
     }
 
     @Test
@@ -218,53 +130,233 @@ class ExpertTest {
         // given
         Expert expert = createExpert(
                 "기존 경력",
-                List.of("서울", "부산"),
-                List.of(Project.builder()
-                        .projectNo("P1")
-                        .projectName("기존 프로젝트")
-                        .startDate(LocalDateTime.of(2023, 1, 1, 0, 0))
-                        .endDate(LocalDateTime.of(2023, 6, 1, 0, 0))
-                        .build()),
-                List.of(Skill.builder()
-                        .skillNo("S1")
-                        .skillType(SkillType.LIGHT)
-                        .content("LED 라이트")
-                        .build()),
-                Studio.builder()
-                        .studioNo("ST1")
-                        .studioName("기존 스튜디오")
-                        .employeesCount(3)
-                        .businessHours("10:00~17:00")
-                        .address("서울시 마포구")
-                        .build()
+                List.of("서울", "부산")
         );
 
         // when: 모든 인자가 null
-        expert.updateDetailInfo(null, null, null, null, null);
+        expert.updateDetailInfo(null, null);
 
         // then: 아무것도 바뀌면 안 됨
         assertThat(expert.getActivityCareer()).isEqualTo("기존 경력");
         assertThat(expert.getActivityAreas()).containsExactly("서울", "부산");
+    }
 
-        assertThat(expert.getProjects()).hasSize(1);
-        Project p = expert.getProjects().get(0);
-        assertThat(p.getProjectNo()).isEqualTo("P1");
-        assertThat(p.getProjectName()).isEqualTo("기존 프로젝트");
-        assertThat(p.getStartDate()).isEqualTo(LocalDateTime.of(2023, 1, 1, 0, 0));
-        assertThat(p.getEndDate()).isEqualTo(LocalDateTime.of(2023, 6, 1, 0, 0));
+    @Test
+    @DisplayName("전문가의 Project를 추가한다.")
+    public void addProject() throws Exception {
+        // given
+        Expert expert = Expert.builder().projects(List.of(
+                        createProject("pj_no1", "pj_name1",
+                                LocalDateTime.of(2025, 7, 20, 10, 10),
+                                LocalDateTime.of(2025, 7, 20, 10, 20))
+                ))
+                .build();
 
-        assertThat(expert.getSkills()).hasSize(1);
-        Skill s = expert.getSkills().get(0);
-        assertThat(s.getSkillNo()).isEqualTo("S1");
-        assertThat(s.getSkillType()).isEqualTo(SkillType.LIGHT);
-        assertThat(s.getContent()).isEqualTo("LED 라이트");
+        Project newProject = createProject("pj_no2", "pj_name2",
+                LocalDateTime.of(2023, 10, 10, 11, 10),
+                LocalDateTime.of(2023, 10, 15, 12, 20));
 
+        // when
+        expert.addProject(newProject);
+
+        // then
+        List<Project> projects = expert.getProjects();
+
+        assertThat(projects).hasSize(2)
+                .extracting(
+                        Project::getProjectNo,
+                        Project::getProjectName,
+                        Project::getStartDate,
+                        Project::getEndDate
+                ).containsExactlyInAnyOrder(
+                        tuple("pj_no1", "pj_name1",
+                                LocalDateTime.of(2025, 7, 20, 10, 10),
+                                LocalDateTime.of(2025, 7, 20, 10, 20)),
+                        tuple("pj_no2", "pj_name2",
+                                LocalDateTime.of(2023, 10, 10, 11, 10),
+                                LocalDateTime.of(2023, 10, 15, 12, 20))
+                );
+    }
+
+    @Test
+    @DisplayName("기존 프로젝트 정보를 업데이트한다.")
+    void updateProject() {
+        // given
+        Expert expert = Expert.builder()
+                .projects(List.of(
+                                createProject("PRJ-001", "이전 프로젝트",
+                                        LocalDateTime.of(2024, 1, 1, 0, 0),
+                                        LocalDateTime.of(2024, 12, 31, 0, 0)
+                                )
+                        )
+                )
+                .build();
+
+        Project updatedProject = createProject("PRJ-001", "변경된 프로젝트명",
+                LocalDateTime.of(2025, 1, 1, 0, 0),
+                LocalDateTime.of(2025, 12, 31, 0, 0)
+        );
+
+        // when
+        expert.updateProject(updatedProject);
+
+        // then
+        List<Project> projects = expert.getProjects();
+        assertThat(projects).hasSize(1)
+                .extracting(
+                        Project::getProjectNo,
+                        Project::getProjectName,
+                        Project::getStartDate,
+                        Project::getEndDate
+                ).containsExactlyInAnyOrder(
+                        tuple("PRJ-001", "변경된 프로젝트명",
+                                LocalDateTime.of(2025, 1, 1, 0, 0),
+                                LocalDateTime.of(2025, 12, 31, 0, 0))
+                );
+    }
+
+    @Test
+    @DisplayName("기존 프로젝트를 삭제한다.")
+    void deleteProject() {
+        // given
+
+        Expert expert = Expert.builder()
+                .projects(List.of(
+                                createProject("PRJ-001", "이전 프로젝트",
+                                        LocalDateTime.of(2024, 1, 1, 0, 0),
+                                        LocalDateTime.of(2024, 12, 31, 0, 0)
+                                )
+                        )
+                )
+                .build();
+
+        // when
+        expert.deleteProject("PRJ-001");
+
+        // then
+        List<Project> projects = expert.getProjects();
+        assertThat(projects).isEmpty();
+    }
+
+    @Test
+    @DisplayName("새로운 스킬을 추가한다.")
+    public void addSkill() throws Exception {
+        // given
+        Expert expert = Expert.builder().skills(
+                List.of(createSkill("skill1", SkillType.EDIT, "content"))
+        ).build();
+
+        Skill newSkill = createSkill(null, SkillType.CAMERA, "new_content");
+
+        // when
+        expert.addSkill(newSkill);
+
+        // then
+        List<Skill> skills = expert.getSkills();
+
+        assertThat(skills).hasSize(2)
+                .extracting(
+                        Skill::getSkillType,
+                        Skill::getContent
+                ).containsExactlyInAnyOrder(
+                        tuple(SkillType.EDIT, "content"),
+                        tuple(SkillType.CAMERA, "new_content")
+                );
+    }
+
+    @Test
+    @DisplayName("기존 스킬 정보를 업데이트한다.")
+    void updateSkill() {
+        // given
+        Expert expert = Expert.builder()
+                .skills(List.of(
+                        createSkill("SKILL-001", SkillType.CAMERA, "기존 설명")
+                )).build();
+
+        Skill updatedSkill = createSkill("SKILL-001", SkillType.LIGHT, "업데이트된 설명");
+
+        // when
+        expert.updateSkill(updatedSkill);
+
+        // then
+        assertThat(expert.getSkills()).hasSize(1)
+                .extracting(
+                        Skill::getSkillType,
+                        Skill::getContent
+                ).containsExactlyInAnyOrder(
+                        tuple(SkillType.LIGHT, "업데이트된 설명")
+                );
+    }
+
+    @Test
+    @DisplayName("기존 스킬을 삭제한다.")
+    public void deleteSkill() throws Exception {
+        // given
+        Expert expert = Expert.builder()
+                .skills(List.of(
+                        createSkill("SKILL-001", SkillType.CAMERA, "기존 설명")
+                )).build();
+
+
+        // when
+        expert.deleteSkill("SKILL-001");
+
+        // then
+        assertThat(expert.getSkills()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("스튜디오를 추가한다.")
+    public void addStudio() throws Exception {
+        // given
+        Expert expert = Expert.builder().studio(null).build();
+
+        Studio newStudio = createStudio(null, "픽어스 스튜디오", 5,
+                "10:00~19:00", "서울 강남구");
+
+        // when
+        expert.addStudio(newStudio);
+
+        // then
         Studio studio = expert.getStudio();
-        assertThat(studio.getStudioNo()).isEqualTo("ST1");
-        assertThat(studio.getStudioName()).isEqualTo("기존 스튜디오");
-        assertThat(studio.getEmployeesCount()).isEqualTo(3);
-        assertThat(studio.getBusinessHours()).isEqualTo("10:00~17:00");
-        assertThat(studio.getAddress()).isEqualTo("서울시 마포구");
+        assertThat(studio).isNotNull()
+                .extracting(
+                        Studio::getStudioName,
+                        Studio::getEmployeesCount,
+                        Studio::getBusinessHours,
+                        Studio::getAddress
+                ).containsExactlyInAnyOrder(
+                        "픽어스 스튜디오", 5, "10:00~19:00", "서울 강남구"
+                );
+    }
+
+    @Test
+    @DisplayName("스튜디오를 수정한다.")
+    public void updateStudio() throws Exception {
+        // given
+        Expert expert = Expert.builder().studio(
+                createStudio("ST-001", "기존 스튜디오", 3,
+                        "09:00~18:00", "서울시 강남구")
+        ).build();
+
+        Studio updatedStudio = createStudio("ST-001", "업데이트된 스튜디오", 5,
+                "10:00~19:00", "서울시 서초구");
+
+        // when
+        expert.updateStudio(updatedStudio);
+
+        // then
+        Studio studio = expert.getStudio();
+        assertThat(studio).isNotNull()
+                .extracting(
+                        Studio::getStudioNo,
+                        Studio::getStudioName,
+                        Studio::getEmployeesCount,
+                        Studio::getBusinessHours,
+                        Studio::getAddress
+                ).containsExactlyInAnyOrder(
+                        "ST-001", "업데이트된 스튜디오", 5, "10:00~19:00", "서울시 서초구"
+                );
     }
 
     private Expert createExpert(LocalDateTime createdAt) {
@@ -289,17 +381,38 @@ class ExpertTest {
 
     private Expert createExpert(
             String activityCareer,
-            List<String> activityAreas,
-            List<Project> projects,
-            List<Skill> skills,
-            Studio studio
+            List<String> activityAreas
     ) {
         return Expert.builder()
                 .activityCareer(activityCareer)
                 .activityAreas(new ArrayList<>(activityAreas))
-                .projects(new ArrayList<>(projects))
-                .skills(new ArrayList<>(skills))
-                .studio(studio)
+                .build();
+    }
+
+    private Project createProject(String projectNo, String projectName, LocalDateTime startDate, LocalDateTime endDate) {
+        return Project.builder()
+                .projectNo(projectNo)
+                .projectName(projectName)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+    }
+
+    private Skill createSkill(String skillNo, SkillType skillType, String content) {
+        return Skill.builder()
+                .skillNo(skillNo)
+                .skillType(skillType)
+                .content(content)
+                .build();
+    }
+
+    private Studio createStudio(String studioNo, String studioName, int employeesCount, String businessHours, String address) {
+        return Studio.builder()
+                .studioNo(studioNo)
+                .studioName(studioName)
+                .employeesCount(employeesCount)
+                .businessHours(businessHours)
+                .address(address)
                 .build();
     }
 }

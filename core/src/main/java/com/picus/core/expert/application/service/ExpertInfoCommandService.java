@@ -1,8 +1,10 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.ExpertInfoCommand;
-import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoAppRequest;
-import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoAppRequest;
+import com.picus.core.expert.application.port.in.command.*;
+import com.picus.core.expert.application.port.in.mapper.ProjectCommandAppMapper;
+import com.picus.core.expert.application.port.in.mapper.SkillCommandAppMapper;
+import com.picus.core.expert.application.port.in.mapper.StudioCommandAppMapper;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
@@ -14,6 +16,9 @@ import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
@@ -27,10 +32,14 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
     private final LoadExpertPort loadExpertPort;
     private final UpdateExpertPort updateExpertPort;
 
+    private final ProjectCommandAppMapper projectCommandAppMapper;
+    private final SkillCommandAppMapper skillCommandAppMapper;
+    private final StudioCommandAppMapper studioCommandAppMapper;
+
     @Override
     public void updateExpertBasicInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
 
-        if(!shouldUpdate(basicInfoRequest))
+        if (!shouldUpdate(basicInfoRequest))
             return;
 
         String expertNo = getExpertNo(basicInfoRequest.currentUserNo());
@@ -71,7 +80,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
     public void updateExpertDetailInfo(UpdateExpertDetailInfoAppRequest detailInfoRequest) {
 
         // 수정할 필요가 있는지 확인
-        if(!shouldUpdateExpertDetailInfo(detailInfoRequest))
+        if (!shouldUpdateExpertDetailInfo(detailInfoRequest))
             return;
 
         // 전문가 인덱스 가져오기
@@ -82,18 +91,26 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 전문가 정보 수정하기
-        expert.updateDetailInfo(
-                detailInfoRequest.activityCareer(),
-                detailInfoRequest.activityAreas(),
-                detailInfoRequest.projects(),
-                detailInfoRequest.skills(),
-                detailInfoRequest.studio()
-        );
+        expert.updateDetailInfo(detailInfoRequest.activityCareer(), detailInfoRequest.activityAreas());
+
+        // 프로젝트 정보 수정하기
+        List<String> deletedProjectNos = new ArrayList<>();
+        updateProject(detailInfoRequest, expert, deletedProjectNos);
+
+        // Skill 정보 수정하기
+        List<String> deletedSkillNos = new ArrayList<>();
+        updateSkill(detailInfoRequest, expert, deletedSkillNos);
+
+        // Studio 정보 수정하기
+        updateStudio(detailInfoRequest, expert);
 
         // 수정된 정보 데이터베이스에 반영하기
-        updateExpertPort.updateExpertWithDetail(expert);
+        updateExpertPort.updateExpertWithDetail(expert, deletedProjectNos, deletedSkillNos);
     }
 
+    /**
+     * private 메서드
+     */
     private String getExpertNo(String userNo) {
         // ExpertNo를 알기 위해 현재 User 로드
         User currentUser = userQueryPort.findById(userNo);
@@ -109,6 +126,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                 basicInfoRequest.link() != null ||
                 basicInfoRequest.intro() != null;
     }
+
     private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
         return basicInfoRequest.profileImageFileKey() != null || basicInfoRequest.nickname() != null;
     }
@@ -119,5 +137,56 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                 detailInfoRequest.projects() != null ||
                 detailInfoRequest.skills() != null ||
                 detailInfoRequest.studio() != null;
+    }
+
+    private void updateProject(UpdateExpertDetailInfoAppRequest detailInfoRequest, Expert expert, List<String> deletedProjectNos) {
+        List<ProjectCommand> projectCommands = detailInfoRequest.projects();
+        for (ProjectCommand command : projectCommands) {
+            switch (command.changeStatus()) {
+                case ChangeStatus.NEW:
+                    expert.addProject(projectCommandAppMapper.toDomain(command));
+                    break;
+                case ChangeStatus.UPDATE:
+                    expert.updateProject(projectCommandAppMapper.toDomain(command));
+                    break;
+                case ChangeStatus.DELETE:
+                    expert.deleteProject(command.projectNo());
+                    deletedProjectNos.add(command.projectNo());
+                    break;
+            }
+        }
+    }
+
+    private void updateSkill(UpdateExpertDetailInfoAppRequest detailInfoRequest, Expert expert, List<String> deletedSkillNos) {
+        List<SkillCommand> skillCommands = detailInfoRequest.skills();
+        for (SkillCommand command : skillCommands) {
+            switch (command.changeStatus()) {
+                case ChangeStatus.NEW:
+                    expert.addSkill(skillCommandAppMapper.toDomain(command));
+                    break;
+                case ChangeStatus.UPDATE:
+                    expert.updateSkill(skillCommandAppMapper.toDomain(command));
+                    break;
+                case ChangeStatus.DELETE:
+                    expert.deleteSkill(command.skillNo());
+                    deletedSkillNos.add(command.skillNo());
+                    break;
+            }
+        }
+    }
+
+    private void updateStudio(UpdateExpertDetailInfoAppRequest detailInfoRequest, Expert expert) {
+        StudioCommand studioCommand = detailInfoRequest.studio();
+        switch (studioCommand.changeStatus()) {
+            case ChangeStatus.NEW:
+                expert.addStudio(studioCommandAppMapper.toDomain(studioCommand));
+                break;
+            case ChangeStatus.UPDATE:
+                expert.updateStudio(studioCommandAppMapper.toDomain(studioCommand));
+                break;
+            case ChangeStatus.DELETE:
+                expert.deleteStudio();
+                break;
+        }
     }
 }

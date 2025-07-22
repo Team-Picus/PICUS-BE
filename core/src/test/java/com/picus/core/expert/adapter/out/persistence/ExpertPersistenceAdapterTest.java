@@ -254,7 +254,7 @@ class ExpertPersistenceAdapterTest {
                 .build();
 
         // when
-        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert);
+        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert, List.of(), List.of());
         clearPersistenceContext();
 
         // then

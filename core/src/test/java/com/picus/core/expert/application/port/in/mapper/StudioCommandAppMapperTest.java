@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class StudioAppMapperTest {
+class StudioCommandAppMapperTest {
 
-    private final StudioAppMapper mapper = new StudioAppMapper();
+    private final StudioCommandAppMapper mapper = new StudioCommandAppMapper();
 
     @Test
     @DisplayName("StudioCommand를 Studio 도메인으로 매핑한다.")
