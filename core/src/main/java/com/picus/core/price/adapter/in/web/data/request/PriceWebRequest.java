@@ -4,6 +4,7 @@ import com.picus.core.price.application.port.in.command.ChangeStatus;
 import com.picus.core.price.application.port.in.command.OptionCommand;
 import com.picus.core.price.application.port.in.command.PackageCommand;
 import com.picus.core.price.application.port.in.command.PriceReferenceImageCommand;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -13,9 +14,9 @@ import java.util.List;
 public record PriceWebRequest(
         String priceNo,
         String priceThemeType,
-        List<PriceReferenceImageWebRequest> priceReferenceImages,
-        List<PackageWebRequest> packages,
-        List<OptionWebRequest> options,
+        @Valid List<PriceReferenceImageWebRequest> priceReferenceImages,
+        @Valid List<PackageWebRequest> packages,
+        @Valid List<OptionWebRequest> options,
         @NotNull ChangeStatus status
 ) {
 }
