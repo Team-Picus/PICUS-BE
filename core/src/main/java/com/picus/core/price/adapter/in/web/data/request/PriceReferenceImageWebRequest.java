@@ -8,7 +8,7 @@ import lombok.Builder;
 public record PriceReferenceImageWebRequest(
         String priceRefImageNo,
         String fileKey,
-        int imageOrder,
+        Integer imageOrder,
         @NotNull ChangeStatus status
 ) {
 }

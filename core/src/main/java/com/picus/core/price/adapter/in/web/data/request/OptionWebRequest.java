@@ -12,7 +12,7 @@ public record OptionWebRequest(
         String name,
         Integer count,
         Integer price,
-        @NotNull List<String> contents,
+        List<String> contents,
         @NotNull ChangeStatus status
 ) {
 }

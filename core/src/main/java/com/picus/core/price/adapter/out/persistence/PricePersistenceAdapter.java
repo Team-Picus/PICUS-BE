@@ -93,11 +93,12 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
 
     @Override
     public void delete(String priceNo) {
-        priceJpaRepository.deleteById(priceNo);
-
+        // 자식 먼저 삭제
         priceReferenceImageJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
         packageJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
         optionJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
+        // 부모 삭제
+        priceJpaRepository.deleteById(priceNo);
     }
 
     @Override

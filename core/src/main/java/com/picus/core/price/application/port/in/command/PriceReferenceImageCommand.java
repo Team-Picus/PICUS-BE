@@ -6,7 +6,7 @@ import lombok.Builder;
 public record PriceReferenceImageCommand(
         String priceRefImageNo,
         String fileKey,
-        int imageOrder,
+        Integer imageOrder,
         ChangeStatus status
 ) {
 }

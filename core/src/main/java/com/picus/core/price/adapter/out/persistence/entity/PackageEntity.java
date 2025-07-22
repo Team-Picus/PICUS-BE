@@ -36,7 +36,6 @@ public class PackageEntity {
     @Column(nullable = false)
     private List<String> contents = new ArrayList<>();
 
-    @Column(nullable = false)
     private String notice;
 
     public void assignPriceEntity(PriceEntity priceEntity) {

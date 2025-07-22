@@ -11,7 +11,7 @@ public record PackageWebRequest(
         String packageNo,
         String name,
         Integer price,
-        @NotNull List<String> contents,
+        List<String> contents,
         String notice,
         @NotNull ChangeStatus status
 ) {
