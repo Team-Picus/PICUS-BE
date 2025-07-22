@@ -10,14 +10,15 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 class PriceCommandAppMapperTest {
 
     private final PriceCommandAppMapper mapper = new PriceCommandAppMapper();
 
     @Test
-    @DisplayName("Price 도메인 모델로 전환한다.")
-    void toPriceDomain_success() {
+    @DisplayName("Price 도메인 모델로 전환한다 - 모든 필드 검증 (extracting 버전)")
+    void toPriceDomain_success_모든필드검증() {
         // given
         List<PriceReferenceImageCommand> imageCommands = List.of(
                 new PriceReferenceImageCommand("img-001", "https://cdn.com/1.jpg", 1, ChangeStatus.NEW),
@@ -50,13 +51,44 @@ class PriceCommandAppMapperTest {
         assertThat(result.getPriceNo()).isEqualTo("price-123");
         assertThat(result.getPriceThemeType()).isEqualTo(PriceThemeType.SNAP);
 
-        assertThat(result.getPriceReferenceImages()).hasSize(2);
-        assertThat(result.getPriceReferenceImages().getFirst().getFileKey()).isEqualTo("https://cdn.com/1.jpg");
+        // 이미지 필드 전체 검증
+        assertThat(result.getPriceReferenceImages())
+                .extracting(
+                        PriceReferenceImage::getPriceRefImageNo,
+                        PriceReferenceImage::getFileKey,
+                        PriceReferenceImage::getImageOrder
+                )
+                .containsExactlyInAnyOrder(
+                        tuple("img-001", "https://cdn.com/1.jpg", 1),
+                        tuple("img-002", "https://cdn.com/2.jpg", 2)
+                );
 
-        assertThat(result.getPackages()).hasSize(2);
-        assertThat(result.getPackages().get(1).getName()).isEqualTo("패키지2");
+        // 패키지 필드 전체 검증
+        assertThat(result.getPackages())
+                .extracting(
+                        Package::getPackageNo,
+                        Package::getName,
+                        Package::getPrice,
+                        Package::getContents,
+                        Package::getNotice
+                )
+                .containsExactlyInAnyOrder(
+                        tuple("pkg-001", "패키지1", 100000, List.of("내용1", "내용2"), "주의1"),
+                        tuple("pkg-002", "패키지2", 150000, List.of("내용3"), "주의2")
+                );
 
-        assertThat(result.getOptions()).hasSize(2);
-        assertThat(result.getOptions().getFirst().getPrice()).isEqualTo(30000);
+        // 옵션 필드 전체 검증
+        assertThat(result.getOptions())
+                .extracting(
+                        Option::getOptionNo,
+                        Option::getName,
+                        Option::getCount,
+                        Option::getPrice,
+                        Option::getContents
+                )
+                .containsExactlyInAnyOrder(
+                        tuple("opt-001", "옵션1", 1, 30000, List.of("옵션설명1")),
+                        tuple("opt-002", "옵션2", 2, 50000, List.of("옵션설명2"))
+                );
     }
 }

@@ -43,6 +43,7 @@ public class PriceCommandAppMapper {
                         .name(packageCommand.name())
                         .price(packageCommand.price())
                         .contents(packageCommand.contents())
+                        .notice(packageCommand.notice())
                         .build())
                 .toList();
     }
