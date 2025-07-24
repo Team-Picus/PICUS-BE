@@ -4,8 +4,6 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
-import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
-import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;

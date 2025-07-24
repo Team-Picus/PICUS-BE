@@ -2,8 +2,8 @@ package com.picus.core.expert.adapter.in.web;
 
 import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
-import com.picus.core.expert.application.port.in.SearchExpertsQuery;
-import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
+import com.picus.core.expert.application.port.in.SearchExpertsUseCase;
+import com.picus.core.expert.application.port.in.response.SearchExpertAppResp;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private SearchExpertsQuery searchExpertsQuery;
+    private SearchExpertsUseCase searchExpertsUseCase;
 
     @MockitoBean
     private SearchExpertWebMapper searchExpertWebMapper;
@@ -42,9 +42,9 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     void searchExperts_success() throws Exception {
         // given
         String keyword = "nick";
-        List<SearchExpertAppResponse> mockAppResponses = List.of(
-                new SearchExpertAppResponse("ex1", "nick1", "url1"),
-                new SearchExpertAppResponse("ex2", "nick2", "url2")
+        List<SearchExpertAppResp> mockAppResponses = List.of(
+                new SearchExpertAppResp("ex1", "nick1", "url1"),
+                new SearchExpertAppResp("ex2", "nick2", "url2")
         );
         List<SearchExpertWebResponse> mockWebResponses = List.of(
                 SearchExpertWebResponse.builder()
@@ -74,8 +74,8 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.result[0].nickname").exists())
                 .andExpect(jsonPath("$.result[0].profileImageUrl").exists());
 
-        then(searchExpertsQuery).should().searchExperts(keyword);
-        for (SearchExpertAppResponse appResponse : mockAppResponses) {
+        then(searchExpertsUseCase).should().searchExperts(keyword);
+        for (SearchExpertAppResp appResponse : mockAppResponses) {
             then(searchExpertWebMapper).should().toWebResponse(appResponse);
         }
     }
@@ -88,9 +88,9 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
     private void stubMethodInController(String keyword,
-                                        List<SearchExpertAppResponse> appResponses,
+                                        List<SearchExpertAppResp> appResponses,
                                         List<SearchExpertWebResponse> webResponses) {
-        given(searchExpertsQuery.searchExperts(keyword)).willReturn(appResponses);
+        given(searchExpertsUseCase.searchExperts(keyword)).willReturn(appResponses);
 
         for (int i = 0; i < appResponses.size(); i++) {
             given(searchExpertWebMapper.toWebResponse(appResponses.get(i))).willReturn(webResponses.get(i));

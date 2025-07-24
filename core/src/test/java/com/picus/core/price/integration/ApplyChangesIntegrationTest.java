@@ -14,7 +14,7 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
-import com.picus.core.price.application.port.in.command.ChangeStatus;
+import com.picus.core.price.application.port.in.request.ChangeStatus;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
@@ -37,7 +37,7 @@ import java.util.Optional;
 
 import static com.picus.core.expert.domain.model.vo.PriceThemeType.BEAUTY;
 import static com.picus.core.expert.domain.model.vo.PriceThemeType.FASHION;
-import static com.picus.core.price.application.port.in.command.ChangeStatus.*;
+import static com.picus.core.price.application.port.in.request.ChangeStatus.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

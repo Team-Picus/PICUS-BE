@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.ExpertInfoCommand;
-import com.picus.core.expert.application.port.in.command.*;
+import com.picus.core.expert.application.port.in.request.*;
 import com.picus.core.expert.application.port.in.mapper.ProjectCommandAppMapper;
 import com.picus.core.expert.application.port.in.mapper.SkillCommandAppMapper;
 import com.picus.core.expert.application.port.in.mapper.StudioCommandAppMapper;
@@ -37,7 +37,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
     private final StudioCommandAppMapper studioCommandAppMapper;
 
     @Override
-    public void updateExpertBasicInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
+    public void updateExpertBasicInfo(UpdateExpertBasicInfoAppReq basicInfoRequest) {
 
         if (!shouldUpdate(basicInfoRequest))
             return;
@@ -77,7 +77,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
     }
 
     @Override
-    public void updateExpertDetailInfo(UpdateExpertDetailInfoAppRequest detailInfoRequest) {
+    public void updateExpertDetailInfo(UpdateExpertDetailInfoAppReq detailInfoRequest) {
 
         // 수정할 필요가 있는지 확인
         if (!shouldUpdateExpertDetailInfo(detailInfoRequest))
@@ -117,21 +117,21 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         return currentUser.getExpertNo();
     }
 
-    private boolean shouldUpdate(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
+    private boolean shouldUpdate(UpdateExpertBasicInfoAppReq basicInfoRequest) {
         return shouldUpdateExpertBasicInfo(basicInfoRequest) || shouldUpdateUserInfo(basicInfoRequest);
     }
 
-    private boolean shouldUpdateExpertBasicInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
+    private boolean shouldUpdateExpertBasicInfo(UpdateExpertBasicInfoAppReq basicInfoRequest) {
         return basicInfoRequest.backgroundImageFileKey() != null ||
                 basicInfoRequest.link() != null ||
                 basicInfoRequest.intro() != null;
     }
 
-    private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoAppRequest basicInfoRequest) {
+    private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoAppReq basicInfoRequest) {
         return basicInfoRequest.profileImageFileKey() != null || basicInfoRequest.nickname() != null;
     }
 
-    private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoAppRequest detailInfoRequest) {
+    private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoAppReq detailInfoRequest) {
         return detailInfoRequest.activityCareer() != null ||
                 !detailInfoRequest.activityAreas().isEmpty() ||
                 !detailInfoRequest.projects().isEmpty() ||
@@ -139,9 +139,9 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                 detailInfoRequest.studio() != null;
     }
 
-    private void updateProject(UpdateExpertDetailInfoAppRequest detailInfoRequest, Expert expert, List<String> deletedProjectNos) {
-        List<ProjectCommand> projectCommands = detailInfoRequest.projects();
-        for (ProjectCommand command : projectCommands) {
+    private void updateProject(UpdateExpertDetailInfoAppReq detailInfoRequest, Expert expert, List<String> deletedProjectNos) {
+        List<UpdateProjectAppReq> updateProjectAppReqs = detailInfoRequest.projects();
+        for (UpdateProjectAppReq command : updateProjectAppReqs) {
             switch (command.changeStatus()) {
                 case ChangeStatus.NEW:
                     expert.addProject(projectCommandAppMapper.toDomain(command));
@@ -157,9 +157,9 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         }
     }
 
-    private void updateSkill(UpdateExpertDetailInfoAppRequest detailInfoRequest, Expert expert, List<String> deletedSkillNos) {
-        List<SkillCommand> skillCommands = detailInfoRequest.skills();
-        for (SkillCommand command : skillCommands) {
+    private void updateSkill(UpdateExpertDetailInfoAppReq detailInfoRequest, Expert expert, List<String> deletedSkillNos) {
+        List<UpdateSkillAppReq> updateSkillAppReqs = detailInfoRequest.skills();
+        for (UpdateSkillAppReq command : updateSkillAppReqs) {
             switch (command.changeStatus()) {
                 case ChangeStatus.NEW:
                     expert.addSkill(skillCommandAppMapper.toDomain(command));
@@ -175,8 +175,8 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         }
     }
 
-    private String updateStudio(UpdateExpertDetailInfoAppRequest request, Expert expert) {
-        StudioCommand command = request.studio();
+    private String updateStudio(UpdateExpertDetailInfoAppReq request, Expert expert) {
+        UpdateStudioAppReq command = request.studio();
         switch (command.changeStatus()) {
             case ChangeStatus.NEW -> expert.addStudio(studioCommandAppMapper.toDomain(command));
             case ChangeStatus.UPDATE -> expert.updateStudio(studioCommandAppMapper.toDomain(command));

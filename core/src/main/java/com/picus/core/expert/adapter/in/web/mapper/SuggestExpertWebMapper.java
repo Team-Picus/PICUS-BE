@@ -1,19 +1,17 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.SuggestExpertWebResponse;
-import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
-import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
+import com.picus.core.expert.application.port.in.response.SuggestExpertAppResp;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SuggestExpertWebMapper {
 
-    public SuggestExpertWebResponse toWebResponse(SuggestExpertAppResponse suggestExpertAppResponse) {
+    public SuggestExpertWebResponse toWebResponse(SuggestExpertAppResp suggestExpertAppResp) {
         return SuggestExpertWebResponse.builder()
-                .expertNo(suggestExpertAppResponse.expertNo())
-                .nickname(suggestExpertAppResponse.nickname())
-                .profileImageUrl(suggestExpertAppResponse.profileImageUrl())
+                .expertNo(suggestExpertAppResp.expertNo())
+                .nickname(suggestExpertAppResp.nickname())
+                .profileImageUrl(suggestExpertAppResp.profileImageUrl())
                 .build();
     }
 }

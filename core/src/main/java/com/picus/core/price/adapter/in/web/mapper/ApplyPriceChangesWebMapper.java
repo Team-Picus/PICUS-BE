@@ -1,25 +1,24 @@
 package com.picus.core.price.adapter.in.web.mapper;
 
 import com.picus.core.price.adapter.in.web.data.request.*;
-import com.picus.core.price.application.port.in.command.*;
+import com.picus.core.price.application.port.in.request.*;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class ApplyPriceChangesWebMapper {
 
-    public ApplyPriceChangesCommand toCommand(ApplyPriceChangesWebRequest webRequest) {
-        return ApplyPriceChangesCommand.builder()
+    public PriceInfoCommandAppReq toCommand(ApplyPriceChangesWebRequest webRequest) {
+        return PriceInfoCommandAppReq.builder()
                 .prices(toPriceCommand(webRequest.prices()))
                 .build();
     }
 
-    private List<PriceCommand> toPriceCommand(List<PriceWebRequest> priceWebRequests) {
+    private List<PriceCommandAppReq> toPriceCommand(List<PriceWebRequest> priceWebRequests) {
         if (priceWebRequests == null || priceWebRequests.isEmpty()) return List.of();
         return priceWebRequests.stream()
-                .map(w -> PriceCommand.builder()
+                .map(w -> PriceCommandAppReq.builder()
                         .priceNo(w.priceNo())
                         .priceThemeType(w.priceThemeType())
                         .priceReferenceImages(toPriceRefImageCommand(w.priceReferenceImages()))
@@ -30,10 +29,10 @@ public class ApplyPriceChangesWebMapper {
                 .toList();
     }
 
-    private List<PriceReferenceImageCommand> toPriceRefImageCommand(List<PriceReferenceImageWebRequest> webRequests) {
+    private List<PriceReferenceImageCommandAppReq> toPriceRefImageCommand(List<PriceReferenceImageWebRequest> webRequests) {
         if (webRequests == null || webRequests.isEmpty()) return List.of();
         return webRequests.stream()
-                .map(w -> PriceReferenceImageCommand.builder()
+                .map(w -> PriceReferenceImageCommandAppReq.builder()
                         .priceRefImageNo(w.priceRefImageNo())
                         .fileKey(w.fileKey())
                         .imageOrder(w.imageOrder())
@@ -42,10 +41,10 @@ public class ApplyPriceChangesWebMapper {
                 .toList();
     }
 
-    private List<PackageCommand> toPackageCommand(List<PackageWebRequest> packageWebRequests) {
+    private List<PackageCommandAppReq> toPackageCommand(List<PackageWebRequest> packageWebRequests) {
         if (packageWebRequests == null || packageWebRequests.isEmpty()) return List.of();
         return packageWebRequests.stream()
-                .map(w -> PackageCommand.builder()
+                .map(w -> PackageCommandAppReq.builder()
                         .packageNo(w.packageNo())
                         .name(w.name())
                         .price(w.price())
@@ -56,10 +55,10 @@ public class ApplyPriceChangesWebMapper {
                 .toList();
     }
 
-    private List<OptionCommand> toOptionCommand(List<OptionWebRequest> optionWebRequests) {
+    private List<OptionCommandAppReq> toOptionCommand(List<OptionWebRequest> optionWebRequests) {
         if (optionWebRequests == null || optionWebRequests.isEmpty()) return List.of();
         return optionWebRequests.stream()
-                .map(w -> OptionCommand.builder()
+                .map(w -> OptionCommandAppReq.builder()
                         .optionNo(w.optionNo())
                         .name(w.name())
                         .count(w.count())

@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
 import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
 import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
@@ -35,7 +35,7 @@ class RequestApprovalServiceTest {
     @DisplayName("전문가 승인요청 메서드 상호작용 검증")
     public void requestApproval_success() throws Exception {
         // given
-        RequestApprovalRequest command = givenRequestApprovalCommand();
+        RequestApprovalAppReq command = givenRequestApprovalCommand();
         stubOutPortMethod();
 
         // when
@@ -49,8 +49,8 @@ class RequestApprovalServiceTest {
 
 
 
-    private RequestApprovalRequest givenRequestApprovalCommand() {
-        return RequestApprovalRequest.builder()
+    private RequestApprovalAppReq givenRequestApprovalCommand() {
+        return RequestApprovalAppReq.builder()
                 .activityCareer("3년차")
                 .projects(List.of(
                         Project.builder()
