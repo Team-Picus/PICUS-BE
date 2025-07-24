@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UpdateStudioAppRequestAppMapperTest {
 
-    private final StudioCommandAppMapper mapper = new StudioCommandAppMapper();
+    private final UpdateStudioAppMapper mapper = new UpdateStudioAppMapper();
 
     @Test
     @DisplayName("StudioCommand를 Studio 도메인으로 매핑한다.")

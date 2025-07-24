@@ -1,9 +1,9 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.request.*;
-import com.picus.core.expert.application.port.in.mapper.ProjectCommandAppMapper;
-import com.picus.core.expert.application.port.in.mapper.SkillCommandAppMapper;
-import com.picus.core.expert.application.port.in.mapper.StudioCommandAppMapper;
+import com.picus.core.expert.application.port.in.mapper.UpdateProjectAppMapper;
+import com.picus.core.expert.application.port.in.mapper.UpdateSkillAppMapper;
+import com.picus.core.expert.application.port.in.mapper.UpdateStudioAppMapper;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
@@ -39,13 +39,13 @@ class ExpertInfoCommandServiceTest {
     UpdateExpertPort updateExpertPort = mock(UpdateExpertPort.class);
 
 
-    ProjectCommandAppMapper projectCommandAppMapper = mock(ProjectCommandAppMapper.class);
-    SkillCommandAppMapper skillCommandAppMapper = mock(SkillCommandAppMapper.class);
-    StudioCommandAppMapper studioCommandAppMapper = mock(StudioCommandAppMapper.class);
+    UpdateProjectAppMapper updateProjectAppMapper = mock(UpdateProjectAppMapper.class);
+    UpdateSkillAppMapper updateSkillAppMapper = mock(UpdateSkillAppMapper.class);
+    UpdateStudioAppMapper updateStudioAppMapper = mock(UpdateStudioAppMapper.class);
 
     ExpertInfoCommandService expertInfoCommandService =
             new ExpertInfoCommandService(userQueryPort, userCommandPort, loadExpertPort, updateExpertPort,
-                    projectCommandAppMapper, skillCommandAppMapper, studioCommandAppMapper);
+                    updateProjectAppMapper, updateSkillAppMapper, updateStudioAppMapper);
 
     @Test
     @DisplayName("Expert와 User 기본 정보가 모두 수정되는 경우 update 호출이 수행된다.")
@@ -229,16 +229,16 @@ class ExpertInfoCommandServiceTest {
 
         Project pjNew = mock(Project.class);
         Project pjUpdate = mock(Project.class);
-        given(projectCommandAppMapper.toDomain(projectNew)).willReturn(pjNew);
-        given(projectCommandAppMapper.toDomain(projectUpdate)).willReturn(pjUpdate);
+        given(updateProjectAppMapper.toDomain(projectNew)).willReturn(pjNew);
+        given(updateProjectAppMapper.toDomain(projectUpdate)).willReturn(pjUpdate);
 
         Skill skNew = mock(Skill.class);
         Skill skUpdate = mock(Skill.class);
-        given(skillCommandAppMapper.toDomain(skillNew)).willReturn(skNew);
-        given(skillCommandAppMapper.toDomain(skillUpdate)).willReturn(skUpdate);
+        given(updateSkillAppMapper.toDomain(skillNew)).willReturn(skNew);
+        given(updateSkillAppMapper.toDomain(skillUpdate)).willReturn(skUpdate);
 
         Studio studio = mock(Studio.class);
-        given(studioCommandAppMapper.toDomain(studioNew)).willReturn(studio);
+        given(updateStudioAppMapper.toDomain(studioNew)).willReturn(studio);
 
         // when
         expertInfoCommandService.updateExpertDetailInfo(request);
@@ -247,9 +247,9 @@ class ExpertInfoCommandServiceTest {
         InOrder inOrder = inOrder(
                 userQueryPort, user,
                 loadExpertPort, expert,
-                projectCommandAppMapper, expert,
-                skillCommandAppMapper, expert,
-                studioCommandAppMapper, expert,
+                updateProjectAppMapper, expert,
+                updateSkillAppMapper, expert,
+                updateStudioAppMapper, expert,
                 updateExpertPort
         );
 
@@ -257,19 +257,19 @@ class ExpertInfoCommandServiceTest {
         then(user).should(inOrder).getExpertNo();
         then(loadExpertPort).should(inOrder).findById(expertNo);
 
-        then(projectCommandAppMapper).should(inOrder).toDomain(projectNew);
+        then(updateProjectAppMapper).should(inOrder).toDomain(projectNew);
         then(expert).should(inOrder).addProject(pjNew);
-        then(projectCommandAppMapper).should(inOrder).toDomain(projectUpdate);
+        then(updateProjectAppMapper).should(inOrder).toDomain(projectUpdate);
         then(expert).should(inOrder).updateProject(pjUpdate);
         then(expert).should(inOrder).deleteProject("PRJ003");
 
-        then(skillCommandAppMapper).should(inOrder).toDomain(skillNew);
+        then(updateSkillAppMapper).should(inOrder).toDomain(skillNew);
         then(expert).should(inOrder).addSkill(skNew);
-        then(skillCommandAppMapper).should(inOrder).toDomain(skillUpdate);
+        then(updateSkillAppMapper).should(inOrder).toDomain(skillUpdate);
         then(expert).should(inOrder).updateSkill(skUpdate);
         then(expert).should(inOrder).deleteSkill("SKILL003");
 
-        then(studioCommandAppMapper).should(inOrder).toDomain(studioNew);
+        then(updateStudioAppMapper).should(inOrder).toDomain(studioNew);
         then(expert).should(inOrder).addStudio(studio);
 
         then(updateExpertPort).should(inOrder).updateExpertWithDetail(
