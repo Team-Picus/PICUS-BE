@@ -1,6 +1,5 @@
 package com.picus.core.post.application.port.request;
 
-import com.amazonaws.services.quicksight.model.ThemeType;
 import com.picus.core.post.domain.model.vo.PostMoodType;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;

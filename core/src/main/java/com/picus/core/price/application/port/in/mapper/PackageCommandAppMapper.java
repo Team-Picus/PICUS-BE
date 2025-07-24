@@ -1,4 +1,4 @@
-package com.picus.core.price.application.port.mapper;
+package com.picus.core.price.application.port.in.mapper;
 
 import com.picus.core.price.application.port.in.request.UpdatePackageAppReq;
 import com.picus.core.price.domain.model.Package;
