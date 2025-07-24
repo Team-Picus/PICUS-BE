@@ -8,20 +8,25 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode
 public class Expert {
     private String expertNo;
 
-    private final String backgroundImageKey;
+    private String backgroundImageKey;
 
-    private final String intro;
+    private final String backgroundImageUrl;
 
-    private final String activityCareer;
+    private String intro;
 
-    private final List<ActivityArea> activityAreas;
+    private String activityCareer;
+
+    private List<String> activityAreas;
 
     private final String activityDuration;
 
@@ -29,15 +34,15 @@ public class Expert {
 
     private final LocalDateTime lastActivityAt;
 
-    private final List<Portfolio> portfolios;
+    private List<Portfolio> portfolios;
 
     private ApprovalStatus approvalStatus;
 
-    private final Studio studio;
+    private Studio studio;
 
-    private final List<Skill> skills;
+    private List<Skill> skills;
 
-    private final List<Project> projects;
+    private List<Project> projects;
 
     private final LocalDateTime createdAt;
 
@@ -47,10 +52,10 @@ public class Expert {
 
     @Builder
     public Expert(String expertNo,
-                  String backgroundImageKey,
+                  String backgroundImageKey, String backgroundImageUrl,
                   String intro,
                   String activityCareer,
-                  List<ActivityArea> activityAreas,
+                  List<String> activityAreas,
                   Integer activityCount,
                   LocalDateTime lastActivityAt,
                   List<Portfolio> portfolios,
@@ -64,6 +69,7 @@ public class Expert {
 
         this.expertNo = expertNo;
         this.backgroundImageKey = backgroundImageKey;
+        this.backgroundImageUrl = backgroundImageUrl;
         this.intro = intro;
         this.activityCareer = activityCareer;
         this.activityAreas = activityAreas;
@@ -72,13 +78,14 @@ public class Expert {
         this.portfolios = portfolios;
         this.approvalStatus = approvalStatus;
         this.studio = studio;
-        this.skills = skills;
-        this.projects = projects;
+        this.skills = skills == null ? new ArrayList<>() : skills;
+        this.projects = projects == null ? new ArrayList<>() : projects;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
         this.activityDuration = calculateActivityDuration(LocalDate.now());
     }
+
     public void bindExpertNo(String expertNo) {
         this.expertNo = expertNo;
     }
@@ -106,7 +113,126 @@ public class Expert {
     public void approveApprovalRequest() {
         this.approvalStatus = ApprovalStatus.APPROVAL;
     }
+
     public void rejectApprovalRequest() {
         this.approvalStatus = ApprovalStatus.REJECT;
+    }
+
+    public void updateBasicInfo(String backgroundImageKey, List<String> links, String intro) {
+        if (backgroundImageKey != null) {
+            this.backgroundImageKey = backgroundImageKey;
+        }
+
+        if (links != null) {
+            this.portfolios = links.stream()
+                    .map(link -> Portfolio.builder().link(link).build())
+                    .toList();
+        }
+
+        if (intro != null) {
+            this.intro = intro;
+        }
+    }
+
+    public void updateDetailInfo(
+            String activityCareer, List<String> activityAreas) {
+        // activityCareer 업데이트
+        if (activityCareer != null)
+            this.activityCareer = activityCareer;
+
+        // activityAreas 업데이트 (덮어 씌움)
+        if (activityAreas != null)
+            this.activityAreas = activityAreas;
+    }
+
+    // 프로젝트 변경
+    public void addProject(Project newProject) {
+        // 이뮤터블 리스트 방어
+        if (!(this.projects instanceof ArrayList)) {
+            this.projects = new ArrayList<>(this.projects);
+        }
+        this.projects.add(newProject);
+    }
+
+    public void updateProject(Project updatedProject) {
+        // 이뮤터블 리스트 방어
+        if (!(this.projects instanceof ArrayList)) {
+            this.projects = new ArrayList<>(this.projects);
+        }
+        if (updatedProject.getProjectNo() != null) {
+            for (Project project : this.projects) {
+                if (updatedProject.getProjectNo().equals(project.getProjectNo())) {
+                    project.updateProject(
+                            updatedProject.getProjectName(), updatedProject.getStartDate(), updatedProject.getEndDate()
+                    );
+                    break;
+                }
+            }
+        }
+    }
+
+    public void deleteProject(String projectNo) {
+        // 이뮤터블 리스트 방어
+        if (!(this.projects instanceof ArrayList)) {
+            this.projects = new ArrayList<>(this.projects);
+        }
+        if (projectNo != null) {
+            this.projects.removeIf(project ->
+                    projectNo.equals(project.getProjectNo()));
+        }
+    }
+
+    // Skill 변경
+    public void addSkill(Skill newSkill) {
+        // 이뮤터블 리스트 방어
+        if (!(this.skills instanceof ArrayList)) {
+            this.skills = new ArrayList<>(this.skills);
+        }
+        this.skills.add(newSkill);
+    }
+
+    public void updateSkill(Skill updatedSkill) {
+        if (!(this.skills instanceof ArrayList)) {
+            this.skills = new ArrayList<>(this.skills);
+        }
+        if (updatedSkill.getSkillNo() != null) {
+            for (Skill skill : this.skills) {
+                if (updatedSkill.getSkillNo().equals(skill.getSkillNo())) {
+                    skill.updateSkill(updatedSkill.getSkillType(), updatedSkill.getContent());
+                    break;
+                }
+            }
+        }
+    }
+
+    public void deleteSkill(String skillNo) {
+        // 이뮤터블 리스트 방어
+        if (!(this.skills instanceof ArrayList)) {
+            this.skills = new ArrayList<>(this.skills);
+        }
+        if (skillNo != null) {
+            this.skills.removeIf(skill ->
+                    skillNo.equals(skill.getSkillNo()));
+        }
+    }
+
+    // Studio 변경
+    public void addStudio(Studio newStudio) {
+        if (newStudio != null)
+            this.studio = newStudio;
+    }
+    public void updateStudio(Studio updatedStudio) {
+        if (updatedStudio != null && this.studio != null) {
+            if (Objects.equals(updatedStudio.getStudioNo(), this.studio.getStudioNo())) {
+                this.studio.updateStudio(
+                        updatedStudio.getStudioName(),
+                        updatedStudio.getEmployeesCount(),
+                        updatedStudio.getBusinessHours(),
+                        updatedStudio.getAddress());
+            }
+        }
+    }
+    public void deleteStudio() {
+        this.studio = null;
     }
 }

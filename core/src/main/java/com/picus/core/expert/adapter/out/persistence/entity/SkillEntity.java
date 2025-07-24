@@ -1,5 +1,6 @@
 package com.picus.core.expert.adapter.out.persistence.entity;
 
+import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.vo.SkillType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
@@ -35,5 +36,10 @@ public class SkillEntity {
 
     public void assignExpert(ExpertEntity expertEntity) {
         this.expertEntity = expertEntity;
+    }
+
+    public void updateEntity(Skill skill) {
+        this.skillType = skill.getSkillType();
+        this.content = skill.getContent();
     }
 }

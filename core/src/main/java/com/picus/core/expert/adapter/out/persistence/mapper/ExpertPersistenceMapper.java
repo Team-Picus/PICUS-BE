@@ -1,6 +1,12 @@
 package com.picus.core.expert.adapter.out.persistence.mapper;
 
+import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
+import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
 import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.model.Project;
+import com.picus.core.expert.domain.model.Skill;
+import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import org.springframework.stereotype.Component;
@@ -8,12 +14,16 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
 public class ExpertPersistenceMapper {
 
-    public Expert mapToDomain(ExpertEntity entity) {
+    public Expert mapToDomain(ExpertEntity entity,
+                              List<Project> projects,
+                              List<Skill> skills,
+                              Studio studio) {
         return Expert.builder()
                 .expertNo(entity.getExpertNo())
                 .backgroundImageKey(entity.getBackgroundImageKey())
@@ -23,16 +33,21 @@ public class ExpertPersistenceMapper {
                 .activityCount(entity.getActivityCount())
                 .lastActivityAt(entity.getLastActivityAt())
                 .portfolios(
-                        Optional.ofNullable(entity.getPortfolioLinks())
-                                .orElse(new ArrayList<>())
-                                .stream()
-                                .map(link -> Portfolio.builder().link(link).build()) // URL → Portfolio 객체 생성
-                                .toList()
+                        new ArrayList<>(
+                                Optional.ofNullable(entity.getPortfolioLinks())
+                                        .orElse(new ArrayList<>())
+                                        .stream()
+                                        .map(link -> Portfolio.builder().link(link).build())
+                                        .toList()
+                        )
                 )
                 .approvalStatus(entity.getApprovalStatus())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .deletedAt(entity.getDeletedAt())
+                .projects(projects)
+                .skills(skills)
+                .studio(studio)
                 .build();
     }
 
