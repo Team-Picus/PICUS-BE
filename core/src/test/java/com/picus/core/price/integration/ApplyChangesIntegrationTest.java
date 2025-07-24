@@ -89,24 +89,24 @@ public class ApplyChangesIntegrationTest {
         commitTestTransaction();
 
         // 요청 값 셋팅
-        PriceReferenceImageWebRequest newImgWebReq =
+        UpdatePriceReferenceImageWebReq newImgWebReq =
                 createPriceRefImageWebRequest(null, "new_file_key", 1, NEW); // 새로 추가
 
-        PackageWebRequest newPkgWebReq =
+        UpdatePackageWebReq newPkgWebReq =
                 createPackageWebRequest(null, "new_pkg_name", 10, List.of("new_cnt"),
                         "new_notice", NEW); // 추가
 
-        OptionWebRequest newOptWebReq =
+        UpdateOptionWebReq newOptWebReq =
                 createOptionWebRequest(null, "new_opt_name", 2, 10,
                         List.of("new_cnt"), NEW); // 추가
 
-        PriceWebRequest priceWebRequest =
+        UpdatePriceWebReq updatePriceWebRequest =
                 createPriceWebRequest(null, "FASHION", NEW,
                         List.of(newImgWebReq), List.of(newPkgWebReq), List.of(newOptWebReq));
 
-        ApplyPriceChangesWebRequest webRequest = new ApplyPriceChangesWebRequest(List.of(priceWebRequest));
+        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
 
-        HttpEntity<ApplyPriceChangesWebRequest> request = settingWebRequest(userEntity.getUserNo(), webRequest);
+        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity.getUserNo(), webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -186,44 +186,44 @@ public class ApplyChangesIntegrationTest {
         commitTestTransaction();
 
         // 요청 값 셋팅
-        PriceReferenceImageWebRequest newImgWebReq =
+        UpdatePriceReferenceImageWebReq newImgWebReq =
                 createPriceRefImageWebRequest(null, "new_file_key", 1, NEW); // 새로 추가
-        PriceReferenceImageWebRequest uptImgWebReq =
+        UpdatePriceReferenceImageWebReq uptImgWebReq =
                 createPriceRefImageWebRequest(refImageEntity1.getPriceReferenceImageNo(), refImageEntity1.getFileKey(),
                         2, UPDATE); // 수정
-        PriceReferenceImageWebRequest delImgWebReq =
+        UpdatePriceReferenceImageWebReq delImgWebReq =
                 createPriceRefImageWebRequest(refImageEntity2.getPriceReferenceImageNo(),
                         null, null, DELETE); // 삭제
 
-        PackageWebRequest newPkgWebReq =
+        UpdatePackageWebReq newPkgWebReq =
                 createPackageWebRequest(null, "new_pkg_name", 10, List.of("new_cnt"),
                         "new_notice", NEW); // 추가
-        PackageWebRequest uptPkgWebReq =
+        UpdatePackageWebReq uptPkgWebReq =
                 createPackageWebRequest(pkgEntity1.getPackageNo(), "changed_pkg_name", 10,
                         List.of("changed_cnt"), "changed_notice", UPDATE); // 수정
-        PackageWebRequest delPkgWebReq =
+        UpdatePackageWebReq delPkgWebReq =
                 createPackageWebRequest(pkgEntity2.getPackageNo(), null, null,
                         null, null, DELETE); // 삭제
 
-        OptionWebRequest newOptWebReq =
+        UpdateOptionWebReq newOptWebReq =
                 createOptionWebRequest(null, "new_opt_name", 2, 10,
                         List.of("new_cnt"), NEW); // 추가
-        OptionWebRequest uptOptWebReq =
+        UpdateOptionWebReq uptOptWebReq =
                 createOptionWebRequest(optEntity1.getOptionNo(), "changed_opt_name", 1, 5,
                         List.of("changed_cnt"), UPDATE); // 수정
-        OptionWebRequest delOptWebReq =
+        UpdateOptionWebReq delOptWebReq =
                 createOptionWebRequest(optEntity2.getOptionNo(), null, null, null,
                         null, DELETE); // 삭제
 
-        PriceWebRequest priceWebRequest =
+        UpdatePriceWebReq updatePriceWebRequest =
                 createPriceWebRequest(priceEntity.getPriceNo(), "FASHION", UPDATE,
                         List.of(newImgWebReq, uptImgWebReq, delImgWebReq),
                         List.of(newPkgWebReq, uptPkgWebReq, delPkgWebReq),
                         List.of(newOptWebReq, uptOptWebReq, delOptWebReq));
 
-        ApplyPriceChangesWebRequest webRequest = new ApplyPriceChangesWebRequest(List.of(priceWebRequest));
+        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
 
-        HttpEntity<ApplyPriceChangesWebRequest> request = settingWebRequest(userEntity.getUserNo(), webRequest);
+        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity.getUserNo(), webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -304,13 +304,13 @@ public class ApplyChangesIntegrationTest {
 
         // 요청 값 셋팅
 
-        PriceWebRequest priceWebRequest =
+        UpdatePriceWebReq updatePriceWebRequest =
                 createPriceWebRequest(priceEntity.getPriceNo(), null, DELETE,
                         null, null, null);
 
-        ApplyPriceChangesWebRequest webRequest = new ApplyPriceChangesWebRequest(List.of(priceWebRequest));
+        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
 
-        HttpEntity<ApplyPriceChangesWebRequest> request = settingWebRequest(userEntity.getUserNo(), webRequest);
+        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity.getUserNo(), webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -412,9 +412,9 @@ public class ApplyChangesIntegrationTest {
         TestTransaction.end(); // 실제 커밋 수행
     }
 
-    private PriceReferenceImageWebRequest createPriceRefImageWebRequest(String priceRefImageNo, String fileKey,
-                                                                        Integer imageOrder, ChangeStatus changeStatus) {
-        return PriceReferenceImageWebRequest.builder()
+    private UpdatePriceReferenceImageWebReq createPriceRefImageWebRequest(String priceRefImageNo, String fileKey,
+                                                                          Integer imageOrder, ChangeStatus changeStatus) {
+        return UpdatePriceReferenceImageWebReq.builder()
                 .priceRefImageNo(priceRefImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
@@ -422,9 +422,9 @@ public class ApplyChangesIntegrationTest {
                 .build();
     }
 
-    private PackageWebRequest createPackageWebRequest(String packageNo, String name, Integer price, List<String> contents,
-                                                      String notice, ChangeStatus changeStatus) {
-        return PackageWebRequest.builder()
+    private UpdatePackageWebReq createPackageWebRequest(String packageNo, String name, Integer price, List<String> contents,
+                                                        String notice, ChangeStatus changeStatus) {
+        return UpdatePackageWebReq.builder()
                 .packageNo(packageNo)
                 .name(name)
                 .price(price)
@@ -434,9 +434,9 @@ public class ApplyChangesIntegrationTest {
                 .build();
     }
 
-    private OptionWebRequest createOptionWebRequest(String optionNo, String name, Integer count, Integer price,
-                                                    List<String> contents, ChangeStatus changeStatus) {
-        return OptionWebRequest.builder()
+    private UpdateOptionWebReq createOptionWebRequest(String optionNo, String name, Integer count, Integer price,
+                                                      List<String> contents, ChangeStatus changeStatus) {
+        return UpdateOptionWebReq.builder()
                 .optionNo(optionNo)
                 .name(name)
                 .count(count)
@@ -446,9 +446,9 @@ public class ApplyChangesIntegrationTest {
                 .build();
     }
 
-    private PriceWebRequest createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
-                                                  List<PriceReferenceImageWebRequest> priceReferenceImages, List<PackageWebRequest> packages, List<OptionWebRequest> options) {
-        return PriceWebRequest.builder()
+    private UpdatePriceWebReq createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
+                                                    List<UpdatePriceReferenceImageWebReq> priceReferenceImages, List<UpdatePackageWebReq> packages, List<UpdateOptionWebReq> options) {
+        return UpdatePriceWebReq.builder()
                 .priceNo(priceNo)
                 .priceThemeType(theme)
                 .priceReferenceImages(priceReferenceImages)

@@ -7,6 +7,6 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ApplyPriceChangesWebRequest(
-    @NotNull @Valid List<PriceWebRequest> prices
+public record UpdatePriceListWebReq(
+    @NotNull @Valid List<UpdatePriceWebReq> prices
 ) {}

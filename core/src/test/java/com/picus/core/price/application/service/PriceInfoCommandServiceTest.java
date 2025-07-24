@@ -56,14 +56,14 @@ class PriceInfoCommandServiceTest {
 
     @Test
     @DisplayName("새로운 Price를 생성한다.")
-    void apply_shouldCreatePrice_whenStatusIsNew() {
+    void updatePrice_shouldCreatePrice_whenStatusIsNew() {
         // given
         String currentUserNo = "user-1";
         User user = mock(User.class);
         given(userQueryPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-1");
 
-        PriceCommandAppReq cmd = new PriceCommandAppReq(
+        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
                 "price-1",
                 "FASHION",
                 Collections.emptyList(),  // no images
@@ -71,7 +71,7 @@ class PriceInfoCommandServiceTest {
                 Collections.emptyList(),  // no options
                 ChangeStatus.NEW
         );
-        PriceInfoCommandAppReq command = new PriceInfoCommandAppReq(
+        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
                 Collections.singletonList(cmd)
         );
 
@@ -79,7 +79,7 @@ class PriceInfoCommandServiceTest {
         when(priceCommandAppMapper.toPriceDomain(cmd)).thenReturn(priceDomain);
 
         // when
-        service.apply(command, currentUserNo);
+        service.updatePrice(command, currentUserNo);
 
         // then: 순서대로 호출되었는지 검증
         InOrder inOrder = inOrder(userQueryPort, user, priceCommandAppMapper, priceCommandPort);
@@ -94,14 +94,14 @@ class PriceInfoCommandServiceTest {
 
     @Test
     @DisplayName("기존 Price를 수정한다. PriceRefImage, Package, Option 정보가 없다면 해당 정보는 수정하지 않는다.")
-    void apply_shouldUpdatePrice_whenStatusIsUpdate() {
+    void updatePrice_shouldUpdatePrice_whenStatusIsUpdate() {
         // given
         String currentUserNo = "user-2";
         User user = mock(User.class);
         given(userQueryPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-2");
 
-        PriceCommandAppReq cmd = new PriceCommandAppReq(
+        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
                 "price-2",
                 "FASHION",
                 Collections.emptyList(),
@@ -109,7 +109,7 @@ class PriceInfoCommandServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.UPDATE
         );
-        PriceInfoCommandAppReq command = new PriceInfoCommandAppReq(
+        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
                 Collections.singletonList(cmd)
         );
 
@@ -117,7 +117,7 @@ class PriceInfoCommandServiceTest {
         given(priceQueryPort.findById("price-2")).willReturn(price);
 
         // when
-        service.apply(command, currentUserNo);
+        service.updatePrice(command, currentUserNo);
 
         // then: 도메인 메서드 실행 순서 검증
         // 순서 검증을 위한 InOrder 객체 준비
@@ -133,7 +133,7 @@ class PriceInfoCommandServiceTest {
 
     @Test
     @DisplayName("기존 Price를 수정할 때 이미지, 패키지, 옵션이 모두 반영된다")
-    void apply_updatePriceWithAllChanges() {
+    void updatePrice_updatePriceWithAllChanges() {
         // given
         String currentUserNo = "user-4";
         User user = mock(User.class);
@@ -141,27 +141,27 @@ class PriceInfoCommandServiceTest {
         given(user.getExpertNo()).willReturn("expert-4");
 
         // 이미지 커맨드
-        PriceReferenceImageCommandAppReq newImgCmd = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
-        PriceReferenceImageCommandAppReq updImgCmd = createPriceRefImageCommand("img-2", "file-2", 2, ChangeStatus.UPDATE);
-        PriceReferenceImageCommandAppReq delImgCmd = createPriceRefImageCommand("img-3", "file-3", 3, ChangeStatus.DELETE);
-        List<PriceReferenceImageCommandAppReq> imgCmds =
+        UpdatePriceReferenceImageAppReq newImgCmd = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
+        UpdatePriceReferenceImageAppReq updImgCmd = createPriceRefImageCommand("img-2", "file-2", 2, ChangeStatus.UPDATE);
+        UpdatePriceReferenceImageAppReq delImgCmd = createPriceRefImageCommand("img-3", "file-3", 3, ChangeStatus.DELETE);
+        List<UpdatePriceReferenceImageAppReq> imgCmds =
                 List.of(newImgCmd, updImgCmd, delImgCmd);
 
         // 패키지 커맨드
-        PackageCommandAppReq newPkgCmd = createPackageCommand(null, "PKG1", 1000, List.of("A", "B"), "note1", ChangeStatus.NEW);
-        PackageCommandAppReq updPkgCmd = createPackageCommand("pkg-2", "PKG2", 2000, List.of("C"), "note2", ChangeStatus.UPDATE);
-        PackageCommandAppReq delPkgCmd = createPackageCommand("pkg-3", "PKG3", 3000, List.of("D"), "note3", ChangeStatus.DELETE);
-        List<PackageCommandAppReq> pkgCmds =
+        UpdatePackageAppReq newPkgCmd = createPackageCommand(null, "PKG1", 1000, List.of("A", "B"), "note1", ChangeStatus.NEW);
+        UpdatePackageAppReq updPkgCmd = createPackageCommand("pkg-2", "PKG2", 2000, List.of("C"), "note2", ChangeStatus.UPDATE);
+        UpdatePackageAppReq delPkgCmd = createPackageCommand("pkg-3", "PKG3", 3000, List.of("D"), "note3", ChangeStatus.DELETE);
+        List<UpdatePackageAppReq> pkgCmds =
                 List.of(newPkgCmd, updPkgCmd, delPkgCmd);
 
         // 옵션 커맨드
-        OptionCommandAppReq newOptCmd = createOptionCommand(null, "OPT1", 1, 100, List.of("X"), ChangeStatus.NEW);
-        OptionCommandAppReq updOptCmd = createOptionCommand("opt-2", "OPT2", 2, 200, List.of("Y"), ChangeStatus.UPDATE);
-        OptionCommandAppReq delOptCmd = createOptionCommand("opt-3", "OPT3", 3, 300, List.of("Z"), ChangeStatus.DELETE);
-        List<OptionCommandAppReq> optCmds =
+        UpdateOptionAppReq newOptCmd = createOptionCommand(null, "OPT1", 1, 100, List.of("X"), ChangeStatus.NEW);
+        UpdateOptionAppReq updOptCmd = createOptionCommand("opt-2", "OPT2", 2, 200, List.of("Y"), ChangeStatus.UPDATE);
+        UpdateOptionAppReq delOptCmd = createOptionCommand("opt-3", "OPT3", 3, 300, List.of("Z"), ChangeStatus.DELETE);
+        List<UpdateOptionAppReq> optCmds =
                 List.of(newOptCmd, updOptCmd, delOptCmd);
 
-        PriceCommandAppReq cmd = new PriceCommandAppReq(
+        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
                 "price-4",
                 "FASHION",
                 imgCmds,
@@ -169,8 +169,8 @@ class PriceInfoCommandServiceTest {
                 optCmds,
                 ChangeStatus.UPDATE
         );
-        PriceInfoCommandAppReq command =
-                new PriceInfoCommandAppReq(List.of(cmd));
+        UpdatePriceListAppReq command =
+                new UpdatePriceListAppReq(List.of(cmd));
 
         // 도메인 객체 및 매핑 설정
         Price price = mock(Price.class);
@@ -192,7 +192,7 @@ class PriceInfoCommandServiceTest {
         given(optionCommandAppMapper.toDomain(updOptCmd)).willReturn(optUpd);
 
         // when
-        service.apply(command, currentUserNo);
+        service.updatePrice(command, currentUserNo);
 
         // then: 순서 검증
         InOrder order = inOrder(
@@ -233,7 +233,7 @@ class PriceInfoCommandServiceTest {
 
     @Test
     @DisplayName("Price를 추가/수정/삭제할 때, 이미지의 순서가 겹친다면 예외가 발생한다.")
-    void apply_image_order_wrong() {
+    void updatePrice_image_order_wrong() {
         // given
         String currentUserNo = "user-4";
         User user = mock(User.class);
@@ -241,13 +241,13 @@ class PriceInfoCommandServiceTest {
         given(user.getExpertNo()).willReturn("expert-4");
 
         // 이미지 커맨드
-        PriceReferenceImageCommandAppReq newImgCmd1 = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
-        PriceReferenceImageCommandAppReq newImgCmd2 = createPriceRefImageCommand(null, "file-2", 1, ChangeStatus.NEW);
-        List<PriceReferenceImageCommandAppReq> imgCmds =
+        UpdatePriceReferenceImageAppReq newImgCmd1 = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
+        UpdatePriceReferenceImageAppReq newImgCmd2 = createPriceRefImageCommand(null, "file-2", 1, ChangeStatus.NEW);
+        List<UpdatePriceReferenceImageAppReq> imgCmds =
                 List.of(newImgCmd1, newImgCmd2);
 
 
-        PriceCommandAppReq cmd = new PriceCommandAppReq(
+        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
                 "price-4",
                 "FASHION",
                 imgCmds,
@@ -255,25 +255,25 @@ class PriceInfoCommandServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.UPDATE
         );
-        PriceInfoCommandAppReq command =
-                new PriceInfoCommandAppReq(List.of(cmd));
+        UpdatePriceListAppReq command =
+                new UpdatePriceListAppReq(List.of(cmd));
 
 
         // when // then
-        Assertions.assertThatThrownBy(() -> service.apply(command, currentUserNo))
+        Assertions.assertThatThrownBy(() -> service.updatePrice(command, currentUserNo))
                 .isInstanceOf(RestApiException.class);
     }
 
     @Test
     @DisplayName("Price를 삭제한다.")
-    void apply_shouldDeletePrice_whenStatusIsDelete() {
+    void updatePrice_shouldDeletePrice_whenStatusIsDelete() {
         // given
         String currentUserNo = "user-3";
         User user = mock(User.class);
         given(userQueryPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-3");
 
-        PriceCommandAppReq cmd = new PriceCommandAppReq(
+        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
                 "price-3",
                 "THEME_C",
                 Collections.emptyList(),
@@ -281,12 +281,12 @@ class PriceInfoCommandServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.DELETE
         );
-        PriceInfoCommandAppReq command = new PriceInfoCommandAppReq(
+        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
                 Collections.singletonList(cmd)
         );
 
         // when
-        service.apply(command, currentUserNo);
+        service.updatePrice(command, currentUserNo);
 
         // then: delete만 호출하고, update/create 관련 포트는 호출 안 함
         then(priceCommandPort).should().delete("price-3");
@@ -294,8 +294,8 @@ class PriceInfoCommandServiceTest {
         then(priceQueryPort).shouldHaveNoInteractions();
     }
 
-    private PriceReferenceImageCommandAppReq createPriceRefImageCommand(String priceRefImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
-        return PriceReferenceImageCommandAppReq.builder()
+    private UpdatePriceReferenceImageAppReq createPriceRefImageCommand(String priceRefImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
+        return UpdatePriceReferenceImageAppReq.builder()
                 .priceRefImageNo(priceRefImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
@@ -303,8 +303,8 @@ class PriceInfoCommandServiceTest {
                 .build();
     }
 
-    private PackageCommandAppReq createPackageCommand(String packageNo, String name, int price, List<String> contents, String notice, ChangeStatus changeStatus) {
-        return PackageCommandAppReq.builder()
+    private UpdatePackageAppReq createPackageCommand(String packageNo, String name, int price, List<String> contents, String notice, ChangeStatus changeStatus) {
+        return UpdatePackageAppReq.builder()
                 .packageNo(packageNo)
                 .name(name)
                 .price(price)
@@ -314,8 +314,8 @@ class PriceInfoCommandServiceTest {
                 .build();
     }
 
-    private OptionCommandAppReq createOptionCommand(String optionNo, String name, int count, int price, List<String> contents, ChangeStatus changeStatus) {
-        return OptionCommandAppReq.builder()
+    private UpdateOptionAppReq createOptionCommand(String optionNo, String name, int count, int price, List<String> contents, ChangeStatus changeStatus) {
+        return UpdateOptionAppReq.builder()
                 .optionNo(optionNo)
                 .name(name)
                 .count(count)

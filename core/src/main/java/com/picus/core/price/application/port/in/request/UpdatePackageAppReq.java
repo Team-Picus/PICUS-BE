@@ -5,12 +5,12 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record OptionCommandAppReq(
-        String optionNo,
+public record UpdatePackageAppReq(
+        String packageNo,
         String name,
-        Integer count,
         Integer price,
         List<String> contents,
+        String notice,
         ChangeStatus status
 ) {
 }

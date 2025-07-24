@@ -1,7 +1,7 @@
 package com.picus.core.price.application.port.in;
 
-import com.picus.core.price.application.port.in.request.PriceInfoCommandAppReq;
+import com.picus.core.price.application.port.in.request.UpdatePriceListAppReq;
 
 public interface PriceInfoCommand {
-    void apply(PriceInfoCommandAppReq command, String currentUserNo);
+    void updatePrice(UpdatePriceListAppReq command, String currentUserNo);
 }

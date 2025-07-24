@@ -5,12 +5,12 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record PriceCommandAppReq(
+public record UpdatePriceAppReq(
         String priceNo,
         String priceThemeType,
-        List<PriceReferenceImageCommandAppReq> priceReferenceImages,
-        List<PackageCommandAppReq> packages,
-        List<OptionCommandAppReq> options,
+        List<UpdatePriceReferenceImageAppReq> priceReferenceImages,
+        List<UpdatePackageAppReq> packages,
+        List<UpdateOptionAppReq> options,
         ChangeStatus status
 ) {
 }

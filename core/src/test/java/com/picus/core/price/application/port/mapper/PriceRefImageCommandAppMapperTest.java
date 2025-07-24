@@ -1,7 +1,7 @@
 package com.picus.core.price.application.port.mapper;
 
 import com.picus.core.price.application.port.in.request.ChangeStatus;
-import com.picus.core.price.application.port.in.request.PriceReferenceImageCommandAppReq;
+import com.picus.core.price.application.port.in.request.UpdatePriceReferenceImageAppReq;
 import com.picus.core.price.domain.model.PriceReferenceImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +13,10 @@ class PriceRefImageCommandAppMapperTest {
     PriceRefImageCommandAppMapper appMapper = new PriceRefImageCommandAppMapper();
 
     @Test
-    @DisplayName("PriceReferenceImageCommandAppReq -> PriceReferenceImage 매핑")
+    @DisplayName("UpdatePriceReferenceImageAppReq -> PriceReferenceImage 매핑")
     public void toDomain() throws Exception {
         // given
-        PriceReferenceImageCommandAppReq command = PriceReferenceImageCommandAppReq.builder()
+        UpdatePriceReferenceImageAppReq command = UpdatePriceReferenceImageAppReq.builder()
                 .priceRefImageNo("ref1")
                 .fileKey("file_key")
                 .imageOrder(1)

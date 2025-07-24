@@ -36,28 +36,28 @@ public class PriceInfoCommandService implements PriceInfoCommand {
     private final OptionCommandAppMapper optionCommandAppMapper;
 
     @Override
-    public void apply(PriceInfoCommandAppReq command, String currentUserNo) {
+    public void updatePrice(UpdatePriceListAppReq command, String currentUserNo) {
         // 현재 사용자의 ExpertNo을 받아옴
         User user = userQueryPort.findById(currentUserNo);
         String expertNo = Optional.ofNullable(user.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
-        List<PriceCommandAppReq> priceCommandAppReqs = command.prices();
+        List<UpdatePriceAppReq> updatePriceAppReqs = command.prices();
 
         // 이미지 순서 체크
-        checkPriceRefImageOrder(priceCommandAppReqs);
+        checkPriceRefImageOrder(updatePriceAppReqs);
 
         // 추가/수정/삭제 진행
-        for (PriceCommandAppReq priceCommandAppReq : priceCommandAppReqs) {
-            switch (priceCommandAppReq.status()) {
+        for (UpdatePriceAppReq updatePriceAppReq : updatePriceAppReqs) {
+            switch (updatePriceAppReq.status()) {
                 case ChangeStatus.NEW:
-                    createPrice(priceCommandAppReq, expertNo);
+                    createPrice(updatePriceAppReq, expertNo);
                     break;
                 case ChangeStatus.UPDATE:
-                    updatePrice(priceCommandAppReq);
+                    updatePrice(updatePriceAppReq);
                     break;
                 case ChangeStatus.DELETE:
-                    deletePrice(priceCommandAppReq.priceNo());
+                    deletePrice(updatePriceAppReq.priceNo());
                     break;
             }
         }
@@ -68,11 +68,11 @@ public class PriceInfoCommandService implements PriceInfoCommand {
      * private 메서드
      */
 
-    private void checkPriceRefImageOrder(List<PriceCommandAppReq> priceCommandAppReqs) {
-        for (PriceCommandAppReq priceCommandAppReq : priceCommandAppReqs) {
-            List<PriceReferenceImageCommandAppReq> priceRefImageCommands = priceCommandAppReq.priceReferenceImages();
+    private void checkPriceRefImageOrder(List<UpdatePriceAppReq> updatePriceAppReqs) {
+        for (UpdatePriceAppReq updatePriceAppReq : updatePriceAppReqs) {
+            List<UpdatePriceReferenceImageAppReq> priceRefImageCommands = updatePriceAppReq.priceReferenceImages();
             Set<Integer> imageOrderSet = new HashSet<>();
-            for (PriceReferenceImageCommandAppReq command : priceRefImageCommands) {
+            for (UpdatePriceReferenceImageAppReq command : priceRefImageCommands) {
                 if (!imageOrderSet.add(command.imageOrder())) {
                     throw new RestApiException(_BAD_REQUEST);
                 }
@@ -81,37 +81,37 @@ public class PriceInfoCommandService implements PriceInfoCommand {
     }
 
     // Price 저장
-    private void createPrice(PriceCommandAppReq priceCommandAppReq, String expertNo) {
-        Price price = priceCommandAppMapper.toPriceDomain(priceCommandAppReq);
+    private void createPrice(UpdatePriceAppReq updatePriceAppReq, String expertNo) {
+        Price price = priceCommandAppMapper.toPriceDomain(updatePriceAppReq);
         priceCommandPort.save(price, expertNo);
     }
 
     // Price 수정
-    private void updatePrice(PriceCommandAppReq priceCommandAppReq) {
-        Price price = priceQueryPort.findById(priceCommandAppReq.priceNo());
+    private void updatePrice(UpdatePriceAppReq updatePriceAppReq) {
+        Price price = priceQueryPort.findById(updatePriceAppReq.priceNo());
         List<String> deletedPriceRefImageNos = new ArrayList<>();
         List<String> deletedPackageNos = new ArrayList<>();
         List<String> deletedOptionNos = new ArrayList<>();
 
         // Price 정보 업데이트
-        price.changePriceTheme(priceCommandAppReq.priceThemeType());
+        price.changePriceTheme(updatePriceAppReq.priceThemeType());
 
         // PriceReferenceImage 정보 업데이트
-        updatePriceReferenceImage(priceCommandAppReq, price, deletedPriceRefImageNos);
+        updatePriceReferenceImage(updatePriceAppReq, price, deletedPriceRefImageNos);
 
         // Package 업데이트
-        updatePackage(priceCommandAppReq, price, deletedPackageNos);
+        updatePackage(updatePriceAppReq, price, deletedPackageNos);
 
         // Option 업데이트
-        updateOption(priceCommandAppReq, price, deletedOptionNos);
+        updateOption(updatePriceAppReq, price, deletedOptionNos);
 
         priceCommandPort.update(price, deletedPriceRefImageNos, deletedPackageNos, deletedOptionNos);
     }
 
     // PriceReferenceImage 수정
-    private void updatePriceReferenceImage(PriceCommandAppReq priceCommandAppReq, Price price, List<String> deletedPriceRefImageNos) {
-        List<PriceReferenceImageCommandAppReq> refImagesCommands = priceCommandAppReq.priceReferenceImages();
-        for (PriceReferenceImageCommandAppReq refImagesCommand : refImagesCommands) {
+    private void updatePriceReferenceImage(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedPriceRefImageNos) {
+        List<UpdatePriceReferenceImageAppReq> refImagesCommands = updatePriceAppReq.priceReferenceImages();
+        for (UpdatePriceReferenceImageAppReq refImagesCommand : refImagesCommands) {
             switch (refImagesCommand.status()) {
                 case ChangeStatus.NEW:
                     price.addReferenceImage(priceRefImageCommandAppMapper.toDomain(refImagesCommand));
@@ -128,9 +128,9 @@ public class PriceInfoCommandService implements PriceInfoCommand {
     }
 
     // Package 수정
-    private void updatePackage(PriceCommandAppReq priceCommandAppReq, Price price, List<String> deletedPackageNos) {
-        List<PackageCommandAppReq> packageCommandAppReqs = priceCommandAppReq.packages();
-        for (PackageCommandAppReq pkgCmd : packageCommandAppReqs) {
+    private void updatePackage(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedPackageNos) {
+        List<UpdatePackageAppReq> updatePackageAppReqs = updatePriceAppReq.packages();
+        for (UpdatePackageAppReq pkgCmd : updatePackageAppReqs) {
             switch (pkgCmd.status()) {
                 case ChangeStatus.NEW:
                     price.addPackage(packageCommandAppMapper.toDomain(pkgCmd));
@@ -147,9 +147,9 @@ public class PriceInfoCommandService implements PriceInfoCommand {
     }
 
     // Option 수정
-    private void updateOption(PriceCommandAppReq priceCommandAppReq, Price price, List<String> deletedOptionNos) {
-        List<OptionCommandAppReq> optionCommandAppReqs = priceCommandAppReq.options();
-        for (OptionCommandAppReq optCmd : optionCommandAppReqs) {
+    private void updateOption(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedOptionNos) {
+        List<UpdateOptionAppReq> updateOptionAppReqs = updatePriceAppReq.options();
+        for (UpdateOptionAppReq optCmd : updateOptionAppReqs) {
             switch (optCmd.status()) {
                 case ChangeStatus.NEW:
                     price.addOption(optionCommandAppMapper.toDomain(optCmd));

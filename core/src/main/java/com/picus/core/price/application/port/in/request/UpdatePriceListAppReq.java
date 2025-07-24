@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record PriceInfoCommandAppReq(
-        List<PriceCommandAppReq> prices
+public record UpdatePriceListAppReq(
+        List<UpdatePriceAppReq> prices
 ) {
 }

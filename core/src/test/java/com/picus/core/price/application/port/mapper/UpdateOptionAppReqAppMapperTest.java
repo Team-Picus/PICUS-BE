@@ -1,6 +1,6 @@
 package com.picus.core.price.application.port.mapper;
 
-import com.picus.core.price.application.port.in.request.OptionCommandAppReq;
+import com.picus.core.price.application.port.in.request.UpdateOptionAppReq;
 import com.picus.core.price.domain.model.Option;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class OptionCommandAppReqAppMapperTest {
+class UpdateOptionAppReqAppMapperTest {
 
     private final OptionCommandAppMapper appMapper = new OptionCommandAppMapper();
 
     @Test
-    @DisplayName("OptionCommandAppReq -> Option 매핑")
+    @DisplayName("UpdateOptionAppReq -> Option 매핑")
     public void toDomain() throws Exception {
         // given
-        OptionCommandAppReq command = OptionCommandAppReq.builder()
+        UpdateOptionAppReq command = UpdateOptionAppReq.builder()
                 .optionNo("opt_no")
                 .name("opt_name")
                 .count(3)
