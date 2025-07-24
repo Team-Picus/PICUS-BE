@@ -9,10 +9,7 @@ import com.picus.core.post.domain.model.vo.SpaceType;
 import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +18,7 @@ import static lombok.AccessLevel.*;
 import static lombok.AccessLevel.PRIVATE;
 
 @Builder
+@Getter
 @Entity
 @Table(name = "posts")
 @NoArgsConstructor(access = PROTECTED)
