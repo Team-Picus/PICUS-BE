@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record PriceReferenceImageWebRequest(
+public record UpdatePriceReferenceImageWebReq(
         String priceRefImageNo,
         String fileKey,
         Integer imageOrder,

@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record OptionWebRequest(
+public record UpdateOptionWebReq(
         String optionNo,
         String name,
         Integer count,

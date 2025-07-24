@@ -8,12 +8,12 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record PriceWebRequest(
+public record UpdatePriceWebReq(
         String priceNo,
         String priceThemeType,
-        @Valid List<PriceReferenceImageWebRequest> priceReferenceImages,
-        @Valid List<PackageWebRequest> packages,
-        @Valid List<OptionWebRequest> options,
+        @Valid List<UpdatePriceReferenceImageWebReq> priceReferenceImages,
+        @Valid List<UpdatePackageWebReq> packages,
+        @Valid List<UpdateOptionWebReq> options,
         @NotNull ChangeStatus status
 ) {
 }

@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record PackageWebRequest(
+public record UpdatePackageWebReq(
         String packageNo,
         String name,
         Integer price,

@@ -12,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class PriceCommandAppReqAppMapperTest {
+class UpdatePriceAppReqAppMapperTest {
 
     private final PriceCommandAppMapper mapper = new PriceCommandAppMapper();
 
@@ -20,32 +20,32 @@ class PriceCommandAppReqAppMapperTest {
     @DisplayName("Price 도메인 모델로 전환한다 - 모든 필드 검증 (extracting 버전)")
     void toPriceDomain_success_모든필드검증() {
         // given
-        List<PriceReferenceImageCommandAppReq> imageCommands = List.of(
-                new PriceReferenceImageCommandAppReq("img-001", "https://cdn.com/1.jpg", 1, ChangeStatus.NEW),
-                new PriceReferenceImageCommandAppReq("img-002", "https://cdn.com/2.jpg", 2, ChangeStatus.UPDATE)
+        List<UpdatePriceReferenceImageAppReq> imageCommands = List.of(
+                new UpdatePriceReferenceImageAppReq("img-001", "https://cdn.com/1.jpg", 1, ChangeStatus.NEW),
+                new UpdatePriceReferenceImageAppReq("img-002", "https://cdn.com/2.jpg", 2, ChangeStatus.UPDATE)
         );
 
-        List<PackageCommandAppReq> packageCommandAppReqs = List.of(
-                new PackageCommandAppReq("pkg-001", "패키지1", 100000, List.of("내용1", "내용2"), "주의1", ChangeStatus.NEW),
-                new PackageCommandAppReq("pkg-002", "패키지2", 150000, List.of("내용3"), "주의2", ChangeStatus.UPDATE)
+        List<UpdatePackageAppReq> updatePackageAppReqs = List.of(
+                new UpdatePackageAppReq("pkg-001", "패키지1", 100000, List.of("내용1", "내용2"), "주의1", ChangeStatus.NEW),
+                new UpdatePackageAppReq("pkg-002", "패키지2", 150000, List.of("내용3"), "주의2", ChangeStatus.UPDATE)
         );
 
-        List<OptionCommandAppReq> optionCommandAppReqs = List.of(
-                new OptionCommandAppReq("opt-001", "옵션1", 1, 30000, List.of("옵션설명1"), ChangeStatus.NEW),
-                new OptionCommandAppReq("opt-002", "옵션2", 2, 50000, List.of("옵션설명2"), ChangeStatus.UPDATE)
+        List<UpdateOptionAppReq> updateOptionAppReqs = List.of(
+                new UpdateOptionAppReq("opt-001", "옵션1", 1, 30000, List.of("옵션설명1"), ChangeStatus.NEW),
+                new UpdateOptionAppReq("opt-002", "옵션2", 2, 50000, List.of("옵션설명2"), ChangeStatus.UPDATE)
         );
 
-        PriceCommandAppReq priceCommandAppReq = new PriceCommandAppReq(
+        UpdatePriceAppReq updatePriceAppReq = new UpdatePriceAppReq(
                 "price-123",
                 "SNAP",
                 imageCommands,
-                packageCommandAppReqs,
-                optionCommandAppReqs,
+                updatePackageAppReqs,
+                updateOptionAppReqs,
                 ChangeStatus.UPDATE
         );
 
         // when
-        Price result = mapper.toPriceDomain(priceCommandAppReq);
+        Price result = mapper.toPriceDomain(updatePriceAppReq);
 
         // then
         assertThat(result.getPriceNo()).isEqualTo("price-123");
