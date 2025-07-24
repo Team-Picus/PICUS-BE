@@ -12,7 +12,7 @@ import java.util.List;
 
 public record RequestApprovalWebRequest(
         @NotBlank String activityCareer,
-        @NotNull List<ActivityArea> activityAreas,
+        @NotNull List<String> activityAreas,
         List<Project> projects,
         List<Skill> skills,
         Studio studio,

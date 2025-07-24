@@ -19,6 +19,7 @@ class ProjectPersistenceMapperTest {
     void mapToDomain() {
         // Given
         ProjectEntity entity = ProjectEntity.builder()
+                .projectNo("project_no")
                 .projectName("AI 분석 프로젝트")
                 .startDate(LocalDateTime.of(2024, 7, 1, 9, 0))
                 .endDate(LocalDateTime.of(2024, 12, 31, 18, 0))
@@ -29,6 +30,7 @@ class ProjectPersistenceMapperTest {
 
         // Then
         assertThat(domain).isNotNull();
+        assertThat(domain.getProjectNo()).isEqualTo("project_no");
         assertThat(domain.getProjectName()).isEqualTo("AI 분석 프로젝트");
         assertThat(domain.getStartDate()).isEqualTo(LocalDateTime.of(2024, 7, 1, 9, 0));
         assertThat(domain.getEndDate()).isEqualTo(LocalDateTime.of(2024, 12, 31, 18, 0));
