@@ -10,14 +10,21 @@ import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PRIVATE;
+
+@Builder
 @Entity
 @Table(name = "posts")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PRIVATE)
 public class PostEntity extends BaseEntity {
 
     @Id @Tsid
