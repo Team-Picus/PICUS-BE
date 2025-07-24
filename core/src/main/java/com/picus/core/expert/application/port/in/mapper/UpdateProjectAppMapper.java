@@ -5,7 +5,7 @@ import com.picus.core.expert.domain.model.Project;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProjectCommandAppMapper {
+public class UpdateProjectAppMapper {
 
     public Project toDomain(UpdateProjectAppReq command) {
         return Project.builder()

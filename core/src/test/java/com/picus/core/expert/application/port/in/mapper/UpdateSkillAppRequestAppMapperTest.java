@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UpdateSkillAppRequestAppMapperTest {
 
-    private final SkillCommandAppMapper mapper = new SkillCommandAppMapper();
+    private final UpdateSkillAppMapper mapper = new UpdateSkillAppMapper();
 
     @Test
     @DisplayName("SkillCommand를 Skill 도메인 객체로 변환한다.")

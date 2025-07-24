@@ -5,7 +5,7 @@ import com.picus.core.expert.domain.model.Skill;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SkillCommandAppMapper {
+public class UpdateSkillAppMapper {
 
     public Skill toDomain(UpdateSkillAppReq command) {
         return Skill.builder()

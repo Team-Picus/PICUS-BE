@@ -5,7 +5,7 @@ import com.picus.core.expert.domain.model.Studio;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudioCommandAppMapper {
+public class UpdateStudioAppMapper {
 
     public Studio toDomain(UpdateStudioAppReq command) {
         return Studio.builder()

@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UpdateProjectAppRequestAppMapperTest {
 
-    private final ProjectCommandAppMapper mapper = new ProjectCommandAppMapper();
+    private final UpdateProjectAppMapper mapper = new UpdateProjectAppMapper();
 
     @Test
     @DisplayName("UpdateProjectAppReq 를 Project 도메인 객체로 변환한다.")
