@@ -1,9 +1,6 @@
 package com.picus.core.price.adapter.in.web.data.request;
 
-import com.picus.core.price.application.port.in.command.ChangeStatus;
-import com.picus.core.price.application.port.in.command.OptionCommand;
-import com.picus.core.price.application.port.in.command.PackageCommand;
-import com.picus.core.price.application.port.in.command.PriceReferenceImageCommand;
+import com.picus.core.price.application.port.in.request.ChangeStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

@@ -4,8 +4,8 @@ import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebR
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.StudioWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
-import com.picus.core.expert.application.port.in.GetExpertInfoQuery;
-import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
+import com.picus.core.expert.application.port.in.ExpertInfoQuery;
+import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private GetExpertInfoQuery getExpertInfoQuery;
+    private ExpertInfoQuery expertInfoQuery;
     @MockitoBean
     private GetExpertWebMapper getExpertWebMapper;
 
@@ -70,10 +70,10 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
 
 
         // then - 메서드 호출 검증
-        then(getExpertInfoQuery).should()
+        then(expertInfoQuery).should()
                 .getExpertBasicInfo(expertNo);
         then(getExpertWebMapper).should()
-                .toBasicInfo(any(GetExpertBasicInfoAppResponse.class));
+                .toBasicInfo(any(ExpertBasicInfoQueryAppResp.class));
     }
 
     @Test
@@ -100,14 +100,14 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.studio").exists());
 
         // then - 메서드 호출 검증
-        then(getExpertInfoQuery).should()
+        then(expertInfoQuery).should()
                 .getExpertDetailInfo(expertNo);
         then(getExpertWebMapper).should()
                 .toDetailInfo(any(Expert.class));
     }
 
     private void stubMethodAboutBasicInfo(String expertNo) {
-        GetExpertBasicInfoAppResponse mockAppResponse = GetExpertBasicInfoAppResponse.builder()
+        ExpertBasicInfoQueryAppResp mockAppResponse = ExpertBasicInfoQueryAppResp.builder()
                 .expertNo("")
                 .activityDuration("")
                 .activityCount(100)
@@ -130,7 +130,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                 .links(List.of())
                 .build();
 
-        given(getExpertInfoQuery.getExpertBasicInfo(expertNo))
+        given(expertInfoQuery.getExpertBasicInfo(expertNo))
                 .willReturn(mockAppResponse);
         given(getExpertWebMapper.toBasicInfo(mockAppResponse))
                 .willReturn(mockWebResponse);
@@ -148,7 +148,7 @@ class GetExpertControllerTest extends AbstractSecurityMockSetup {
                         .studio(StudioWebResponse.builder().build())
                         .build();
 
-        given(getExpertInfoQuery.getExpertDetailInfo(expertNo))
+        given(expertInfoQuery.getExpertDetailInfo(expertNo))
                 .willReturn(mockExpert);
         given(getExpertWebMapper.toDetailInfo(mockExpert))
                 .willReturn(webResponse);

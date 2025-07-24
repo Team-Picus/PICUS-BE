@@ -1,7 +1,7 @@
 package com.picus.core.price.adapter.in.web.mapper;
 
 import com.picus.core.price.adapter.in.web.data.request.*;
-import com.picus.core.price.application.port.in.command.*;
+import com.picus.core.price.application.port.in.request.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ public class ApplyPriceChangesWebMapperTest {
     private final ApplyPriceChangesWebMapper mapper = new ApplyPriceChangesWebMapper();
 
     @Test
-    @DisplayName("ApplyPriceChangesWebRequest -> ApplyPriceChangesCommand 매핑")
+    @DisplayName("ApplyPriceChangesWebRequest -> PriceInfoCommandAppReq 매핑")
     void toCommand() {
         // given
         PriceReferenceImageWebRequest imageWebRequest = PriceReferenceImageWebRequest.builder()
@@ -54,44 +54,44 @@ public class ApplyPriceChangesWebMapperTest {
         ApplyPriceChangesWebRequest webRequest = new ApplyPriceChangesWebRequest(List.of(priceWebRequest));
 
         // when
-        ApplyPriceChangesCommand command = mapper.toCommand(webRequest);
+        PriceInfoCommandAppReq command = mapper.toCommand(webRequest);
 
         // then
         assertThat(command).isNotNull();
 
         // PriceCommand의 모든 필드 검증
         assertThat(command.prices()).hasSize(1);
-        PriceCommand priceCommand = command.prices().getFirst();
-        assertThat(priceCommand.priceNo()).isEqualTo("price-001");
-        assertThat(priceCommand.priceThemeType()).isEqualTo("THEME");
-        assertThat(priceCommand.status()).isEqualTo(ChangeStatus.NEW);
+        PriceCommandAppReq priceCommandAppReq = command.prices().getFirst();
+        assertThat(priceCommandAppReq.priceNo()).isEqualTo("price-001");
+        assertThat(priceCommandAppReq.priceThemeType()).isEqualTo("THEME");
+        assertThat(priceCommandAppReq.status()).isEqualTo(ChangeStatus.NEW);
 
-        // PriceReferenceImageCommand 모든 필드 검증
-        assertThat(priceCommand.priceReferenceImages()).hasSize(1);
-        PriceReferenceImageCommand imageCommand = priceCommand.priceReferenceImages().getFirst();
+        // PriceReferenceImageCommandAppReq 모든 필드 검증
+        assertThat(priceCommandAppReq.priceReferenceImages()).hasSize(1);
+        PriceReferenceImageCommandAppReq imageCommand = priceCommandAppReq.priceReferenceImages().getFirst();
         assertThat(imageCommand.priceRefImageNo()).isEqualTo("img-001");
         assertThat(imageCommand.fileKey()).isEqualTo("file-key-001");
         assertThat(imageCommand.imageOrder()).isEqualTo(1);
         assertThat(imageCommand.status()).isEqualTo(ChangeStatus.NEW);
 
-        // PackageCommand 모든 필드 검증
-        assertThat(priceCommand.packages()).hasSize(1);
-        PackageCommand packageCommand = priceCommand.packages().getFirst();
-        assertThat(packageCommand.packageNo()).isEqualTo("pkg-001");
-        assertThat(packageCommand.name()).isEqualTo("패키지A");
-        assertThat(packageCommand.price()).isEqualTo(10000);
-        assertThat(packageCommand.contents()).containsExactly("내용1", "내용2");
-        assertThat(packageCommand.notice()).isEqualTo("주의사항");
-        assertThat(packageCommand.status()).isEqualTo(ChangeStatus.NEW);
+        // PackageCommandAppReq 모든 필드 검증
+        assertThat(priceCommandAppReq.packages()).hasSize(1);
+        PackageCommandAppReq packageCommandAppReq = priceCommandAppReq.packages().getFirst();
+        assertThat(packageCommandAppReq.packageNo()).isEqualTo("pkg-001");
+        assertThat(packageCommandAppReq.name()).isEqualTo("패키지A");
+        assertThat(packageCommandAppReq.price()).isEqualTo(10000);
+        assertThat(packageCommandAppReq.contents()).containsExactly("내용1", "내용2");
+        assertThat(packageCommandAppReq.notice()).isEqualTo("주의사항");
+        assertThat(packageCommandAppReq.status()).isEqualTo(ChangeStatus.NEW);
 
-        // OptionCommand 모든 필드 검증
-        assertThat(priceCommand.options()).hasSize(1);
-        OptionCommand optionCommand = priceCommand.options().getFirst();
-        assertThat(optionCommand.optionNo()).isEqualTo("opt-001");
-        assertThat(optionCommand.name()).isEqualTo("옵션A");
-        assertThat(optionCommand.count()).isEqualTo(2);
-        assertThat(optionCommand.price()).isEqualTo(3000);
-        assertThat(optionCommand.contents()).containsExactly("옵션내용");
-        assertThat(optionCommand.status()).isEqualTo(ChangeStatus.NEW);
+        // OptionCommandAppReq 모든 필드 검증
+        assertThat(priceCommandAppReq.options()).hasSize(1);
+        OptionCommandAppReq optionCommandAppReq = priceCommandAppReq.options().getFirst();
+        assertThat(optionCommandAppReq.optionNo()).isEqualTo("opt-001");
+        assertThat(optionCommandAppReq.name()).isEqualTo("옵션A");
+        assertThat(optionCommandAppReq.count()).isEqualTo(2);
+        assertThat(optionCommandAppReq.price()).isEqualTo(3000);
+        assertThat(optionCommandAppReq.contents()).containsExactly("옵션내용");
+        assertThat(optionCommandAppReq.status()).isEqualTo(ChangeStatus.NEW);
     }
 }

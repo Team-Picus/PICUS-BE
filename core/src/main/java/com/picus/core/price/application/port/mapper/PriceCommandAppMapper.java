@@ -1,10 +1,10 @@
 package com.picus.core.price.application.port.mapper;
 
 import com.picus.core.expert.domain.model.vo.PriceThemeType;
-import com.picus.core.price.application.port.in.command.OptionCommand;
-import com.picus.core.price.application.port.in.command.PackageCommand;
-import com.picus.core.price.application.port.in.command.PriceCommand;
-import com.picus.core.price.application.port.in.command.PriceReferenceImageCommand;
+import com.picus.core.price.application.port.in.request.OptionCommandAppReq;
+import com.picus.core.price.application.port.in.request.PackageCommandAppReq;
+import com.picus.core.price.application.port.in.request.PriceCommandAppReq;
+import com.picus.core.price.application.port.in.request.PriceReferenceImageCommandAppReq;
 import com.picus.core.price.domain.model.Option;
 import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
@@ -16,17 +16,17 @@ import java.util.List;
 @Component
 public class PriceCommandAppMapper {
 
-    public Price toPriceDomain(PriceCommand priceCommand) {
+    public Price toPriceDomain(PriceCommandAppReq priceCommandAppReq) {
         return Price.builder()
-                .priceNo(priceCommand.priceNo())
-                .priceThemeType(PriceThemeType.valueOf(priceCommand.priceThemeType()))
-                .priceReferenceImages(toRefImageDomain(priceCommand.priceReferenceImages()))
-                .packages(toPackageDomain(priceCommand.packages()))
-                .options(toOptionDomain(priceCommand.options()))
+                .priceNo(priceCommandAppReq.priceNo())
+                .priceThemeType(PriceThemeType.valueOf(priceCommandAppReq.priceThemeType()))
+                .priceReferenceImages(toRefImageDomain(priceCommandAppReq.priceReferenceImages()))
+                .packages(toPackageDomain(priceCommandAppReq.packages()))
+                .options(toOptionDomain(priceCommandAppReq.options()))
                 .build();
     }
 
-    private List<PriceReferenceImage> toRefImageDomain(List<PriceReferenceImageCommand> priceRefImageCommands) {
+    private List<PriceReferenceImage> toRefImageDomain(List<PriceReferenceImageCommandAppReq> priceRefImageCommands) {
         return priceRefImageCommands.stream()
                 .map(priceRefImageCommand -> PriceReferenceImage.builder()
                         .priceRefImageNo(priceRefImageCommand.priceRefImageNo())
@@ -36,8 +36,8 @@ public class PriceCommandAppMapper {
                 .toList();
     }
 
-    private List<Package> toPackageDomain(List<PackageCommand> packageCommands) {
-        return packageCommands.stream()
+    private List<Package> toPackageDomain(List<PackageCommandAppReq> packageCommandAppReqs) {
+        return packageCommandAppReqs.stream()
                 .map(packageCommand -> Package.builder()
                         .packageNo(packageCommand.packageNo())
                         .name(packageCommand.name())
@@ -48,8 +48,8 @@ public class PriceCommandAppMapper {
                 .toList();
     }
 
-    private List<Option> toOptionDomain(List<OptionCommand> optionCommands) {
-        return optionCommands.stream()
+    private List<Option> toOptionDomain(List<OptionCommandAppReq> optionCommandAppReqs) {
+        return optionCommandAppReqs.stream()
                 .map(optionCommand -> Option.builder()
                         .optionNo(optionCommand.optionNo())
                         .name(optionCommand.name())

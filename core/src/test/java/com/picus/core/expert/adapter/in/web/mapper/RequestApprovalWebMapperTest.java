@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
@@ -48,7 +48,7 @@ class RequestApprovalWebMapperTest {
         String userNo = "user-001";
 
         // when
-        RequestApprovalRequest command = mapper.toCommand(request, userNo);
+        RequestApprovalAppReq command = mapper.toCommand(request, userNo);
 
         // then
         assertThat(command.userNo()).isEqualTo("user-001");

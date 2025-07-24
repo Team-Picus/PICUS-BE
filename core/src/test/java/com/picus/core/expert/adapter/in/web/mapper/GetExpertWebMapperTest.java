@@ -2,7 +2,7 @@ package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
-import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
+import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
 import com.picus.core.expert.domain.model.*;
 import com.picus.core.expert.domain.model.vo.*;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,7 @@ class GetExpertWebMapperTest {
     @DisplayName("Expert 도메인 객체를 기본 정보 WebResponse로 매핑한다")
     void toBasicInfo_shouldMapCorrectly() {
         // given
-        GetExpertBasicInfoAppResponse appResponse = GetExpertBasicInfoAppResponse.builder()
+        ExpertBasicInfoQueryAppResp appResponse = ExpertBasicInfoQueryAppResp.builder()
                 .expertNo("expert_no")
                 .activityDuration("3년")
                 .activityCount(12)

@@ -5,7 +5,7 @@ import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWeb
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.ProjectWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.SkillWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.StudioWebResponse;
-import com.picus.core.expert.application.port.in.response.GetExpertBasicInfoAppResponse;
+import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 public class GetExpertWebMapper {
 
-    public GetExpertBasicInfoWebResponse toBasicInfo(GetExpertBasicInfoAppResponse appResponse) {
+    public GetExpertBasicInfoWebResponse toBasicInfo(ExpertBasicInfoQueryAppResp appResponse) {
         return GetExpertBasicInfoWebResponse.builder()
                 .expertNo(appResponse.expertNo())
                 .activityDuration(appResponse.activityDuration())

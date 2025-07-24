@@ -1,8 +1,8 @@
 package com.picus.core.expert.adapter.in.web;
 
 import com.picus.core.expert.adapter.in.web.mapper.SuggestExpertWebMapper;
-import com.picus.core.expert.application.port.in.SuggestExpertsQuery;
-import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
+import com.picus.core.expert.application.port.in.SuggestExpertsUseCase;
+import com.picus.core.expert.application.port.in.response.SuggestExpertAppResp;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private SuggestExpertsQuery suggestExpertsQuery;
+    private SuggestExpertsUseCase suggestExpertsUseCase;
 
     @MockitoBean
     private SuggestExpertWebMapper suggestExpertWebMapper;
@@ -40,9 +40,9 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
         // given
         String keyword = "nick";
         int size = 2;
-        List<SuggestExpertAppResponse> mockResult = List.of(
-                new SuggestExpertAppResponse("ex1", "nick1", "aaa"),
-                new SuggestExpertAppResponse("ex2", "nick2", "bbb")
+        List<SuggestExpertAppResp> mockResult = List.of(
+                new SuggestExpertAppResp("ex1", "nick1", "aaa"),
+                new SuggestExpertAppResp("ex2", "nick2", "bbb")
         );
 
         stubMethodInController(keyword, mockResult, size);
@@ -64,7 +64,7 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.result[1].nickname").exists())
                 .andExpect(jsonPath("$.result[1].profileImageUrl").exists());
 
-        then(suggestExpertsQuery).should().suggestExperts(keyword, size);
+        then(suggestExpertsUseCase).should().suggestExperts(keyword, size);
     }
 
     @Test
@@ -83,7 +83,7 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.result").isArray());
 
-        then(suggestExpertsQuery).should().suggestExperts(keyword, 3);
+        then(suggestExpertsUseCase).should().suggestExperts(keyword, 3);
     }
 
     @Test
@@ -93,9 +93,9 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(status().isBadRequest());
     }
 
-    private void stubMethodInController(String keyword, List<SuggestExpertAppResponse> mockResult, int size) {
-        given(suggestExpertsQuery.suggestExperts(keyword, size)).willReturn(mockResult);
-        for (SuggestExpertAppResponse app : mockResult) {
+    private void stubMethodInController(String keyword, List<SuggestExpertAppResp> mockResult, int size) {
+        given(suggestExpertsUseCase.suggestExperts(keyword, size)).willReturn(mockResult);
+        for (SuggestExpertAppResp app : mockResult) {
             given(suggestExpertWebMapper.toWebResponse(app)).willReturn(
                     new com.picus.core.expert.adapter.in.web.data.response.SuggestExpertWebResponse(
                             app.expertNo(), app.nickname(), app.profileImageUrl()

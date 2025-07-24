@@ -3,7 +3,7 @@ package com.picus.core.price.adapter.in;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.price.adapter.in.web.GetPricesByExpertController;
 import com.picus.core.price.adapter.in.web.mapper.GetPricesByExpertWebMapper;
-import com.picus.core.price.application.port.in.GetPricesByExpertQuery;
+import com.picus.core.price.application.port.in.PricesByExpertQuery;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ class GetPricesByExpertControllerTest extends AbstractSecurityMockSetup {
     MockMvc mockMvc;
 
     @MockitoBean
-    GetPricesByExpertQuery getPricesByExpertQuery;
+    PricesByExpertQuery pricesByExpertQuery;
     @MockitoBean
     GetPricesByExpertWebMapper getPricesByExpertWebMapper;
 

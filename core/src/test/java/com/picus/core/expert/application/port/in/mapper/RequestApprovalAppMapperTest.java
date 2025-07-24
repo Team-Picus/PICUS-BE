@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.port.in.mapper;
 
-import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -22,7 +22,7 @@ class RequestApprovalAppMapperTest {
     @DisplayName("RequestApprovalCommand를 Expert 도메인 객체로 변환한다")
     void toDomain_shouldMapCorrectly() {
         // given
-        RequestApprovalRequest command = RequestApprovalRequest.builder()
+        RequestApprovalAppReq command = RequestApprovalAppReq.builder()
                 .activityCareer("백엔드 5년차")
                 .activityAreas(List.of("서울", "대전"))
                 .projects(List.of(Project.builder().projectName("프로젝트A").build()))

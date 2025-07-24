@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.adapter.in.web.mapper.ApplyPriceChangesWebMapper;
-import com.picus.core.price.application.port.in.ApplyPriceChangesUseCase;
-import com.picus.core.price.application.port.in.command.ApplyPriceChangesCommand;
-import com.picus.core.price.application.port.in.command.ChangeStatus;
+import com.picus.core.price.application.port.in.PriceInfoCommand;
+import com.picus.core.price.application.port.in.request.PriceInfoCommandAppReq;
+import com.picus.core.price.application.port.in.request.ChangeStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +36,7 @@ class ApplyPriceChangesControllerTest extends AbstractSecurityMockSetup {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    ApplyPriceChangesUseCase applyPriceChangesUseCase;
+    PriceInfoCommand priceInfoCommand;
     @MockitoBean
     ApplyPriceChangesWebMapper webMapper;
 
@@ -64,7 +63,7 @@ class ApplyPriceChangesControllerTest extends AbstractSecurityMockSetup {
         ApplyPriceChangesWebRequest webRequest = new ApplyPriceChangesWebRequest(List.of(priceWebRequest));
 
         given(webMapper.toCommand(webRequest))
-                .willReturn(Mockito.mock(ApplyPriceChangesCommand.class));
+                .willReturn(Mockito.mock(PriceInfoCommandAppReq.class));
 
         // when
         mockMvc.perform(
@@ -80,8 +79,8 @@ class ApplyPriceChangesControllerTest extends AbstractSecurityMockSetup {
         // then
         then(webMapper).should()
                 .toCommand(webRequest);
-        then(applyPriceChangesUseCase).should()
-                .apply(any(ApplyPriceChangesCommand.class), eq(TEST_USER_ID));
+        then(priceInfoCommand).should()
+                .apply(any(PriceInfoCommandAppReq.class), eq(TEST_USER_ID));
     }
 
     @Test
@@ -107,7 +106,7 @@ class ApplyPriceChangesControllerTest extends AbstractSecurityMockSetup {
         ApplyPriceChangesWebRequest webRequest = new ApplyPriceChangesWebRequest(List.of(priceWebRequest));
 
         given(webMapper.toCommand(webRequest))
-                .willReturn(Mockito.mock(ApplyPriceChangesCommand.class));
+                .willReturn(Mockito.mock(PriceInfoCommandAppReq.class));
 
         // when // then
         mockMvc.perform(
@@ -143,7 +142,7 @@ class ApplyPriceChangesControllerTest extends AbstractSecurityMockSetup {
         ApplyPriceChangesWebRequest webRequest = new ApplyPriceChangesWebRequest(List.of(priceWebRequest));
 
         given(webMapper.toCommand(webRequest))
-                .willReturn(Mockito.mock(ApplyPriceChangesCommand.class));
+                .willReturn(Mockito.mock(PriceInfoCommandAppReq.class));
 
         // when // then
         mockMvc.perform(
