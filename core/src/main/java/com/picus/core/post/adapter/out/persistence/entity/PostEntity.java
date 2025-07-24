@@ -45,10 +45,6 @@ public class PostEntity extends BaseEntity {
 
     private String spaceAddress;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PostStatus postStatus;
-
     @Column(nullable = false)
     private Boolean isPinned;
 

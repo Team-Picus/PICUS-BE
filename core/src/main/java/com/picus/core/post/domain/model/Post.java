@@ -4,11 +4,15 @@ import com.picus.core.post.domain.model.vo.PostMoodType;
 import com.picus.core.post.domain.model.vo.PostStatus;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
+@Getter
 public class Post {
 
     private String postNo;
@@ -19,11 +23,10 @@ public class Post {
     private String title;
     private String oneLineDescription;
     private String detailedDescription;
-    private List<PostThemeType> postThemeTypes = new ArrayList<>();
-    private List<PostMoodType> postMoodTypes = new ArrayList<>();
+    private List<PostThemeType> postThemeTypes;
+    private List<PostMoodType> postMoodTypes;
     private SpaceType spaceType;
     private String spaceAddress;
-    private PostStatus postStatus;
     private Boolean isPinned;
     private List<PostImage> postImages;
     private LocalDateTime createdAt;
