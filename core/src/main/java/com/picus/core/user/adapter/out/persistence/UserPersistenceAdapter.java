@@ -87,6 +87,9 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     }
 
     @Override
+    public Boolean existsById(String userNo) {
+        return userJpaRepository.existsById(userNo);
+
     public Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo) {
         return userJpaRepository.findUserInfoByExpertNo(expertNo);
     }

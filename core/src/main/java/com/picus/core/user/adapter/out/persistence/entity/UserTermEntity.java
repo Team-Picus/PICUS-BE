@@ -2,12 +2,9 @@ package com.picus.core.user.adapter.out.persistence.entity;
 
 import com.picus.core.shared.common.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_term")
@@ -19,27 +16,15 @@ import java.time.LocalDateTime;
 public class UserTermEntity extends BaseEntity {
 
     @Id
-    private String userNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", nullable = false)
+    private UserEntity user;
 
     @Id
-    private String termNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "term_no", nullable = false)
+    private TermEntity term;
 
     @Column(nullable = false)
     private Boolean isAgreed;
-}
-
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-class UserTermId implements Serializable {
-
-    @EqualsAndHashCode.Include
-    private Long userNo;
-
-    @EqualsAndHashCode.Include
-    private Long termNo;
-
-    public UserTermId(Long userNo, Long termNo) {
-        this.userNo = userNo;
-        this.termNo = termNo;
-    }
 }

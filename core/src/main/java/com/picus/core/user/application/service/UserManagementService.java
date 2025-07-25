@@ -1,7 +1,6 @@
 package com.picus.core.user.application.service;
 
 import com.picus.core.shared.annotation.UseCase;
-import com.picus.core.user.application.port.in.mapper.UserProfileCommandMapper;
 import com.picus.core.user.application.port.in.UserManagementUseCase;
 import com.picus.core.user.application.port.in.command.CompleteProfileCommand;
 import com.picus.core.user.application.port.out.UserCommandPort;
@@ -18,7 +17,6 @@ public class UserManagementService implements UserManagementUseCase {
 
     private final UserQueryPort userQueryPort;
     private final UserCommandPort userCommandPort;
-    private final UserProfileCommandMapper userProfileCommandMapper;
 
     @Override
     public User findById(String userNo) {

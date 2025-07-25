@@ -13,6 +13,8 @@ public interface UserQueryPort {
 
     Role findRoleById(String userNo);
 
+    Boolean existsById(String userNo);
+
     Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo);
 
     List<UserWithProfileImageDto> findUserInfoByNicknameContaining(String keyword);
