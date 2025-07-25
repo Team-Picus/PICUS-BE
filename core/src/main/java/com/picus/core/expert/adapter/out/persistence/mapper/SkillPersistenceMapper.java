@@ -10,6 +10,7 @@ public class SkillPersistenceMapper {
 
     public Skill mapToDomain(SkillEntity entity) {
         return Skill.builder()
+                .skillNo(entity.getSkillNo())
                 .skillType(entity.getSkillType())
                 .content(entity.getContent())
                 .build();

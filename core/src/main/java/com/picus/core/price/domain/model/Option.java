@@ -1,14 +1,30 @@
 package com.picus.core.price.domain.model;
 
-import java.util.ArrayList;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import java.util.List;
 
+@Builder
+@Getter
+@EqualsAndHashCode
 public class Option {
-    private String optionsNo;
+    private String optionNo;
 
-    private String themeNo;
     private String name;
     private Integer count;
     private Integer price;
-    private List<String> content = new ArrayList<>();
+    private List<String> contents;
+
+    public void updateOption(String name, Integer count, Integer price, List<String> contents) {
+        if(name != null)
+            this.name = name;
+        if(count != null)
+            this.count = count;
+        if(price != null)
+            this.price = price;
+        if(contents != null)
+            this.contents = contents;
+    }
 }

@@ -1,9 +1,9 @@
 package com.picus.core.expert.application.port.in;
 
-import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
 
 public interface RequestApprovalUseCase {
 
-    Expert requestApproval(Expert expert);
+    void requestApproval(RequestApprovalRequest command);
 
 }

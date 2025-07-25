@@ -1,65 +1,57 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.out.SaveExpertPort;
+import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
+import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.ActivityArea;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.user.application.port.out.UserCommandPort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 class RequestApprovalServiceTest {
 
-    private final SaveExpertPort saveExpertPort = Mockito.mock(SaveExpertPort.class);
+    final CreateExpertPort createExpertPort = Mockito.mock(CreateExpertPort.class);
+    final UserCommandPort userCommandPort = Mockito.mock(UserCommandPort.class);
+    final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(saveExpertPort);
+            = new RequestApprovalService(createExpertPort, userCommandPort, appMapper);
 
 
     @Test
-    @DisplayName("승인 요청시 ApprovalStatus가 PENDING인 Expert가 생성된다.")
+    @DisplayName("전문가 승인요청 메서드 상호작용 검증")
     public void requestApproval_success() throws Exception {
         // given
-        Expert request = givenExpert();
-
-        // saveExpertPort.saveExpert() stubbing
-        givenSaveExpertPortResult(request);
+        RequestApprovalRequest command = givenRequestApprovalCommand();
+        stubOutPortMethod();
 
         // when
-        Expert response = requestApprovalService.requestApproval(request);
+        requestApprovalService.requestApproval(command);
 
         // then
-        ArgumentCaptor<Expert> captor = ArgumentCaptor.forClass(Expert.class);
 
-        then(saveExpertPort).should().saveExpert(captor.capture()); // out port를 호출했는지 검증
-
-        Expert captured = captor.getValue();
-        assertThat(captured.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING); // PENDING인 Expert가 생성됐는지 검증
-
-        assertResponse(response, request); // 리턴값을 잘 반환했는지 검증
+        then(createExpertPort).should().saveExpert(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
+        then(userCommandPort).should().assignExpertNo(any(String.class), any(String.class));
     }
 
 
-    private Expert givenExpert() {
-        return Expert.builder()
+
+    private RequestApprovalRequest givenRequestApprovalCommand() {
+        return RequestApprovalRequest.builder()
                 .activityCareer("3년차")
-                .activityCount(0)
-                .approvalStatus(ApprovalStatus.PENDING)
                 .projects(List.of(
                         Project.builder()
                                 .projectName("단편영화 촬영 프로젝트")
@@ -72,7 +64,7 @@ class RequestApprovalServiceTest {
                                 .endDate(LocalDateTime.of(2023, 2, 20, 0, 0))
                                 .build()
                 ))
-                .activityAreas(List.of(ActivityArea.SEOUL_GANGBUKGU, ActivityArea.SEOUL_GANGDONGGU))
+                .activityAreas(List.of("서울 강북구", "서울 강동구"))
                 .skills(List.of(
                         Skill.builder()
                                 .skillType(SkillType.CAMERA)
@@ -97,33 +89,15 @@ class RequestApprovalServiceTest {
                                 .link("https://myportfolio.com/project2")
                                 .build()
                 ))
+                .userNo("user_no1")
                 .build();
     }
-
-    private void givenSaveExpertPortResult(Expert expert) {
-        Expert savedExpert = Expert.builder()
+    private void stubOutPortMethod() {
+        Expert expert = Expert.builder()
                 .expertNo("expert_no1")
-                .activityCareer(expert.getActivityCareer())
-                .activityAreas(expert.getActivityAreas())
-                .activityCount(expert.getActivityCount())
-                .portfolios(expert.getPortfolios())
-                .approvalStatus(ApprovalStatus.PENDING)
-                .studio(expert.getStudio())
-                .skills(expert.getSkills())
-                .projects(expert.getProjects())
-                .createdAt(expert.getCreatedAt())
                 .build();
-        given(saveExpertPort.saveExpert(any(Expert.class)))
-                .willReturn(savedExpert);
-    }
-    private void assertResponse(Expert response, Expert request) {
-        assertThat(response.getExpertNo()).isNotNull();
-        assertThat(response.getActivityCareer()).isEqualTo(request.getActivityCareer());
-        assertThat(response.getProjects()).usingRecursiveComparison().isEqualTo(request.getProjects());
-        assertThat(response.getActivityAreas()).usingRecursiveComparison().isEqualTo(request.getActivityAreas());
-        assertThat(response.getSkills()).usingRecursiveComparison().isEqualTo(request.getSkills());
-        assertThat(response.getStudio()).usingRecursiveComparison().isEqualTo(request.getStudio());
-        assertThat(response.getPortfolios()).usingRecursiveComparison().isEqualTo(request.getPortfolios());
+        given(createExpertPort.saveExpert(any(Expert.class), any(String.class)))
+                .willReturn(expert);
     }
 
 }
