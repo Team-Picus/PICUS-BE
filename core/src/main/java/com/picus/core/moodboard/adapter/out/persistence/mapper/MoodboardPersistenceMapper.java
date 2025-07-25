@@ -18,7 +18,9 @@ public class MoodboardPersistenceMapper { // DB Entity <-> Domain Model
 
     public Moodboard toDomainModel(MoodboardEntity entity) {
         return Moodboard.builder()
-                .moodboardNo
+                .userNo(entity.getUser().getUserNo())
+                .postNo(entity.getPost().getPostNo())
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 }
