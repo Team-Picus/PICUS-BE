@@ -33,7 +33,7 @@ public class TermController {
     @GetMapping
     public BaseResponse<List<GetTermResponse>> getTerms() {
         List<GetTermResponse> response = termManagementUseCase.getTerms().stream()
-                .map(termWebMapper::toDto)
+                .map(termWebMapper::toResponse)
                 .toList();
 
         return BaseResponse.onSuccess(response);

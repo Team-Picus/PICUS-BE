@@ -28,6 +28,6 @@ public class UserProfileController {
     public BaseResponse<GetProfileResponse> getMyProfile(@CurrentUser String userNo) {
         User user = userManagementUseCase.findById(userNo);
         // todo: 배포 직전 PRESIGNED URI 가져오기
-        return BaseResponse.onSuccess(webMapper.toDto(user, null));
+        return BaseResponse.onSuccess(webMapper.toResponse(user, null));
     }
 }
