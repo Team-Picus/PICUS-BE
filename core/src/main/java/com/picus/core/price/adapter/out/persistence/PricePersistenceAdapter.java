@@ -142,8 +142,7 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
     }
 
     private PriceEntity savePriceEntity(Price price, String expertNo) {
-        PriceEntity entity = pricePersistenceMapper.toEntity(price);
-        entity.bindExpertNo(expertNo);
+        PriceEntity entity = pricePersistenceMapper.toEntity(price, expertNo);
         return priceJpaRepository.save(entity);
     }
 

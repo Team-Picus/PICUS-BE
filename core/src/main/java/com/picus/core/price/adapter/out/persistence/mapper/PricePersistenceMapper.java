@@ -28,8 +28,9 @@ public class PricePersistenceMapper {
                 .build();
     }
 
-    public PriceEntity toEntity(Price price) {
+    public PriceEntity toEntity(Price price, String expertNo) {
         return PriceEntity.builder()
+                .expertNo(expertNo)
                 .priceThemeType(price.getPriceThemeType())
                 .build();
     }

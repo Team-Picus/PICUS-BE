@@ -30,10 +30,6 @@ public class PriceEntity {
     @Column(nullable = false)
     private PriceThemeType priceThemeType;
 
-    public void bindExpertNo(String expertNo) {
-        this.expertNo = expertNo;
-    }
-
     public void updateEntity(PriceThemeType priceThemeType) {
         this.priceThemeType = priceThemeType;
     }

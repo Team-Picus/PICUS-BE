@@ -11,6 +11,7 @@ public class WritePostAppMapper {
     public Post toDomain(WritePostAppReq appReq, String expertNo) {
         return Post.builder()
                 .packageNo(appReq.packageNo())
+                .authorNo(expertNo)
                 .title(appReq.title())
                 .oneLineDescription(appReq.oneLineDescription())
                 .detailedDescription(appReq.detailedDescription())

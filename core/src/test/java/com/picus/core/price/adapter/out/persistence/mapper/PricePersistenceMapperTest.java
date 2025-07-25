@@ -50,11 +50,13 @@ class PricePersistenceMapperTest {
         Price price = Price.builder()
                 .priceThemeType(PriceThemeType.FASHION)
                 .build();
+        String expertNo = "expert-123";
 
         // when
-        PriceEntity entity = mapper.toEntity(price);
+        PriceEntity entity = mapper.toEntity(price, expertNo);
 
         // then
+        assertThat(entity.getExpertNo()).isEqualTo("expert-123");
         assertThat(entity.getPriceThemeType()).isEqualTo(PriceThemeType.FASHION);
     }
 
