@@ -1,6 +1,7 @@
 package com.picus.core.infrastructure.security.jwt;
 
 import com.picus.core.shared.exception.RestApiException;
+import com.picus.core.user.domain.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.picus.core.shared.exception.code.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
 import static com.picus.core.shared.exception.code.status.AuthErrorStatus.UNSUPPORTED_JWT;
 
 
@@ -89,7 +91,10 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
-        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        Role role = getRole(token)
+                .orElseThrow(() -> new RestApiException(INVALID_ACCESS_TOKEN));
+
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(role.getName()));
         return new UsernamePasswordAuthenticationToken(new User(claims.get(ID_CLAIM, String.class), "", authorities), token, authorities);
     }
 
@@ -110,9 +115,10 @@ public class TokenProvider {
         }
     }
 
-    public Optional<String> getRole(String token) {
+    public Optional<Role> getRole(String token) {
         try {
-            return Optional.ofNullable(getClaims(token).get(ROLE_CLAIM, String.class));
+            String role = getClaims(token).get(ROLE_CLAIM, String.class);
+            return Optional.of(Role.valueOf(role));
         } catch (Exception e) {
             return Optional.empty();
         }
