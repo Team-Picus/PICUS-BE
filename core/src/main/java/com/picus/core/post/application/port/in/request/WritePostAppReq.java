@@ -4,10 +4,7 @@ import com.picus.core.post.domain.model.PostImage;
 import com.picus.core.post.domain.model.vo.PostMoodType;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 
 import java.util.List;
 
