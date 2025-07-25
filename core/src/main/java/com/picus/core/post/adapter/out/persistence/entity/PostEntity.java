@@ -10,6 +10,7 @@ import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 import static lombok.AccessLevel.*;
 import static lombok.AccessLevel.PRIVATE;
 
-@Builder
+@SuperBuilder
 @Getter
 @Entity
 @Table(name = "posts")
