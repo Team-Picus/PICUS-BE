@@ -18,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._BAD_REQUEST;
-import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
+import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
 @UseCase
 @RequiredArgsConstructor
@@ -36,11 +35,11 @@ public class PriceInfoCommandService implements PriceInfoCommand {
     private final OptionCommandAppMapper optionCommandAppMapper;
 
     @Override
-    public void updatePrice(UpdatePriceListAppReq command, String currentUserNo) {
+    public void update(UpdatePriceListAppReq command, String currentUserNo) {
         // 현재 사용자의 ExpertNo을 받아옴
         User user = userQueryPort.findById(currentUserNo);
         String expertNo = Optional.ofNullable(user.getExpertNo())
-                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(_FORBIDDEN));
 
         List<UpdatePriceAppReq> updatePriceAppReqs = command.prices();
 
@@ -54,10 +53,10 @@ public class PriceInfoCommandService implements PriceInfoCommand {
                     createPrice(updatePriceAppReq, expertNo);
                     break;
                 case ChangeStatus.UPDATE:
-                    updatePrice(updatePriceAppReq);
+                    updatePrice(updatePriceAppReq, expertNo);
                     break;
                 case ChangeStatus.DELETE:
-                    deletePrice(updatePriceAppReq.priceNo());
+                    deletePrice(updatePriceAppReq.priceNo(), expertNo);
                     break;
             }
         }
@@ -87,8 +86,11 @@ public class PriceInfoCommandService implements PriceInfoCommand {
     }
 
     // Price 수정
-    private void updatePrice(UpdatePriceAppReq updatePriceAppReq) {
+    private void updatePrice(UpdatePriceAppReq updatePriceAppReq, String expertNo) {
         Price price = priceQueryPort.findById(updatePriceAppReq.priceNo());
+        // 현재 사용자와 수정하는 Price의 사용자가 다른 경우 예외
+        throwIfNotOwner(expertNo, price.getExpertNo());
+
         List<String> deletedPriceRefImageNos = new ArrayList<>();
         List<String> deletedPackageNos = new ArrayList<>();
         List<String> deletedOptionNos = new ArrayList<>();
@@ -166,7 +168,16 @@ public class PriceInfoCommandService implements PriceInfoCommand {
     }
 
     // Price 삭제
-    private void deletePrice(String deletePriceNo) {
+    private void deletePrice(String deletePriceNo, String expertNo) {
+        Price price = priceQueryPort.findById(deletePriceNo);
+        // 현재 사용자와 수정하는 Price의 사용자가 다른 경우 예외
+        throwIfNotOwner(expertNo, price.getExpertNo());
+
         priceCommandPort.delete(deletePriceNo);
+    }
+
+    private void throwIfNotOwner(String expertNo, String priceExpertNo) {
+        if(!expertNo.equals(priceExpertNo))
+            throw new RestApiException(_FORBIDDEN);
     }
 }

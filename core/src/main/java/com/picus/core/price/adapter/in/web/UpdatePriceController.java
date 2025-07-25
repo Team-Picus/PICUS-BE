@@ -21,7 +21,7 @@ public class UpdatePriceController {
     @PatchMapping("/api/v1/experts/prices")
     public BaseResponse<Void> applyPriceChanges(@RequestBody @Valid UpdatePriceListWebReq webRequest,
                                                 @CurrentUser String userNo) {
-        priceInfoCommand.updatePrice(webMapper.toCommand(webRequest), userNo);
+        priceInfoCommand.update(webMapper.toCommand(webRequest), userNo);
         return BaseResponse.onSuccess();
     }
 }

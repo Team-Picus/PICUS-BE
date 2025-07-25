@@ -21,6 +21,7 @@ public class PricePersistenceMapper {
 
         return Price.builder()
                 .priceNo(priceEntity.getPriceNo())
+                .expertNo(priceEntity.getExpertNo())
                 .priceThemeType(priceEntity.getPriceThemeType())
                 .packages(packages)
                 .options(options)

@@ -22,14 +22,13 @@ class PricePersistenceMapperTest {
     void toDomain_shouldMapCorrectly() {
         // given
         String testPriceNo = "price123";
+        String testExpertNo = "expert001";
         PriceThemeType testPriceThemeType = PriceThemeType.BEAUTY;
 
-        PriceEntity priceEntity = createPriceEntity(testPriceNo, testPriceThemeType);
+        PriceEntity priceEntity = createPriceEntity(testPriceNo, testExpertNo, testPriceThemeType);
 
         List<Package> packages = createPackages();
-
         List<Option> options = createOptions();
-
         List<PriceReferenceImage> referenceImages = createReferenceImages();
 
         // when
@@ -37,6 +36,7 @@ class PricePersistenceMapperTest {
 
         // then
         assertThat(result.getPriceNo()).isEqualTo(testPriceNo);
+        assertThat(result.getExpertNo()).isEqualTo(testExpertNo);
         assertThat(result.getPriceThemeType()).isEqualTo(testPriceThemeType);
         assertThat(result.getPackages()).isEqualTo(packages);
         assertThat(result.getOptions()).isEqualTo(options);
@@ -60,10 +60,10 @@ class PricePersistenceMapperTest {
         assertThat(entity.getPriceThemeType()).isEqualTo(PriceThemeType.FASHION);
     }
 
-    private PriceEntity createPriceEntity(String testPriceNo, PriceThemeType testPriceThemeType) {
+    private PriceEntity createPriceEntity(String testPriceNo, String testExpertNo, PriceThemeType testPriceThemeType) {
         return PriceEntity.builder()
                 .priceNo(testPriceNo)
-                .expertNo("expert001")
+                .expertNo(testExpertNo)
                 .priceThemeType(testPriceThemeType)
                 .build();
     }
