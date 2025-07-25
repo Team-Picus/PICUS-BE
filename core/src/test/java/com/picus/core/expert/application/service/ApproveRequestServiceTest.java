@@ -29,7 +29,7 @@ class ApproveRequestServiceTest {
     public void approveRequest_success() throws Exception {
         // given
         String expertNo = "expertNo1";
-        Expert expert = givenLoadExpertByExpertNo(expertNo);
+        Expert expert = stubLoadExpertPortResult(expertNo);
 
 
         // when
@@ -40,17 +40,17 @@ class ApproveRequestServiceTest {
                 .isEqualTo(ApprovalStatus.APPROVAL);
 
         then(loadExpertPort).should()
-                .loadExpertByExpertNo(eq(expertNo));
+                .findById(eq(expertNo));
         then(updateExpertPort).should()
                 .updateExpert(eq(expert));
     }
 
-    private Expert givenLoadExpertByExpertNo(String expertNo) {
+    private Expert stubLoadExpertPortResult(String expertNo) {
         Expert expert = Expert.builder()
                 .expertNo(expertNo)
                 .approvalStatus(ApprovalStatus.PENDING)
                 .build();
-        given(loadExpertPort.loadExpertByExpertNo(expertNo))
+        given(loadExpertPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
         return expert;
     }
