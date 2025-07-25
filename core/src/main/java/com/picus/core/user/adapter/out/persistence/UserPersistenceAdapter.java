@@ -54,4 +54,9 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
         return userJpaRepository.findRoleById(userNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
+
+    @Override
+    public Boolean existsById(String userNo) {
+        return userJpaRepository.existsById(userNo);
+    }
 }
