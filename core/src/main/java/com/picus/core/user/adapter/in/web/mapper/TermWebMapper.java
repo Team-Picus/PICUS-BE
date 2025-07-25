@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TermWebMapper {
 
-    public GetTermResponse toDto(Term term) {
+    public GetTermResponse toResponse(Term term) {
         return GetTermResponse
                 .builder()
                 .termNo(term.getTermNo())

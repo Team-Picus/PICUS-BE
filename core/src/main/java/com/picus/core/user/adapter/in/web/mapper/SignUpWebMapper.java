@@ -18,7 +18,7 @@ public class SignUpWebMapper {
                 .build();
     }
 
-    public GetProfileResponse toDto(User user, String fileKey) {
+    public GetProfileResponse toResponse(User user, String fileKey) {
         return GetProfileResponse
                 .builder()
                 .nickname(user.getNickname())

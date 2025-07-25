@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Builder
 public class Moodboard {
 
-    private String moodboardNo;
     private String userNo;
     private String postNo;
     private LocalDateTime createdAt;
