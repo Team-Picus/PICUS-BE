@@ -2,12 +2,14 @@ package com.picus.core.post.adapter.out.persistence.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Builder
+@Getter
 @Entity
 @Table(name = "post_images")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostImageEntity {
 
     @Id @Tsid
@@ -22,4 +24,8 @@ public class PostImageEntity {
 
     @Column(nullable = false)
     private Integer imageOrder;
+
+    public void bindPostEntity(PostEntity postEntity) {
+        this.postEntity = postEntity;
+    }
 }
