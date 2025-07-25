@@ -7,7 +7,12 @@ import lombok.*;
 @Builder
 @Getter
 @Entity
-@Table(name = "post_images")
+@Table(
+        name = "post_images",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"post_no", "image_order"})
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostImageEntity {
