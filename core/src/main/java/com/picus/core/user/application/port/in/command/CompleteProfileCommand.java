@@ -11,7 +11,7 @@ import lombok.Getter;
 public class CompleteProfileCommand extends SelfValidating<CompleteProfileCommand> {
 
     @NotBlank
-    private String userNo;
+    private final String userNo;
 
     @NotBlank
     private final String nickname;

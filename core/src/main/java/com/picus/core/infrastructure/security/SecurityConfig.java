@@ -49,17 +49,11 @@ public class SecurityConfig {
     private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
     private final TokenValidationQueryPort tokenValidationQueryPort;
 
-    /**
-     * 1) Define the PasswordEncoder bean.
-     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * 2) (Optional) Create a DaoAuthenticationProvider if you want custom auth handling.
-     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -68,11 +62,6 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    /**
-     * 3) If you need the AuthenticationManager elsewhere (like in a service),
-     *    expose it as a bean. Spring will build it from all providers,
-     *    including the DaoAuthenticationProvider you declared.
-     */
     @Bean
     public AuthenticationManager authenticationManager(
             org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration configuration
@@ -80,32 +69,21 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    /**
-     * 4) Main Security Filter Chain configuration replacing WebSecurityConfigurerAdapter.configure(HttpSecurity).
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // Manually add the provider if needed:
         http.authenticationProvider(authenticationProvider());
 
         http
-                // if you already have a CorsConfigurationSource bean, just call .cors(Customizer.withDefaults())
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        // Let pre-flight requests through
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        // Example role-based checks
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
-                        .requestMatchers("/api/**").hasAnyAuthority("ROLE_USER")
-                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
-                        // Everything else
                         .anyRequest().permitAll()
                 )
                 // OAuth2 Login
@@ -122,32 +100,21 @@ public class SecurityConfig {
                         .failureHandler(oAuth2AuthenticationFailureHandler())
                 );
 
-        // Add custom token filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        // Build the SecurityFilterChain
         return http.build();
     }
 
-    /**
-     * 5) Custom TokenAuthenticationFilter.
-     */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties, excludeWhitelistPathProperties, tokenValidationQueryPort, tokenManagementCommandPort);
     }
 
-    /**
-     * 6) OAuth2 authorization request repository bean
-     */
     @Bean
     public OAuth2AuthorizationRequestRepository oAuth2AuthorizationRequestRepository() {
         return new OAuth2AuthorizationRequestRepository();
     }
 
-    /**
-     * 7) OAuth2 success/failure handlers
-     */
     @Bean
     public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
         return new OAuth2AuthenticationSuccessHandler(
@@ -163,9 +130,6 @@ public class SecurityConfig {
         return new OAuth2AuthenticationFailureHandler(oAuth2AuthorizationRequestRepository());
     }
 
-    /**
-     * 8) CORS configuration
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource corsConfigSource = new UrlBasedCorsConfigurationSource();
@@ -175,7 +139,6 @@ public class SecurityConfig {
         corsConfig.setAllowedMethods(Arrays.asList(corsProperties.getAllowedMethods().split(",")));
         corsConfig.setAllowedOrigins(Arrays.asList(corsProperties.getAllowedOrigins().split(",")));
         corsConfig.setAllowCredentials(true);
-        // If you need a max age, set it explicitly:
         corsConfig.setMaxAge(3600L);
 
         corsConfigSource.registerCorsConfiguration("/**", corsConfig);

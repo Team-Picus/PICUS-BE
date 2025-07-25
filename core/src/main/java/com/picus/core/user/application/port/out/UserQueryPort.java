@@ -10,4 +10,6 @@ public interface UserQueryPort {
     User findById(String userNo);
 
     Role findRoleById(String userNo);
+
+    Boolean existsById(String userNo);
 }
