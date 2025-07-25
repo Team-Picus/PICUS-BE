@@ -1,8 +1,8 @@
 package com.picus.core.infrastructure.security.jwt;
 
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.in.TokenManagementCommand;
-import com.picus.core.user.application.port.in.TokenValidationQuery;
+import com.picus.core.user.application.port.in.TokenManagementCommandPort;
+import com.picus.core.user.application.port.in.TokenValidationQueryPort;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,8 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
     private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
-    private final TokenValidationQuery tokenValidationQuery;
-    private final TokenManagementCommand tokenManagementCommand;
+    private final TokenValidationQueryPort tokenValidationQueryPort;
+    private final TokenManagementCommandPort tokenManagementCommandPort;
 
     private static final PathPatternParser pathPatternParser = new PathPatternParser();
 
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .orElseThrow(() -> new RestApiException(EMPTY_JWT));
 
             // 토큰 캐시 확인
-            if (tokenValidationQuery.isWhitelistToken(token)) {
+            if (tokenValidationQueryPort.isWhitelistToken(token)) {
                 setAuthentication(token);
                 filterChain.doFilter(request, response);
                 return;
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 토큰 캐시
             if(isExcludedPathForWhitelist(request)) {
-                tokenManagementCommand.whitelist(token, Duration.ofSeconds(30));
+                tokenManagementCommandPort.whitelist(token, Duration.ofSeconds(30));
             }
 
             filterChain.doFilter(request, response);

@@ -11,4 +11,5 @@ public class Term {
     private String name;
     private String content;
     private Boolean isRequired;
+
 }
