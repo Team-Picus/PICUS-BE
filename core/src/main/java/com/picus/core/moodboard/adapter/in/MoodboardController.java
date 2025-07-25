@@ -32,9 +32,11 @@ public class MoodboardController {
     }
 
     @GetMapping
-    public BaseResponse<List<GetMoodboardResponse>> list(@CurrentUser String userNo) {
-        moodboardManagementUseCase.findByUserNo(userNo).stream()
-                .map(moodboardWebMapper::toResponse);
-        return BaseResponse.onSuccess();
+    public BaseResponse<List<GetMoodboardResponse>> getMoodboards(@CurrentUser String userNo) {
+        List<GetMoodboardResponse> response = moodboardManagementUseCase.findByUserNo(userNo).stream()
+                .map(moodboardWebMapper::toResponse)
+                .toList();
+
+        return BaseResponse.onSuccess(response);
     }
 }

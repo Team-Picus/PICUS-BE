@@ -39,7 +39,7 @@ public class MoodboardManagementService implements MoodboardManagementUseCase {
         if (!userQueryPort.existsById(userNo) /* || !postQueryPort.existsById(postNo) */)
             throw new RestApiException(_NOT_FOUND);
 
-        if(moodboardQueryPort.existsById(userNo, postNo))
+        if(!moodboardQueryPort.existsById(userNo, postNo))
             throw new RestApiException(_NOT_FOUND);
 
         moodboardCommandPort.delete(userNo, postNo);
