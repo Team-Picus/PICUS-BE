@@ -3,7 +3,6 @@ package com.picus.core.moodboard.adapter.in;
 import com.picus.core.moodboard.adapter.in.web.data.response.GetMoodboardResponse;
 import com.picus.core.moodboard.adapter.in.web.mapper.MoodboardWebMapper;
 import com.picus.core.moodboard.application.port.in.MoodboardManagementUseCase;
-import com.picus.core.moodboard.domain.model.Moodboard;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ public class MoodboardController {
 
     @GetMapping
     public BaseResponse<List<GetMoodboardResponse>> getMoodboards(@CurrentUser String userNo) {
-        List<GetMoodboardResponse> response = moodboardManagementUseCase.findByUserNo(userNo).stream()
+        List<GetMoodboardResponse> response = moodboardManagementUseCase.getMoodboards(userNo).stream()
                 .map(moodboardWebMapper::toResponse)
                 .toList();
 

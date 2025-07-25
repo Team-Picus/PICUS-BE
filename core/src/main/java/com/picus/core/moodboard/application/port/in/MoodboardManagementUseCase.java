@@ -8,6 +8,6 @@ public interface MoodboardManagementUseCase {
 
     void save(String userNo, String postNo);
     void delete(String userNo, String postNo);
-    List<Moodboard> findByUserNo(String userNo);
+    List<Moodboard> getMoodboards(String userNo);
 
 }

@@ -44,7 +44,7 @@ public class MoodboardManagementService implements MoodboardManagementUseCase {
     }
 
     @Override
-    public List<Moodboard> findByUserNo(String userNo) {
+    public List<Moodboard> getMoodboards(String userNo) {
         return moodboardQueryPort.findByUserNo(userNo);
     }
 }
