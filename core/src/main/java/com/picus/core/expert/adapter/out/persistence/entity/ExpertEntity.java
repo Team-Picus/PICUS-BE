@@ -7,6 +7,7 @@ import com.picus.core.expert.adapter.out.persistence.converter.ActivityAreasConv
 import com.picus.core.expert.adapter.out.persistence.converter.StringConverter;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.shared.common.BaseEntity;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,6 +30,11 @@ public class ExpertEntity extends BaseEntity {
     @Tsid
     private String expertNo;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "expert_no")  // User와 PK 공유
+    private UserEntity userEntity;
+
     private String backgroundImageKey;
 
     private String intro;
@@ -36,14 +42,13 @@ public class ExpertEntity extends BaseEntity {
     @Column(nullable = false)
     private String activityCareer;
 
-    @Convert(converter = ActivityAreasConverter.class)
+    @Convert(converter = StringConverter.class)
     @Column(nullable = false)
-    private List<ActivityArea> activityAreas;
+    private List<String> activityAreas;
 
     @Column(nullable = false)
     private Integer activityCount;
 
-    @Column(nullable = false)
     private LocalDateTime lastActivityAt;
 
     @Convert(converter = StringConverter.class)
@@ -54,15 +59,36 @@ public class ExpertEntity extends BaseEntity {
     private ApprovalStatus approvalStatus;
 
     public void updateEntity(Expert newExpert) {
-        this.backgroundImageKey = newExpert.getBackgroundImageKey();
-        this.intro = newExpert.getIntro();
-        this.activityCareer = newExpert.getActivityCareer();
-        this.activityAreas = newExpert.getActivityAreas();
-        this.activityCount = newExpert.getActivityCount();
-        this.lastActivityAt = newExpert.getLastActivityAt();
-        this.portfolioLinks = newExpert.getPortfolios().stream()
-                .map(Portfolio::getLink).toList();
-        this.approvalStatus = newExpert.getApprovalStatus();
+        if (newExpert.getBackgroundImageKey() != null) {
+            this.backgroundImageKey = newExpert.getBackgroundImageKey();
+        }
+        if (newExpert.getIntro() != null) {
+            this.intro = newExpert.getIntro();
+        }
+        if (newExpert.getActivityCareer() != null) {
+            this.activityCareer = newExpert.getActivityCareer();
+        }
+        if (newExpert.getActivityAreas() != null) {
+            this.activityAreas = newExpert.getActivityAreas();
+        }
+        if (newExpert.getActivityCount() != null) {
+            this.activityCount = newExpert.getActivityCount();
+        }
+        if (newExpert.getLastActivityAt() != null) {
+            this.lastActivityAt = newExpert.getLastActivityAt();
+        }
+        if (newExpert.getPortfolios() != null) {
+            this.portfolioLinks = newExpert.getPortfolios().stream()
+                    .map(Portfolio::getLink)
+                    .toList();
+        }
+        if (newExpert.getApprovalStatus() != null) {
+            this.approvalStatus = newExpert.getApprovalStatus();
+        }
+    }
+
+    public void bindUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
 }

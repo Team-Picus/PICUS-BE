@@ -5,7 +5,7 @@ import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMap
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
 import com.picus.core.expert.application.port.out.LoadExpertPort;
-import com.picus.core.expert.application.port.out.SaveExpertPort;
+import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
@@ -20,21 +20,28 @@ import com.picus.core.expert.adapter.out.persistence.mapper.SkillPersistenceMapp
 import com.picus.core.expert.adapter.out.persistence.mapper.StudioPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
+import com.picus.core.shared.annotation.PersistenceAdapter;
+import com.picus.core.shared.exception.RestApiException;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
+import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
+
 @RequiredArgsConstructor
-@Repository
-public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort, UpdateExpertPort {
+@PersistenceAdapter
+public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPort, UpdateExpertPort {
 
     // Jpa Repository
     private final ExpertJpaRepository expertJpaRepository;
     private final ProjectJpaRepository projectJpaRepository;
     private final SkillJpaRepository skillJpaRepository;
     private final StudioJpaRepository studioJpaRepository;
+
+    private final UserJpaRepository userJpaRepository;
 
     // Mapper
     private final ExpertPersistenceMapper expertPersistenceMapper;
@@ -44,19 +51,19 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
 
 
     @Override
-    public Expert saveExpert(Expert expert) {
+    public Expert saveExpert(Expert expert, String userNo) {
 
         // ExpertEntity 저장
-        ExpertEntity saved = saveExpertEntity(expert);
+        ExpertEntity saved = saveExpertEntity(expert, userNo);
 
         // ProjectEntity 저장
-        saveProjectEntity(expert, saved);
+        saveProjectEntities(saved, expert.getProjects());
 
         // SkillEntity 저장
-        saveSkillEntity(expert, saved);
+        saveSkillEntities(saved, expert.getSkills());
 
         // StudioEntity 저장
-        saveStudioEntity(expert, saved);
+        saveStudioEntities(saved, expert.getStudio());
 
         // Expert 도메인에 기본키 바인딩
         expert.bindExpertNo(saved.getExpertNo());
@@ -65,55 +72,160 @@ public class ExpertPersistenceAdapter implements SaveExpertPort, LoadExpertPort,
     }
 
     @Override
-    public Optional<Expert> loadExpertByExpertNo(String expertNo) {
+    public Optional<Expert> findById(String expertNo) {
+
+        // expert의 Project 가져오기
+        List<Project> projects = projectJpaRepository.findByExpertEntity_ExpertNo(expertNo).stream()
+                .map(projectPersistenceMapper::mapToDomain).toList();
+        // expert의 Skill 가져오기
+        List<Skill> skills = skillJpaRepository.findByExpertEntity_ExpertNo(expertNo).stream()
+                .map(skillPersistenceMapper::mapToDomain).toList();
+        // expert의 Studio 가져오기
+        Studio studio = studioJpaRepository.findByExpertEntity_ExpertNo(expertNo)
+                .map(studioPersistenceMapper::mapToDomain)
+                .orElse(null);
+
         return expertJpaRepository.findById(expertNo)
-                .map(expertPersistenceMapper::mapToDomain);
+                .map(expertEntity -> expertPersistenceMapper.mapToDomain(expertEntity, projects, skills, studio));
     }
 
     @Override
     public void updateExpert(Expert expert) {
-        Optional<ExpertEntity> expertEntity = expertJpaRepository.findById(expert.getExpertNo());
-        expertEntity.ifPresent(entity -> entity.updateEntity(expert));
+        ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        // Expert 수정
+        expertEntity.updateEntity(expert);
+    }
+
+    @Override
+    public void updateExpertWithDetail(Expert expert,
+                                       List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo) {
+
+        ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        // Expert 수정
+        expertEntity.updateEntity(expert);
+
+        // Project 수정
+        updateProjectEntities(expert.getProjects(), expertEntity, deletedProjectNos);
+
+        // Skill 수정
+        updateSkillEntities(expert.getSkills(), expertEntity, deletedSkillNos);
+
+        // Studio 수정
+        updateStudio(expert.getStudio(), expertEntity, deletedStudioNo);
     }
 
     /**
      * private 메서드
      */
 
-    private ExpertEntity saveExpertEntity(Expert expert) {
+    private ExpertEntity saveExpertEntity(Expert expert, String userNo) {
+        UserEntity userEntity = userJpaRepository.findById(userNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
         ExpertEntity expertEntity = expertPersistenceMapper.mapToEntity(expert);
+        expertEntity.bindUserEntity(userEntity);
         return expertJpaRepository.save(expertEntity);
     }
 
-    private void saveProjectEntity(Expert expert, ExpertEntity saved) {
-        List<Project> projects = expert.getProjects();
+    private void saveProjectEntities(ExpertEntity expertEntity, List<Project> projects) {
         List<ProjectEntity> projectEntities = projects.stream()
                 .map(project -> {
                     ProjectEntity projectEntity = projectPersistenceMapper.mapToEntity(project);
-                    projectEntity.assignExpert(saved);
+                    projectEntity.assignExpert(expertEntity);
                     return projectEntity;
                 })
                 .toList();
         projectJpaRepository.saveAll(projectEntities); // TODO:  jdbc batch insert
     }
 
-    private void saveSkillEntity(Expert expert, ExpertEntity saved) {
-        List<Skill> skills = expert.getSkills();
+    private void saveSkillEntities(ExpertEntity expertEntity, List<Skill> skills) {
         List<SkillEntity> skillEntities = skills.stream()
                 .map(skill -> {
                     SkillEntity skillEntity = skillPersistenceMapper.mapToEntity(skill);
-                    skillEntity.assignExpert(saved);
+                    skillEntity.assignExpert(expertEntity);
                     return skillEntity;
                 })
                 .toList();
         skillJpaRepository.saveAll(skillEntities);
     }
 
-    private void saveStudioEntity(Expert expert, ExpertEntity saved) {
-        Studio studio = expert.getStudio();
-        StudioEntity studioEntity = studioPersistenceMapper.mapToEntity(studio);
-        studioEntity.assignExpert(saved);
-        studioJpaRepository.save(studioEntity);
+    private void saveStudioEntities(ExpertEntity expertEntity, Studio studio) {
+        if (studio != null) {
+            StudioEntity studioEntity = studioPersistenceMapper.mapToEntity(studio);
+            studioEntity.assignExpert(expertEntity);
+            studioJpaRepository.save(studioEntity);
+        }
+    }
+
+    private void updateProjectEntities(List<Project> projects, ExpertEntity expertEntity, List<String> deletedProjectNos) {
+
+        // 삭제
+        projectJpaRepository.deleteByProjectNoIn(deletedProjectNos);
+
+        // 추가/수정
+        for (Project project : projects) {
+            String projectNo = project.getProjectNo();
+            if (projectNo != null) {
+                // PK가 있다 = 수정
+                ProjectEntity projectEntity = projectJpaRepository.findById(projectNo)
+                        .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+                projectEntity.updateEntity(project);
+            } else {
+                // PK가 없다 = 저장
+                ProjectEntity projectEntity = projectPersistenceMapper.mapToEntity(project);
+                projectEntity.assignExpert(expertEntity);
+                projectJpaRepository.save(projectEntity);
+            }
+        }
+    }
+
+    private void updateSkillEntities(List<Skill> skills, ExpertEntity expertEntity, List<String> deletedSkillNos) {
+
+        // 삭제
+        skillJpaRepository.deleteBySkillNoIn(deletedSkillNos);
+
+        // 수정/추가
+        for (Skill skill : skills) {
+            String skillNo = skill.getSkillNo();
+            if (skillNo != null) {
+                // PK가 있다 = 수정
+                SkillEntity skillEntity = skillJpaRepository.findById(skillNo)
+                        .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                skillEntity.updateEntity(skill);
+            } else {
+                // PK가 없다 = 저장
+                SkillEntity skillEntity = skillPersistenceMapper.mapToEntity(skill);
+                skillEntity.assignExpert(expertEntity);
+                skillJpaRepository.save(skillEntity);
+            }
+        }
+    }
+
+    private void updateStudio(Studio studio, ExpertEntity expertEntity, String deletedStudioNo) {
+
+        // 삭제
+        if(deletedStudioNo != null) {
+            studioJpaRepository.deleteById(deletedStudioNo);
+        } else {
+            if (studio != null) {
+                if (studio.getStudioNo() != null) {
+                    // PK가 있다 = 수정
+                    StudioEntity studioEntity = studioJpaRepository.findById(studio.getStudioNo())
+                            .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                    studioEntity.updateStudio(studio);
+                } else {
+                    // PK가 없다 = 저장
+                    StudioEntity studioEntity = studioPersistenceMapper.mapToEntity(studio);
+                    studioEntity.assignExpert(expertEntity);
+                    studioJpaRepository.save(studioEntity);
+                }
+            }
+        }
+
     }
 
 }

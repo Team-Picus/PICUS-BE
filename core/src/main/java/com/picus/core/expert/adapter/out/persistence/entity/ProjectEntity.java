@@ -1,5 +1,6 @@
 package com.picus.core.expert.adapter.out.persistence.entity;
 
+import com.picus.core.expert.domain.model.Project;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,5 +40,11 @@ public class ProjectEntity {
     // 연관관계 편의 메서드
     public void assignExpert(ExpertEntity expertEntity) {
         this.expertEntity = expertEntity;
+    }
+
+    public void updateEntity(Project project) {
+        this.projectName = project.getProjectName();
+        this.startDate = project.getStartDate();
+        this.endDate = project.getEndDate();
     }
 }
