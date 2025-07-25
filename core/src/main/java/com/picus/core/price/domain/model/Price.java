@@ -17,6 +17,8 @@ public class Price {
 
     private String priceNo;
 
+    private String expertNo;
+
     private PriceThemeType priceThemeType;
     private List<PriceReferenceImage> priceReferenceImages;
     private List<Package> packages;

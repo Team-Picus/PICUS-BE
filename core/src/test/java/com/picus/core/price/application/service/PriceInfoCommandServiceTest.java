@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +57,7 @@ class PriceInfoCommandServiceTest {
 
     @Test
     @DisplayName("새로운 Price를 생성한다.")
-    void updatePrice_shouldCreatePrice_whenStatusIsNew() {
+    void updatePrice_shouldCreate_whenStatusIsNew() {
         // given
         String currentUserNo = "user-1";
         User user = mock(User.class);
@@ -79,7 +80,7 @@ class PriceInfoCommandServiceTest {
         when(priceCommandAppMapper.toPriceDomain(cmd)).thenReturn(priceDomain);
 
         // when
-        service.updatePrice(command, currentUserNo);
+        service.update(command, currentUserNo);
 
         // then: 순서대로 호출되었는지 검증
         InOrder inOrder = inOrder(userQueryPort, user, priceCommandAppMapper, priceCommandPort);
@@ -97,9 +98,10 @@ class PriceInfoCommandServiceTest {
     void updatePrice_shouldUpdatePrice_whenStatusIsUpdate() {
         // given
         String currentUserNo = "user-2";
+        String currentExpertNo = "expert-2";
         User user = mock(User.class);
         given(userQueryPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn("expert-2");
+        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         UpdatePriceAppReq cmd = new UpdatePriceAppReq(
                 "price-2",
@@ -115,9 +117,10 @@ class PriceInfoCommandServiceTest {
 
         Price price = mock(Price.class);
         given(priceQueryPort.findById("price-2")).willReturn(price);
+        given(price.getExpertNo()).willReturn(currentExpertNo);
 
         // when
-        service.updatePrice(command, currentUserNo);
+        service.update(command, currentUserNo);
 
         // then: 도메인 메서드 실행 순서 검증
         // 순서 검증을 위한 InOrder 객체 준비
@@ -133,12 +136,13 @@ class PriceInfoCommandServiceTest {
 
     @Test
     @DisplayName("기존 Price를 수정할 때 이미지, 패키지, 옵션이 모두 반영된다")
-    void updatePrice_updatePriceWithAllChanges() {
+    void updatePrice_updateWithAllChanges() {
         // given
         String currentUserNo = "user-4";
+        String currentExpertNo = "expert-4";
         User user = mock(User.class);
         given(userQueryPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn("expert-4");
+        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         // 이미지 커맨드
         UpdatePriceReferenceImageAppReq newImgCmd = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
@@ -175,6 +179,7 @@ class PriceInfoCommandServiceTest {
         // 도메인 객체 및 매핑 설정
         Price price = mock(Price.class);
         given(priceQueryPort.findById("price-4")).willReturn(price);
+        given(price.getExpertNo()).willReturn(currentExpertNo);
 
         PriceReferenceImage imgNew = mock(PriceReferenceImage.class);
         PriceReferenceImage imgUpd = mock(PriceReferenceImage.class);
@@ -192,7 +197,7 @@ class PriceInfoCommandServiceTest {
         given(optionCommandAppMapper.toDomain(updOptCmd)).willReturn(optUpd);
 
         // when
-        service.updatePrice(command, currentUserNo);
+        service.update(command, currentUserNo);
 
         // then: 순서 검증
         InOrder order = inOrder(
@@ -232,8 +237,39 @@ class PriceInfoCommandServiceTest {
     }
 
     @Test
+    @DisplayName("Price를 수정할 때, 수정하려는 Price의 expertNo와 현재 expertNo가 다르면 예외가 발생한다.")
+    void updatePrice_fail_when_updatedPrice_isNotEqual_currentExpertNo() {
+        // given
+        String currentUserNo = "user-2";
+        String currentExpertNo = "expert-2";
+        User user = mock(User.class);
+        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(user.getExpertNo()).willReturn(currentExpertNo);
+
+        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+                "price-2",
+                "FASHION",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                ChangeStatus.UPDATE
+        );
+        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
+                Collections.singletonList(cmd)
+        );
+
+        Price price = mock(Price.class);
+        given(priceQueryPort.findById("price-2")).willReturn(price);
+        given(price.getExpertNo()).willReturn("diff_expert_no");
+
+        // when // then
+        assertThatThrownBy(() -> service.update(command, currentUserNo))
+                .isInstanceOf(RestApiException.class);
+    }
+
+    @Test
     @DisplayName("Price를 추가/수정/삭제할 때, 이미지의 순서가 겹친다면 예외가 발생한다.")
-    void updatePrice_image_order_wrong() {
+    void update_image_order_wrong() {
         // given
         String currentUserNo = "user-4";
         User user = mock(User.class);
@@ -260,18 +296,19 @@ class PriceInfoCommandServiceTest {
 
 
         // when // then
-        Assertions.assertThatThrownBy(() -> service.updatePrice(command, currentUserNo))
+        assertThatThrownBy(() -> service.update(command, currentUserNo))
                 .isInstanceOf(RestApiException.class);
     }
 
     @Test
     @DisplayName("Price를 삭제한다.")
-    void updatePrice_shouldDeletePrice_whenStatusIsDelete() {
+    void updatePrice_shouldDelete_whenStatusIsDelete() {
         // given
         String currentUserNo = "user-3";
+        String currentExpertNo = "expert-3";
         User user = mock(User.class);
         given(userQueryPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn("expert-3");
+        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         UpdatePriceAppReq cmd = new UpdatePriceAppReq(
                 "price-3",
@@ -285,13 +322,47 @@ class PriceInfoCommandServiceTest {
                 Collections.singletonList(cmd)
         );
 
-        // when
-        service.updatePrice(command, currentUserNo);
+        Price price = mock(Price.class);
+        given(priceQueryPort.findById("price-3")).willReturn(price);
+        given(price.getExpertNo()).willReturn(currentExpertNo);
 
-        // then: delete만 호출하고, update/create 관련 포트는 호출 안 함
+        // when
+        service.update(command, currentUserNo);
+
+        // then
+        then(priceQueryPort).should().findById("price-3");
         then(priceCommandPort).should().delete("price-3");
-        then(priceCommandPort).shouldHaveNoMoreInteractions();
-        then(priceQueryPort).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @DisplayName("Price를 삭제할 때, 삭제하려는 Price의 expertNo와 현재 expertNo가 다르면 예외가 발생한다.")
+    void updatePrice_fail_when_deletedPriceExpertNo_isNotEqual_currentExpertNo() {
+        // given
+        String currentUserNo = "user-3";
+        String currentExpertNo = "expert-3";
+        User user = mock(User.class);
+        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(user.getExpertNo()).willReturn(currentExpertNo);
+
+        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+                "price-3",
+                "THEME_C",
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                ChangeStatus.DELETE
+        );
+        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
+                Collections.singletonList(cmd)
+        );
+
+        Price price = mock(Price.class);
+        given(priceQueryPort.findById("price-3")).willReturn(price);
+        given(price.getExpertNo()).willReturn("different_expert_no");
+
+        // when then
+        assertThatThrownBy(() -> service.update(command, currentUserNo))
+                .isInstanceOf(RestApiException.class);
     }
 
     private UpdatePriceReferenceImageAppReq createPriceRefImageCommand(String priceRefImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {

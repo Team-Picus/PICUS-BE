@@ -80,7 +80,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
         then(webMapper).should()
                 .toCommand(webRequest);
         then(priceInfoCommand).should()
-                .updatePrice(any(UpdatePriceListAppReq.class), eq(TEST_USER_ID));
+                .update(any(UpdatePriceListAppReq.class), eq(TEST_USER_ID));
     }
 
     @Test
