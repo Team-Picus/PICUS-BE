@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenReissueWebMapper {
 
-    public TokenReissueResponse toDto(String accessToken) {
+    public TokenReissueResponse toResponse(String accessToken) {
         return TokenReissueResponse
                 .builder()
                 .accessToken(accessToken)

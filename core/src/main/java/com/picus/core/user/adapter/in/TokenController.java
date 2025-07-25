@@ -29,6 +29,6 @@ public class TokenController {
         tokenValidationQueryPort.validate(userNo, refreshToken);
         Role role = userManagementUseCase.findRoleById(userNo);
         String reissuedToken = tokenManagementCommandPort.reissue(userNo, role);
-        return BaseResponse.onSuccess(tokenReissueWebMapper.toDto(reissuedToken));
+        return BaseResponse.onSuccess(tokenReissueWebMapper.toResponse(reissuedToken));
     }
 }
