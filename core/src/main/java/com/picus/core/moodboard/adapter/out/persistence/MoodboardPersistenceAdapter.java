@@ -6,10 +6,13 @@ import com.picus.core.moodboard.adapter.out.persistence.mapper.MoodboardPersiste
 import com.picus.core.moodboard.adapter.out.persistence.repository.MoodboardJpaRepository;
 import com.picus.core.moodboard.application.port.out.MoodboardCommandPort;
 import com.picus.core.moodboard.application.port.out.MoodboardQueryPort;
+import com.picus.core.moodboard.domain.model.Moodboard;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -38,5 +41,12 @@ public class MoodboardPersistenceAdapter implements MoodboardCommandPort, Moodbo
     public boolean existsById(String userNo, String postNo) {
         MoodboardId moodboardId = new MoodboardId(userNo, postNo);
         return moodboardJpaRepository.existsById(moodboardId);
+    }
+
+    @Override
+    public List<Moodboard> findByUserNo(String userNo) {
+        return moodboardJpaRepository.findByUser(userNo).stream()
+                .map(moodboardPersistenceMapper::toDomainModel)
+                .toList();
     }
 }
