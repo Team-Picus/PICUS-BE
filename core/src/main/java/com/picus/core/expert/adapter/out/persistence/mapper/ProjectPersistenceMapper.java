@@ -9,6 +9,7 @@ public class ProjectPersistenceMapper {
 
     public Project mapToDomain(ProjectEntity entity) {
         return Project.builder()
+                .projectNo(entity.getProjectNo())
                 .projectName(entity.getProjectName())
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())

@@ -4,7 +4,6 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -22,5 +21,9 @@ public class ProfileImageEntity {
 
     @Column(nullable = false)
     private String userNo;
+
+    public void updateFileKey(String fileKey) {
+        this.file_key = fileKey;
+    }
 
 }

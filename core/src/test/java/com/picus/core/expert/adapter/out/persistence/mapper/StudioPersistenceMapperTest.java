@@ -1,6 +1,5 @@
 package com.picus.core.expert.adapter.out.persistence.mapper;
 
-import com.picus.core.expert.adapter.out.persistence.mapper.StudioPersistenceMapper;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +16,7 @@ class StudioPersistenceMapperTest {
     void mapToDomain() {
         // Given
         StudioEntity entity = StudioEntity.builder()
+                .studioNo("studio_no")
                 .studioName("스튜디오 포토")
                 .employeesCount(4)
                 .businessHours("10:00~19:00")
@@ -24,10 +24,11 @@ class StudioPersistenceMapperTest {
                 .build();
 
         // When
-        Studio result = mapper.mapToStudio(entity);
+        Studio result = mapper.mapToDomain(entity);
 
         // Then
         assertThat(result).isNotNull();
+        assertThat(result.getStudioNo()).isEqualTo("studio_no");
         assertThat(result.getStudioName()).isEqualTo("스튜디오 포토");
         assertThat(result.getEmployeesCount()).isEqualTo(4);
         assertThat(result.getBusinessHours()).isEqualTo("10:00~19:00");
