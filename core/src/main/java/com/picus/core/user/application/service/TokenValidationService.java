@@ -2,7 +2,7 @@ package com.picus.core.user.application.service;
 
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.in.TokenValidationQuery;
+import com.picus.core.user.application.port.in.TokenValidationQueryPort;
 import com.picus.core.user.application.port.out.TokenLifecycleQueryPort;
 import com.picus.core.user.config.TokenPrefixProperties;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class TokenValidationService implements TokenValidationQuery {
+public class TokenValidationService implements TokenValidationQueryPort {
 
     private final TokenPrefixProperties tokenPrefixProperties;
     private final TokenLifecycleQueryPort tokenLifecycleQueryPort;

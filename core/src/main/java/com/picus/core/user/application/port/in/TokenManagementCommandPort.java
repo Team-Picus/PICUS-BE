@@ -4,7 +4,7 @@ import com.picus.core.user.domain.model.Role;
 
 import java.time.Duration;
 
-public interface TokenManagementCommand {
+public interface TokenManagementCommandPort {
 
     void whitelist(String token, Duration duration);
     void blacklist(String userNo, String token);

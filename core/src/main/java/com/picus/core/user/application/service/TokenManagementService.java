@@ -3,7 +3,7 @@ package com.picus.core.user.application.service;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.in.TokenManagementCommand;
+import com.picus.core.user.application.port.in.TokenManagementCommandPort;
 import com.picus.core.user.application.port.out.TokenLifecycleCommandPort;
 import com.picus.core.user.config.TokenPrefixProperties;
 import com.picus.core.user.domain.model.Role;
@@ -17,7 +17,7 @@ import static com.picus.core.shared.exception.code.status.AuthErrorStatus.EXPIRE
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class TokenManagementService implements TokenManagementCommand {
+public class TokenManagementService implements TokenManagementCommandPort {
 
     private final TokenLifecycleCommandPort tokenLifecycleCommandPort;
     private final TokenProvider tokenProvider;
