@@ -32,7 +32,7 @@ public class Expert {
 
     private final Integer activityCount;
 
-    private final LocalDateTime lastActivityAt;
+    private LocalDateTime lastActivityAt;
 
     private List<Portfolio> portfolios;
 
@@ -143,6 +143,10 @@ public class Expert {
         // activityAreas 업데이트 (덮어 씌움)
         if (activityAreas != null)
             this.activityAreas = activityAreas;
+    }
+
+    public void updateLastActivityAt(LocalDateTime lastActivityAt) {
+        this.lastActivityAt = lastActivityAt;
     }
 
     // 프로젝트 변경

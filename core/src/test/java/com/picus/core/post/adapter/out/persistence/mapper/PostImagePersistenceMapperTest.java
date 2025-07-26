@@ -26,6 +26,7 @@ class PostImagePersistenceMapperTest {
         PostImage domain = mapper.toDomain(entity);
 
         // then
+        assertThat(domain.getPostImageNo()).isEqualTo(entity.getPostImageNo());
         assertThat(domain.getFileKey()).isEqualTo(entity.getFileKey());
         assertThat(domain.getImageOrder()).isEqualTo(entity.getImageOrder());
     }
