@@ -45,7 +45,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - 성공")
-    public void writePost_success() throws Exception {
+    public void write_success() throws Exception {
         // given
         WritePostWebReq webReq = createWebReq(
                 List.of(
@@ -80,12 +80,12 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
         // then
         then(webMapper).should().toAppReq(webReq, currenUserNo);
-        then(postInfoCommand).should().writePost(writePostAppReq);
+        then(postInfoCommand).should().write(writePostAppReq);
     }
 
     @Test
     @DisplayName("Post 작성 요청 - postImages 비어있으면 실패")
-    public void writePost_fail_postImagesEmpty() throws Exception {
+    public void writePost_fail_ImagesEmpty() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(),
                 "테스트 제목",
@@ -107,7 +107,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - postImages 안에 필드가 비어있으면 실패")
-    public void writePost_fail_postImages_filedEmpty() throws Exception {
+    public void writePost_fail_Images_filedEmpty() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(
                         WritePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").build(),
@@ -133,7 +133,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - title이 blank이면 실패")
-    public void writePost_fail_titleBlank() throws Exception {
+    public void write_fail_titleBlank() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(WritePostWebReq.PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
                 " ",
@@ -155,7 +155,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - oneLineDescription이 blank이면 실패")
-    public void writePost_fail_oneLineDescriptionBlank() throws Exception {
+    public void write_fail_oneLineDescriptionBlank() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(WritePostWebReq.PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
                 "테스트 제목",
@@ -177,7 +177,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - detailedDescription이 blank이면 실패")
-    public void writePost_fail_detailedDescriptionBlank() throws Exception {
+    public void write_fail_detailedDescriptionBlank() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(WritePostWebReq.PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
                 "테스트 제목",
@@ -199,7 +199,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - postThemeTypes 비어있으면 실패")
-    public void writePost_fail_postThemeTypesEmpty() throws Exception {
+    public void writePost_fail_ThemeTypesEmpty() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(WritePostWebReq.PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
                 "테스트 제목",
@@ -221,7 +221,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - postMoodTypes 비어있으면 실패")
-    public void writePost_fail_postMoodTypesEmpty() throws Exception {
+    public void writePost_fail_MoodTypesEmpty() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(WritePostWebReq.PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
                 "테스트 제목",
@@ -243,7 +243,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - spaceType이 null이면 실패")
-    public void writePost_fail_spaceTypeNull() throws Exception {
+    public void write_fail_spaceTypeNull() throws Exception {
 
         WritePostWebReq webReq = createWebReq(
                 List.of(WritePostWebReq.PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
@@ -266,7 +266,7 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
 
     @Test
     @DisplayName("Post 작성 요청 - spaceAddress가 blank이면 실패")
-    public void writePost_fail_spaceAddressBlank() throws Exception {
+    public void write_fail_spaceAddressBlank() throws Exception {
         WritePostWebReq webReq = createWebReq(
                 List.of(WritePostWebReq.PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
                 "테스트 제목",

@@ -59,7 +59,7 @@ public class PostInfoCommandIntegrationTest {
 
     @Test
     @DisplayName("사용자는 게시물을 작성할 수 있다.")
-    public void writePost_success() throws Exception {
+    public void write_success() throws Exception {
         // given
         UserEntity userEntity = createUserEntity();
         commitTestTransaction();

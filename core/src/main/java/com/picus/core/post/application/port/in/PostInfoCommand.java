@@ -1,8 +1,11 @@
 package com.picus.core.post.application.port.in;
 
+import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
 import com.picus.core.post.application.port.in.request.WritePostAppReq;
 
 public interface PostInfoCommand {
 
-    void writePost(WritePostAppReq writePostAppReq);
+    void write(WritePostAppReq writePostAppReq);
+
+    void update(UpdatePostAppReq updatePostAppReq);
 }

@@ -9,6 +9,7 @@ public class PostImagePersistenceMapper {
 
     public PostImage toDomain(PostImageEntity postImageEntity) {
         return PostImage.builder()
+                .postImageNo(postImageEntity.getPostImageNo())
                 .fileKey(postImageEntity.getFileKey())
                 .imageOrder(postImageEntity.getImageOrder())
                 .build();

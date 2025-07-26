@@ -7,16 +7,18 @@ import com.picus.core.post.adapter.out.persistence.mapper.PostPersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.application.port.out.PostCommandPort;
+import com.picus.core.post.application.port.out.PostQueryPort;
 import com.picus.core.post.domain.model.Post;
 import com.picus.core.post.domain.model.PostImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class PostPersistenceAdapter implements PostCommandPort {
+public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
 
     private final PostJpaRepository postJpaRepository;
     private final PostImageJpaRepository postImageJpaRepository;
@@ -31,6 +33,16 @@ public class PostPersistenceAdapter implements PostCommandPort {
         List<PostImage> postImages = savePostImageEntities(post.getPostImages(), postEntity); // 해당 Post의 PostImageEntity 저장
 
         return postPersistenceMapper.toDomain(postEntity, postImages);
+    }
+
+    @Override
+    public Optional<Post> findById(String postNo) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void update(Post post, List<String> deletedPostImageNos) {
+
     }
 
     private PostEntity savePostEntity(Post post) {

@@ -23,7 +23,7 @@ public class PostInfoCommandController {
     @PostMapping("/api/v1/posts")
     public BaseResponse<Void> writePost(@RequestBody @Valid WritePostWebReq webReq, @CurrentUser String userNo) {
         WritePostAppReq appReq = webMapper.toAppReq(webReq, userNo);
-        postInfoCommand.writePost(appReq);
+        postInfoCommand.write(appReq);
         return BaseResponse.onSuccess();
     }
 }
