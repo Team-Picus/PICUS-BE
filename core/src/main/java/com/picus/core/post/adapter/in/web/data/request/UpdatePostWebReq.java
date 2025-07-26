@@ -1,5 +1,6 @@
 package com.picus.core.post.adapter.in.web.data.request;
 
+import com.picus.core.post.application.port.in.request.ChangeStatus;
 import com.picus.core.post.domain.model.vo.PostMoodType;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;
@@ -8,10 +9,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+
 import java.util.List;
 
 @Builder
-public record WritePostWebReq(
+public record UpdatePostWebReq(
         @Valid @Size(min = 1, max = 10) List<PostImageWebReq> postImages,
         @NotBlank String title,
         @NotBlank String oneLineDescription,
@@ -26,6 +28,7 @@ public record WritePostWebReq(
     @Builder
     public record PostImageWebReq(
             @NotNull String fileKey,
-            @NotNull Integer imageOrder
+            @NotNull Integer imageOrder,
+            @NotNull ChangeStatus changeStatus
     ){}
 }
