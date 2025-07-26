@@ -33,4 +33,13 @@ public class PostImageEntity {
     public void bindPostEntity(PostEntity postEntity) {
         this.postEntity = postEntity;
     }
+
+    public void assignImageOrder(Integer imageOrder) {
+        this.imageOrder = imageOrder;
+    }
+
+    public void updatePostImageEntity(String fileKey, Integer imageOrder) {
+        this.fileKey = fileKey;
+        this.imageOrder = imageOrder;
+    }
 }

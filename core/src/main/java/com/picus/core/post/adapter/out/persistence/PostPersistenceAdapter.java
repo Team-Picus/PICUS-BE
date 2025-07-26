@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
+
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -59,11 +61,51 @@ public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
     @Override
     public void update(Post post, List<String> deletedPostImageNos) {
         PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
-                .orElseThrow(() -> new RestApiException(GlobalErrorStatus._NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
+        // PostEntity 수정
+        postEntity.updatePostEntity(
+                post.getPackageNo(), post.getTitle(), post.getOneLineDescription(),
+                post.getDetailedDescription(), post.getPostThemeTypes(), post.getPostMoodTypes(),
+                post.getSpaceType(), post.getSpaceAddress(), post.getIsPinned()
+        );
 
+        // PostImageEntity 수정
+        // 삭제
+        postImageJpaRepository.deleteByPostImageNoIn(deletedPostImageNos);
 
+        // 삭제 후 이미지 순서 재정렬
+        List<PostImageEntity> imagesAfterDelete = postImageJpaRepository.findAllByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
+        for (int i = 0; i < imagesAfterDelete.size(); i++) {
+            imagesAfterDelete.get(i).assignImageOrder(i + 1);
+        }
 
+        // 추가 수정 전에 모든 imageOrder 값을 임시값으로 변경
+        postImageJpaRepository.shiftAllImageOrdersToNegative(post.getPostNo());
+
+        // 추가/수정
+        List<PostImage> postImages = post.getPostImages();
+        for (PostImage domain : postImages) {
+            String postImageNo = domain.getPostImageNo();
+            if(postImageNo != null) {
+                // pk가 있다 = 수정
+                PostImageEntity entity = postImageJpaRepository.findById(postImageNo)
+                        .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+                entity.updatePostImageEntity(domain.getFileKey(), domain.getImageOrder());
+            } else {
+                // pk가 없다 = 추가
+                PostImageEntity entity = postImagePersistenceMapper.toEntity(domain);
+                entity.bindPostEntity(postEntity);
+                postImageJpaRepository.save(entity);
+            }
+        }
+
+        // 최종적으로 재정렬
+        List<PostImageEntity> finalImages = postImageJpaRepository.findAllByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
+
+        for (int i = 0; i < finalImages.size(); i++) {
+            finalImages.get(i).assignImageOrder(i + 1);
+        }
     }
 
     private PostEntity savePostEntity(Post post) {

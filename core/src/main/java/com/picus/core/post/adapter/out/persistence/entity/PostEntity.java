@@ -31,28 +31,50 @@ public class PostEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String expertNo;
-    @Column(nullable = false)
+
     private String packageNo;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String oneLineDescription;
 
+    @Column(nullable = false)
     private String detailedDescription;
 
     @Convert(converter = PostThemeTypeConverter.class)
+    @Builder.Default
     private List<PostThemeType> postThemeTypes = new ArrayList<>();
 
     @Convert(converter = PostMoodTypeConverter.class)
+    @Builder.Default
     private List<PostMoodType> postMoodTypes = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private SpaceType spaceType;
 
+    @Column(nullable = false)
     private String spaceAddress;
 
     @Column(nullable = false)
     private Boolean isPinned;
+
+    public void updatePostEntity(
+            String packageNo, String title, String oneLineDescription, String detailedDescription,
+            List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
+            SpaceType spaceType, String spaceAddress, Boolean isPinned
+    ) {
+        this.title = title;
+        this.oneLineDescription = oneLineDescription;
+        this.detailedDescription = detailedDescription;
+        this.postThemeTypes = postThemeTypes;
+        this.postMoodTypes = postMoodTypes;
+        this.spaceType = spaceType;
+        this.spaceAddress = spaceAddress;
+        this.packageNo = packageNo;
+        this.isPinned = isPinned;
+    }
 
 }
 

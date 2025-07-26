@@ -52,8 +52,7 @@ class PostPersistenceAdapterTest {
     @DisplayName("Post를 데이터베이스에 저장한다.")
     public void save_success() throws Exception {
         // given
-        Post post = createPost(
-                "package-123", "expert-456",
+        Post post = createPost(null, "package-123", "expert-456",
                 "테스트 제목", "한 줄 설명",
                 "자세한 설명입니다.", List.of(PostThemeType.BEAUTY, PostThemeType.EVENT),
                 List.of(PostMoodType.COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
@@ -91,11 +90,11 @@ class PostPersistenceAdapterTest {
         // PostImageEntity
         List<PostImageEntity> imageEntities = postImageJpaRepository.findByPostEntity_PostNo(saved.getPostNo());
         assertThat(imageEntities).hasSize(2)
-            .extracting(PostImageEntity::getFileKey, PostImageEntity::getImageOrder)
-            .containsExactlyInAnyOrder(
-                tuple("img_1.jpg", 1),
-                tuple("img_2.jpg", 2)
-            );
+                .extracting(PostImageEntity::getFileKey, PostImageEntity::getImageOrder)
+                .containsExactlyInAnyOrder(
+                        tuple("img_1.jpg", 1),
+                        tuple("img_2.jpg", 2)
+                );
 
     }
 
@@ -103,14 +102,13 @@ class PostPersistenceAdapterTest {
     @DisplayName("postNo로 Post 도메인 모델을 조회한다.")
     public void findById_success() throws Exception {
         // given
+        // 데이터베이스에 데이터 셋팅
         PostEntity postEntity = createPostEntity(
                 "package-123", "expert-456", "제목", "설명",
                 "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "서울시 강남구", false
         );
-        postJpaRepository.save(postEntity);
-        PostImageEntity postImageEntity = createPostImageEntity("file.jpg", 1, postEntity);
-        postImageJpaRepository.save(postImageEntity);
+        createPostImageEntity("file.jpg", 1, postEntity);
 
         clearPersistenceContext();
 
@@ -134,15 +132,76 @@ class PostPersistenceAdapterTest {
         assertThat(post.getIsPinned()).isEqualTo(postEntity.getIsPinned());
 
         assertThat(post.getPostImages()).hasSize(1)
-            .extracting(PostImage::getFileKey, PostImage::getImageOrder)
-            .containsExactly(tuple("file.jpg", 1));
+                .extracting(PostImage::getFileKey, PostImage::getImageOrder)
+                .containsExactly(tuple("file.jpg", 1));
     }
 
-    private Post createPost(String packageNo, String authorNo, String title, String oneLineDescription,
+    @Test
+    @DisplayName("Post를 수정한다. 이때 PostImage는 경우에 따라 추가/수정/삭제된다.")
+    public void update_success() throws Exception {
+        // given
+
+        // 데이터베이스에 데이터셋팅
+        PostEntity postEntity = createPostEntity(
+                "package-123", "expert-456", "old_title", "old_one",
+                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "old_address", false
+        );
+        PostImageEntity postImageEntity1 = createPostImageEntity("file_key", 1, postEntity);
+        PostImageEntity postImageEntity2 = createPostImageEntity("file_key", 2, postEntity);
+
+        clearPersistenceContext();
+
+        // 수정할 Post 객체
+        Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
+                "new_title", "new_one", "new_detail",
+                List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
+                SpaceType.OUTDOOR, "new_address", true,
+                List.of(
+                        createPostImage(null, "new_file_key", 1), // 추가된 이미지
+                        createPostImage(postImageEntity1.getPostImageNo(), "file_key", 2) // 수정된 이미지
+                )
+        );
+        List<String> deletedImageNos = List.of(postImageEntity2.getPostImageNo());
+
+        // when
+        postPersistenceAdapter.update(updatedPost, deletedImageNos);
+        clearPersistenceContext();
+
+        // then
+        // PostEntity 검증
+        PostEntity postResult = postJpaRepository.findById(postEntity.getPostNo())
+                .orElseThrow();
+        assertThat(postResult.getPostNo()).isEqualTo(postEntity.getPostNo());
+        assertThat(postResult.getPackageNo()).isEqualTo("package-456");
+        assertThat(postResult.getExpertNo()).isEqualTo("expert-456");
+        assertThat(postResult.getTitle()).isEqualTo("new_title");
+        assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
+        assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
+        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
+        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.VINTAGE));
+        assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
+        assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
+        assertThat(postResult.getIsPinned()).isEqualTo(true);
+
+        // PostImageEntity 검증
+        List<PostImageEntity> imageResults = postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo());
+        assertThat(imageResults).hasSize(2)
+                .extracting(
+                        PostImageEntity::getFileKey,
+                        PostImageEntity::getImageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple("new_file_key", 1),
+                        tuple("file_key", 2)
+                );
+    }
+
+    private Post createPost(String postNo, String packageNo, String authorNo, String title, String oneLineDescription,
                             String detailedDescription, List<PostThemeType> postThemeTypes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                             boolean isPinned, List<PostImage> postImages) {
         return Post.builder()
+                .postNo(postNo)
                 .packageNo(packageNo)
                 .authorNo(authorNo)
                 .title(title)
@@ -157,11 +216,19 @@ class PostPersistenceAdapterTest {
                 .build();
     }
 
+    private PostImage createPostImage(String postImageNo, String fileKey, int imageOrder) {
+        return PostImage.builder()
+                .postImageNo(postImageNo)
+                .fileKey(fileKey)
+                .imageOrder(imageOrder)
+                .build();
+    }
+
     private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
-        return PostEntity.builder()
+        PostEntity postEntity = PostEntity.builder()
                 .packageNo(packageNo)
                 .expertNo(expertNo)
                 .title(title)
@@ -173,14 +240,16 @@ class PostPersistenceAdapterTest {
                 .spaceAddress(spaceAddress)
                 .isPinned(isPinned)
                 .build();
+        return postJpaRepository.save(postEntity);
     }
 
     private PostImageEntity createPostImageEntity(String fileKey, int imageOrder, PostEntity postEntity) {
-        return PostImageEntity.builder()
+        PostImageEntity postImageEntity = PostImageEntity.builder()
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
                 .postEntity(postEntity)
                 .build();
+        return postImageJpaRepository.save(postImageEntity);
     }
 
     private void clearPersistenceContext() {
