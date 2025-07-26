@@ -29,11 +29,12 @@ public class UpdatePostWebMapper {
 
     private List<UpdatePostImageAppReq> toPostImages(List<PostImageWebReq> postImageWebReqs) {
         return postImageWebReqs.stream()
-                .map(postImageWebReq ->
+                .map(webReq ->
                         UpdatePostImageAppReq.builder()
-                                .fileKey(postImageWebReq.fileKey())
-                                .imageOrder(postImageWebReq.imageOrder())
-                                .changeStatus(postImageWebReq.changeStatus())
+                                .postImageNo(webReq.postImageNo())
+                                .fileKey(webReq.fileKey())
+                                .imageOrder(webReq.imageOrder())
+                                .changeStatus(webReq.changeStatus())
                                 .build()
                 ).toList();
     }

@@ -8,6 +8,7 @@ import com.picus.core.post.adapter.in.web.data.request.WritePostWebReq.PostImage
 import com.picus.core.post.adapter.in.web.mapper.UpdatePostWebMapper;
 import com.picus.core.post.adapter.in.web.mapper.WritePostWebMapper;
 import com.picus.core.post.application.port.in.PostInfoCommand;
+import com.picus.core.post.application.port.in.request.ChangeStatus;
 import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
 import com.picus.core.post.application.port.in.request.WritePostAppReq;
 import com.picus.core.post.domain.model.vo.PostMoodType;
@@ -301,7 +302,8 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
         // given
         UpdatePostWebReq webReq = createUpdatePostWebReq(List.of(
                         UpdatePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
-                        UpdatePostWebReq.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).changeStatus(UPDATE).build()
+                        createPostImageWebReq(null, "img1.jpg", 1, NEW),
+                        createPostImageWebReq("img-123", "img2.jpg", 2, UPDATE)
                 ), "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
                 List.of(PostThemeType.BEAUTY, PostThemeType.EVENT),
                 List.of(PostMoodType.COZY), SpaceType.INDOOR, "서울시 강남구", "pkg-001");
@@ -327,17 +329,12 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
         then(postInfoCommand).should().update(updatePostAppReq);
     }
 
-    private UpdatePostWebReq createUpdatePostWebReq(List<UpdatePostWebReq.PostImageWebReq> postImages, String title, String oneLineDescription, String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress, String packageNo) {
-        return UpdatePostWebReq.builder()
-                .postImages(postImages)
-                .title(title)
-                .oneLineDescription(oneLineDescription)
-                .detailedDescription(detailedDescription)
-                .postThemeTypes(postThemeTypes)
-                .postMoodTypes(postMoodTypes)
-                .spaceType(spaceType)
-                .spaceAddress(spaceAddress)
-                .packageNo(packageNo)
+    private UpdatePostWebReq.PostImageWebReq createPostImageWebReq(String postImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
+        return UpdatePostWebReq.PostImageWebReq.builder()
+                .postImageNo(postImageNo)
+                .fileKey(fileKey)
+                .imageOrder(imageOrder)
+                .changeStatus(changeStatus)
                 .build();
     }
 
@@ -353,6 +350,20 @@ class PostInfoCommandControllerTest extends AbstractSecurityMockSetup {
             String packageNo
     ) {
         return WritePostWebReq.builder()
+                .postImages(postImages)
+                .title(title)
+                .oneLineDescription(oneLineDescription)
+                .detailedDescription(detailedDescription)
+                .postThemeTypes(postThemeTypes)
+                .postMoodTypes(postMoodTypes)
+                .spaceType(spaceType)
+                .spaceAddress(spaceAddress)
+                .packageNo(packageNo)
+                .build();
+    }
+
+    private UpdatePostWebReq createUpdatePostWebReq(List<UpdatePostWebReq.PostImageWebReq> postImages, String title, String oneLineDescription, String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress, String packageNo) {
+        return UpdatePostWebReq.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

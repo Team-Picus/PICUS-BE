@@ -121,6 +121,7 @@ public class PostInfoCommandService implements PostInfoCommand {
                     break;
                 case UPDATE:
                     post.updatePostImage(PostImage.builder()
+                            .postImageNo(imageAppReq.postImageNo())
                             .fileKey(imageAppReq.fileKey())
                             .imageOrder(imageAppReq.imageOrder())
                             .build());
