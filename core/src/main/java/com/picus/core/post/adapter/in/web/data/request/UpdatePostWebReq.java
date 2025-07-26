@@ -27,6 +27,7 @@ public record UpdatePostWebReq(
 
     @Builder
     public record PostImageWebReq(
+            String postImageNo,
             @NotNull String fileKey,
             @NotNull Integer imageOrder,
             @NotNull ChangeStatus changeStatus

@@ -15,7 +15,6 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @ActiveProfiles("test")
-public class PostInfoCommandIntegrationTest {
+public class WritePostIntegrationTest {
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired

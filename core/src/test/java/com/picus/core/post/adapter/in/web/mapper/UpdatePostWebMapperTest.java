@@ -27,7 +27,7 @@ class UpdatePostWebMapperTest {
         UpdatePostWebReq webReq = UpdatePostWebReq.builder()
                 .postImages(List.of(
                         PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
-                        PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).changeStatus(UPDATE).build()
+                        PostImageWebReq.builder().postImageNo("img-123").fileKey("img2.jpg").imageOrder(2).changeStatus(UPDATE).build()
                 ))
                 .title("테스트 제목")
                 .oneLineDescription("한 줄 설명")

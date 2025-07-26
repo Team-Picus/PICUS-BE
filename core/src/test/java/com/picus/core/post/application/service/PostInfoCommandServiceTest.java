@@ -131,6 +131,7 @@ class PostInfoCommandServiceTest {
                 .imageOrder(newImage.imageOrder())
                 .build());
         then(spyPost).should().updatePostImage(PostImage.builder()
+                .postImageNo(updateImage.postImageNo())
                 .fileKey(updateImage.fileKey())
                 .imageOrder(updateImage.imageOrder())
                 .build());
