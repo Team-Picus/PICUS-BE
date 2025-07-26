@@ -11,6 +11,7 @@ import com.picus.core.post.domain.model.PostImage;
 import com.picus.core.post.domain.model.vo.PostMoodType;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ class PostPersistenceAdapterTest {
 
     @Autowired
     private PostPersistenceAdapter postPersistenceAdapter;
+
+    @Autowired
+    EntityManager em;
 
     @Test
     @DisplayName("Post를 데이터베이스에 저장한다.")
@@ -95,6 +99,45 @@ class PostPersistenceAdapterTest {
 
     }
 
+    @Test
+    @DisplayName("postNo로 Post 도메인 모델을 조회한다.")
+    public void findById_success() throws Exception {
+        // given
+        PostEntity postEntity = createPostEntity(
+                "package-123", "expert-456", "제목", "설명",
+                "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "서울시 강남구", false
+        );
+        postJpaRepository.save(postEntity);
+        PostImageEntity postImageEntity = createPostImageEntity("file.jpg", 1, postEntity);
+        postImageJpaRepository.save(postImageEntity);
+
+        clearPersistenceContext();
+
+        // when
+        Optional<Post> result = postPersistenceAdapter.findById(postEntity.getPostNo());
+
+        // then
+        assertThat(result).isPresent();
+
+        Post post = result.get();
+        assertThat(post.getPostNo()).isEqualTo(postEntity.getPostNo());
+        assertThat(post.getPackageNo()).isEqualTo(postEntity.getPackageNo());
+        assertThat(post.getAuthorNo()).isEqualTo(postEntity.getExpertNo());
+        assertThat(post.getTitle()).isEqualTo(postEntity.getTitle());
+        assertThat(post.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
+        assertThat(post.getDetailedDescription()).isEqualTo(postEntity.getDetailedDescription());
+        assertThat(post.getPostThemeTypes()).isEqualTo(postEntity.getPostThemeTypes());
+        assertThat(post.getPostMoodTypes()).isEqualTo(postEntity.getPostMoodTypes());
+        assertThat(post.getSpaceType()).isEqualTo(postEntity.getSpaceType());
+        assertThat(post.getSpaceAddress()).isEqualTo(postEntity.getSpaceAddress());
+        assertThat(post.getIsPinned()).isEqualTo(postEntity.getIsPinned());
+
+        assertThat(post.getPostImages()).hasSize(1)
+            .extracting(PostImage::getFileKey, PostImage::getImageOrder)
+            .containsExactly(tuple("file.jpg", 1));
+    }
+
     private Post createPost(String packageNo, String authorNo, String title, String oneLineDescription,
                             String detailedDescription, List<PostThemeType> postThemeTypes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
@@ -114,4 +157,34 @@ class PostPersistenceAdapterTest {
                 .build();
     }
 
+    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
+                                        String detailedDescription, List<PostThemeType> postThemeTypes,
+                                        List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
+                                        boolean isPinned) {
+        return PostEntity.builder()
+                .packageNo(packageNo)
+                .expertNo(expertNo)
+                .title(title)
+                .oneLineDescription(oneLineDescription)
+                .detailedDescription(detailedDescription)
+                .postThemeTypes(postThemeTypes)
+                .postMoodTypes(postMoodTypes)
+                .spaceType(spaceType)
+                .spaceAddress(spaceAddress)
+                .isPinned(isPinned)
+                .build();
+    }
+
+    private PostImageEntity createPostImageEntity(String fileKey, int imageOrder, PostEntity postEntity) {
+        return PostImageEntity.builder()
+                .fileKey(fileKey)
+                .imageOrder(imageOrder)
+                .postEntity(postEntity)
+                .build();
+    }
+
+    private void clearPersistenceContext() {
+        em.flush();
+        em.clear();
+    }
 }

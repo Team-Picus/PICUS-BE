@@ -11,10 +11,13 @@ import com.picus.core.post.application.port.out.PostQueryPort;
 import com.picus.core.post.domain.model.Post;
 import com.picus.core.post.domain.model.PostImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
+import com.picus.core.shared.exception.RestApiException;
+import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -37,11 +40,29 @@ public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
 
     @Override
     public Optional<Post> findById(String postNo) {
-        return Optional.empty();
+        Optional<PostEntity> optionalPostEntity = postJpaRepository.findById(postNo);
+
+        if (optionalPostEntity.isEmpty()) {
+            return Optional.empty();
+        }
+
+        PostEntity postEntity = optionalPostEntity.get();
+        List<PostImageEntity> imageEntities = postImageJpaRepository.findByPostEntity_PostNo(postNo);
+        List<PostImage> postImages = imageEntities.stream()
+                .map(postImagePersistenceMapper::toDomain)
+                .toList();
+
+        Post post = postPersistenceMapper.toDomain(postEntity, postImages);
+        return Optional.of(post);
     }
 
     @Override
     public void update(Post post, List<String> deletedPostImageNos) {
+        PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
+                .orElseThrow(() -> new RestApiException(GlobalErrorStatus._NOT_FOUND));
+
+
+
 
     }
 
