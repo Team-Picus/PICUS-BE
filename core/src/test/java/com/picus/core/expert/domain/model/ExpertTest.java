@@ -359,6 +359,22 @@ class ExpertTest {
                 );
     }
 
+    @Test
+    @DisplayName("마지막 활동시간(lastActivityAt)을 업데이트 한다.")
+    public void updateLastActivityAt() throws Exception {
+        // given
+        Expert expert = Expert.builder()
+                .lastActivityAt(LocalDateTime.of(2020, 10, 10, 10, 10))
+                .build();
+
+        // when
+        expert.updateLastActivityAt(LocalDateTime.of(2022, 5, 5, 5, 5));
+
+        // then
+        assertThat(expert.getLastActivityAt())
+                .isEqualTo(LocalDateTime.of(2022, 5, 5, 5, 5));
+    }
+
     private Expert createExpert(LocalDateTime createdAt) {
         return Expert.builder()
                 .createdAt(createdAt)

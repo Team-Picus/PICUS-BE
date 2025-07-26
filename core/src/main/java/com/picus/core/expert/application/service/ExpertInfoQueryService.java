@@ -2,7 +2,7 @@ package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.ExpertInfoQuery;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
-import com.picus.core.expert.application.port.out.LoadExpertPort;
+import com.picus.core.expert.application.port.out.ExpertQueryPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.shared.annotation.UseCase;
@@ -19,20 +19,20 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 @Transactional(readOnly = true)
 public class ExpertInfoQueryService implements ExpertInfoQuery {
 
-    private final LoadExpertPort loadExpertPort;
+    private final ExpertQueryPort expertQueryPort;
     private final UserQueryPort userQueryPort;
 
     @Override
     public Expert getExpertDetailInfo(String expertNo) {
         // expertNo로 Expert 조회
-        return loadExpertPort.findById(expertNo)
+        return expertQueryPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
     }
 
     @Override
     public ExpertBasicInfoQueryAppResp getExpertBasicInfo(String expertNo) {
         // expertNo로 Expert 조회
-        Expert expert = loadExpertPort.findById(expertNo)
+        Expert expert = expertQueryPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // expertNo로 User 정보 조회

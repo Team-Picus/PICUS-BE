@@ -4,8 +4,8 @@ import com.picus.core.expert.application.port.in.request.*;
 import com.picus.core.expert.application.port.in.mapper.UpdateProjectAppMapper;
 import com.picus.core.expert.application.port.in.mapper.UpdateSkillAppMapper;
 import com.picus.core.expert.application.port.in.mapper.UpdateStudioAppMapper;
-import com.picus.core.expert.application.port.out.LoadExpertPort;
-import com.picus.core.expert.application.port.out.UpdateExpertPort;
+import com.picus.core.expert.application.port.out.ExpertQueryPort;
+import com.picus.core.expert.application.port.out.ExpertCommandPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -35,8 +35,8 @@ class ExpertInfoCommandServiceTest {
 
     UserQueryPort userQueryPort = mock(UserQueryPort.class);
     UserCommandPort userCommandPort = mock(UserCommandPort.class);
-    LoadExpertPort loadExpertPort = mock(LoadExpertPort.class);
-    UpdateExpertPort updateExpertPort = mock(UpdateExpertPort.class);
+    ExpertQueryPort expertQueryPort = mock(ExpertQueryPort.class);
+    ExpertCommandPort expertCommandPort = mock(ExpertCommandPort.class);
 
 
     UpdateProjectAppMapper updateProjectAppMapper = mock(UpdateProjectAppMapper.class);
@@ -44,7 +44,7 @@ class ExpertInfoCommandServiceTest {
     UpdateStudioAppMapper updateStudioAppMapper = mock(UpdateStudioAppMapper.class);
 
     ExpertInfoCommandService expertInfoCommandService =
-            new ExpertInfoCommandService(userQueryPort, userCommandPort, loadExpertPort, updateExpertPort,
+            new ExpertInfoCommandService(userQueryPort, userCommandPort, expertQueryPort, expertCommandPort,
                     updateProjectAppMapper, updateSkillAppMapper, updateStudioAppMapper);
 
     @Test
@@ -75,7 +75,7 @@ class ExpertInfoCommandServiceTest {
         when(user.getExpertNo()).thenReturn(expertNo);
 
         given(userQueryPort.findById(userNo)).willReturn(user);
-        given(loadExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
+        given(expertQueryPort.findById(expertNo)).willReturn(Optional.of(expert));
         given(userQueryPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
 
         // when
@@ -83,9 +83,9 @@ class ExpertInfoCommandServiceTest {
 
         // then
         then(userQueryPort).should().findById(userNo);
-        then(loadExpertPort).should().findById(expertNo);
+        then(expertQueryPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("new-background", List.of("https://new.link"), "New intro");
-        then(updateExpertPort).should().updateExpert(expert);
+        then(expertCommandPort).should().updateExpert(expert);
         then(userQueryPort).should().findUserInfoByExpertNo(expertNo);
         then(userCommandPort).should().updateNicknameAndImageByExpertNo(argThat(updatedDto ->
                 updatedDto.nickname().equals("NewNickname") &&
@@ -113,16 +113,16 @@ class ExpertInfoCommandServiceTest {
 
         given(userQueryPort.findById(userNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(expertNo);
-        given(loadExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
+        given(expertQueryPort.findById(expertNo)).willReturn(Optional.of(expert));
 
         // when
         expertInfoCommandService.updateExpertBasicInfo(request);
 
         // then
         then(userQueryPort).should().findById(userNo);
-        then(loadExpertPort).should().findById(expertNo);
+        then(expertQueryPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("bg-key", List.of("https://new.link"), "new intro");
-        then(updateExpertPort).should().updateExpert(expert);
+        then(expertCommandPort).should().updateExpert(expert);
         then(userCommandPort).shouldHaveNoInteractions();
     }
 
@@ -162,8 +162,8 @@ class ExpertInfoCommandServiceTest {
                         dto.profileImageFileKey().equals("updated-profile-img") &&
                         dto.expertNo().equals(expertNo)
         ));
-        then(loadExpertPort).shouldHaveNoInteractions();
-        then(updateExpertPort).shouldHaveNoInteractions();
+        then(expertQueryPort).shouldHaveNoInteractions();
+        then(expertCommandPort).shouldHaveNoInteractions();
     }
 
     @Test
@@ -181,8 +181,8 @@ class ExpertInfoCommandServiceTest {
 
         // then
         then(userQueryPort).shouldHaveNoInteractions();
-        then(loadExpertPort).shouldHaveNoInteractions();
-        then(updateExpertPort).shouldHaveNoInteractions();
+        then(expertQueryPort).shouldHaveNoInteractions();
+        then(expertCommandPort).shouldHaveNoInteractions();
         then(userCommandPort).shouldHaveNoInteractions();
     }
 
@@ -225,7 +225,7 @@ class ExpertInfoCommandServiceTest {
         given(user.getExpertNo()).willReturn(expertNo);
 
         Expert expert = mock(Expert.class);
-        given(loadExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
+        given(expertQueryPort.findById(expertNo)).willReturn(Optional.of(expert));
 
         Project pjNew = mock(Project.class);
         Project pjUpdate = mock(Project.class);
@@ -246,16 +246,16 @@ class ExpertInfoCommandServiceTest {
         // then
         InOrder inOrder = inOrder(
                 userQueryPort, user,
-                loadExpertPort, expert,
+                expertQueryPort, expert,
                 updateProjectAppMapper, expert,
                 updateSkillAppMapper, expert,
                 updateStudioAppMapper, expert,
-                updateExpertPort
+                expertCommandPort
         );
 
         then(userQueryPort).should(inOrder).findById(userNo);
         then(user).should(inOrder).getExpertNo();
-        then(loadExpertPort).should(inOrder).findById(expertNo);
+        then(expertQueryPort).should(inOrder).findById(expertNo);
 
         then(updateProjectAppMapper).should(inOrder).toDomain(projectNew);
         then(expert).should(inOrder).addProject(pjNew);
@@ -272,14 +272,14 @@ class ExpertInfoCommandServiceTest {
         then(updateStudioAppMapper).should(inOrder).toDomain(studioNew);
         then(expert).should(inOrder).addStudio(studio);
 
-        then(updateExpertPort).should(inOrder).updateExpertWithDetail(
+        then(expertCommandPort).should(inOrder).updateExpertWithDetail(
                 eq(expert),
                 eq(List.of("PRJ003")),
                 eq(List.of("SKILL003")),
                 eq(null)
         );
 
-        then(updateExpertPort).shouldHaveNoMoreInteractions();
+        then(expertCommandPort).shouldHaveNoMoreInteractions();
     }
 
     private UpdateProjectAppReq createProjectCommand(String projectNo, String projectName, LocalDateTime startDate, LocalDateTime endDate, ChangeStatus changeStatus) {
@@ -327,8 +327,8 @@ class ExpertInfoCommandServiceTest {
 
         // then
         then(userQueryPort).shouldHaveNoInteractions();
-        then(loadExpertPort).shouldHaveNoInteractions();
-        then(updateExpertPort).shouldHaveNoInteractions();
+        then(expertQueryPort).shouldHaveNoInteractions();
+        then(expertCommandPort).shouldHaveNoInteractions();
         then(userCommandPort).shouldHaveNoInteractions();
     }
 }

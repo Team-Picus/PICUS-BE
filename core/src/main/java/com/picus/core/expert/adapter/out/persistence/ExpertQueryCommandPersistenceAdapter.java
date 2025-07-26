@@ -4,9 +4,8 @@ package com.picus.core.expert.adapter.out.persistence;
 import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
-import com.picus.core.expert.application.port.out.LoadExpertPort;
-import com.picus.core.expert.application.port.out.CreateExpertPort;
-import com.picus.core.expert.application.port.out.UpdateExpertPort;
+import com.picus.core.expert.application.port.out.ExpertQueryPort;
+import com.picus.core.expert.application.port.out.ExpertCommandPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
@@ -33,7 +32,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPort, UpdateExpertPort {
+public class ExpertQueryCommandPersistenceAdapter implements ExpertQueryPort, ExpertCommandPort {
 
     // Jpa Repository
     private final ExpertJpaRepository expertJpaRepository;
