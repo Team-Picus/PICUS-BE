@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 @Import({
-        ExpertPersistenceAdapter.class,
+        ExpertQueryCommandPersistenceAdapter.class,
         ExpertPersistenceMapper.class,
         ProjectPersistenceMapper.class,
         SkillPersistenceMapper.class,
@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.tuple;
 class ExpertPersistenceAdapterTest {
 
     @Autowired
-    ExpertPersistenceAdapter expertPersistenceAdapter;
+    ExpertQueryCommandPersistenceAdapter expertPersistenceAdapter;
 
     @Autowired
     ExpertJpaRepository expertJpaRepository;

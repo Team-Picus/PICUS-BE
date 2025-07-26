@@ -5,8 +5,8 @@ import com.picus.core.expert.application.port.in.request.*;
 import com.picus.core.expert.application.port.in.mapper.UpdateProjectAppMapper;
 import com.picus.core.expert.application.port.in.mapper.UpdateSkillAppMapper;
 import com.picus.core.expert.application.port.in.mapper.UpdateStudioAppMapper;
-import com.picus.core.expert.application.port.out.LoadExpertPort;
-import com.picus.core.expert.application.port.out.UpdateExpertPort;
+import com.picus.core.expert.application.port.out.ExpertQueryPort;
+import com.picus.core.expert.application.port.out.ExpertCommandPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -29,8 +29,8 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
 
     private final UserQueryPort userQueryPort;
     private final UserCommandPort userCommandPort;
-    private final LoadExpertPort loadExpertPort;
-    private final UpdateExpertPort updateExpertPort;
+    private final ExpertQueryPort expertQueryPort;
+    private final ExpertCommandPort expertCommandPort;
 
     private final UpdateProjectAppMapper updateProjectAppMapper;
     private final UpdateSkillAppMapper updateSkillAppMapper;
@@ -47,7 +47,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         // Expert쪽 수정될 필요가 있는지 확인
         if (shouldUpdateExpertBasicInfo(basicInfoRequest)) {
             // Expert 로드
-            Expert expert = loadExpertPort.findById(expertNo)
+            Expert expert = expertQueryPort.findById(expertNo)
                     .orElseThrow(() -> new RestApiException(_NOT_FOUND));
             // Expert 수정
             expert.updateBasicInfo(
@@ -55,7 +55,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                     basicInfoRequest.link(),
                     basicInfoRequest.intro());
 
-            updateExpertPort.updateExpert(expert);
+            expertCommandPort.updateExpert(expert);
         }
 
         // User쪽 정보가 수정될 필요가 있는지 확인
@@ -87,7 +87,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         String expertNo = getExpertNo(detailInfoRequest.currentUserNo());
 
         // 전문가 불러오기
-        Expert expert = loadExpertPort.findById(expertNo)
+        Expert expert = expertQueryPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 전문가 정보 수정하기
@@ -105,7 +105,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         String deletedStudioNo = updateStudio(detailInfoRequest, expert);
 
         // 수정된 정보 데이터베이스에 반영하기
-        updateExpertPort.updateExpertWithDetail(expert, deletedProjectNos, deletedSkillNos, deletedStudioNo);
+        expertCommandPort.updateExpertWithDetail(expert, deletedProjectNos, deletedSkillNos, deletedStudioNo);
     }
 
     /**
