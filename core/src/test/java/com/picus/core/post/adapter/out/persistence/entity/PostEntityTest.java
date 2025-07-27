@@ -1,15 +1,14 @@
 package com.picus.core.post.adapter.out.persistence.entity;
 
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PostEntityTest {
 

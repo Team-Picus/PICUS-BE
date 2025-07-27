@@ -1,7 +1,6 @@
 package com.picus.core.post.adapter.out.persistence.converter;
 
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
+import com.picus.core.post.domain.vo.PostMoodType;
 import jakarta.persistence.AttributeConverter;
 
 import java.util.Arrays;

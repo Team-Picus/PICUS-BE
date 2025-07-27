@@ -10,11 +10,11 @@ import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaReposit
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.domain.Project;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.Studio;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
+import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;

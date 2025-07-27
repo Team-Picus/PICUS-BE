@@ -6,11 +6,11 @@ import com.picus.core.post.adapter.out.persistence.mapper.PostImagePersistenceMa
 import com.picus.core.post.adapter.out.persistence.mapper.PostPersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
-import com.picus.core.post.domain.model.Post;
-import com.picus.core.post.domain.model.PostImage;
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.Post;
+import com.picus.core.post.domain.PostImage;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.config.JpaAuditingConfiguration;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;

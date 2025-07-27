@@ -1,7 +1,7 @@
 package com.picus.core.price.application.service;
 
 import com.picus.core.price.application.port.out.PriceQueryPort;
-import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;

@@ -1,9 +1,8 @@
 package com.picus.core.post.adapter.out.persistence.mapper;
 
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
-import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
-import com.picus.core.post.domain.model.Post;
-import com.picus.core.post.domain.model.PostImage;
+import com.picus.core.post.domain.Post;
+import com.picus.core.post.domain.PostImage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

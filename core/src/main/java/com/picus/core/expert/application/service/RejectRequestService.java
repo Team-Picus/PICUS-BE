@@ -3,7 +3,7 @@ package com.picus.core.expert.application.service;
 import com.picus.core.expert.application.port.in.RejectRequestUseCase;
 import com.picus.core.expert.application.port.out.ExpertQueryPort;
 import com.picus.core.expert.application.port.out.ExpertCommandPort;
-import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;

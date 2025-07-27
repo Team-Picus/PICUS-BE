@@ -3,7 +3,7 @@ package com.picus.core.price.application.port.mapper;
 import com.picus.core.price.application.port.in.mapper.PriceRefImageCommandAppMapper;
 import com.picus.core.price.application.port.in.request.ChangeStatus;
 import com.picus.core.price.application.port.in.request.UpdatePriceReferenceImageAppReq;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.domain.PriceReferenceImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

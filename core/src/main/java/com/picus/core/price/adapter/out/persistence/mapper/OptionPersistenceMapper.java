@@ -1,7 +1,7 @@
 package com.picus.core.price.adapter.out.persistence.mapper;
 
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
-import com.picus.core.price.domain.model.Option;
+import com.picus.core.price.domain.Option;
 import org.springframework.stereotype.Component;
 
 @Component

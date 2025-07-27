@@ -2,7 +2,7 @@ package com.picus.core.post.adapter.in.web.mapper;
 
 import com.picus.core.post.adapter.in.web.data.request.WritePostWebReq;
 import com.picus.core.post.application.port.in.request.WritePostAppReq;
-import com.picus.core.post.domain.model.PostImage;
+import com.picus.core.post.domain.PostImage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

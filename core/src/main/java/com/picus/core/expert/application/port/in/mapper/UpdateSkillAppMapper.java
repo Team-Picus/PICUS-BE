@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.UpdateSkillAppReq;
-import com.picus.core.expert.domain.model.Skill;
+import com.picus.core.expert.domain.Skill;
 import org.springframework.stereotype.Component;
 
 @Component

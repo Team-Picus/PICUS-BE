@@ -4,10 +4,10 @@ import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebRes
 import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse.OptionWebResponse;
 import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse.PackageWebResponse;
 import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse.PriceReferenceImageWebResponse;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

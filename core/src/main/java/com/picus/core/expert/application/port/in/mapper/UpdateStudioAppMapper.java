@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.UpdateStudioAppReq;
-import com.picus.core.expert.domain.model.Studio;
+import com.picus.core.expert.domain.Studio;
 import org.springframework.stereotype.Component;
 
 @Component

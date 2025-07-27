@@ -2,7 +2,7 @@ package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.ChangeStatus;
 import com.picus.core.expert.application.port.in.request.UpdateProjectAppReq;
-import com.picus.core.expert.domain.model.Project;
+import com.picus.core.expert.domain.Project;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

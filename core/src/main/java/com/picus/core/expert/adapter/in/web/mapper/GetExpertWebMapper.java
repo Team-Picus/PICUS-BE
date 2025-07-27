@@ -6,10 +6,10 @@ import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWeb
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.SkillWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.StudioWebResponse;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.Studio;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.Project;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.Studio;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

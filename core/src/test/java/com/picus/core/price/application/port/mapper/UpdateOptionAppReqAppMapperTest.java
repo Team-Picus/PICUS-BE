@@ -2,7 +2,7 @@ package com.picus.core.price.application.port.mapper;
 
 import com.picus.core.price.application.port.in.mapper.OptionCommandAppMapper;
 import com.picus.core.price.application.port.in.request.UpdateOptionAppReq;
-import com.picus.core.price.domain.model.Option;
+import com.picus.core.price.domain.Option;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

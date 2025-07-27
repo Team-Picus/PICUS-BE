@@ -1,8 +1,8 @@
 package com.picus.core.post.application.port.in.request;
 
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import lombok.Builder;
 
 import java.util.List;

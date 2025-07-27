@@ -1,8 +1,7 @@
 package com.picus.core.expert.adapter.out.persistence.mapper;
 
-import com.picus.core.expert.adapter.out.persistence.mapper.SkillPersistenceMapper;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

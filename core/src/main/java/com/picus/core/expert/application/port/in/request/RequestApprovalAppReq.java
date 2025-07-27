@@ -1,9 +1,9 @@
 package com.picus.core.expert.application.port.in.request;
 
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.Portfolio;
+import com.picus.core.expert.domain.Project;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.Studio;
+import com.picus.core.expert.domain.vo.Portfolio;
 import lombok.Builder;
 
 import java.util.List;

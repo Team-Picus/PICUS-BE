@@ -2,9 +2,9 @@ package com.picus.core.post.adapter.out.persistence.repository;
 
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

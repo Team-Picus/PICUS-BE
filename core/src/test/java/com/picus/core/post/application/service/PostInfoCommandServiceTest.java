@@ -2,7 +2,7 @@ package com.picus.core.post.application.service;
 
 import com.picus.core.expert.application.port.out.ExpertQueryPort;
 import com.picus.core.expert.application.port.out.ExpertCommandPort;
-import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.mapper.WritePostAppMapper;
 import com.picus.core.post.application.port.in.request.ChangeStatus;
 import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
@@ -10,11 +10,11 @@ import com.picus.core.post.application.port.in.request.UpdatePostAppReq.UpdatePo
 import com.picus.core.post.application.port.in.request.WritePostAppReq;
 import com.picus.core.post.application.port.out.PostCommandPort;
 import com.picus.core.post.application.port.out.PostQueryPort;
-import com.picus.core.post.domain.model.Post;
-import com.picus.core.post.domain.model.PostImage;
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.Post;
+import com.picus.core.post.domain.PostImage;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.User;

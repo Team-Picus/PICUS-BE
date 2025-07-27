@@ -4,7 +4,7 @@ import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
 import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
 import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
 import com.picus.core.expert.application.port.out.ExpertCommandPort;
-import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.user.application.port.out.UserCommandPort;
 import lombok.RequiredArgsConstructor;

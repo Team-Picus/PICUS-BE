@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.out.persistence.mapper;
 
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
-import com.picus.core.expert.domain.model.Project;
+import com.picus.core.expert.domain.Project;
 import org.springframework.stereotype.Component;
 
 @Component

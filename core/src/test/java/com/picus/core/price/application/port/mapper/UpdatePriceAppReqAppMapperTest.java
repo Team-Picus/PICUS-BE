@@ -1,10 +1,12 @@
 package com.picus.core.price.application.port.mapper;
 
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
+import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.price.application.port.in.mapper.PriceCommandAppMapper;
 import com.picus.core.price.application.port.in.request.*;
-import com.picus.core.price.domain.model.*;
-import com.picus.core.price.domain.model.Package;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
+import com.picus.core.price.domain.Package;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

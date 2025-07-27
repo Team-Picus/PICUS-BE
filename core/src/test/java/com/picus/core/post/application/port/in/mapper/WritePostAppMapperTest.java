@@ -1,11 +1,11 @@
 package com.picus.core.post.application.port.in.mapper;
 
 import com.picus.core.post.application.port.in.request.WritePostAppReq;
-import com.picus.core.post.domain.model.Post;
-import com.picus.core.post.domain.model.PostImage;
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.Post;
+import com.picus.core.post.domain.PostImage;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -3,7 +3,7 @@ package com.picus.core.price.adapter.in;
 import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse;
 import com.picus.core.price.adapter.in.web.mapper.GetPricesByExpertWebMapper;
 import com.picus.core.price.application.port.in.PricesByExpertQuery;
-import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.Price;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

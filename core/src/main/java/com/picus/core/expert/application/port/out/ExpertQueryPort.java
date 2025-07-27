@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.port.out;
 
-import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.Expert;
 
 import java.util.Optional;
 

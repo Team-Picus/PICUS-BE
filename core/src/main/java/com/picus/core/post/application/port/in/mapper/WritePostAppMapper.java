@@ -1,7 +1,7 @@
 package com.picus.core.post.application.port.in.mapper;
 
 import com.picus.core.post.application.port.in.request.WritePostAppReq;
-import com.picus.core.post.domain.model.Post;
+import com.picus.core.post.domain.Post;
 import org.springframework.stereotype.Component;
 
 @Component

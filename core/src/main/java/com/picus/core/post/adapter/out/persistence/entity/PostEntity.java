@@ -2,10 +2,9 @@ package com.picus.core.post.adapter.out.persistence.entity;
 
 import com.picus.core.post.adapter.out.persistence.converter.PostMoodTypeConverter;
 import com.picus.core.post.adapter.out.persistence.converter.PostThemeTypeConverter;
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostStatus;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;

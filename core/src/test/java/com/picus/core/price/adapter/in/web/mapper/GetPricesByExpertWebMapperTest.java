@@ -1,12 +1,12 @@
 package com.picus.core.price.adapter.in.web.mapper;
 
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
+import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse;
 import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse.PriceReferenceImageWebResponse;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

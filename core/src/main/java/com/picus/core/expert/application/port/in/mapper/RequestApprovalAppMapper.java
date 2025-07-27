@@ -1,8 +1,8 @@
 package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import org.springframework.stereotype.Component;
 
 @Component

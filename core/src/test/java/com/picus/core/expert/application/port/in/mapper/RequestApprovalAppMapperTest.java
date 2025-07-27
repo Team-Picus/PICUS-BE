@@ -1,12 +1,12 @@
 package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
-import com.picus.core.expert.domain.model.vo.Portfolio;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.Project;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.Studio;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
+import com.picus.core.expert.domain.vo.Portfolio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

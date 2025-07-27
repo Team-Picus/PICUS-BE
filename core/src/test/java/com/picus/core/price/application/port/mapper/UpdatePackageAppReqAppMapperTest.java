@@ -2,7 +2,7 @@ package com.picus.core.price.application.port.mapper;
 
 import com.picus.core.price.application.port.in.mapper.PackageCommandAppMapper;
 import com.picus.core.price.application.port.in.request.UpdatePackageAppReq;
-import com.picus.core.price.domain.model.Package;
+import com.picus.core.price.domain.Package;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

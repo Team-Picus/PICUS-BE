@@ -2,7 +2,7 @@ package com.picus.core.user.adapter.out.persistence;
 
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.mapper.ProfileImagePersistenceMapper;

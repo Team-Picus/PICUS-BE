@@ -2,8 +2,8 @@ package com.picus.core.price.integration;
 
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
+import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
@@ -35,8 +35,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.picus.core.expert.domain.model.vo.PriceThemeType.BEAUTY;
-import static com.picus.core.expert.domain.model.vo.PriceThemeType.FASHION;
+import static com.picus.core.expert.domain.vo.PriceThemeType.BEAUTY;
+import static com.picus.core.expert.domain.vo.PriceThemeType.FASHION;
 import static com.picus.core.price.application.port.in.request.ChangeStatus.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;

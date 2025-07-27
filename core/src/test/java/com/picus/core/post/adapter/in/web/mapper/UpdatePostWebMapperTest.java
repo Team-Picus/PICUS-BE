@@ -3,9 +3,9 @@ package com.picus.core.post.adapter.in.web.mapper;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq.PostImageWebReq;
 import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
-import com.picus.core.post.domain.model.vo.PostMoodType;
-import com.picus.core.post.domain.model.vo.PostThemeType;
-import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

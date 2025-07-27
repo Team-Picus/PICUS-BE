@@ -14,10 +14,10 @@ import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepositor
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
 import com.picus.core.price.application.port.out.PriceCommandPort;
 import com.picus.core.price.application.port.out.PriceQueryPort;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;

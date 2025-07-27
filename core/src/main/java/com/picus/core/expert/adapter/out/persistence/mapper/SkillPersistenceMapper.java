@@ -2,7 +2,7 @@ package com.picus.core.expert.adapter.out.persistence.mapper;
 
 
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
-import com.picus.core.expert.domain.model.Skill;
+import com.picus.core.expert.domain.Skill;
 import org.springframework.stereotype.Component;
 
 @Component

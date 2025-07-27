@@ -5,7 +5,7 @@ import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWeb
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.ExpertInfoQuery;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
-import com.picus.core.expert.domain.model.Expert;
+import com.picus.core.expert.domain.Expert;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

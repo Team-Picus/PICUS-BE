@@ -1,7 +1,7 @@
 package com.picus.core.price.application.port.in.mapper;
 
 import com.picus.core.price.application.port.in.request.UpdateOptionAppReq;
-import com.picus.core.price.domain.model.Option;
+import com.picus.core.price.domain.Option;
 import org.springframework.stereotype.Component;
 
 @Component

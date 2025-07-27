@@ -8,8 +8,8 @@ import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaReposi
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.application.port.out.PostCommandPort;
 import com.picus.core.post.application.port.out.PostQueryPort;
-import com.picus.core.post.domain.model.Post;
-import com.picus.core.post.domain.model.PostImage;
+import com.picus.core.post.domain.Post;
+import com.picus.core.post.domain.PostImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;

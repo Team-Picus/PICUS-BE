@@ -6,7 +6,7 @@ import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoW
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.SkillWebRequest;
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
 import com.picus.core.expert.application.port.in.request.*;
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.domain.vo.SkillType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

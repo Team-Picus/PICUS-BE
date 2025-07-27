@@ -1,6 +1,6 @@
 package com.picus.core.price.application.port.out;
 
-import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.Price;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.picus.core.price.application.service;
 
 import com.picus.core.price.application.port.in.PricesByExpertQuery;
 import com.picus.core.price.application.port.out.PriceQueryPort;
-import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.Price;
 import com.picus.core.shared.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 

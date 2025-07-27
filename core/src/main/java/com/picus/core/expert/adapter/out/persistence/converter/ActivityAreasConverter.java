@@ -1,6 +1,6 @@
 package com.picus.core.expert.adapter.out.persistence.converter;
 
-import com.picus.core.expert.domain.model.vo.ActivityArea;
+import com.picus.core.expert.domain.vo.ActivityArea;
 import jakarta.persistence.AttributeConverter;
 
 import java.util.Arrays;

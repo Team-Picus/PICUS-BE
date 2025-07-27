@@ -2,8 +2,8 @@ package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.out.ExpertQueryPort;
 import com.picus.core.expert.application.port.out.ExpertCommandPort;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

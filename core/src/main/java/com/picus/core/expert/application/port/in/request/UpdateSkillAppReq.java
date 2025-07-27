@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.port.in.request;
 
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.domain.vo.SkillType;
 import lombok.Builder;
 
 @Builder

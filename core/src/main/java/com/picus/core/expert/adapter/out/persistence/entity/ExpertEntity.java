@@ -1,11 +1,9 @@
 package com.picus.core.expert.adapter.out.persistence.entity;
 
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.ActivityArea;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
-import com.picus.core.expert.adapter.out.persistence.converter.ActivityAreasConverter;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.expert.adapter.out.persistence.converter.StringConverter;
-import com.picus.core.expert.domain.model.vo.Portfolio;
+import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.shared.common.BaseEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;

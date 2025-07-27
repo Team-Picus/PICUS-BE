@@ -8,7 +8,7 @@ import com.picus.core.price.application.port.in.mapper.PriceCommandAppMapper;
 import com.picus.core.price.application.port.in.mapper.PriceRefImageCommandAppMapper;
 import com.picus.core.price.application.port.out.PriceCommandPort;
 import com.picus.core.price.application.port.out.PriceQueryPort;
-import com.picus.core.price.domain.model.Price;
+import com.picus.core.price.domain.Price;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;

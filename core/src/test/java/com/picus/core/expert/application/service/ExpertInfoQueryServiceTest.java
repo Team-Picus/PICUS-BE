@@ -2,8 +2,8 @@ package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
 import com.picus.core.expert.application.port.out.ExpertQueryPort;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.Portfolio;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;

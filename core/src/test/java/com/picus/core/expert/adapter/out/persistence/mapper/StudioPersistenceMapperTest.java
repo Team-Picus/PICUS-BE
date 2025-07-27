@@ -1,6 +1,6 @@
 package com.picus.core.expert.adapter.out.persistence.mapper;
 
-import com.picus.core.expert.domain.model.Studio;
+import com.picus.core.expert.domain.Studio;
 import com.picus.core.expert.adapter.out.persistence.entity.StudioEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

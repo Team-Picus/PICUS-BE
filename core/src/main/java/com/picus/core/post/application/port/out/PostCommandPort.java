@@ -1,6 +1,6 @@
 package com.picus.core.post.application.port.out;
 
-import com.picus.core.post.domain.model.Post;
+import com.picus.core.post.domain.Post;
 
 import java.util.List;
 
