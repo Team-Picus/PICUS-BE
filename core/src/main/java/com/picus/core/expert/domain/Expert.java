@@ -240,6 +240,7 @@ public class Expert {
     }
 
     public void decreaseActivityCount() {
-        this.activityCount--;
+        if(this.activityCount != 0)
+            this.activityCount--;
     }
 }

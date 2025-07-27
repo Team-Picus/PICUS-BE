@@ -25,7 +25,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ReadCreatePostPersistenceAdapter implements CreatePostPort, ReadPostPort, UpdatePostPort, DeletePostPort {
+public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, UpdatePostPort, DeletePostPort {
 
     private final PostJpaRepository postJpaRepository;
     private final PostImageJpaRepository postImageJpaRepository;
@@ -60,10 +60,10 @@ public class ReadCreatePostPersistenceAdapter implements CreatePostPort, ReadPos
         return Optional.of(post);
     }
 
-    @Override
-    public Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String authorNo) {
-        return postJpaRepository.findTopUpdatedAtByExpertNo(authorNo);
-    }
+        @Override
+        public Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String authorNo) {
+            return postJpaRepository.findTopUpdatedAtByExpertNo(authorNo);
+        }
 
     @Override
     public void update(Post post, List<String> deletedPostImageNos) {

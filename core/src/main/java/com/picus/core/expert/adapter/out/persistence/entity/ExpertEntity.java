@@ -83,6 +83,7 @@ public class ExpertEntity extends BaseEntity {
         if (newExpert.getApprovalStatus() != null) {
             this.approvalStatus = newExpert.getApprovalStatus();
         }
+        this.lastActivityAt = newExpert.getLastActivityAt();
     }
 
     public void bindUserEntity(UserEntity userEntity) {

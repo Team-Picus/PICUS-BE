@@ -377,7 +377,7 @@ class ExpertTest {
 
     @Test
     @DisplayName("전문가의 activityCount를 1 감소시킨다.")
-    public void decreaseActivityCount() throws Exception {
+    public void decreaseActivityCount_success() throws Exception {
         // given
         Expert expert = createExpert(10);
 
@@ -386,6 +386,19 @@ class ExpertTest {
 
         // then
         assertThat(expert.getActivityCount()).isEqualTo(9);
+    }
+
+    @Test
+    @DisplayName("전문가의 activityCount가 0이면 줄어들지 않는다..")
+    public void decreaseActivityCount_ifZero() throws Exception {
+        // given
+        Expert expert = createExpert(0);
+
+        // when
+        expert.decreaseActivityCount();
+
+        // then
+        assertThat(expert.getActivityCount()).isEqualTo(0);
     }
 
     private Expert createExpert(LocalDateTime createdAt) {

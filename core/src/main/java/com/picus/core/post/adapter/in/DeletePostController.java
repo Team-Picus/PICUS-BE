@@ -1,7 +1,6 @@
 package com.picus.core.post.adapter.in;
 
 import com.picus.core.post.application.port.in.DeletePostUseCase;
-import com.picus.core.post.application.port.out.DeletePostPort;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;

@@ -4,12 +4,10 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
-import com.picus.core.post.application.port.in.request.ChangeStatus;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -33,28 +31,27 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picus.core.post.application.port.in.request.ChangeStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpMethod.DELETE;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @ActiveProfiles("test")
-public class UpdatePostIntegrationTest {
+public class DeletePostIntegrationTest {
+
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
     private TokenProvider tokenProvider;
-
     @Autowired
-    UserJpaRepository userJpaRepository;
-    @Autowired
-    PostJpaRepository postJpaRepository;
-    @Autowired
-    private PostImageJpaRepository postImageJpaRepository;
+    private UserJpaRepository userJpaRepository;
     @Autowired
     private ExpertJpaRepository expertJpaRepository;
+    @Autowired
+    private PostJpaRepository postJpaRepository;
+    @Autowired
+    private PostImageJpaRepository postImageJpaRepository;
 
     @AfterEach
     void tearDown() {
@@ -65,13 +62,17 @@ public class UpdatePostIntegrationTest {
     }
 
     @Test
-    @DisplayName("사용자는 게시물을 수정할 수 있다.")
-    public void write_success() throws Exception {
+    @DisplayName("사용자는 게시물을 삭제할 때, 기존 게시물이 1개이고 그외에 게시물과 예약이 없으면 최근 활동일은 null이 된다.")
+    public void delete_ifPostIsOne() throws Exception {
         // given
 
         // 데이터베이스에 데이터 셋팅
         UserEntity userEntity = createUserEntity();
-        ExpertEntity expertEntity = createExpertEntity(userEntity);
+
+        int initActivityCount = 5;
+        LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
+        ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
+
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
         PostEntity postEntity = createPostEntity(
@@ -79,26 +80,16 @@ public class UpdatePostIntegrationTest {
                 "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "old_address", false
         );
-        PostImageEntity postImageEntity1 = createPostImageEntity("file_key", 1, postEntity);
-        PostImageEntity postImageEntity2 = createPostImageEntity("file_key", 2, postEntity);
-
+        createPostImageEntity("file_key", 1, postEntity);
+        createPostImageEntity("file_key", 2, postEntity);
         commitTestTransaction();
 
-        // 입력 값 셋팅
-        UpdatePostWebReq webReq = createWebReq(List.of(
-                        createPostImageWebReq(null, "new_file_key", 1, NEW), // 새로 추가된 이미지
-                        createPostImageWebReq(postImageEntity1.getPostImageNo(), "file_key", 2, UPDATE), // 수정된 이미지
-                        createPostImageWebReq(postImageEntity2.getPostImageNo(), null, null, DELETE) // 삭제된 이미지
-                ), "new_title", "new_one", "new_detail",
-                List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
-                SpaceType.OUTDOOR, "new_address", "package-456");
+        HttpEntity<Object> httpEntity = settingWebRequest(userEntity.getUserNo(), null);
 
-        HttpEntity<UpdatePostWebReq> httpEntity = settingWebRequest(userEntity.getUserNo(), webReq);
-
-        // when
+        // when - API 요청
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
                 "/api/v1/posts/{post_no}",
-                HttpMethod.PATCH,
+                DELETE,
                 httpEntity,
                 new ParameterizedTypeReference<>() {
                 },
@@ -106,33 +97,75 @@ public class UpdatePostIntegrationTest {
         );
 
         // then
+        // 응답 검증
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        // PostEntity 검증
-        PostEntity postResult = postJpaRepository.findById(postEntity.getPostNo())
+        // Post 삭제 검증
+        assertThat(postJpaRepository.findById(postEntity.getPostNo()))
+                .isNotPresent();
+
+        // PostImage 삭제 검증
+        assertThat(postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo()))
+                .isEmpty();
+
+        // Expert 정보 갱신 검증
+        ExpertEntity updatedExpert = expertJpaRepository.findById(expertEntity.getExpertNo())
                 .orElseThrow();
-        assertThat(postResult.getPostNo()).isEqualTo(postEntity.getPostNo());
-        assertThat(postResult.getPackageNo()).isEqualTo("package-456");
-        assertThat(postResult.getExpertNo()).isEqualTo(expertEntity.getExpertNo());
-        assertThat(postResult.getTitle()).isEqualTo("new_title");
-        assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
-        assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
-        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
-        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.VINTAGE));
-        assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
-        assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
+        assertThat(updatedExpert.getActivityCount()).isEqualTo(initActivityCount - 1);
+        assertThat(updatedExpert.getLastActivityAt()).isNull(); // 1개 있었는데 삭제돼서 Null이됨
+    }
 
-        // PostImageEntity 검증
-        List<PostImageEntity> imageResults = postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo());
-        assertThat(imageResults).hasSize(2)
-                .extracting(
-                        PostImageEntity::getFileKey,
-                        PostImageEntity::getImageOrder
-                ).containsExactlyInAnyOrder(
-                        tuple("new_file_key", 1),
-                        tuple("file_key", 2)
-                );
+    @Test
+    @DisplayName("사용자가 게시물을 삭제할 때 글이 2개 이상이면 최근활동일을 나머지 게시물, 예약 중 최신 활동으로 갱신함")
+    public void delete_ifPostIsMoreThanTwo() throws Exception {
+        // given
 
+        // 데이터베이스에 데이터 셋팅
+        UserEntity userEntity = createUserEntity();
+
+        int initActivityCount = 5;
+        LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
+        ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
+
+        userEntity.assignExpertNo(expertEntity.getExpertNo());
+
+        PostEntity postEntity1 = createPostEntity(
+                "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
+                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "old_address", false
+        );
+        PostEntity postEntity2 = createPostEntity(
+                "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
+                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "old_address", false
+        );
+        commitTestTransaction();
+
+        HttpEntity<Object> httpEntity = settingWebRequest(userEntity.getUserNo(), null);
+
+        // when - API 요청
+        ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
+                "/api/v1/posts/{post_no}",
+                DELETE,
+                httpEntity,
+                new ParameterizedTypeReference<>() {
+                },
+                postEntity1.getPostNo()
+        );
+
+        // then
+        // 응답 검증
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Post 삭제 검증
+        assertThat(postJpaRepository.findById(postEntity1.getPostNo()))
+                .isNotPresent();
+
+        // Expert 정보 갱신 검증
+        ExpertEntity updatedExpert = expertJpaRepository.findById(expertEntity.getExpertNo())
+                .orElseThrow();
+        assertThat(updatedExpert.getActivityCount()).isEqualTo(initActivityCount - 1);
+        assertThat(updatedExpert.getLastActivityAt()).isEqualTo(postEntity2.getUpdatedAt()); // 1개 있었는데 삭제돼서 Null이됨
     }
 
     private UserEntity createUserEntity() {
@@ -147,17 +180,17 @@ public class UpdatePostIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo("expert-123")
+                .expertNo(null)
                 .build();
         return userJpaRepository.save(userEntity);
     }
-    private ExpertEntity createExpertEntity(UserEntity userEntity) {
+    private ExpertEntity createExpertEntity(UserEntity userEntity, int activityCount, LocalDateTime lastActivityAt) {
         ExpertEntity expertEntity = ExpertEntity.builder()
                 .activityCareer("activityCareer")
                 .activityAreas(List.of("activityAreas"))
                 .intro("전문가 소개")
-                .activityCount(8)
-                .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
+                .activityCount(activityCount)
+                .lastActivityAt(lastActivityAt)
                 .portfolioLinks(List.of("http://myportfolio.com"))
                 .approvalStatus(ApprovalStatus.PENDING)
                 .userEntity(userEntity)
@@ -183,7 +216,6 @@ public class UpdatePostIntegrationTest {
                 .build();
         return postJpaRepository.save(postEntity);
     }
-
     private PostImageEntity createPostImageEntity(String fileKey, int imageOrder, PostEntity postEntity) {
         PostImageEntity postImageEntity = PostImageEntity.builder()
                 .fileKey(fileKey)
@@ -191,33 +223,6 @@ public class UpdatePostIntegrationTest {
                 .postEntity(postEntity)
                 .build();
         return postImageJpaRepository.save(postImageEntity);
-    }
-
-    private UpdatePostWebReq createWebReq(
-            List<UpdatePostWebReq.PostImageWebReq> postImages, String title, String oneLineDescription,
-            String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
-            SpaceType spaceType, String spaceAddress, String packageNo) {
-        return UpdatePostWebReq.builder()
-                .postImages(postImages)
-                .title(title)
-                .oneLineDescription(oneLineDescription)
-                .detailedDescription(detailedDescription)
-                .postThemeTypes(postThemeTypes)
-                .postMoodTypes(postMoodTypes)
-                .spaceType(spaceType)
-                .spaceAddress(spaceAddress)
-                .packageNo(packageNo)
-                .build();
-    }
-
-    private UpdatePostWebReq.PostImageWebReq createPostImageWebReq(
-            String postImageNo, String fileKey, Integer imageOrder, ChangeStatus changeStatus) {
-        return UpdatePostWebReq.PostImageWebReq.builder()
-                .postImageNo(postImageNo)
-                .fileKey(fileKey)
-                .imageOrder(imageOrder)
-                .changeStatus(changeStatus)
-                .build();
     }
 
     private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {

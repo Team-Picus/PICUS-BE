@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
@@ -77,14 +78,22 @@ public class DeletePostService implements DeletePostUseCase {
         // 해당 Expert의 Post, Reservation 중 최근 작성한 것의 날짜를 Expert의 lastActivityAt으로 업데이트
 
         // 해당 Expert의 Post중 제일 최근에 작성한 글의 날짜 조회
-        LocalDateTime lastPostAt = readPostPort.findTopUpdatedAtByExpertNo(expertNo)
-                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        Optional<LocalDateTime> lastPostAt = readPostPort.findTopUpdatedAtByExpertNo(expertNo);
 
         // TODO: 해당 Expert의 제일 최근에 생성된 Reservation의 날짜 조회
-        LocalDateTime lastReservationAt = LocalDateTime.MIN;
+        Optional<LocalDateTime> lastReservationAt = Optional.empty();
 
         // 둘 중 더 최근인 날짜를 expert의 lastActivityAt으로 업데이트
-        expert.updateLastActivityAt(lastPostAt.isAfter(lastReservationAt) ? lastPostAt : lastReservationAt);
+        LocalDateTime lastActivityAt = null;
+
+        if (lastPostAt.isPresent() && lastReservationAt.isPresent()) {
+            lastActivityAt = lastPostAt.get().isAfter(lastReservationAt.get()) ? lastPostAt.get() : lastReservationAt.get();
+        } else if (lastPostAt.isPresent()) {
+            lastActivityAt = lastPostAt.get();
+        } else if (lastReservationAt.isPresent()) {
+            lastActivityAt = lastReservationAt.get();
+        }
+        expert.updateLastActivityAt(lastActivityAt);
 
         // 데이터베이스에 수정사항 반영
         updateExpertPort.update(expert);
