@@ -28,6 +28,6 @@ public class RejectRequestService implements RejectRequestUseCase {
         expert.rejectApprovalRequest();
 
         // 변경된 expert를 데이터베이스에 반영함
-        expertCommandPort.updateExpert(expert);
+        expertCommandPort.update(expert);
     }
 }

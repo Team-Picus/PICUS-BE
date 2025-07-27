@@ -55,7 +55,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                     basicInfoRequest.link(),
                     basicInfoRequest.intro());
 
-            expertCommandPort.updateExpert(expert);
+            expertCommandPort.update(expert);
         }
 
         // User쪽 정보가 수정될 필요가 있는지 확인
@@ -105,7 +105,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         String deletedStudioNo = updateStudio(detailInfoRequest, expert);
 
         // 수정된 정보 데이터베이스에 반영하기
-        expertCommandPort.updateExpertWithDetail(expert, deletedProjectNos, deletedSkillNos, deletedStudioNo);
+        expertCommandPort.update(expert, deletedProjectNos, deletedSkillNos, deletedStudioNo);
     }
 
     /**

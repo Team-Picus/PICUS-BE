@@ -82,7 +82,7 @@ public class PostInfoCommandService implements PostInfoCommand {
         Expert expert = expertQueryPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
         expert.updateLastActivityAt(LocalDateTime.now());
-        expertCommandPort.updateExpert(expert);
+        expertCommandPort.update(expert);
 
         // TODO: 새로 저장된 이미지 키들 레디스에서 삭제
         // TODO: 삭제된 이미지들 S3에서 삭제
@@ -123,7 +123,7 @@ public class PostInfoCommandService implements PostInfoCommand {
         expert.updateLastActivityAt(lastPostAt.isAfter(lastReservationAt) ? lastPostAt : lastReservationAt);
 
         // 데이터베이스에 수정사항 반영
-        expertCommandPort.updateExpert(expert);
+        expertCommandPort.update(expert);
     }
 
     /**

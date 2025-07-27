@@ -139,7 +139,7 @@ class PostInfoCommandServiceTest {
         then(postCommandPort).should().update(spyPost, List.of(deleteImage.postImageNo()));
         then(expertQueryPort).should().findById(expertNo);
         then(mockExpert).should().updateLastActivityAt(any(LocalDateTime.class));
-        then(expertCommandPort).should().updateExpert(mockExpert);
+        then(expertCommandPort).should().update(mockExpert);
     }
 
     @DisplayName("Post를 수정할 때, 이미지 순서 중복 시 예외 발생")
@@ -191,7 +191,7 @@ class PostInfoCommandServiceTest {
         then(expert).should().decreaseActivityCount();
         then(postQueryPort).should().findTopUpdatedAtByExpertNo(post.getAuthorNo());
         then(expert).should().updateLastActivityAt(lastPostAt);
-        then(expertCommandPort).should().updateExpert(expert);
+        then(expertCommandPort).should().update(expert);
     }
 
     @Test

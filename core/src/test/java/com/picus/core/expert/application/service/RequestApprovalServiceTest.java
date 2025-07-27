@@ -43,7 +43,7 @@ class RequestApprovalServiceTest {
 
         // then
 
-        then(expertCommandPort).should().saveExpert(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
+        then(expertCommandPort).should().save(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
         then(userCommandPort).should().assignExpertNo(any(String.class), any(String.class));
     }
 
@@ -96,7 +96,7 @@ class RequestApprovalServiceTest {
         Expert expert = Expert.builder()
                 .expertNo("expert_no1")
                 .build();
-        given(expertCommandPort.saveExpert(any(Expert.class), any(String.class)))
+        given(expertCommandPort.save(any(Expert.class), any(String.class)))
                 .willReturn(expert);
     }
 

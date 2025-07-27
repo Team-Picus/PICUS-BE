@@ -81,7 +81,7 @@ class ExpertPersistenceAdapterTest {
         Expert expert = givenExpertDomain();
 
         // when
-        Expert saved = expertPersistenceAdapter.saveExpert(expert, userEntity.getUserNo());
+        Expert saved = expertPersistenceAdapter.save(expert, userEntity.getUserNo());
 
         // then
         Optional<ExpertEntity> optionalResult = expertJpaRepository.findById(saved.getExpertNo());
@@ -175,7 +175,7 @@ class ExpertPersistenceAdapterTest {
                 .build();
 
         // when
-        expertPersistenceAdapter.updateExpert(updatedExpert);
+        expertPersistenceAdapter.update(updatedExpert);
         clearPersistenceContext();
 
         // then
@@ -265,7 +265,7 @@ class ExpertPersistenceAdapterTest {
                 .build();
 
         // when
-        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert,
+        expertPersistenceAdapter.update(updatedExpert,
                 List.of(deletedProjectNo), List.of(deletedSkillNo), null);
         clearPersistenceContext();
 
@@ -328,7 +328,7 @@ class ExpertPersistenceAdapterTest {
                 .build();
 
         // when
-        expertPersistenceAdapter.updateExpertWithDetail(updatedExpert,
+        expertPersistenceAdapter.update(updatedExpert,
                 List.of(), List.of(), deletedStudioNo);
         clearPersistenceContext();
 

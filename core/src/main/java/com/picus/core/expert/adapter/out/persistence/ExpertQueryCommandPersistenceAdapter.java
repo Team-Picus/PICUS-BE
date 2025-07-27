@@ -50,7 +50,7 @@ public class ExpertQueryCommandPersistenceAdapter implements ExpertQueryPort, Ex
 
 
     @Override
-    public Expert saveExpert(Expert expert, String userNo) {
+    public Expert save(Expert expert, String userNo) {
 
         // ExpertEntity 저장
         ExpertEntity saved = saveExpertEntity(expert, userNo);
@@ -89,7 +89,7 @@ public class ExpertQueryCommandPersistenceAdapter implements ExpertQueryPort, Ex
     }
 
     @Override
-    public void updateExpert(Expert expert) {
+    public void update(Expert expert) {
         ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
@@ -98,8 +98,8 @@ public class ExpertQueryCommandPersistenceAdapter implements ExpertQueryPort, Ex
     }
 
     @Override
-    public void updateExpertWithDetail(Expert expert,
-                                       List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo) {
+    public void update(Expert expert,
+                       List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo) {
 
         ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));

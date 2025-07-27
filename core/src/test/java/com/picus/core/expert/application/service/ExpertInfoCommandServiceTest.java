@@ -85,7 +85,7 @@ class ExpertInfoCommandServiceTest {
         then(userQueryPort).should().findById(userNo);
         then(expertQueryPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("new-background", List.of("https://new.link"), "New intro");
-        then(expertCommandPort).should().updateExpert(expert);
+        then(expertCommandPort).should().update(expert);
         then(userQueryPort).should().findUserInfoByExpertNo(expertNo);
         then(userCommandPort).should().updateNicknameAndImageByExpertNo(argThat(updatedDto ->
                 updatedDto.nickname().equals("NewNickname") &&
@@ -122,7 +122,7 @@ class ExpertInfoCommandServiceTest {
         then(userQueryPort).should().findById(userNo);
         then(expertQueryPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("bg-key", List.of("https://new.link"), "new intro");
-        then(expertCommandPort).should().updateExpert(expert);
+        then(expertCommandPort).should().update(expert);
         then(userCommandPort).shouldHaveNoInteractions();
     }
 
@@ -272,7 +272,7 @@ class ExpertInfoCommandServiceTest {
         then(updateStudioAppMapper).should(inOrder).toDomain(studioNew);
         then(expert).should(inOrder).addStudio(studio);
 
-        then(expertCommandPort).should(inOrder).updateExpertWithDetail(
+        then(expertCommandPort).should(inOrder).update(
                 eq(expert),
                 eq(List.of("PRJ003")),
                 eq(List.of("SKILL003")),

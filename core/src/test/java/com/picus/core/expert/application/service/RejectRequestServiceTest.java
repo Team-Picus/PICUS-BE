@@ -39,7 +39,7 @@ class RejectRequestServiceTest {
         then(expertQueryPort).should()
                 .findById(eq(expertNo));
         then(expertCommandPort).should()
-                .updateExpert(eq(expert));
+                .update(eq(expert));
     }
 
     private Expert stubLoadExpertByExpertNo(String expertNo) {

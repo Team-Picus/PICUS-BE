@@ -42,7 +42,7 @@ class ApproveRequestServiceTest {
         then(expertQueryPort).should()
                 .findById(eq(expertNo));
         then(expertCommandPort).should()
-                .updateExpert(eq(expert));
+                .update(eq(expert));
     }
 
     private Expert stubLoadExpertPortResult(String expertNo) {

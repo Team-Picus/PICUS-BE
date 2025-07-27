@@ -9,16 +9,16 @@ import java.util.List;
  */
 public interface ExpertCommandPort {
 
-    Expert saveExpert(Expert expert, String userNo);
+    Expert save(Expert expert, String userNo);
 
     /**
      * Expert 도메인만 수정
      */
-    void updateExpert(Expert expert);
+    void update(Expert expert);
 
     /**
      * Expert의 서브도메인인 Project, Skill, Studio까지 업데이트
      */
-    void updateExpertWithDetail(Expert expert,
-                                List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo);
+    void update(Expert expert,
+                List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo);
 }
