@@ -18,7 +18,6 @@ import com.picus.core.post.domain.model.vo.SpaceType;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -174,6 +173,11 @@ class PostInfoCommandServiceTest {
         Post post = mock(Post.class);
         given(postQueryPort.findById(postNo)).willReturn(Optional.of(post));
         given(post.getAuthorNo()).willReturn(expertNo);
+        Expert expert = mock(Expert.class);
+        given(expertQueryPort.findById(expertNo)).willReturn(Optional.of(expert));
+        LocalDateTime lastPostAt = LocalDateTime.MAX;
+        given(postQueryPort.findTopUpdatedAtByExpertNo(post.getAuthorNo())).willReturn(Optional.of(lastPostAt));
+
 
         // when
         postInfoCommandService.delete(postNo, currentUserNo);
@@ -183,6 +187,11 @@ class PostInfoCommandServiceTest {
         then(user).should().getExpertNo();
         then(postQueryPort).should().findById(postNo);
         then(postCommandPort).should().delete(postNo);
+        then(expertQueryPort).should().findById(expertNo);
+        then(expert).should().decreaseActivityCount();
+        then(postQueryPort).should().findTopUpdatedAtByExpertNo(post.getAuthorNo());
+        then(expert).should().updateLastActivityAt(lastPostAt);
+        then(expertCommandPort).should().updateExpert(expert);
     }
 
     @Test

@@ -11,7 +11,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode
@@ -30,7 +29,7 @@ public class Expert {
 
     private final String activityDuration;
 
-    private final Integer activityCount;
+    private Integer activityCount;
 
     private LocalDateTime lastActivityAt;
 
@@ -238,5 +237,9 @@ public class Expert {
     }
     public void deleteStudio() {
         this.studio = null;
+    }
+
+    public void decreaseActivityCount() {
+        this.activityCount--;
     }
 }

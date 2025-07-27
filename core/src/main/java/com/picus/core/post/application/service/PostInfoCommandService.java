@@ -104,6 +104,26 @@ public class PostInfoCommandService implements PostInfoCommand {
         postCommandPort.delete(postNo);
 
         // TODO: S3에서 이미지들 삭제
+
+        // 해당 Expert의 ActivityCount 1 감소 시키기
+        Expert expert = expertQueryPort.findById(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        expert.decreaseActivityCount();
+
+        // 해당 Expert의 Post, Reservation 중 최근 작성한 것의 날짜를 Expert의 lastActivityAt으로 업데이트
+
+        // 해당 Expert의 Post중 제일 최근에 작성한 글의 날짜 조회
+        LocalDateTime lastPostAt = postQueryPort.findTopUpdatedAtByExpertNo(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        // TODO: 해당 Expert의 제일 최근에 생성된 Reservation의 날짜 조회
+        LocalDateTime lastReservationAt = LocalDateTime.MIN;
+
+        // 둘 중 더 최근인 날짜를 expert의 lastActivityAt으로 업데이트
+        expert.updateLastActivityAt(lastPostAt.isAfter(lastReservationAt) ? lastPostAt : lastReservationAt);
+
+        // 데이터베이스에 수정사항 반영
+        expertCommandPort.updateExpert(expert);
     }
 
     /**

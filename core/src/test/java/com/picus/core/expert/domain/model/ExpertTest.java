@@ -375,9 +375,28 @@ class ExpertTest {
                 .isEqualTo(LocalDateTime.of(2022, 5, 5, 5, 5));
     }
 
+    @Test
+    @DisplayName("전문가의 activityCount를 1 감소시킨다.")
+    public void decreaseActivityCount() throws Exception {
+        // given
+        Expert expert = createExpert(10);
+
+        // when
+        expert.decreaseActivityCount();
+
+        // then
+        assertThat(expert.getActivityCount()).isEqualTo(9);
+    }
+
     private Expert createExpert(LocalDateTime createdAt) {
         return Expert.builder()
                 .createdAt(createdAt)
+                .build();
+    }
+
+    private Expert createExpert(Integer activityCount) {
+        return Expert.builder()
+                .activityCount(activityCount)
                 .build();
     }
 
