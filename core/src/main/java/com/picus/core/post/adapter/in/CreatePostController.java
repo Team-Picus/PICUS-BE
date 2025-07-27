@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/posts")
 public class CreatePostController {
 
     private final CreatePostUseCase createPostUseCase;
     private final CreatePostWebMapper createPostWebMapper;
 
-    @PostMapping("/api/v1/posts")
+    @PostMapping
     public BaseResponse<Void> createPost(@RequestBody @Valid CreatePostWebReq webReq, @CurrentUser String userNo) {
         CreatePostAppReq appReq = createPostWebMapper.toAppReq(webReq, userNo);
         createPostUseCase.create(appReq);

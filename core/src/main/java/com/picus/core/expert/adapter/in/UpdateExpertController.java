@@ -11,15 +11,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/experts")
 public class UpdateExpertController {
     private final UpdateExpertUseCase updateExpertUseCase;
     private final UpdateExpertWebMapper updateExpertWebMapper;
 
-    @PatchMapping("/api/v1/experts/basic_info")
+    @PatchMapping("/basic_info")
     public BaseResponse<Void> updateExpertBasicInfo(@RequestBody UpdateExpertBasicInfoWebRequest webRequest,
                                                     @CurrentUser String userNo) {
         // 유스케이스 호출
@@ -27,7 +29,7 @@ public class UpdateExpertController {
         return BaseResponse.onSuccess();
     }
 
-    @PatchMapping("/api/v1/experts/detail_info")
+    @PatchMapping("/detail_info")
     public BaseResponse<Void> updateExpertDetailInfo(@RequestBody @Valid UpdateExpertDetailInfoWebRequest webRequest,
                                                      @CurrentUser String userNo) {
         // 유스케이스 호출

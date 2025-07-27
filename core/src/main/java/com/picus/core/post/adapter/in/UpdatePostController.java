@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/posts")
 public class UpdatePostController {
 
     private final UpdatePostUseCase updatePostUseCase;
     private final UpdatePostWebMapper updatePostWebMapper;
 
-    @PatchMapping("/api/v1/posts/{post_no}")
+    @PatchMapping("/{post_no}")
     public BaseResponse<Void> updatePost(
             @RequestBody UpdatePostWebReq webReq, @PathVariable("post_no") String postNo, @CurrentUser String userNo) {
         UpdatePostAppReq appReq = updatePostWebMapper.toAppReq(webReq, postNo, userNo);

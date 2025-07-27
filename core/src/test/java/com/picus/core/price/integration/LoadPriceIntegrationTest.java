@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.tuple;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @ActiveProfiles("test")
-public class GetPricesByExpertIntegrationTest {
+public class LoadPriceIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

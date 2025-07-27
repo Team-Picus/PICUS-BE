@@ -9,16 +9,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/experts/prices")
 public class UpdatePriceController {
 
     private final UpdatePriceCommand updatePriceCommand;
     private final UpdatePriceWebMapper webMapper;
 
-    @PatchMapping("/api/v1/experts/prices")
+    @PatchMapping
     public BaseResponse<Void> applyPriceChanges(@RequestBody @Valid UpdatePriceListWebReq webRequest,
                                                 @CurrentUser String userNo) {
         updatePriceCommand.update(webMapper.toCommand(webRequest), userNo);
