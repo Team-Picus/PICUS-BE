@@ -1,4 +1,4 @@
-package com.picus.core.expert.adapter.in.web;
+package com.picus.core.expert.adapter.in;
 
 import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;

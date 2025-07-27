@@ -2,6 +2,7 @@ package com.picus.core.price.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.price.adapter.in.UpdatePriceController;
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.adapter.in.web.mapper.UpdatePriceWebMapper;
 import com.picus.core.price.application.port.in.PriceInfoCommand;

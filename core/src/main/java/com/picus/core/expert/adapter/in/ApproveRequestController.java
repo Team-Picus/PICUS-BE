@@ -1,4 +1,4 @@
-package com.picus.core.expert.adapter.in.web;
+package com.picus.core.expert.adapter.in;
 
 import com.picus.core.expert.application.port.in.ApproveRequestUseCase;
 import com.picus.core.shared.common.BaseResponse;

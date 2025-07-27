@@ -1,5 +1,6 @@
 package com.picus.core.expert.adapter.in.web;
 
+import com.picus.core.expert.adapter.in.GetExpertController;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.StudioWebResponse;

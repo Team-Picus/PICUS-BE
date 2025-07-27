@@ -1,4 +1,4 @@
-package com.picus.core.price.adapter.in.web;
+package com.picus.core.price.adapter.in;
 
 import com.picus.core.price.adapter.in.web.data.request.UpdatePriceListWebReq;
 import com.picus.core.price.adapter.in.web.mapper.UpdatePriceWebMapper;

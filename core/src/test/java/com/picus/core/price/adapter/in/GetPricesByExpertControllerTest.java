@@ -1,7 +1,6 @@
 package com.picus.core.price.adapter.in;
 
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
-import com.picus.core.price.adapter.in.web.GetPricesByExpertController;
 import com.picus.core.price.adapter.in.web.mapper.GetPricesByExpertWebMapper;
 import com.picus.core.price.application.port.in.PricesByExpertQuery;
 import org.junit.jupiter.api.DisplayName;

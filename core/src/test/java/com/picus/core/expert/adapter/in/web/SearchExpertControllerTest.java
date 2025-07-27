@@ -1,5 +1,6 @@
 package com.picus.core.expert.adapter.in.web;
 
+import com.picus.core.expert.adapter.in.SearchExpertController;
 import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
 import com.picus.core.expert.application.port.in.SearchExpertsUseCase;
