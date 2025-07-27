@@ -4,10 +4,6 @@ import com.picus.core.post.domain.Post;
 
 import java.util.List;
 
-public interface PostCommandPort {
-    Post save(Post post);
-
+public interface UpdatePostPort {
     void update(Post post, List<String> deletedPostImageNos);
-
-    void delete(String postNo);
 }

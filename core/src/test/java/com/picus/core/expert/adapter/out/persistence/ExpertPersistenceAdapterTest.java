@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 @Import({
-        ExpertQueryCommandPersistenceAdapter.class,
+        ExpertPersistenceAdapter.class,
         ExpertPersistenceMapper.class,
         ProjectPersistenceMapper.class,
         SkillPersistenceMapper.class,
@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.tuple;
 class ExpertPersistenceAdapterTest {
 
     @Autowired
-    ExpertQueryCommandPersistenceAdapter expertPersistenceAdapter;
+    ExpertPersistenceAdapter expertPersistenceAdapter;
 
     @Autowired
     ExpertJpaRepository expertJpaRepository;
@@ -74,14 +74,14 @@ class ExpertPersistenceAdapterTest {
 
     @Test
     @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장되며 기본키는 연관맺은 UserEntity의 기본키가 된다.")
-    public void saveExpert() throws Exception {
+    public void createExpert() throws Exception {
         // given
         UserEntity userEntity = givenUserEntity();
         userJpaRepository.save(userEntity);
         Expert expert = givenExpertDomain();
 
         // when
-        Expert saved = expertPersistenceAdapter.save(expert, userEntity.getUserNo());
+        Expert saved = expertPersistenceAdapter.create(expert, userEntity.getUserNo());
 
         // then
         Optional<ExpertEntity> optionalResult = expertJpaRepository.findById(saved.getExpertNo());

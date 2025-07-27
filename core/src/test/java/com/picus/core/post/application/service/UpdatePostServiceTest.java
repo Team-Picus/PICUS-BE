@@ -1,13 +1,13 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.expert.application.port.out.ExpertQueryPort;
-import com.picus.core.expert.application.port.out.ExpertCommandPort;
+import com.picus.core.expert.application.port.out.ReadExpertPort;
+import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.request.ChangeStatus;
 import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
 import com.picus.core.post.application.port.in.request.UpdatePostAppReq.UpdatePostImageAppReq;
-import com.picus.core.post.application.port.out.PostCommandPort;
-import com.picus.core.post.application.port.out.PostQueryPort;
+import com.picus.core.post.application.port.out.ReadPostPort;
+import com.picus.core.post.application.port.out.UpdatePostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
@@ -40,13 +40,13 @@ class UpdatePostServiceTest {
     @Mock
     UserQueryPort userQueryPort;
     @Mock
-    ExpertQueryPort expertQueryPort;
+    ReadExpertPort readExpertPort;
     @Mock
-    ExpertCommandPort expertCommandPort;
+    UpdateExpertPort updateExpertPort;
     @Mock
-    PostCommandPort postCommandPort;
+    UpdatePostPort updatePostPort;
     @Mock
-    PostQueryPort postQueryPort;
+    ReadPostPort readPostPort;
 
     @InjectMocks
     UpdatePostService updatePostService;
@@ -79,9 +79,9 @@ class UpdatePostServiceTest {
         given(mockUser.getExpertNo()).willReturn(expertNo);
         Post post = Post.builder().authorNo(expertNo).build();
         Post spyPost = spy(post);
-        given(postQueryPort.findById(postNo)).willReturn(Optional.of(spyPost));
+        given(readPostPort.findById(postNo)).willReturn(Optional.of(spyPost));
         Expert mockExpert = mock(Expert.class);
-        given(expertQueryPort.findById(expertNo)).willReturn(Optional.of(mockExpert));
+        given(readExpertPort.findById(expertNo)).willReturn(Optional.of(mockExpert));
 
         // when
         updatePostService.update(updatePostAppReq);
@@ -89,7 +89,7 @@ class UpdatePostServiceTest {
         // then
         then(userQueryPort).should().findById(userNo);
         then(mockUser).should().getExpertNo();
-        then(postQueryPort).should().findById(postNo);
+        then(readPostPort).should().findById(postNo);
         then(spyPost).should().updatePost("title", "one", "detail",
                 List.of(PostThemeType.BEAUTY), List.of(PostMoodType.VINTAGE),
                 SpaceType.INDOOR, "space", "pkg-123");
@@ -103,10 +103,10 @@ class UpdatePostServiceTest {
                 .imageOrder(updateImage.imageOrder())
                 .build());
         then(spyPost).should().deletePostImage(deleteImage.postImageNo());
-        then(postCommandPort).should().update(spyPost, List.of(deleteImage.postImageNo()));
-        then(expertQueryPort).should().findById(expertNo);
+        then(updatePostPort).should().update(spyPost, List.of(deleteImage.postImageNo()));
+        then(readExpertPort).should().findById(expertNo);
         then(mockExpert).should().updateLastActivityAt(any(LocalDateTime.class));
-        then(expertCommandPort).should().update(mockExpert);
+        then(updateExpertPort).should().update(mockExpert);
     }
 
     @DisplayName("Post를 수정할 때, 이미지 순서 중복 시 예외 발생")

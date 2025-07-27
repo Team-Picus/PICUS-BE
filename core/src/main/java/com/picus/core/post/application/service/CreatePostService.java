@@ -3,7 +3,7 @@ package com.picus.core.post.application.service;
 import com.picus.core.post.application.port.in.CreatePostUseCase;
 import com.picus.core.post.application.port.in.mapper.WritePostAppMapper;
 import com.picus.core.post.application.port.in.request.CreatePostAppReq;
-import com.picus.core.post.application.port.out.PostCommandPort;
+import com.picus.core.post.application.port.out.CreatePostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -22,7 +22,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 public class CreatePostService implements CreatePostUseCase {
 
     private final UserQueryPort userQueryPort;
-    private final PostCommandPort postCommandPort;
+    private final CreatePostPort createPostPort;
 
     private final WritePostAppMapper appMapper;
 
@@ -36,7 +36,7 @@ public class CreatePostService implements CreatePostUseCase {
         Post post = appMapper.toDomain(createPostAppReq, expertNo);
 
         // 데이터베이스에 저장
-        postCommandPort.save(post);
+        createPostPort.save(post);
 
         // TODO: 저장 후 해당 이미지 키들 레디스에서 삭제
 

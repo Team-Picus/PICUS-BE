@@ -1,7 +1,8 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.out.ExpertQueryPort;
-import com.picus.core.expert.application.port.out.ExpertCommandPort;
+import com.picus.core.expert.application.port.out.ReadExpertPort;
+import com.picus.core.expert.application.port.out.CreateExpertPort;
+import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -17,11 +18,11 @@ import static org.mockito.BDDMockito.then;
 
 class ApproveRequestServiceTest {
 
-    private final ExpertQueryPort expertQueryPort = Mockito.mock(ExpertQueryPort.class);
-    private final ExpertCommandPort expertCommandPort = Mockito.mock(ExpertCommandPort.class);
+    private final ReadExpertPort readExpertPort = Mockito.mock(ReadExpertPort.class);
+    private final UpdateExpertPort updateExpertPort = Mockito.mock(UpdateExpertPort.class);
 
     private final ApproveRequestService approveRequestService =
-            new ApproveRequestService(expertQueryPort, expertCommandPort);
+            new ApproveRequestService(readExpertPort, updateExpertPort);
 
 
     @Test
@@ -39,9 +40,9 @@ class ApproveRequestServiceTest {
         assertThat(expert.getApprovalStatus())
                 .isEqualTo(ApprovalStatus.APPROVAL);
 
-        then(expertQueryPort).should()
+        then(readExpertPort).should()
                 .findById(eq(expertNo));
-        then(expertCommandPort).should()
+        then(updateExpertPort).should()
                 .update(eq(expert));
     }
 
@@ -50,7 +51,7 @@ class ApproveRequestServiceTest {
                 .expertNo(expertNo)
                 .approvalStatus(ApprovalStatus.PENDING)
                 .build();
-        given(expertQueryPort.findById(expertNo))
+        given(readExpertPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
         return expert;
     }

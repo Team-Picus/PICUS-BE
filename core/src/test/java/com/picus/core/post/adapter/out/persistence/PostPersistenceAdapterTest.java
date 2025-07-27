@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 
 @Import({
-        PostPersistenceAdapter.class,
+        ReadCreatePostPersistenceAdapter.class,
         PostPersistenceMapper.class,
         PostImagePersistenceMapper.class,
         JpaAuditingConfiguration.class
@@ -46,7 +46,7 @@ class PostPersistenceAdapterTest {
     PostImageJpaRepository postImageJpaRepository;
 
     @Autowired
-    private PostPersistenceAdapter postPersistenceAdapter;
+    private ReadCreatePostPersistenceAdapter postPersistenceAdapter;
 
     @Autowired
     EntityManager em;

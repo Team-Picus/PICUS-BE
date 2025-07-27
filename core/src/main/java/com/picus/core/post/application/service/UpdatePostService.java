@@ -1,12 +1,12 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.expert.application.port.out.ExpertQueryPort;
-import com.picus.core.expert.application.port.out.ExpertCommandPort;
+import com.picus.core.expert.application.port.out.ReadExpertPort;
+import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
 import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
-import com.picus.core.post.application.port.out.PostCommandPort;
-import com.picus.core.post.application.port.out.PostQueryPort;
+import com.picus.core.post.application.port.out.ReadPostPort;
+import com.picus.core.post.application.port.out.UpdatePostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.shared.annotation.UseCase;
@@ -28,10 +28,10 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 public class UpdatePostService implements UpdatePostUseCase {
 
     private final UserQueryPort userQueryPort;
-    private final ExpertQueryPort expertQueryPort;
-    private final ExpertCommandPort expertCommandPort;
-    private final PostCommandPort postCommandPort;
-    private final PostQueryPort postQueryPort;
+    private final ReadExpertPort readExpertPort;
+    private final UpdateExpertPort updateExpertPort;
+    private final UpdatePostPort updatePostPort;
+    private final ReadPostPort readPostPort;
 
     @Override
     public void update(UpdatePostAppReq updatePostAppReq) {
@@ -43,7 +43,7 @@ public class UpdatePostService implements UpdatePostUseCase {
         String expertNo = getCurrentExpertNo(updatePostAppReq.currentUserNo());
 
         // Post 조회
-        Post post = postQueryPort.findById(updatePostAppReq.postNo())
+        Post post = readPostPort.findById(updatePostAppReq.postNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 수정할 Post의 작성자와 현재 expertNo가 같은지 검증
@@ -57,13 +57,13 @@ public class UpdatePostService implements UpdatePostUseCase {
         updatePostImage(post, updatePostAppReq.postImages(), deletedPostImageNos);
 
         // 수정사항 데이터베이스 반영
-        postCommandPort.update(post, deletedPostImageNos);
+        updatePostPort.update(post, deletedPostImageNos);
 
         // Expert의 activityAt 최신화
-        Expert expert = expertQueryPort.findById(expertNo)
+        Expert expert = readExpertPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
         expert.updateLastActivityAt(LocalDateTime.now());
-        expertCommandPort.update(expert);
+        updateExpertPort.update(expert);
 
         // TODO: 새로 저장된 이미지 키들 레디스에서 삭제
         // TODO: 삭제된 이미지들 S3에서 삭제

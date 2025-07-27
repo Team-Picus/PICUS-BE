@@ -7,7 +7,7 @@ import java.util.Optional;
 /**
  * 전문가를 데이터베이스로부터 불러오는 Out Port
  */
-public interface ExpertQueryPort {
+public interface ReadExpertPort {
 
     Optional<Expert> findById(String expertNo);
 }

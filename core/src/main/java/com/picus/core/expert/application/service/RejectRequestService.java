@@ -1,8 +1,8 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.RejectRequestUseCase;
-import com.picus.core.expert.application.port.out.ExpertQueryPort;
-import com.picus.core.expert.application.port.out.ExpertCommandPort;
+import com.picus.core.expert.application.port.out.ReadExpertPort;
+import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -15,19 +15,19 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 @UseCase
 @Transactional
 public class RejectRequestService implements RejectRequestUseCase {
-    private final ExpertQueryPort expertQueryPort;
-    private final ExpertCommandPort expertCommandPort;
+    private final ReadExpertPort readExpertPort;
+    private final UpdateExpertPort updateExpertPort;
 
     @Override
     public void rejectRequest(String expertNo) {
         // 받은 expertNo로 expert를 가져옴
-        Expert expert = expertQueryPort.findById(expertNo)
+        Expert expert = readExpertPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 해당 expert의 approval status를 Approval로 변경함
         expert.rejectApprovalRequest();
 
         // 변경된 expert를 데이터베이스에 반영함
-        expertCommandPort.update(expert);
+        updateExpertPort.update(expert);
     }
 }

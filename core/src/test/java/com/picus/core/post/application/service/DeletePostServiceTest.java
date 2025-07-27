@@ -1,10 +1,10 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.expert.application.port.out.ExpertCommandPort;
-import com.picus.core.expert.application.port.out.ExpertQueryPort;
+import com.picus.core.expert.application.port.out.ReadExpertPort;
+import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
-import com.picus.core.post.application.port.out.PostCommandPort;
-import com.picus.core.post.application.port.out.PostQueryPort;
+import com.picus.core.post.application.port.out.DeletePostPort;
+import com.picus.core.post.application.port.out.ReadPostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;
@@ -31,13 +31,13 @@ class DeletePostServiceTest {
     @Mock
     UserQueryPort userQueryPort;
     @Mock
-    ExpertQueryPort expertQueryPort;
+    ReadExpertPort readExpertPort;
     @Mock
-    ExpertCommandPort expertCommandPort;
+    UpdateExpertPort updateExpertPort;
     @Mock
-    PostCommandPort postCommandPort;
+    DeletePostPort deletePostPort;
     @Mock
-    PostQueryPort postQueryPort;
+    ReadPostPort readPostPort;
 
     @InjectMocks
     DeletePostService deletePostService;
@@ -56,12 +56,12 @@ class DeletePostServiceTest {
         String expertNo = "expert-123";
         given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
-        given(postQueryPort.findById(postNo)).willReturn(Optional.of(post));
+        given(readPostPort.findById(postNo)).willReturn(Optional.of(post));
         given(post.getAuthorNo()).willReturn(expertNo);
         Expert expert = mock(Expert.class);
-        given(expertQueryPort.findById(expertNo)).willReturn(Optional.of(expert));
+        given(readExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
         LocalDateTime lastPostAt = LocalDateTime.MAX;
-        given(postQueryPort.findTopUpdatedAtByExpertNo(post.getAuthorNo())).willReturn(Optional.of(lastPostAt));
+        given(readPostPort.findTopUpdatedAtByExpertNo(post.getAuthorNo())).willReturn(Optional.of(lastPostAt));
 
 
         // when
@@ -70,13 +70,13 @@ class DeletePostServiceTest {
         // then
         then(userQueryPort).should().findById(currentUserNo);
         then(user).should().getExpertNo();
-        then(postQueryPort).should().findById(postNo);
-        then(postCommandPort).should().delete(postNo);
-        then(expertQueryPort).should().findById(expertNo);
+        then(readPostPort).should().findById(postNo);
+        then(deletePostPort).should().delete(postNo);
+        then(readExpertPort).should().findById(expertNo);
         then(expert).should().decreaseActivityCount();
-        then(postQueryPort).should().findTopUpdatedAtByExpertNo(post.getAuthorNo());
+        then(readPostPort).should().findTopUpdatedAtByExpertNo(post.getAuthorNo());
         then(expert).should().updateLastActivityAt(lastPostAt);
-        then(expertCommandPort).should().update(expert);
+        then(updateExpertPort).should().update(expert);
     }
 
     @Test
@@ -92,7 +92,7 @@ class DeletePostServiceTest {
         String expertNo = "expert-123";
         given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
-        given(postQueryPort.findById(postNo)).willReturn(Optional.of(post));
+        given(readPostPort.findById(postNo)).willReturn(Optional.of(post));
         given(post.getAuthorNo()).willReturn("expert-345");
 
         // when // then

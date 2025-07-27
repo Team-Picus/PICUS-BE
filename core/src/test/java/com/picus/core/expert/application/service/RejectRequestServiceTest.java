@@ -1,7 +1,8 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.out.ExpertQueryPort;
-import com.picus.core.expert.application.port.out.ExpertCommandPort;
+import com.picus.core.expert.application.port.out.ReadExpertPort;
+import com.picus.core.expert.application.port.out.CreateExpertPort;
+import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,11 +16,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 class RejectRequestServiceTest {
-    private final ExpertQueryPort expertQueryPort = Mockito.mock(ExpertQueryPort.class);
-    private final ExpertCommandPort expertCommandPort = Mockito.mock(ExpertCommandPort.class);
+    private final ReadExpertPort readExpertPort = Mockito.mock(ReadExpertPort.class);
+    private final UpdateExpertPort updateExpertPort = Mockito.mock(UpdateExpertPort.class);
 
     private final RejectRequestService rejectRequestService =
-            new RejectRequestService(expertQueryPort, expertCommandPort);
+            new RejectRequestService(readExpertPort, updateExpertPort);
 
 
     @Test
@@ -36,15 +37,15 @@ class RejectRequestServiceTest {
         // then
         then(expert).should()
                 .rejectApprovalRequest();
-        then(expertQueryPort).should()
+        then(readExpertPort).should()
                 .findById(eq(expertNo));
-        then(expertCommandPort).should()
+        then(updateExpertPort).should()
                 .update(eq(expert));
     }
 
     private Expert stubLoadExpertByExpertNo(String expertNo) {
         Expert expert = Mockito.mock(Expert.class);
-        given(expertQueryPort.findById(expertNo))
+        given(readExpertPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
         return expert;
     }

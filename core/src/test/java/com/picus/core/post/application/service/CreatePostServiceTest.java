@@ -2,7 +2,7 @@ package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.mapper.WritePostAppMapper;
 import com.picus.core.post.application.port.in.request.CreatePostAppReq;
-import com.picus.core.post.application.port.out.PostCommandPort;
+import com.picus.core.post.application.port.out.CreatePostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.User;
@@ -24,7 +24,7 @@ class CreatePostServiceTest {
     @Mock
     UserQueryPort userQueryPort;
     @Mock
-    PostCommandPort postCommandPort;
+    CreatePostPort createPostPort;
     @Mock
     WritePostAppMapper writePostAppMapper;
 
@@ -51,12 +51,12 @@ class CreatePostServiceTest {
 
         // then
         InOrder inOrder = Mockito.inOrder(
-                userQueryPort, user, writePostAppMapper, postCommandPort
+                userQueryPort, user, writePostAppMapper, createPostPort
         );
         then(userQueryPort).should(inOrder).findById(req.currentUserNo());
         then(user).should(inOrder).getExpertNo();
         then(writePostAppMapper).should(inOrder).toDomain(req, expertNo);
-        then(postCommandPort).should(inOrder).save(post);
+        then(createPostPort).should(inOrder).save(post);
     }
 
 }
