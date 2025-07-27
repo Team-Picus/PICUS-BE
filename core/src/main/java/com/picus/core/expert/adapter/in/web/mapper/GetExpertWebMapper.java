@@ -1,10 +1,10 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.ProjectWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.SkillWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.StudioWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.ProjectWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.SkillWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.StudioWebResponse;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
@@ -17,8 +17,8 @@ import java.util.List;
 @Component
 public class GetExpertWebMapper {
 
-    public GetExpertBasicInfoWebResponse toBasicInfo(ExpertBasicInfoQueryAppResp appResponse) {
-        return GetExpertBasicInfoWebResponse.builder()
+    public LoadExpertBasicInfoWebResponse toBasicInfo(ExpertBasicInfoQueryAppResp appResponse) {
+        return LoadExpertBasicInfoWebResponse.builder()
                 .expertNo(appResponse.expertNo())
                 .activityDuration(appResponse.activityDuration())
                 .activityCount(appResponse.activityCount())
@@ -31,9 +31,9 @@ public class GetExpertWebMapper {
                 .build();
     }
 
-    public GetExpertDetailInfoWebResponse toDetailInfo(Expert expert) {
+    public LoadExpertDetailInfoWebResponse toDetailInfo(Expert expert) {
 
-        return GetExpertDetailInfoWebResponse.builder()
+        return LoadExpertDetailInfoWebResponse.builder()
                 .activityCareer(expert.getActivityCareer())
                 .projects(toProjectWebResponse(expert.getProjects()))
                 .skills(toSkillWebResponse(expert.getSkills()))

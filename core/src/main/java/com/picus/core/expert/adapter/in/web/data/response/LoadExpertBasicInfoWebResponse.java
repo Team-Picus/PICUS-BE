@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-public record GetExpertBasicInfoWebResponse(
+public record LoadExpertBasicInfoWebResponse(
         String expertNo,
         String activityDuration,
         Integer activityCount,

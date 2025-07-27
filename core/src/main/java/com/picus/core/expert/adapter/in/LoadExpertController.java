@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in;
 
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
@@ -20,14 +20,14 @@ public class LoadExpertController {
     private final GetExpertWebMapper getExpertWebMapper;
 
     @GetMapping("/api/v1/experts/{expert_no}/basic_info")
-    public BaseResponse<GetExpertBasicInfoWebResponse> getExpertBasicInfo(@PathVariable("expert_no") String expertNo) {
+    public BaseResponse<LoadExpertBasicInfoWebResponse> getExpertBasicInfo(@PathVariable("expert_no") String expertNo) {
 
         ExpertBasicInfoQueryAppResp appResponse = loadExpertUseCase.getExpertBasicInfo(expertNo);
         return BaseResponse.onSuccess(getExpertWebMapper.toBasicInfo(appResponse));
     }
 
     @GetMapping("/api/v1/experts/{expert_no}/detail_info")
-    public BaseResponse<GetExpertDetailInfoWebResponse> getExpertDetailInfo(@PathVariable("expert_no") String expertNo) {
+    public BaseResponse<LoadExpertDetailInfoWebResponse> getExpertDetailInfo(@PathVariable("expert_no") String expertNo) {
         Expert expert = loadExpertUseCase.getExpertDetailInfo(expertNo);
         return BaseResponse.onSuccess(getExpertWebMapper.toDetailInfo(expert));
     }

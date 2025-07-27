@@ -1,7 +1,7 @@
 package com.picus.core.expert.integration;
 
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.*;
+import static com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -108,7 +108,7 @@ public class GetExpertIntegrationTest {
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
 
         // when
-        ResponseEntity<BaseResponse<GetExpertBasicInfoWebResponse>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<LoadExpertBasicInfoWebResponse>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/basic_info",
                 HttpMethod.GET,
                 request,
@@ -119,10 +119,10 @@ public class GetExpertIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<GetExpertBasicInfoWebResponse> body = response.getBody();
+        BaseResponse<LoadExpertBasicInfoWebResponse> body = response.getBody();
         assertThat(body).isNotNull();
 
-        GetExpertBasicInfoWebResponse result = body.getResult();
+        LoadExpertBasicInfoWebResponse result = body.getResult();
 
         assertThat(result.expertNo()).isEqualTo(expertNo);
         assertThat(result.activityDuration()).isNotNull(); // 현재 시간 기반으로 계산되는거라 정확한 값 검증 힘듦
@@ -187,7 +187,7 @@ public class GetExpertIntegrationTest {
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
 
         // when
-        ResponseEntity<BaseResponse<GetExpertDetailInfoWebResponse>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<LoadExpertDetailInfoWebResponse>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/detail_info",
                 HttpMethod.GET,
                 request,
@@ -198,10 +198,10 @@ public class GetExpertIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<GetExpertDetailInfoWebResponse> body = response.getBody();
+        BaseResponse<LoadExpertDetailInfoWebResponse> body = response.getBody();
         assertThat(body).isNotNull();
 
-        GetExpertDetailInfoWebResponse result = body.getResult();
+        LoadExpertDetailInfoWebResponse result = body.getResult();
 
         assertThat(result.activityCareer()).isEqualTo("경력 5년");
         assertThat(result.activityAreas()).isEqualTo(List.of("서울 강북구"));

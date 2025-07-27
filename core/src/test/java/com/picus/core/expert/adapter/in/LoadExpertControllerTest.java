@@ -1,8 +1,8 @@
 package com.picus.core.expert.adapter.in;
 
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.GetExpertDetailInfoWebResponse.StudioWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.StudioWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
@@ -118,7 +118,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
                 .profileImageUrl("")
                 .build();
         // Mock이면 값들이 Null로 채워지는데, 그러면 exists()검증이 안됨
-        GetExpertBasicInfoWebResponse mockWebResponse = GetExpertBasicInfoWebResponse.builder()
+        LoadExpertBasicInfoWebResponse mockWebResponse = LoadExpertBasicInfoWebResponse.builder()
                 .expertNo("")
                 .activityDuration("")
                 .activityCount(100)
@@ -139,8 +139,8 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
     private void stubMethodAboutDetailInfo(String expertNo) {
         Expert mockExpert = mock(Expert.class);
         // Mock이면 값들이 Null로 채워지는데, 그러면 exists()검증이 안됨
-        GetExpertDetailInfoWebResponse webResponse =
-                GetExpertDetailInfoWebResponse.builder()
+        LoadExpertDetailInfoWebResponse webResponse =
+                LoadExpertDetailInfoWebResponse.builder()
                         .activityCareer("")
                         .projects(List.of())
                         .skills(List.of())

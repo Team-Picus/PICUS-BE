@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-public record GetExpertDetailInfoWebResponse(
+public record LoadExpertDetailInfoWebResponse(
         String activityCareer,
         List<ProjectWebResponse> projects,
         List<SkillWebResponse> skills,
