@@ -12,9 +12,11 @@ public interface PostImageJpaRepository extends JpaRepository<PostImageEntity, S
 
     void deleteByPostImageNoIn(List<String> deletedPostImageNos);
 
-    List<PostImageEntity> findAllByPostEntity_PostNoOrderByImageOrder(String postNo);
+    List<PostImageEntity> findByPostEntity_PostNoOrderByImageOrder(String postNo);
 
     @Modifying(clearAutomatically = true) // clearAutomatically = true: update 후 영속성 컨텍스트 자동 초기화 (flush 반영 보장)
     @Query(value = "UPDATE post_images SET image_order = image_order * -1 WHERE post_no = :postNo", nativeQuery = true)
     void shiftAllImageOrdersToNegative(String postNo);
+
+    void deleteByPostEntity_PostNo(String postNo);
 }

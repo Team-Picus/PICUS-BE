@@ -12,7 +12,6 @@ import com.picus.core.post.domain.model.Post;
 import com.picus.core.post.domain.model.PostImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -75,7 +74,7 @@ public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
         postImageJpaRepository.deleteByPostImageNoIn(deletedPostImageNos);
 
         // 삭제 후 이미지 순서 재정렬
-        List<PostImageEntity> imagesAfterDelete = postImageJpaRepository.findAllByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
+        List<PostImageEntity> imagesAfterDelete = postImageJpaRepository.findByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
         for (int i = 0; i < imagesAfterDelete.size(); i++) {
             imagesAfterDelete.get(i).assignImageOrder(i + 1);
         }
@@ -101,7 +100,7 @@ public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
         }
 
         // 최종적으로 재정렬
-        List<PostImageEntity> finalImages = postImageJpaRepository.findAllByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
+        List<PostImageEntity> finalImages = postImageJpaRepository.findByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
 
         for (int i = 0; i < finalImages.size(); i++) {
             finalImages.get(i).assignImageOrder(i + 1);
@@ -110,6 +109,11 @@ public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
 
     @Override
     public void delete(String postNo) {
+        // PostImageEntity 삭제
+        postImageJpaRepository.deleteByPostEntity_PostNo(postNo);
+
+        // PostEntity 삭제
+        postJpaRepository.deleteById(postNo);
     }
 
     /**

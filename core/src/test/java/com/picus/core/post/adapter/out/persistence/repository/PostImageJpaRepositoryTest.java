@@ -6,7 +6,6 @@ import com.picus.core.post.domain.model.vo.PostMoodType;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;
 import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -53,7 +51,7 @@ class PostImageJpaRepositoryTest {
         clearPersistenceContext(); // 쿼리 반영 및 영속성 컨텍스트 초기화
 
         // then
-        List<PostImageEntity> results = postImageJpaRepository.findAllByPostEntity_PostNoOrderByImageOrder(postEntity.getPostNo());
+        List<PostImageEntity> results = postImageJpaRepository.findByPostEntity_PostNoOrderByImageOrder(postEntity.getPostNo());
         List<Integer> imageOrderList = results.stream()
                 .map(PostImageEntity::getImageOrder)
                 .toList();

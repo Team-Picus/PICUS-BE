@@ -196,6 +196,32 @@ class PostPersistenceAdapterTest {
                 );
     }
 
+    @Test
+    @DisplayName("특정 postNo를 가진 PostEntity, PostImageEntity를 삭제한다.")
+    public void delete_success() throws Exception {
+        // given
+        // 데이터베이스에 데이터셋팅
+        PostEntity postEntity = createPostEntity(
+                "package-123", "expert-456", "old_title", "old_one",
+                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "old_address", false
+        );
+        createPostImageEntity("file_key", 1, postEntity);
+        createPostImageEntity("file_key", 2, postEntity);
+        clearPersistenceContext();
+
+        // when
+        postPersistenceAdapter.delete(postEntity.getPostNo());
+
+        // then
+        assertThat(postJpaRepository.existsById(postEntity.getPostNo())).isFalse();
+        assertThat(postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo()))
+                .isEmpty();
+    }
+
+    /**
+     * private 메서드
+     */
     private Post createPost(String postNo, String packageNo, String authorNo, String title, String oneLineDescription,
                             String detailedDescription, List<PostThemeType> postThemeTypes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
