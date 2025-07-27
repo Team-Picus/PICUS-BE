@@ -25,10 +25,12 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 public class DeletePostService implements DeletePostUseCase {
 
     private final UserQueryPort userQueryPort;
+
     private final ReadExpertPort readExpertPort;
     private final UpdateExpertPort updateExpertPort;
-    private final DeletePostPort deletePostPort;
+
     private final ReadPostPort readPostPort;
+    private final DeletePostPort deletePostPort;
 
     @Override
     public void delete(String postNo, String currentUserNo) {
@@ -47,8 +49,24 @@ public class DeletePostService implements DeletePostUseCase {
 
         // TODO: S3에서 이미지들 삭제
 
+        // Expert의 활동 수, 최근 활동 일 갱신
         updateExpertInfo(expertNo);
     }
+
+    /**
+     * private 메서드
+     */
+    private String getCurrentExpertNo(String userNo) {
+        User user = userQueryPort.findById(userNo);
+        return Optional.ofNullable(user.getExpertNo())
+                .orElseThrow(() -> new RestApiException(_FORBIDDEN));
+    }
+
+    private void throwIfNotOwner(String expertNo, String priceExpertNo) {
+        if (!expertNo.equals(priceExpertNo))
+            throw new RestApiException(_FORBIDDEN);
+    }
+
 
     private void updateExpertInfo(String expertNo) {
         // 해당 Expert의 ActivityCount 1 감소 시키기
@@ -71,19 +89,4 @@ public class DeletePostService implements DeletePostUseCase {
         // 데이터베이스에 수정사항 반영
         updateExpertPort.update(expert);
     }
-
-    /**
-     * private 메서드
-     */
-    private String getCurrentExpertNo(String userNo) {
-        User user = userQueryPort.findById(userNo);
-        return Optional.ofNullable(user.getExpertNo())
-                .orElseThrow(() -> new RestApiException(_FORBIDDEN));
-    }
-
-    private void throwIfNotOwner(String expertNo, String priceExpertNo) {
-        if (!expertNo.equals(priceExpertNo))
-            throw new RestApiException(_FORBIDDEN);
-    }
-
 }
