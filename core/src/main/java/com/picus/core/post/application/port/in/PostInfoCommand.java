@@ -8,4 +8,6 @@ public interface PostInfoCommand {
     void write(WritePostAppReq writePostAppReq);
 
     void update(UpdatePostAppReq updatePostAppReq);
+
+    void delete(String postNo, String currentUserNo);
 }

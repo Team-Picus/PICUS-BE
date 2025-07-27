@@ -108,6 +108,13 @@ public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
         }
     }
 
+    @Override
+    public void delete(String postNo) {
+    }
+
+    /**
+     * private 메서드
+     */
     private PostEntity savePostEntity(Post post) {
         PostEntity postEntity = postPersistenceMapper.toEntity(post);
         postJpaRepository.save(postEntity);

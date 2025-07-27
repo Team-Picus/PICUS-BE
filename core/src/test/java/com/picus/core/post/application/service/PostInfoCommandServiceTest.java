@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -154,10 +155,60 @@ class PostInfoCommandServiceTest {
 
         // when & then
 
-        Assertions.assertThatThrownBy(() -> postInfoCommandService.update(req))
+        assertThatThrownBy(() -> postInfoCommandService.update(req))
                 .isInstanceOf(RestApiException.class);
     }
 
+    @Test
+    @DisplayName("게시물을 삭제한다.")
+    public void delete_success() throws Exception {
+        // given
+        String postNo = "post-123";
+        String currentUserNo = "user-123";
+
+        // stubbing
+        User user = mock(User.class);
+        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        String expertNo = "expert-123";
+        given(user.getExpertNo()).willReturn(expertNo);
+        Post post = mock(Post.class);
+        given(postQueryPort.findById(postNo)).willReturn(Optional.of(post));
+        given(post.getAuthorNo()).willReturn(expertNo);
+
+        // when
+        postInfoCommandService.delete(postNo, currentUserNo);
+
+        // then
+        then(userQueryPort).should().findById(currentUserNo);
+        then(user).should().getExpertNo();
+        then(postQueryPort).should().findById(postNo);
+        then(postCommandPort).should().delete(postNo);
+    }
+
+    @Test
+    @DisplayName("게시물을 삭제할 때 현재 사용자의 expertNo와 Post의 authorNo가 일치하지 않으면 에러 발생")
+    public void delete_if_expertNo_NotEqual() throws Exception {
+        // given
+        String postNo = "post-123";
+        String currentUserNo = "user-123";
+
+        // stubbing
+        User user = mock(User.class);
+        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        String expertNo = "expert-123";
+        given(user.getExpertNo()).willReturn(expertNo);
+        Post post = mock(Post.class);
+        given(postQueryPort.findById(postNo)).willReturn(Optional.of(post));
+        given(post.getAuthorNo()).willReturn("expert-345");
+
+        // when // then
+        assertThatThrownBy(() -> postInfoCommandService.delete(postNo, currentUserNo))
+                .isInstanceOf(RestApiException.class);
+    }
+
+    /**
+     * private 메서드
+     */
     private UpdatePostAppReq createUpdatePostAppReq(
             String postNo, UpdatePostImageAppReq newImage, UpdatePostImageAppReq updateImage,
             UpdatePostImageAppReq deleteImage, String title, String oneLine, String detail,

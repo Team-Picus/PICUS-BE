@@ -65,7 +65,7 @@ public class PostInfoCommandService implements PostInfoCommand {
         Post post = postQueryPort.findById(updatePostAppReq.postNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
-        // 조회한 Post의 작성자와 현재 expertNo가 같은지 검증
+        // 수정할 Post의 작성자와 현재 expertNo가 같은지 검증
         throwIfNotOwner(expertNo, post.getAuthorNo());
 
         // Post 수정
@@ -84,7 +84,26 @@ public class PostInfoCommandService implements PostInfoCommand {
         expert.updateLastActivityAt(LocalDateTime.now());
         expertCommandPort.updateExpert(expert);
 
-        // TODO: 저장 후 해당 이미지 키들 레디스에서 삭제
+        // TODO: 새로 저장된 이미지 키들 레디스에서 삭제
+        // TODO: 삭제된 이미지들 S3에서 삭제
+    }
+
+    @Override
+    public void delete(String postNo, String currentUserNo) {
+        // 현재 사용자의 전문가 번호 조회
+        String expertNo = getCurrentExpertNo(currentUserNo);
+
+        // 삭제할 Post 조회
+        Post post = postQueryPort.findById(postNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        // 삭제할 Post의 작성자와 현재 사용자의 expertNo가 같은지 검증
+        throwIfNotOwner(expertNo, post.getAuthorNo());
+
+        // 삭제
+        postCommandPort.delete(postNo);
+
+        // TODO: S3에서 이미지들 삭제
     }
 
     /**

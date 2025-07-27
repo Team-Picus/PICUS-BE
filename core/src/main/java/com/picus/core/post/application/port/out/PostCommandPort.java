@@ -8,4 +8,6 @@ public interface PostCommandPort {
     Post save(Post post);
 
     void update(Post post, List<String> deletedPostImageNos);
+
+    void delete(String postNo);
 }
