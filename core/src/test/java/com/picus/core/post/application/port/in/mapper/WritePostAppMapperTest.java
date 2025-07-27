@@ -1,6 +1,6 @@
 package com.picus.core.post.application.port.in.mapper;
 
-import com.picus.core.post.application.port.in.request.WritePostAppReq;
+import com.picus.core.post.application.port.in.request.CreatePostAppReq;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
@@ -19,10 +19,10 @@ class WritePostAppMapperTest {
     private final WritePostAppMapper mapper = new WritePostAppMapper();
 
     @Test
-    @DisplayName("WritePostAppReq -> Post 도메인 모델로 매핑")
+    @DisplayName("CreatePostAppReq -> Post 도메인 모델로 매핑")
     void toDomain_success() {
         // given
-        WritePostAppReq req = WritePostAppReq.builder()
+        CreatePostAppReq req = CreatePostAppReq.builder()
                 .postImages(List.of(
                         PostImage.builder()
                                 .fileKey("img_1.jpg")

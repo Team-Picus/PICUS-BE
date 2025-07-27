@@ -1,7 +1,7 @@
 package com.picus.core.price.application.port.mapper;
 
 import com.picus.core.expert.domain.vo.PriceThemeType;
-import com.picus.core.price.application.port.in.mapper.PriceCommandAppMapper;
+import com.picus.core.price.application.port.in.mapper.UpdatePriceAppMapper;
 import com.picus.core.price.application.port.in.request.*;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Price;
@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 class UpdatePriceAppReqAppMapperTest {
 
-    private final PriceCommandAppMapper mapper = new PriceCommandAppMapper();
+    private final UpdatePriceAppMapper mapper = new UpdatePriceAppMapper();
 
     @Test
     @DisplayName("Price 도메인 모델로 전환한다 - 모든 필드 검증 (extracting 버전)")

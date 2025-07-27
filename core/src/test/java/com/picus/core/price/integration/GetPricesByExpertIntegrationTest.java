@@ -2,7 +2,7 @@ package com.picus.core.price.integration;
 
 import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse;
+import com.picus.core.price.adapter.in.web.data.response.LoadPriceWebResponse;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.picus.core.price.adapter.in.web.data.response.GetPricesByExpertWebResponse.*;
+import static com.picus.core.price.adapter.in.web.data.response.LoadPriceWebResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -67,7 +67,7 @@ public class GetPricesByExpertIntegrationTest {
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
 
-        ResponseEntity<BaseResponse<List<GetPricesByExpertWebResponse>>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<List<LoadPriceWebResponse>>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/prices",
                 HttpMethod.GET,
                 request,
@@ -78,14 +78,14 @@ public class GetPricesByExpertIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<List<GetPricesByExpertWebResponse>> body = response.getBody();
+        BaseResponse<List<LoadPriceWebResponse>> body = response.getBody();
         assertThat(body).isNotNull();
 
-        List<GetPricesByExpertWebResponse> result = body.getResult();
+        List<LoadPriceWebResponse> result = body.getResult();
 
         assertThat(result).hasSize(1);
 
-        GetPricesByExpertWebResponse first = result.getFirst();
+        LoadPriceWebResponse first = result.getFirst();
         assertThat(first.priceNo()).isEqualTo(priceEntity.getPriceNo());
         assertThat(first.priceThemeType()).isEqualTo("BEAUTY");
 

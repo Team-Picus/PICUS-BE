@@ -1,8 +1,8 @@
 package com.picus.core.post.integration;
 
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.post.adapter.in.web.data.request.WritePostWebReq;
-import com.picus.core.post.adapter.in.web.data.request.WritePostWebReq.PostImageWebReq;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq.PostImageWebReq;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
@@ -63,10 +63,10 @@ public class WritePostIntegrationTest {
         UserEntity userEntity = createUserEntity();
         commitTestTransaction();
 
-        WritePostWebReq webReq = createWebReq(
+        CreatePostWebReq webReq = createWebReq(
                 List.of(
-                        WritePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
-                        WritePostWebReq.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()
+                        CreatePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
+                        CreatePostWebReq.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()
                 ),
                 "테스트 제목",
                 "한 줄 설명",
@@ -78,7 +78,7 @@ public class WritePostIntegrationTest {
                 "pkg-001"
         );
 
-        HttpEntity<WritePostWebReq> httpEntity = settingWebRequest(userEntity.getUserNo(), webReq);
+        HttpEntity<CreatePostWebReq> httpEntity = settingWebRequest(userEntity.getUserNo(), webReq);
 
         // when
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -138,7 +138,7 @@ public class WritePostIntegrationTest {
         return userJpaRepository.save(userEntity);
     }
 
-    private WritePostWebReq createWebReq(
+    private CreatePostWebReq createWebReq(
             List<PostImageWebReq> postImages,
             String title,
             String oneLineDescription,
@@ -149,7 +149,7 @@ public class WritePostIntegrationTest {
             String spaceAddress,
             String packageNo
     ) {
-        return WritePostWebReq.builder()
+        return CreatePostWebReq.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

@@ -5,7 +5,7 @@ import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.price.adapter.in.UpdatePriceController;
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.adapter.in.web.mapper.UpdatePriceWebMapper;
-import com.picus.core.price.application.port.in.PriceInfoCommand;
+import com.picus.core.price.application.port.in.UpdatePriceCommand;
 import com.picus.core.price.application.port.in.request.UpdatePriceListAppReq;
 import com.picus.core.price.application.port.in.request.ChangeStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    PriceInfoCommand priceInfoCommand;
+    UpdatePriceCommand updatePriceCommand;
     @MockitoBean
     UpdatePriceWebMapper webMapper;
 
@@ -80,7 +80,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
         // then
         then(webMapper).should()
                 .toCommand(webRequest);
-        then(priceInfoCommand).should()
+        then(updatePriceCommand).should()
                 .update(any(UpdatePriceListAppReq.class), eq(TEST_USER_ID));
     }
 

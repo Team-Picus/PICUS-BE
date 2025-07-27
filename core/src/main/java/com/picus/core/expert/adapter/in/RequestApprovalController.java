@@ -18,7 +18,7 @@ public class RequestApprovalController {
     private final RequestApprovalUseCase requestApprovalUseCase;
     private final RequestApprovalWebMapper webMapper;
 
-    @PostMapping("api/v1/experts/approval-requests")
+    @PostMapping("/api/v1/experts/approval-requests")
     public BaseResponse<Void> requestApproval(
             @RequestBody RequestApprovalWebRequest webRequest, @CurrentUser String userNo) {
 

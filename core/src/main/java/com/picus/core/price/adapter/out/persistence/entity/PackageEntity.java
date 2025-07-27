@@ -34,6 +34,7 @@ public class PackageEntity {
 
     @Convert(converter = StringConverter.class)
     @Column(nullable = false)
+    @Builder.Default
     private List<String> contents = new ArrayList<>();
 
     private String notice;
