@@ -11,6 +11,7 @@ import com.picus.core.post.domain.model.PostImage;
 import com.picus.core.post.domain.model.vo.PostMoodType;
 import com.picus.core.post.domain.model.vo.PostThemeType;
 import com.picus.core.post.domain.model.vo.SpaceType;
+import com.picus.core.shared.config.JpaAuditingConfiguration;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +32,8 @@ import static org.assertj.core.api.Assertions.tuple;
 @Import({
         PostPersistenceAdapter.class,
         PostPersistenceMapper.class,
-        PostImagePersistenceMapper.class
+        PostImagePersistenceMapper.class,
+        JpaAuditingConfiguration.class
 })
 @DataJpaTest
 @ActiveProfiles("test")
@@ -217,6 +220,31 @@ class PostPersistenceAdapterTest {
         assertThat(postJpaRepository.existsById(postEntity.getPostNo())).isFalse();
         assertThat(postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo()))
                 .isEmpty();
+    }
+
+    @Test
+    @DisplayName("특정 expertNo를 가진 PostEntity들 중 제일 최근에 작성된 PostEntity의 수정날짜를 조회한다.")
+    public void findTopUpdatedAtByExpertNo() throws Exception {
+        // given
+        String expertNo = "expert-456";
+        PostEntity postEntity1 = createPostEntity(
+                "package-123", expertNo, "old_title", "old_one",
+                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "old_address", false
+        );
+        PostEntity postEntity2 = createPostEntity(
+                "package-123", expertNo, "old_title", "old_one",
+                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "old_address", false
+        );
+        clearPersistenceContext();
+
+        // when
+        Optional<LocalDateTime> result = postPersistenceAdapter.findTopUpdatedAtByExpertNo(expertNo);
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(postEntity2.getUpdatedAt());
     }
 
     /**

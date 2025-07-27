@@ -14,6 +14,7 @@ import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +56,11 @@ public class PostPersistenceAdapter implements PostCommandPort, PostQueryPort {
 
         Post post = postPersistenceMapper.toDomain(postEntity, postImages);
         return Optional.of(post);
+    }
+
+    @Override
+    public Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String authorNo) {
+        return postJpaRepository.findTopUpdatedAtByExpertNo(authorNo);
     }
 
     @Override
