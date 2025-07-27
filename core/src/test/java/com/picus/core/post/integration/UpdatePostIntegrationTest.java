@@ -65,13 +65,14 @@ public class UpdatePostIntegrationTest {
     }
 
     @Test
-    @DisplayName("사용자는 게시물을 수정할 수 있다.")
+    @DisplayName("사용자는 게시물을 수정할 수 있다. 게시물이 수정되면 Expert의 최근활동일이 최신화 된다.")
     public void write_success() throws Exception {
         // given
 
         // 데이터베이스에 데이터 셋팅
         UserEntity userEntity = createUserEntity();
-        ExpertEntity expertEntity = createExpertEntity(userEntity);
+        LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
+        ExpertEntity expertEntity = createExpertEntity(userEntity, initLastActivityAt);
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
         PostEntity postEntity = createPostEntity(
@@ -133,8 +134,14 @@ public class UpdatePostIntegrationTest {
                         tuple("file_key", 2)
                 );
 
+        ExpertEntity updatedExpertEntity = expertJpaRepository.findById(expertEntity.getExpertNo())
+                .orElseThrow();
+        assertThat(updatedExpertEntity.getLastActivityAt()).isAfter(initLastActivityAt);
     }
 
+    /**
+     * private 메서드
+     */
     private UserEntity createUserEntity() {
         UserEntity userEntity = UserEntity.builder()
                 .name("이름")
@@ -151,13 +158,13 @@ public class UpdatePostIntegrationTest {
                 .build();
         return userJpaRepository.save(userEntity);
     }
-    private ExpertEntity createExpertEntity(UserEntity userEntity) {
+    private ExpertEntity createExpertEntity(UserEntity userEntity, LocalDateTime lastActivityAt) {
         ExpertEntity expertEntity = ExpertEntity.builder()
                 .activityCareer("activityCareer")
                 .activityAreas(List.of("activityAreas"))
                 .intro("전문가 소개")
-                .activityCount(8)
-                .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
+                .activityCount(0)
+                .lastActivityAt(lastActivityAt)
                 .portfolioLinks(List.of("http://myportfolio.com"))
                 .approvalStatus(ApprovalStatus.PENDING)
                 .userEntity(userEntity)
