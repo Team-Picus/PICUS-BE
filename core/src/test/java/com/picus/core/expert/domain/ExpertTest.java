@@ -376,6 +376,19 @@ class ExpertTest {
     }
 
     @Test
+    @DisplayName("전문가의 activityCount를 1 증가시킨다.")
+    public void increaseActivityCount_success() throws Exception {
+        // given
+        Expert expert = createExpert(10);
+
+        // when
+        expert.increaseActivityCount();
+
+        // then
+        assertThat(expert.getActivityCount()).isEqualTo(11);
+    }
+
+    @Test
     @DisplayName("전문가의 activityCount를 1 감소시킨다.")
     public void decreaseActivityCount_success() throws Exception {
         // given

@@ -5,7 +5,7 @@ import com.picus.core.post.domain.Post;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WritePostAppMapper {
+public class CreatePostAppMapper {
 
     public Post toDomain(CreatePostAppReq appReq, String expertNo) {
         return Post.builder()

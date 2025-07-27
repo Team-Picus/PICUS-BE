@@ -1,5 +1,8 @@
 package com.picus.core.post.integration;
 
+import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
+import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq.PostImageWebReq;
@@ -27,6 +30,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,11 +52,14 @@ public class CreatePostIntegrationTest {
     PostJpaRepository postJpaRepository;
     @Autowired
     private PostImageJpaRepository postImageJpaRepository;
+    @Autowired
+    private ExpertJpaRepository expertJpaRepository;
 
     @AfterEach
     void tearDown() {
         postImageJpaRepository.deleteAllInBatch();
         postJpaRepository.deleteAllInBatch();
+        expertJpaRepository.deleteAllInBatch();
         userJpaRepository.deleteAllInBatch();
     }
 
@@ -60,9 +67,16 @@ public class CreatePostIntegrationTest {
     @DisplayName("사용자는 게시물을 작성할 수 있다.")
     public void write_success() throws Exception {
         // given
+
+        // 데이터베이스 데이터 셋팅
         UserEntity userEntity = createUserEntity();
+        int initActivityCount = 8;
+        LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
+        ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
+        userEntity.assignExpertNo(expertEntity.getExpertNo());
         commitTestTransaction();
 
+        // 입력값 셋팅
         CreatePostWebReq webReq = createWebReq(
                 List.of(
                         CreatePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
@@ -78,9 +92,10 @@ public class CreatePostIntegrationTest {
                 "pkg-001"
         );
 
+        // 요청 셋팅
         HttpEntity<CreatePostWebReq> httpEntity = settingWebRequest(userEntity.getUserNo(), webReq);
 
-        // when
+        // when - API 요청
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
                 "/api/v1/posts",
                 HttpMethod.POST,
@@ -92,6 +107,7 @@ public class CreatePostIntegrationTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+        // Post 저장 검증
         List<PostEntity> postEntities = postJpaRepository.findAll();
         assertThat(postEntities).hasSize(1)
                 .extracting(
@@ -112,6 +128,7 @@ public class CreatePostIntegrationTest {
                         )
                 );
 
+        // PostImage 저장 검증
         List<PostImageEntity> postImageEntities = postImageJpaRepository.findAll();
         assertThat(postImageEntities).hasSize(2)
                 .extracting("fileKey", "imageOrder")
@@ -119,6 +136,12 @@ public class CreatePostIntegrationTest {
                         tuple("img1.jpg", 1),
                         tuple("img2.jpg", 2)
                 );
+
+        // Expert 정보 업데이트 검증
+        ExpertEntity updatedExpert = expertJpaRepository.findById(expertEntity.getExpertNo())
+                .orElseThrow();
+        assertThat(updatedExpert.getActivityCount()).isEqualTo(initActivityCount + 1);
+        assertThat(updatedExpert.getLastActivityAt()).isAfter(initLastActivityAt);
     }
 
     private UserEntity createUserEntity() {
@@ -133,9 +156,22 @@ public class CreatePostIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo("expert-123")
+                .expertNo(null)
                 .build();
         return userJpaRepository.save(userEntity);
+    }
+    private ExpertEntity createExpertEntity(UserEntity userEntity, int activityCount, LocalDateTime lastActivityAt) {
+        ExpertEntity expertEntity = ExpertEntity.builder()
+                .activityCareer("activityCareer")
+                .activityAreas(List.of("activityAreas"))
+                .intro("전문가 소개")
+                .activityCount(activityCount)
+                .lastActivityAt(lastActivityAt)
+                .portfolioLinks(List.of("http://myportfolio.com"))
+                .approvalStatus(ApprovalStatus.PENDING)
+                .userEntity(userEntity)
+                .build();
+        return expertJpaRepository.save(expertEntity);
     }
 
     private CreatePostWebReq createWebReq(

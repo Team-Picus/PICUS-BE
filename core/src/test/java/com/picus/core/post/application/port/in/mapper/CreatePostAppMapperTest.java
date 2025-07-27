@@ -14,9 +14,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 
-class WritePostAppMapperTest {
+class CreatePostAppMapperTest {
 
-    private final WritePostAppMapper mapper = new WritePostAppMapper();
+    private final CreatePostAppMapper mapper = new CreatePostAppMapper();
 
     @Test
     @DisplayName("CreatePostAppReq -> Post 도메인 모델로 매핑")

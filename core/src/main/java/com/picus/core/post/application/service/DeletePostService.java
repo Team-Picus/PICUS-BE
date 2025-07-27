@@ -70,12 +70,13 @@ public class DeletePostService implements DeletePostUseCase {
 
 
     private void updateExpertInfo(String expertNo) {
-        // 해당 Expert의 ActivityCount 1 감소 시키기
         Expert expert = readExpertPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        // 해당 Expert의 활동 수 1 감소 시키기
         expert.decreaseActivityCount();
 
-        // 해당 Expert의 Post, Reservation 중 최근 작성한 것의 날짜를 Expert의 lastActivityAt으로 업데이트
+        // 해당 Expert의 Post, Reservation 중 최근 작성한 것의 날짜를 Expert의 최근 활동일 으로 업데이트
 
         // 해당 Expert의 Post중 제일 최근에 작성한 글의 날짜 조회
         Optional<LocalDateTime> lastPostAt = readPostPort.findTopUpdatedAtByExpertNo(expertNo);
@@ -83,7 +84,7 @@ public class DeletePostService implements DeletePostUseCase {
         // TODO: 해당 Expert의 제일 최근에 생성된 Reservation의 날짜 조회
         Optional<LocalDateTime> lastReservationAt = Optional.empty();
 
-        // 둘 중 더 최근인 날짜를 expert의 lastActivityAt으로 업데이트
+        // 둘 중 더 최근인 날짜를 expert의 최근 활동일로 업데이트
         LocalDateTime lastActivityAt = null;
 
         if (lastPostAt.isPresent() && lastReservationAt.isPresent()) {

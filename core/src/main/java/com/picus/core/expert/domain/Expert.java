@@ -224,6 +224,7 @@ public class Expert {
         if (newStudio != null)
             this.studio = newStudio;
     }
+
     public void updateStudio(Studio updatedStudio) {
         if (updatedStudio != null && this.studio != null) {
             if (Objects.equals(updatedStudio.getStudioNo(), this.studio.getStudioNo())) {
@@ -235,12 +236,18 @@ public class Expert {
             }
         }
     }
+
     public void deleteStudio() {
         this.studio = null;
     }
 
+
+    public void increaseActivityCount() {
+        this.activityCount++;
+    }
+
     public void decreaseActivityCount() {
-        if(this.activityCount != 0)
+        if (this.activityCount != 0)
             this.activityCount--;
     }
 }
