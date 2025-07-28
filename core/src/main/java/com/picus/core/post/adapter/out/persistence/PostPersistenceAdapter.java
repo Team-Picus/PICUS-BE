@@ -67,7 +67,22 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
 
     @Override
     public Optional<Post> findByExpertNoAndIsPinnedTrue(String expertNo) {
-        return Optional.empty();
+        // 특정 전문가의 고정처리한 게시물 조회
+        Optional<PostEntity> optionalPostEntity = postJpaRepository.findByExpertNoAndIsPinnedTrue(expertNo);
+
+        if (optionalPostEntity.isEmpty()) {
+            return Optional.empty();
+        }
+
+        // 해당 게시물의 이미지 조회
+        PostEntity postEntity = optionalPostEntity.get();
+        List<PostImageEntity> imageEntities = postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo());
+        List<PostImage> postImages = imageEntities.stream()
+                .map(postImagePersistenceMapper::toDomain)
+                .toList();
+
+        Post post = postPersistenceMapper.toDomain(postEntity, postImages);
+        return Optional.of(post);
     }
 
     @Override

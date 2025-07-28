@@ -11,4 +11,6 @@ public interface PostJpaRepository extends JpaRepository<PostEntity, String> {
 
     @Query("SELECT p.updatedAt FROM PostEntity p WHERE p.expertNo = :expertNo ORDER BY p.updatedAt DESC limit 1")
     Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String expertNo);
+
+    Optional<PostEntity> findByExpertNoAndIsPinnedTrue(String expertNo);
 }

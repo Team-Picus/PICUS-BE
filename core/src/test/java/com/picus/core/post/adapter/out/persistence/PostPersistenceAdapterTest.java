@@ -247,6 +247,42 @@ class PostPersistenceAdapterTest {
         assertThat(result.get()).isEqualTo(postEntity2.getUpdatedAt());
     }
 
+    @Test
+    @DisplayName("특정 expertNo를 가지고 isPinned가 True인 Post를 조회한다.")
+    public void findByExpertNoAndIsPinnedTrue() throws Exception {
+        // given
+        // 데이터베이스에 데이터 셋팅
+        PostEntity postEntity = createPostEntity(
+                "package-123", "expert-456", "제목", "설명",
+                "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "서울시 강남구", true
+        );
+        createPostImageEntity("file.jpg", 1, postEntity);
+        clearPersistenceContext();
+
+        // when
+        Optional<Post> optionalResult = postPersistenceAdapter.findByExpertNoAndIsPinnedTrue("expert-456");
+
+        // then
+        assertThat(optionalResult).isPresent();
+
+        Post result = optionalResult.get();
+        assertThat(result.getPostNo()).isEqualTo(postEntity.getPostNo());
+        assertThat(result.getPackageNo()).isEqualTo(postEntity.getPackageNo());
+        assertThat(result.getAuthorNo()).isEqualTo(postEntity.getExpertNo());
+        assertThat(result.getTitle()).isEqualTo(postEntity.getTitle());
+        assertThat(result.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
+        assertThat(result.getDetailedDescription()).isEqualTo(postEntity.getDetailedDescription());
+        assertThat(result.getPostThemeTypes()).isEqualTo(postEntity.getPostThemeTypes());
+        assertThat(result.getPostMoodTypes()).isEqualTo(postEntity.getPostMoodTypes());
+        assertThat(result.getSpaceType()).isEqualTo(postEntity.getSpaceType());
+        assertThat(result.getSpaceAddress()).isEqualTo(postEntity.getSpaceAddress());
+        assertThat(result.getIsPinned()).isEqualTo(postEntity.getIsPinned());
+        assertThat(result.getPostImages()).hasSize(1)
+                .extracting(PostImage::getFileKey, PostImage::getImageOrder)
+                .containsExactly(tuple("file.jpg", 1));
+    }
+
     /**
      * private 메서드
      */
