@@ -94,7 +94,7 @@ public class UpdatePostIntegrationTest {
                 List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
                 SpaceType.OUTDOOR, "new_address", "package-456");
 
-        HttpEntity<UpdatePostWebReq> httpEntity = settingWebRequest(userEntity.getUserNo(), webReq);
+        HttpEntity<UpdatePostWebReq> httpEntity = settingWebRequest(userEntity, webReq);
 
         // when
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -227,8 +227,8 @@ public class UpdatePostIntegrationTest {
                 .build();
     }
 
-    private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
+    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
         return new HttpEntity<>(webRequest, headers);

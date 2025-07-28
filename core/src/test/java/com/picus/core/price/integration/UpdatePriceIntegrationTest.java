@@ -106,7 +106,7 @@ public class UpdatePriceIntegrationTest {
 
         UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
 
-        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity.getUserNo(), webRequest);
+        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity, webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -223,7 +223,7 @@ public class UpdatePriceIntegrationTest {
 
         UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
 
-        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity.getUserNo(), webRequest);
+        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity, webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -310,7 +310,7 @@ public class UpdatePriceIntegrationTest {
 
         UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
 
-        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity.getUserNo(), webRequest);
+        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity, webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -400,8 +400,8 @@ public class UpdatePriceIntegrationTest {
         return expertJpaRepository.save(expertEntity);
     }
 
-    private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
+    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
         return new HttpEntity<>(webRequest, headers);

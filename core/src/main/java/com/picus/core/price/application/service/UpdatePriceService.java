@@ -6,8 +6,10 @@ import com.picus.core.price.application.port.in.mapper.UpdateOptionAppMapper;
 import com.picus.core.price.application.port.in.mapper.UpdatePackageAppMapper;
 import com.picus.core.price.application.port.in.mapper.UpdatePriceAppMapper;
 import com.picus.core.price.application.port.in.mapper.UpdatePriceRefImageAppMapper;
-import com.picus.core.price.application.port.out.PriceCommandPort;
-import com.picus.core.price.application.port.out.PriceQueryPort;
+import com.picus.core.price.application.port.out.CreatePricePort;
+import com.picus.core.price.application.port.out.DeletePricePort;
+import com.picus.core.price.application.port.out.ReadPricePort;
+import com.picus.core.price.application.port.out.UpdatePricePort;
 import com.picus.core.price.domain.Price;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -26,8 +28,11 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 public class UpdatePriceService implements UpdatePriceCommand {
 
     private final UserQueryPort userQueryPort;
-    private final PriceQueryPort priceQueryPort;
-    private final PriceCommandPort priceCommandPort;
+
+    private final ReadPricePort readPricePort;
+    private final CreatePricePort createPricePort;
+    private final UpdatePricePort updatePricePort;
+    private final DeletePricePort deletePricePort;
 
     private final UpdatePriceAppMapper updatePriceAppMapper;
     private final UpdatePriceRefImageAppMapper updatePriceRefImageAppMapper;
@@ -82,12 +87,12 @@ public class UpdatePriceService implements UpdatePriceCommand {
     // Price 저장
     private void createPrice(UpdatePriceAppReq updatePriceAppReq, String expertNo) {
         Price price = updatePriceAppMapper.toPriceDomain(updatePriceAppReq);
-        priceCommandPort.save(price, expertNo);
+        createPricePort.create(price, expertNo);
     }
 
     // Price 수정
     private void updatePrice(UpdatePriceAppReq updatePriceAppReq, String expertNo) {
-        Price price = priceQueryPort.findById(updatePriceAppReq.priceNo());
+        Price price = readPricePort.findById(updatePriceAppReq.priceNo());
         // 현재 사용자와 수정하는 Price의 사용자가 다른 경우 예외
         throwIfNotOwner(expertNo, price.getExpertNo());
 
@@ -107,7 +112,7 @@ public class UpdatePriceService implements UpdatePriceCommand {
         // Option 업데이트
         updateOption(updatePriceAppReq, price, deletedOptionNos);
 
-        priceCommandPort.update(price, deletedPriceRefImageNos, deletedPackageNos, deletedOptionNos);
+        updatePricePort.update(price, deletedPriceRefImageNos, deletedPackageNos, deletedOptionNos);
     }
 
     // PriceReferenceImage 수정
@@ -169,11 +174,11 @@ public class UpdatePriceService implements UpdatePriceCommand {
 
     // Price 삭제
     private void deletePrice(String deletePriceNo, String expertNo) {
-        Price price = priceQueryPort.findById(deletePriceNo);
+        Price price = readPricePort.findById(deletePriceNo);
         // 현재 사용자와 수정하는 Price의 사용자가 다른 경우 예외
         throwIfNotOwner(expertNo, price.getExpertNo());
 
-        priceCommandPort.delete(deletePriceNo);
+        deletePricePort.delete(deletePriceNo);
     }
 
     private void throwIfNotOwner(String expertNo, String priceExpertNo) {

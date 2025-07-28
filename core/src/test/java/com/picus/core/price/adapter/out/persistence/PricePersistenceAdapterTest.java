@@ -165,7 +165,7 @@ class PricePersistenceAdapterTest {
         String expertNo = "expert_no";
 
         // when
-        Price saved = pricePersistenceAdapter.save(price, expertNo);
+        Price saved = pricePersistenceAdapter.create(price, expertNo);
 
         // then
         // Price

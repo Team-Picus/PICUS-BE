@@ -84,7 +84,7 @@ public class DeletePostIntegrationTest {
         createPostImageEntity("file_key", 2, postEntity);
         commitTestTransaction();
 
-        HttpEntity<Object> httpEntity = settingWebRequest(userEntity.getUserNo(), null);
+        HttpEntity<Object> httpEntity = settingWebRequest(userEntity, null);
 
         // when - API 요청
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -141,7 +141,7 @@ public class DeletePostIntegrationTest {
         );
         commitTestTransaction();
 
-        HttpEntity<Object> httpEntity = settingWebRequest(userEntity.getUserNo(), null);
+        HttpEntity<Object> httpEntity = settingWebRequest(userEntity, null);
 
         // when - API 요청
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -225,8 +225,8 @@ public class DeletePostIntegrationTest {
         return postImageJpaRepository.save(postImageEntity);
     }
 
-    private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
+    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
         return new HttpEntity<>(webRequest, headers);

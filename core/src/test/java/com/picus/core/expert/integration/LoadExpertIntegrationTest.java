@@ -87,8 +87,9 @@ public class LoadExpertIntegrationTest {
         String testBackgroundImageKey = "back_key";
         List<String> testLinks = List.of("link");
 
+        UserEntity userEntity = createUserEntity(testNickname);
         ExpertEntity expertEntity = settingBasicData(
-                testNickname,
+                userEntity,
                 testProfileImageFileKey,
                 testBackgroundImageKey,
                 testIntro,
@@ -101,7 +102,7 @@ public class LoadExpertIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
@@ -172,16 +173,15 @@ public class LoadExpertIntegrationTest {
                 .address("서울특별시 마포구 월드컵북로 400")
                 .build();
 
+        UserEntity userEntity = createUserEntity(); // UserEntity 저장
         SettingDetailDataResult settingDetailDataResult = settingDetailData(
-                "경력 5년", List.of("서울 강북구"), testProjects, testSkills, testStudio);
-
+                userEntity, "경력 5년", List.of("서울 강북구"), testProjects, testSkills, testStudio);
 
         commitTestTransaction();
 
-
         // 응답값 셋팅
 
-        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
@@ -270,15 +270,13 @@ public class LoadExpertIntegrationTest {
     }
 
     private ExpertEntity settingBasicData(
-            String testNickname,
+            UserEntity userEntity,
             String testProfileImageFileKey,
             String testBackgroundImageKey,
             String testIntro,
             int testActivityCount,
             LocalDateTime testLastActivityAt,
             List<String> links) {
-        UserEntity userEntity = givenUserEntity(testNickname);
-        userJpaRepository.save(userEntity);
 
         ProfileImageEntity profileImageEntity =
                 givenProfileImageEntity(testProfileImageFileKey, userEntity.getUserNo());
@@ -303,14 +301,13 @@ public class LoadExpertIntegrationTest {
     }
 
     private SettingDetailDataResult settingDetailData(
+            UserEntity userEntity,
             String testActivityCareer,
             List<String> testActivityAreas,
             List<Project> testProjects,
             List<Skill> testSkills,
             Studio testStudio
     ) {
-        UserEntity userEntity = givenUserEntity(); // UserEntity 저장
-        userJpaRepository.save(userEntity);
 
         ExpertEntity expertEntity = givenExpertEntity(testActivityCareer, testActivityAreas);// Expert 저장
         expertEntity.bindUserEntity(userEntity);
@@ -331,6 +328,40 @@ public class LoadExpertIntegrationTest {
                 skillEntities.stream().map(SkillEntity::getSkillNo).toList(),
                 studioEntity.getStudioNo()
         );
+    }
+
+    private UserEntity createUserEntity(String nickname) {
+        UserEntity userEntity = UserEntity.builder()
+                .name("이름")
+                .nickname(nickname)
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo("expert-123")
+                .build();
+        return userJpaRepository.save(userEntity);
+    }
+
+    private UserEntity createUserEntity() {
+        UserEntity userEntity = UserEntity.builder()
+                .name("이름")
+                .nickname("nickname")
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo("expert-123")
+                .build();
+        return userJpaRepository.save(userEntity);
     }
 
     private UserEntity givenUserEntity() {

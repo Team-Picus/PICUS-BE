@@ -12,8 +12,10 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
-import com.picus.core.price.application.port.out.PriceCommandPort;
-import com.picus.core.price.application.port.out.PriceQueryPort;
+import com.picus.core.price.application.port.out.CreatePricePort;
+import com.picus.core.price.application.port.out.DeletePricePort;
+import com.picus.core.price.application.port.out.ReadPricePort;
+import com.picus.core.price.application.port.out.UpdatePricePort;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
@@ -29,7 +31,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort {
+public class PricePersistenceAdapter implements CreatePricePort, ReadPricePort, UpdatePricePort, DeletePricePort {
 
     private final PriceJpaRepository priceJpaRepository;
     private final PackageJpaRepository packageJpaRepository;
@@ -74,7 +76,7 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
     }
 
     @Override
-    public Price save(Price price, String expertNo) {
+    public Price create(Price price, String expertNo) {
 
         // PriceEntity 저장
         PriceEntity savedPriceEntity = savePriceEntity(price, expertNo);

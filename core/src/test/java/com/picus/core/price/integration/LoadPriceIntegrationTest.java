@@ -12,6 +12,11 @@ import com.picus.core.price.adapter.out.persistence.repository.PackageJpaReposit
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
 import com.picus.core.shared.common.BaseResponse;
+import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
+import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
+import com.picus.core.user.domain.model.Provider;
+import com.picus.core.user.domain.model.Role;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +52,17 @@ public class LoadPriceIntegrationTest {
     OptionJpaRepository optionJpaRepository;
     @Autowired
     PriceReferenceImageJpaRepository priceReferenceImageJpaRepository;
+    @Autowired
+    private UserJpaRepository userJpaRepository;
 
+    @AfterEach
+    void tearDown() {
+        priceReferenceImageJpaRepository.deleteAllInBatch();
+        packageJpaRepository.deleteAllInBatch();
+        optionJpaRepository.deleteAllInBatch();
+        priceJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("사용자는 특정 전문가의 가격정보를 조회할 수 있다.")
@@ -62,7 +77,8 @@ public class LoadPriceIntegrationTest {
         commitTestTransaction();
 
         // when
-        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
+        UserEntity userEntity = createUserEntity(); // 인증을 위한 가상의 사용자 생성
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
@@ -165,6 +181,23 @@ public class LoadPriceIntegrationTest {
                 .imageOrder(imageOrder)
                 .build();
         return priceReferenceImageJpaRepository.save(referenceImageEntity);
+    }
+
+    private UserEntity createUserEntity() {
+        UserEntity userEntity = UserEntity.builder()
+                .name("이름")
+                .nickname("nickname")
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo("expert-123")
+                .build();
+        return userJpaRepository.save(userEntity);
     }
 
     private void commitTestTransaction() {

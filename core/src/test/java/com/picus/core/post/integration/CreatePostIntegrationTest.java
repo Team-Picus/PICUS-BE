@@ -93,7 +93,7 @@ public class CreatePostIntegrationTest {
         );
 
         // 요청 셋팅
-        HttpEntity<CreatePostWebReq> httpEntity = settingWebRequest(userEntity.getUserNo(), webReq);
+        HttpEntity<CreatePostWebReq> httpEntity = settingWebRequest(userEntity, webReq);
 
         // when - API 요청
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -198,8 +198,8 @@ public class CreatePostIntegrationTest {
                 .build();
     }
 
-    private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
+    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
         return new HttpEntity<>(webRequest, headers);

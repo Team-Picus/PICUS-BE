@@ -96,7 +96,7 @@ public class UpdateExpertInfoIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        HttpEntity<UpdateExpertBasicInfoWebRequest> request = settingWebRequest(userNo, givenWebRequest(
+        HttpEntity<UpdateExpertBasicInfoWebRequest> request = settingWebRequest(userEntity, givenWebRequest(
                 "new_profile_key",
                 "new_back_key",
                 "new_nick",
@@ -214,7 +214,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .changeStatus(UPDATE)
                                 .build())
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -296,7 +296,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .build()
                 )
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -342,7 +342,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .build()
                 )
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -370,8 +370,8 @@ public class UpdateExpertInfoIntegrationTest {
     }
 
 
-    private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
+    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
         return new HttpEntity<>(webRequest, headers);

@@ -147,7 +147,8 @@ public class SearchExpertIntegrationTest {
     }
 
     private HttpEntity<Void> setUpRequest() {
-        String accessToken = tokenProvider.createAccessToken("test_id", "ROLE_USER");
+        UserEntity userEntity = createUserEntity(); // 인증을 위해 가상의 사용자 생성
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
@@ -190,6 +191,22 @@ public class SearchExpertIntegrationTest {
                 .build();
     }
 
+    private UserEntity createUserEntity() {
+        UserEntity userEntity = UserEntity.builder()
+                .name("이름")
+                .nickname("nickname")
+                .tel("01012345678")
+                .role(Role.CLIENT)
+                .email("email@example.com")
+                .providerId("social_abc123")
+                .provider(Provider.KAKAO)
+                .reservationHistoryCount(5)
+                .followCount(10)
+                .myMoodboardCount(2)
+                .expertNo("expert-123")
+                .build();
+        return userJpaRepository.save(userEntity);
+    }
     private void commitTestTransaction() {
         TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
         TestTransaction.end(); // 실제 커밋 수행
