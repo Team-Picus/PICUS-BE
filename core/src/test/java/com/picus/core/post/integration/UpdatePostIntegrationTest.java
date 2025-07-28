@@ -147,7 +147,7 @@ public class UpdatePostIntegrationTest {
                 .name("이름")
                 .nickname("nickname")
                 .tel("01012345678")
-                .role(Role.CLIENT)
+                .role(Role.EXPERT)
                 .email("email@example.com")
                 .providerId("social_abc123")
                 .provider(Provider.KAKAO)
