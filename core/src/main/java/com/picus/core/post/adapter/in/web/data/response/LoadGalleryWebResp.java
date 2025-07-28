@@ -1,4 +1,4 @@
-package com.picus.core.expert.adapter.in.web.data.response;
+package com.picus.core.post.adapter.in.web.data.response;
 
 import lombok.Builder;
 

@@ -1,7 +1,7 @@
-package com.picus.core.expert.adapter.in;
+package com.picus.core.post.adapter.in;
 
-import com.picus.core.expert.adapter.in.web.data.response.LoadGalleryWebResp;
-import com.picus.core.expert.adapter.in.web.mapper.LoadGalleryWebMapper;
+import com.picus.core.post.adapter.in.web.data.response.LoadGalleryWebResp;
+import com.picus.core.post.adapter.in.web.mapper.LoadGalleryWebMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
 import com.picus.core.post.application.port.in.response.LoadGalleryAppResp;
