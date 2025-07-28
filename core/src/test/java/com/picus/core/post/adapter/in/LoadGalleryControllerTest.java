@@ -53,7 +53,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
 
         // when
         mockMvc.perform(
-                        get("/api/v1/experts/{expert_no}/gallery",
+                        get("/api/v1/experts/posts/{expert_no}/gallery",
                                 expertNo)
                 )
                 .andDo(print())

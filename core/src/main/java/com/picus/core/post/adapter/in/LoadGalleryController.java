@@ -18,7 +18,7 @@ public class LoadGalleryController {
     private final LoadGalleryUseCase loadGalleryUseCase;
     private final LoadGalleryWebMapper webMapper;
 
-    @GetMapping("/{expert_no}/gallery")
+    @GetMapping("/posts/{expert_no}/gallery")
     public BaseResponse<Object> loadGallery(@PathVariable("expert_no") String expertNo) {
         return loadGalleryUseCase.load(expertNo)
                 .map(resp -> (Object) webMapper.toWebResp(resp))

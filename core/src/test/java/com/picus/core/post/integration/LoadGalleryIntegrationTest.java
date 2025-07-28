@@ -13,6 +13,7 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,13 @@ public class LoadGalleryIntegrationTest {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
+    @AfterEach
+    void tearDown() {
+        postImageJpaRepository.deleteAllInBatch();
+        postJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
+
     @Test
     @DisplayName("사용자는 특정 전문가의 갤러리를 조회한다 - 해당 전문가의 갤러리 설정이 된 경우 해당 글 정보가 조회된다.")
     public void load_ifGallerySet() throws Exception {
@@ -65,7 +73,7 @@ public class LoadGalleryIntegrationTest {
 
         // when
         ResponseEntity<BaseResponse<Object>> response = restTemplate.exchange(
-                "/api/v1/experts/{expert_no}/gallery",
+                "/api/v1/experts/posts/{expert_no}/gallery",
                 HttpMethod.GET,
                 httpEntity,
                 new ParameterizedTypeReference<>() {

@@ -15,7 +15,7 @@ import static org.mockito.BDDMockito.given;
 
 public abstract class AbstractSecurityMockSetup {
 
-    public static final String TEST_USER_ID = "test_user_id";
+    protected static final String TEST_USER_ID = "test_user_id";
 
     @MockitoBean
     protected TokenProvider tokenProvider;
