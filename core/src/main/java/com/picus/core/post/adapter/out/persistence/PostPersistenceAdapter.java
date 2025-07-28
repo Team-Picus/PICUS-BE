@@ -87,8 +87,15 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
 
     @Override
     public void update(Post post) {
+        PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
-
+        // PostEntity 수정
+        postEntity.updatePostEntity(
+                post.getPackageNo(), post.getTitle(), post.getOneLineDescription(),
+                post.getDetailedDescription(), post.getPostThemeTypes(), post.getPostMoodTypes(),
+                post.getSpaceType(), post.getSpaceAddress(), post.getIsPinned()
+        );
     }
 
     @Override
@@ -105,7 +112,7 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
 
         // PostImageEntity 수정
         // 삭제
-        if(!deletedPostImageNos.isEmpty()) {
+        if (!deletedPostImageNos.isEmpty()) {
             postImageJpaRepository.deleteByPostImageNoIn(deletedPostImageNos);
 
             // 삭제 후 이미지 순서 재정렬

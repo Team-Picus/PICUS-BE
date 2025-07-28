@@ -140,6 +140,48 @@ class PostPersistenceAdapterTest {
     }
 
     @Test
+    @DisplayName("Post를 수정한다. 이때 PostImage 수정되지 않는다.")
+    public void update_onlyPost() throws Exception {
+        // given
+
+        // 데이터베이스에 데이터셋팅
+        PostEntity postEntity = createPostEntity(
+                "package-123", "expert-456", "old_title", "old_one",
+                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                SpaceType.INDOOR, "old_address", false
+        );
+        clearPersistenceContext();
+
+        // 수정할 Post 객체
+        Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
+                "new_title", "new_one", "new_detail",
+                List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
+                SpaceType.OUTDOOR, "new_address", true, List.of()
+        );
+
+        // when
+        postPersistenceAdapter.update(updatedPost);
+        clearPersistenceContext();
+
+        // then
+        // PostEntity 검증
+        PostEntity postResult = postJpaRepository.findById(postEntity.getPostNo())
+                .orElseThrow();
+        assertThat(postResult.getPostNo()).isEqualTo(postEntity.getPostNo());
+        assertThat(postResult.getPackageNo()).isEqualTo("package-456");
+        assertThat(postResult.getExpertNo()).isEqualTo("expert-456");
+        assertThat(postResult.getTitle()).isEqualTo("new_title");
+        assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
+        assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
+        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
+        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.VINTAGE));
+        assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
+        assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
+        assertThat(postResult.getIsPinned()).isEqualTo(true);
+    }
+
+
+    @Test
     @DisplayName("Post를 수정한다. 이때 PostImage는 경우에 따라 추가/수정/삭제된다.")
     public void update_WithPostImage_success() throws Exception {
         // given
