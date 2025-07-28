@@ -8,5 +8,7 @@ import java.util.Optional;
 public interface ReadPostPort {
     Optional<Post> findById(String postNo);
 
-    Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String authorNo);
+    Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String expertNo);
+
+    Optional<Post> findByExpertNoAndIsPinnedTrue(String expertNo);
 }

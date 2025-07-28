@@ -60,10 +60,15 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
         return Optional.of(post);
     }
 
-        @Override
-        public Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String authorNo) {
-            return postJpaRepository.findTopUpdatedAtByExpertNo(authorNo);
-        }
+    @Override
+    public Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String expertNo) {
+        return postJpaRepository.findTopUpdatedAtByExpertNo(expertNo);
+    }
+
+    @Override
+    public Optional<Post> findByExpertNoAndIsPinnedTrue(String expertNo) {
+        return Optional.empty();
+    }
 
     @Override
     public void update(Post post, List<String> deletedPostImageNos) {
@@ -94,7 +99,7 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
         List<PostImage> postImages = post.getPostImages();
         for (PostImage domain : postImages) {
             String postImageNo = domain.getPostImageNo();
-            if(postImageNo != null) {
+            if (postImageNo != null) {
                 // pk가 있다 = 수정
                 PostImageEntity entity = postImageJpaRepository.findById(postImageNo)
                         .orElseThrow(() -> new RestApiException(_NOT_FOUND));
