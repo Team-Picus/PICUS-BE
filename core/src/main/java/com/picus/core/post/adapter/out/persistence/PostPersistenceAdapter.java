@@ -86,7 +86,13 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
     }
 
     @Override
-    public void update(Post post, List<String> deletedPostImageNos) {
+    public void update(Post post) {
+
+
+    }
+
+    @Override
+    public void updateWithPostImage(Post post, List<String> deletedPostImageNos) {
         PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
@@ -99,12 +105,14 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
 
         // PostImageEntity 수정
         // 삭제
-        postImageJpaRepository.deleteByPostImageNoIn(deletedPostImageNos);
+        if(!deletedPostImageNos.isEmpty()) {
+            postImageJpaRepository.deleteByPostImageNoIn(deletedPostImageNos);
 
-        // 삭제 후 이미지 순서 재정렬
-        List<PostImageEntity> imagesAfterDelete = postImageJpaRepository.findByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
-        for (int i = 0; i < imagesAfterDelete.size(); i++) {
-            imagesAfterDelete.get(i).assignImageOrder(i + 1);
+            // 삭제 후 이미지 순서 재정렬
+            List<PostImageEntity> imagesAfterDelete = postImageJpaRepository.findByPostEntity_PostNoOrderByImageOrder(post.getPostNo());
+            for (int i = 0; i < imagesAfterDelete.size(); i++) {
+                imagesAfterDelete.get(i).assignImageOrder(i + 1);
+            }
         }
 
         // 추가 수정 전에 모든 imageOrder 값을 임시값으로 변경

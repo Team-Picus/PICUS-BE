@@ -103,7 +103,7 @@ class UpdatePostServiceTest {
                 .imageOrder(updateImage.imageOrder())
                 .build());
         then(spyPost).should().deletePostImage(deleteImage.postImageNo());
-        then(updatePostPort).should().update(spyPost, List.of(deleteImage.postImageNo()));
+        then(updatePostPort).should().updateWithPostImage(spyPost, List.of(deleteImage.postImageNo()));
         then(readExpertPort).should().findById(expertNo);
         then(mockExpert).should().updateLastActivityAt(any(LocalDateTime.class));
         then(updateExpertPort).should().update(mockExpert);

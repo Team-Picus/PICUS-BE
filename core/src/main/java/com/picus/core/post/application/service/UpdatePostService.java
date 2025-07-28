@@ -57,7 +57,7 @@ public class UpdatePostService implements UpdatePostUseCase {
         updatePostImage(post, updatePostAppReq.postImages(), deletedPostImageNos);
 
         // 수정사항 데이터베이스 반영
-        updatePostPort.update(post, deletedPostImageNos);
+        updatePostPort.updateWithPostImage(post, deletedPostImageNos);
 
         // Expert의 activityAt 최신화
         Expert expert = readExpertPort.findById(expertNo)

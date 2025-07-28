@@ -141,7 +141,7 @@ class PostPersistenceAdapterTest {
 
     @Test
     @DisplayName("Post를 수정한다. 이때 PostImage는 경우에 따라 추가/수정/삭제된다.")
-    public void update_success() throws Exception {
+    public void update_WithPostImage_success() throws Exception {
         // given
 
         // 데이터베이스에 데이터셋팅
@@ -168,7 +168,7 @@ class PostPersistenceAdapterTest {
         List<String> deletedImageNos = List.of(postImageEntity2.getPostImageNo());
 
         // when
-        postPersistenceAdapter.update(updatedPost, deletedImageNos);
+        postPersistenceAdapter.updateWithPostImage(updatedPost, deletedImageNos);
         clearPersistenceContext();
 
         // then

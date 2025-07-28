@@ -208,14 +208,16 @@ public class PricePersistenceAdapter implements CreatePricePort, ReadPricePort, 
 
     private void updatePriceReferenceImageEntities(Price price, List<String> deletedPriceRefImageNos, PriceEntity priceEntity) {
         // 삭제
-        priceReferenceImageJpaRepository.deleteByPriceReferenceImageNoIn(deletedPriceRefImageNos);
+        if(!deletedPriceRefImageNos.isEmpty()) {
+            priceReferenceImageJpaRepository.deleteByPriceReferenceImageNoIn(deletedPriceRefImageNos);
 
-        // 삭제 후 이미지 순서 재정렬
-        List<PriceReferenceImageEntity> images =
-                priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo());
+            // 삭제 후 이미지 순서 재정렬
+            List<PriceReferenceImageEntity> images =
+                    priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo());
 
-        for (int i = 0; i < images.size(); i++) {
-            images.get(i).assignImageOrder(i + 1);
+            for (int i = 0; i < images.size(); i++) {
+                images.get(i).assignImageOrder(i + 1);
+            }
         }
 
         // 추가/수정

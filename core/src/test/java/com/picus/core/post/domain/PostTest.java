@@ -205,4 +205,34 @@ class PostTest {
         // then
         assertThat(post.getPostImages()).isNotEmpty();
     }
+
+    @Test
+    @DisplayName("Post를 고정처리한다.")
+    public void pin() throws Exception {
+        // given
+        Post post = Post.builder()
+                .isPinned(false)
+                .build();
+
+        // when
+        post.pin();
+
+        // then
+        assertThat(post.getIsPinned()).isTrue();
+    }
+    @Test
+    @DisplayName("Post를 고정해제한다.")
+    public void unpin() throws Exception {
+        // given
+        Post post = Post.builder()
+                .isPinned(true)
+                .build();
+
+        // when
+        post.unpin();
+
+        // then
+        assertThat(post.getIsPinned()).isFalse();
+    }
+
 }

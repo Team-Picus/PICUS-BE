@@ -87,6 +87,13 @@ public class Post {
         ));
     }
 
+    public void pin() {
+        this.isPinned = true;
+    }
+    public void unpin() {
+        this.isPinned = false;
+    }
+
     private <T> void applyIfNotNull(T value, Consumer<T> setter) {
         if (value != null) {
             setter.accept(value);
