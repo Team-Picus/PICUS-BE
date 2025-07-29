@@ -19,5 +19,5 @@ public interface UserQueryPort {
 
     List<UserWithProfileImageDto> findUserInfoByNicknameContaining(String keyword);
 
-    List<UserWithProfileImageDto> findUserInfoByNicknameContainingLimited(String keyword, int size);
+    List<UserWithProfileImageDto> findUserInfoByNicknameContainingOrderByNicknameLimited(String keyword, int size);
 }

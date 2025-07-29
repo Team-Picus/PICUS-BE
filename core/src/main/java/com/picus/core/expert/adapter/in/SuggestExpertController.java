@@ -27,10 +27,10 @@ public class SuggestExpertController {
     @GetMapping("/search/suggestions")
     public BaseResponse<List<SuggestExpertWebResponse>> searchExpert(
             @RequestParam String keyword, @RequestParam(required = false, defaultValue = "3") int size) {
-        List<SuggestExpertAppResp> suggestExpertAppRespons = suggestExpertsUseCase.suggestExperts(keyword, size);
+        List<SuggestExpertAppResp> suggestExpertAppResponse = suggestExpertsUseCase.suggestExperts(keyword, size);
 
         return BaseResponse.onSuccess(
-                suggestExpertAppRespons.stream()
+                suggestExpertAppResponse.stream()
                         .map(suggestExpertWebMapper::toWebResponse)
                         .toList()
         );

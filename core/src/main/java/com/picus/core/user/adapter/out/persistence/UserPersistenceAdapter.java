@@ -102,7 +102,7 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     }
 
     @Override
-    public List<UserWithProfileImageDto> findUserInfoByNicknameContainingLimited(String keyword, int size) {
+    public List<UserWithProfileImageDto> findUserInfoByNicknameContainingOrderByNicknameLimited(String keyword, int size) {
         return userJpaRepository.findByNicknameContainingLimited(keyword, PageRequest.of(0, size));
     }
 }
