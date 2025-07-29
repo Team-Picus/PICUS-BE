@@ -86,6 +86,11 @@ public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, Upd
     }
 
     @Override
+    public List<Post> findTopNByTitleContainingOrderByTitle(String keyword, int size) {
+        return List.of();
+    }
+
+    @Override
     public void update(Post post) {
         PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
