@@ -35,7 +35,7 @@ class SuggestExpertsServiceTest {
                         .build()
         );
 
-        given(userQueryPort.findUserInfoByNicknameContainingOrderByNicknameLimited(any(String.class), any(Integer.class)))
+        given(userQueryPort.findTopNUserInfoByNicknameContainingOrderByNickname(any(String.class), any(Integer.class)))
                 .willReturn(testDtos);
 
         // when
@@ -52,6 +52,6 @@ class SuggestExpertsServiceTest {
                 .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
         then(userQueryPort).should()
-                .findUserInfoByNicknameContainingOrderByNicknameLimited(any(String.class), any(Integer.class));
+                .findTopNUserInfoByNicknameContainingOrderByNickname(any(String.class), any(Integer.class));
     }
 }

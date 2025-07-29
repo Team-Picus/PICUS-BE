@@ -20,7 +20,7 @@ public class SuggestExpertsService implements SuggestExpertsUseCase {
     @Override
     public List<SuggestExpertAppResp> suggestExperts(String keyword, int size) {
         // 해당 Keyword를 닉네임으로 가진 Expert를 size 갯수만큼 조회
-        List<UserWithProfileImageDto> dtos = userQueryPort.findUserInfoByNicknameContainingOrderByNicknameLimited(keyword, size);
+        List<UserWithProfileImageDto> dtos = userQueryPort.findTopNUserInfoByNicknameContainingOrderByNickname(keyword, size);
 
         // 변환 및 반환
         return dtos.stream()

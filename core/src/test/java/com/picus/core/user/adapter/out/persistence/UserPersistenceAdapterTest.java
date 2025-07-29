@@ -152,7 +152,7 @@ class UserPersistenceAdapterTest {
 
     @Test
     @DisplayName("특정 닉네임 키워드가 포함된 전문가를 n개를 이름순으로 오름차순 조회한다.")
-    public void findUserInfoByNicknameContainingOrderByNicknameLimited() throws Exception {
+    public void findTopNUserInfoByNicknameContainingOrderByNickname() throws Exception {
         // given
         String keyword = "nickname";
         int size = 2;
@@ -182,7 +182,7 @@ class UserPersistenceAdapterTest {
                 testFileKey1, testFileKey2, testFileKey3, testFileKey4);
 
         // when
-        List<UserWithProfileImageDto> results = userPersistenceAdapter.findUserInfoByNicknameContainingOrderByNicknameLimited(keyword, size);
+        List<UserWithProfileImageDto> results = userPersistenceAdapter.findTopNUserInfoByNicknameContainingOrderByNickname(keyword, size);
 
         // then
         assertThat(results).hasSize(2);
