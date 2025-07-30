@@ -20,6 +20,6 @@ public class WhitelistTokenService implements WhitelistTokenUseCase {
     @Override
     public void whitelist(String token, Duration duration) {
         String key = tokenPrefixProperties.toWhitelist(token);
-        tokenCreatePort.save(key, duration);
+        tokenCreatePort.create(key, duration);
     }
 }
