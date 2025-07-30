@@ -4,7 +4,6 @@ import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.Studio;
-import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import org.springframework.stereotype.Component;
 
@@ -27,15 +26,7 @@ public class ExpertPersistenceMapper {
                 .activityAreas(entity.getActivityAreas())
                 .activityCount(entity.getActivityCount())
                 .lastActivityAt(entity.getLastActivityAt())
-                .portfolios(
-                        new ArrayList<>(
-                                Optional.ofNullable(entity.getPortfolioLinks())
-                                        .orElse(new ArrayList<>())
-                                        .stream()
-                                        .map(link -> Portfolio.builder().link(link).build())
-                                        .toList()
-                        )
-                )
+                .portfolioLinks(entity.getPortfolioLinks())
                 .approvalStatus(entity.getApprovalStatus())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
@@ -54,13 +45,7 @@ public class ExpertPersistenceMapper {
                 .activityAreas(expert.getActivityAreas())
                 .activityCount(expert.getActivityCount())
                 .lastActivityAt(expert.getLastActivityAt())
-                .portfolioLinks(
-                        Optional.ofNullable(expert.getPortfolios())
-                                .orElse(new ArrayList<>())
-                                .stream()
-                                .map(Portfolio::getLink) // Portfolio에서 URL 추출
-                                .toList()
-                )
+                .portfolioLinks(expert.getPortfolioLinks())
                 .approvalStatus(expert.getApprovalStatus())
                 .build();
     }

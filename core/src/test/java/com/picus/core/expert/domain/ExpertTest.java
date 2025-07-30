@@ -1,7 +1,6 @@
 package com.picus.core.expert.domain;
 
 import com.picus.core.expert.domain.vo.ApprovalStatus;
-import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,7 +87,7 @@ class ExpertTest {
     void updateBasicInfo_portfolios_not_null() {
         // given
         Expert expert = createExpert(
-                new ArrayList<>(List.of(Portfolio.builder().link("https://old.link").build())),
+                List.of("https://old.link"),
                 "original-key",
                 "Old intro"
         );
@@ -96,8 +95,7 @@ class ExpertTest {
         expert.updateBasicInfo("new-key", List.of("https://changed.link", "https://new.link"), "Updated intro");
 
         // then
-        assertThat(expert.getPortfolios()).hasSize(2)
-                .extracting(Portfolio::getLink)
+        assertThat(expert.getPortfolioLinks()).hasSize(2)
                 .containsExactlyInAnyOrder("https://changed.link", "https://new.link");
         assertThat(expert.getBackgroundImageKey()).isEqualTo("new-key");
         assertThat(expert.getIntro()).isEqualTo("Updated intro");
@@ -432,11 +430,11 @@ class ExpertTest {
                 .build();
     }
 
-    private Expert createExpert(List<Portfolio> portfolios, String backgroundImageKey, String intro) {
+    private Expert createExpert(List<String> portfolioLinks, String backgroundImageKey, String intro) {
         return Expert.builder()
                 .backgroundImageKey(backgroundImageKey)
                 .intro(intro)
-                .portfolios(portfolios)
+                .portfolioLinks(portfolioLinks)
                 .build();
     }
 

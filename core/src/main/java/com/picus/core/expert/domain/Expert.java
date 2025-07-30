@@ -33,7 +33,7 @@ public class Expert {
 
     private LocalDateTime lastActivityAt;
 
-    private List<Portfolio> portfolios;
+    private List<String> portfolioLinks;
 
     private ApprovalStatus approvalStatus;
 
@@ -57,7 +57,7 @@ public class Expert {
                   List<String> activityAreas,
                   Integer activityCount,
                   LocalDateTime lastActivityAt,
-                  List<Portfolio> portfolios,
+                  List<String> portfolioLinks,
                   ApprovalStatus approvalStatus,
                   Studio studio,
                   List<Skill> skills,
@@ -74,7 +74,7 @@ public class Expert {
         this.activityAreas = activityAreas;
         this.activityCount = activityCount;
         this.lastActivityAt = lastActivityAt;
-        this.portfolios = portfolios;
+        this.portfolioLinks = portfolioLinks == null ? new ArrayList<>() : portfolioLinks;
         this.approvalStatus = approvalStatus;
         this.studio = studio;
         this.skills = skills == null ? new ArrayList<>() : skills;
@@ -123,9 +123,7 @@ public class Expert {
         }
 
         if (links != null) {
-            this.portfolios = links.stream()
-                    .map(link -> Portfolio.builder().link(link).build())
-                    .toList();
+            this.portfolioLinks = links;
         }
 
         if (intro != null) {

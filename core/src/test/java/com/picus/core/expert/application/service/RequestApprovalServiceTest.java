@@ -7,7 +7,6 @@ import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.Studio;
-import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.user.application.port.out.UserCommandPort;
 import org.junit.jupiter.api.DisplayName;
@@ -81,13 +80,9 @@ class RequestApprovalServiceTest {
                         .businessHours("10:00 - 19:00")
                         .address("서울특별시 마포구 월드컵북로 400")
                         .build())
-                .portfolios(List.of(
-                        Portfolio.builder()
-                                .link("https://myportfolio.com/project1")
-                                .build(),
-                        Portfolio.builder()
-                                .link("https://myportfolio.com/project2")
-                                .build()
+                .portfolioLinks(List.of(
+                        "https://myportfolio.com/project1",
+                        "https://myportfolio.com/project2"
                 ))
                 .userNo("user_no1")
                 .build();

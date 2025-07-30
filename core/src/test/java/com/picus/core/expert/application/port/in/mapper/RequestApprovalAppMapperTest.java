@@ -6,7 +6,6 @@ import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.Studio;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
-import com.picus.core.expert.domain.vo.Portfolio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +27,7 @@ class RequestApprovalAppMapperTest {
                 .projects(List.of(Project.builder().projectName("프로젝트A").build()))
                 .skills(List.of(Skill.builder().content("Java").build()))
                 .studio(Studio.builder().studioName("스튜디오A").build())
-                .portfolios(List.of(Portfolio.builder().link("https://portfolio.site").build()))
+                .portfolioLinks(List.of("https://portfolio.site"))
                 .userNo("user-001")
                 .build();
 
@@ -41,8 +40,8 @@ class RequestApprovalAppMapperTest {
         assertThat(expert.getProjects()).hasSize(1);
         assertThat(expert.getSkills()).extracting("content").contains("Java");
         assertThat(expert.getStudio().getStudioName()).isEqualTo("스튜디오A");
-        assertThat(expert.getPortfolios()).hasSize(1);
-        assertThat(expert.getPortfolios().get(0).getLink()).isEqualTo("https://portfolio.site");
+        assertThat(expert.getPortfolioLinks()).hasSize(1);
+        assertThat(expert.getPortfolioLinks()).containsExactly("https://portfolio.site");
 
         // 기본 초기값 확인
         assertThat(expert.getActivityCount()).isEqualTo(0);

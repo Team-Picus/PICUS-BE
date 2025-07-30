@@ -5,7 +5,6 @@ import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.Studio;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
-import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +42,7 @@ class ExpertPersistenceMapperTest {
         assertThat(domain.getActivityAreas()).containsExactly("서울 강북구");
         assertThat(domain.getActivityCount()).isEqualTo(8);
         assertThat(domain.getLastActivityAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
-        assertThat(domain.getPortfolios()).extracting(Portfolio::getLink).containsExactly("http://myportfolio.com");
+        assertThat(domain.getPortfolioLinks()).containsExactly("http://myportfolio.com");
         assertThat(domain.getApprovalStatus()).isEqualTo(ApprovalStatus.PENDING);
         assertThat(domain.getCreatedAt()).isEqualTo(LocalDateTime.of(2024, 5, 20, 10, 30));
         assertThat(domain.getUpdatedAt()).isEqualTo(LocalDateTime.of(2024, 5, 21, 10, 30));
@@ -105,7 +104,7 @@ class ExpertPersistenceMapperTest {
                 .activityAreas(List.of("서울 강북구"))
                 .activityCount(15)
                 .lastActivityAt(LocalDateTime.of(2023, 1, 1, 12, 0))
-                .portfolios(List.of(Portfolio.builder().link("http://portfolio.com").build()))
+                .portfolioLinks(List.of("http://portfolio.com"))
                 .approvalStatus(ApprovalStatus.APPROVAL)
                 .build();
         return domain;

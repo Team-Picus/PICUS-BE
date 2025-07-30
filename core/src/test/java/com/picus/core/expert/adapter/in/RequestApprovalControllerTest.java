@@ -5,10 +5,6 @@ import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebReque
 import com.picus.core.expert.adapter.in.web.mapper.RequestApprovalWebMapper;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
 import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
-import com.picus.core.expert.domain.Project;
-import com.picus.core.expert.domain.Skill;
-import com.picus.core.expert.domain.Studio;
-import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
@@ -86,40 +82,36 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
                 "3년차",
                 List.of("서울 강북구", "서울 강동구"),
                 List.of(
-                        Project.builder()
+                        RequestApprovalWebRequest.ProjectWebRequest.builder()
                                 .projectName("단편영화 촬영 프로젝트")
                                 .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                                 .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                                 .build(),
-                        Project.builder()
+                        RequestApprovalWebRequest.ProjectWebRequest.builder()
                                 .projectName("뮤직비디오 조명 작업")
                                 .startDate(LocalDateTime.of(2023, 1, 10, 0, 0))
                                 .endDate(LocalDateTime.of(2023, 2, 20, 0, 0))
                                 .build()
                 ),
                 List.of(
-                        Skill.builder()
+                        RequestApprovalWebRequest.SkillWebRequest.builder()
                                 .skillType(SkillType.CAMERA)
                                 .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
                                 .build(),
-                        Skill.builder()
+                        RequestApprovalWebRequest.SkillWebRequest.builder()
                                 .skillType(SkillType.EDIT)
                                 .content("프리미어 프로 및 다빈치 리졸브 활용 편집 가능")
                                 .build()
                 ),
-                Studio.builder()
+                RequestApprovalWebRequest.StudioWebRequest.builder()
                         .studioName("크리에이티브 필름")
                         .employeesCount(5)
                         .businessHours("10:00 - 19:00")
                         .address("서울특별시 마포구 월드컵북로 400")
                         .build(),
                 List.of(
-                        Portfolio.builder()
-                                .link("https://myportfolio.com/project1")
-                                .build(),
-                        Portfolio.builder()
-                                .link("https://myportfolio.com/project2")
-                                .build()
+                        "https://myportfolio.com/project1",
+                        "https://myportfolio.com/project2"
                 )
         );
     }

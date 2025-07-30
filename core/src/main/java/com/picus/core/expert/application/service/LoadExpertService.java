@@ -4,7 +4,6 @@ import com.picus.core.expert.application.port.in.LoadExpertUseCase;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
 import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.domain.Expert;
-import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserQueryPort;
@@ -50,9 +49,7 @@ public class LoadExpertService implements LoadExpertUseCase {
                 .backgroundImageUrl("")
                 .nickname(userInfo.nickname())
                 .profileImageUrl("")
-                .links(expert.getPortfolios().stream()
-                        .map(Portfolio::getLink)
-                        .toList())
+                .links(expert.getPortfolioLinks())
                 .build();
     }
 }

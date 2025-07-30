@@ -17,7 +17,7 @@ public record RequestApprovalAppMapper() {
                 .projects(command.projects())
                 .skills(command.skills())
                 .studio(command.studio())
-                .portfolios(command.portfolios())
+                .portfolioLinks(command.portfolioLinks())
                 .build();
     }
 }

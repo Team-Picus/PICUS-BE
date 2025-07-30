@@ -9,7 +9,6 @@ import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.Studio;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
-import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.mapper.ProjectPersistenceMapper;
@@ -106,7 +105,7 @@ class ExpertPersistenceAdapterTest {
         // given
         UserEntity userEntity = givenUserEntity();
         ExpertEntity savedExpertEntity = settingTestExpertEntityData(userEntity);
-        String savedExpertNo = savedExpertEntity.getExpertNo();
+        java.lang.String savedExpertNo = savedExpertEntity.getExpertNo();
 
         // when
         Optional<Expert> optionalResult = expertPersistenceAdapter.findById(savedExpertNo);
@@ -158,7 +157,7 @@ class ExpertPersistenceAdapterTest {
         // given
         UserEntity userEntity = givenUserEntity();
         ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
-        String expertNo = expertEntity.getExpertNo();
+        java.lang.String expertNo = expertEntity.getExpertNo();
 
         clearPersistenceContext();
 
@@ -170,7 +169,7 @@ class ExpertPersistenceAdapterTest {
                 .activityAreas(List.of("서울 관악구"))
                 .activityCount(15)
                 .lastActivityAt(LocalDateTime.of(2025, 1, 1, 12, 0))
-                .portfolios(List.of(Portfolio.builder().link("http://new-portfolio.com").build()))
+                .portfolioLinks(List.of("http://new-portfolio.com"))
                 .approvalStatus(ApprovalStatus.APPROVAL)
                 .build();
 
@@ -209,14 +208,14 @@ class ExpertPersistenceAdapterTest {
         StudioEntity studioEntity = givenStudioEntity(expertEntity);
         studioJpaRepository.save(studioEntity);
 
-        String expertNo = expertEntity.getExpertNo();
-        String updatedProjectNo = projectEntities.get(0).getProjectNo();
-        String deletedProjectNo = projectEntities.get(1).getProjectNo();
+        java.lang.String expertNo = expertEntity.getExpertNo();
+        java.lang.String updatedProjectNo = projectEntities.get(0).getProjectNo();
+        java.lang.String deletedProjectNo = projectEntities.get(1).getProjectNo();
 
-        String updatedSkillNo = skillEntities.get(0).getSkillNo();
-        String deletedSkillNo = skillEntities.get(1).getSkillNo();
+        java.lang.String updatedSkillNo = skillEntities.get(0).getSkillNo();
+        java.lang.String deletedSkillNo = skillEntities.get(1).getSkillNo();
 
-        String updatedStudioNo = studioEntity.getStudioNo();
+        java.lang.String updatedStudioNo = studioEntity.getStudioNo();
 
         clearPersistenceContext();
 
@@ -228,7 +227,7 @@ class ExpertPersistenceAdapterTest {
                 .activityAreas(List.of("서울 강남구", "부산 해운대"))
                 .activityCount(20)
                 .lastActivityAt(LocalDateTime.of(2025, 1, 1, 12, 0))
-                .portfolios(List.of(Portfolio.builder().link("http://updated-portfolio.com").build()))
+                .portfolioLinks(List.of("http://updated-portfolio.com"))
                 .approvalStatus(ApprovalStatus.APPROVAL)
                 .projects(List.of(
                         Project.builder() // 기존 프로젝트 수정
@@ -316,9 +315,9 @@ class ExpertPersistenceAdapterTest {
         StudioEntity studioEntity = givenStudioEntity(expertEntity);
         studioJpaRepository.save(studioEntity);
 
-        String expertNo = expertEntity.getExpertNo();
+        java.lang.String expertNo = expertEntity.getExpertNo();
 
-        String deletedStudioNo = studioEntity.getStudioNo();
+        java.lang.String deletedStudioNo = studioEntity.getStudioNo();
 
         clearPersistenceContext();
 
@@ -355,7 +354,7 @@ class ExpertPersistenceAdapterTest {
                 .build();
     }
 
-    private UserEntity givenUserEntityWithParam(String nickname, String name, String email, String providerId) {
+    private UserEntity givenUserEntityWithParam(java.lang.String nickname, java.lang.String name, java.lang.String email, java.lang.String providerId) {
         return UserEntity.builder()
                 .name(name)
                 .nickname(nickname)
@@ -449,7 +448,7 @@ class ExpertPersistenceAdapterTest {
                 .activityAreas(List.of("서울 강북구"))
                 .activityCount(10)
                 .lastActivityAt(LocalDateTime.of(2024, 5, 10, 10, 0))
-                .portfolios(List.of(Portfolio.builder().link("http://portfolio.com").build()))
+                .portfolioLinks(List.of("http://portfolio.com"))
                 .approvalStatus(ApprovalStatus.PENDING)
                 .projects(List.of(
                         Project.builder()

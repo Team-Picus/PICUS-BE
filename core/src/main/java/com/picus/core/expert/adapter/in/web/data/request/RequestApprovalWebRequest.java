@@ -1,20 +1,44 @@
 package com.picus.core.expert.adapter.in.web.data.request;
 
-import com.picus.core.expert.domain.Project;
-import com.picus.core.expert.domain.Skill;
-import com.picus.core.expert.domain.Studio;
-import com.picus.core.expert.domain.vo.Portfolio;
+import com.picus.core.expert.domain.vo.SkillType;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-// TODO: Project, Skill, Studio, Portfolio를 별도의 DTO 객체로 변경
 public record RequestApprovalWebRequest(
         @NotBlank String activityCareer,
-        @NotNull List<String> activityAreas,
-        List<Project> projects,
-        List<Skill> skills,
-        Studio studio,
-        List<Portfolio> portfolios) {
+        @Size(min = 1) List<@NotBlank String> activityAreas,
+        @Valid List<ProjectWebRequest> projects,
+        @Valid @Size(min = 1) List<SkillWebRequest> skills, // 스킬은 적어도 1개는 무조건 있어야 함
+        @Valid StudioWebRequest studio,
+        List<String> portfolioLinks) {
+
+    @Builder
+    public record ProjectWebRequest(
+            @NotBlank String projectName,
+            @NotNull LocalDateTime startDate,
+            @NotNull LocalDateTime endDate
+    ) {
+    }
+
+    @Builder
+    public record SkillWebRequest(
+            @NotNull SkillType skillType,
+            @NotBlank String content
+    ) {
+    }
+
+    @Builder
+    public record StudioWebRequest(
+            @NotBlank String studioName,
+            @NotNull Integer employeesCount,
+            @NotBlank String businessHours,
+            @NotBlank String address
+    ) {
+    }
 }
