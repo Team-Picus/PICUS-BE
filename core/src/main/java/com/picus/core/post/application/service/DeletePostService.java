@@ -1,11 +1,11 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.expert.application.port.out.ReadExpertPort;
-import com.picus.core.expert.application.port.out.UpdateExpertPort;
+import com.picus.core.expert.application.port.out.ExpertReadPort;
+import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.DeletePostUseCase;
-import com.picus.core.post.application.port.out.DeletePostPort;
-import com.picus.core.post.application.port.out.ReadPostPort;
+import com.picus.core.post.application.port.out.PostDeletePort;
+import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
@@ -27,11 +26,11 @@ public class DeletePostService implements DeletePostUseCase {
 
     private final UserQueryPort userQueryPort;
 
-    private final ReadExpertPort readExpertPort;
-    private final UpdateExpertPort updateExpertPort;
+    private final ExpertReadPort expertReadPort;
+    private final ExpertUpdatePort expertUpdatePort;
 
-    private final ReadPostPort readPostPort;
-    private final DeletePostPort deletePostPort;
+    private final PostReadPort postReadPort;
+    private final PostDeletePort postDeletePort;
 
     @Override
     public void delete(String postNo, String currentUserNo) {
@@ -39,14 +38,14 @@ public class DeletePostService implements DeletePostUseCase {
         String expertNo = getCurrentExpertNo(currentUserNo);
 
         // 삭제할 Post 조회
-        Post post = readPostPort.findById(postNo)
+        Post post = postReadPort.findById(postNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 삭제할 Post의 작성자와 현재 사용자의 expertNo가 같은지 검증
         throwIfNotOwner(expertNo, post.getAuthorNo());
 
         // 삭제
-        deletePostPort.delete(postNo);
+        postDeletePort.delete(postNo);
 
         // TODO: S3에서 이미지들 삭제
 
@@ -70,7 +69,7 @@ public class DeletePostService implements DeletePostUseCase {
 
 
     private void updateExpertInfo(String expertNo) {
-        Expert expert = readExpertPort.findById(expertNo)
+        Expert expert = expertReadPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 해당 Expert의 활동 수 1 감소 시키기
@@ -79,7 +78,7 @@ public class DeletePostService implements DeletePostUseCase {
         // 해당 Expert의 Post, Reservation 중 최근 작성한 것의 날짜를 Expert의 최근 활동일 으로 업데이트
 
         // 해당 Expert의 Post중 제일 최근에 작성한 글의 날짜 조회
-        Optional<LocalDateTime> lastPostAt = readPostPort.findTopUpdatedAtByExpertNo(expertNo);
+        Optional<LocalDateTime> lastPostAt = postReadPort.findTopUpdatedAtByExpertNo(expertNo);
 
         // TODO: 해당 Expert의 제일 최근에 생성된 Reservation의 날짜 조회
         Optional<LocalDateTime> lastReservationAt = Optional.empty();
@@ -97,6 +96,6 @@ public class DeletePostService implements DeletePostUseCase {
         expert.updateLastActivityAt(lastActivityAt);
 
         // 데이터베이스에 수정사항 반영
-        updateExpertPort.update(expert);
+        expertUpdatePort.update(expert);
     }
 }

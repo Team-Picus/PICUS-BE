@@ -2,7 +2,7 @@ package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.mapper.LoadGalleryAppMapper;
 import com.picus.core.post.application.port.in.response.LoadGalleryResult;
-import com.picus.core.post.application.port.out.ReadPostPort;
+import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class LoadGalleryServiceTest {
 
-    @Mock private ReadPostPort readPostPort;
+    @Mock private PostReadPort postReadPort;
     @Mock private LoadGalleryAppMapper appMapper;
 
     @InjectMocks LoadGalleryService loadGalleryService;
@@ -40,7 +40,7 @@ class LoadGalleryServiceTest {
                         createPostImage("img-234", "file2.jpg", 2)
                 ))
                 .build();
-        given(readPostPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.of(post));
+        given(postReadPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.of(post));
         LoadGalleryResult loadGalleryResult = mock(LoadGalleryResult.class);
         given(appMapper.toAppResp(post, "")).willReturn(loadGalleryResult); // TODO: fileKey -> url 변환로직 추가 후 수정
 
@@ -51,7 +51,7 @@ class LoadGalleryServiceTest {
         // then
         assertThat(result).isPresent();
 
-        then(readPostPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
+        then(postReadPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
         then(appMapper).should().toAppResp(post, "");
     }
 
@@ -61,7 +61,7 @@ class LoadGalleryServiceTest {
         // given
         String expertNo = "expert-123";
 
-        given(readPostPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.empty());
+        given(postReadPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.empty());
 
 
         // when
@@ -70,7 +70,7 @@ class LoadGalleryServiceTest {
         // then
         assertThat(result).isEmpty();
 
-        then(readPostPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
+        then(postReadPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
     }
 
     private PostImage createPostImage(String postImageNo, String fileKey, int imageOrder) {

@@ -1,12 +1,12 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.expert.application.port.out.ReadExpertPort;
-import com.picus.core.expert.application.port.out.UpdateExpertPort;
+import com.picus.core.expert.application.port.out.ExpertReadPort;
+import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.CreatePostUseCase;
 import com.picus.core.post.application.port.in.mapper.CreatePostAppMapper;
 import com.picus.core.post.application.port.in.request.CreatePostCommand;
-import com.picus.core.post.application.port.out.CreatePostPort;
+import com.picus.core.post.application.port.out.PostCreatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -27,10 +27,10 @@ public class CreatePostService implements CreatePostUseCase {
 
     private final UserQueryPort userQueryPort;
 
-    private final CreatePostPort createPostPort;
+    private final PostCreatePort postCreatePort;
 
-    private final ReadExpertPort readExpertPort;
-    private final UpdateExpertPort updateExpertPort;
+    private final ExpertReadPort expertReadPort;
+    private final ExpertUpdatePort expertUpdatePort;
 
     private final CreatePostAppMapper appMapper;
 
@@ -44,7 +44,7 @@ public class CreatePostService implements CreatePostUseCase {
         Post post = appMapper.toDomain(createPostCommand, expertNo);
 
         // 데이터베이스에 저장
-        createPostPort.save(post);
+        postCreatePort.save(post);
 
         // TODO: 저장 후 해당 이미지 키들 레디스에서 삭제
 
@@ -61,7 +61,7 @@ public class CreatePostService implements CreatePostUseCase {
     }
 
     private void updateExpertInfo(String expertNo) {
-        Expert expert = readExpertPort.findById(expertNo)
+        Expert expert = expertReadPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 해당 Expert의 활동수 1 증가 시키기
@@ -71,6 +71,6 @@ public class CreatePostService implements CreatePostUseCase {
         expert.updateLastActivityAt(LocalDateTime.now());
 
         // 데이터베이스에 수정사항 반영
-        updateExpertPort.update(expert);
+        expertUpdatePort.update(expert);
     }
 }

@@ -1,7 +1,7 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.post.application.port.out.ReadPostPort;
-import com.picus.core.post.application.port.out.UpdatePostPort;
+import com.picus.core.post.application.port.out.PostReadPort;
+import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.User;
@@ -24,9 +24,9 @@ class UpdateGalleryServiceTest {
     @Mock
     private UserQueryPort userQueryPort;
     @Mock
-    private ReadPostPort readPostPort;
+    private PostReadPort postReadPort;
     @Mock
-    private UpdatePostPort updatePostPort;
+    private PostUpdatePort postUpdatePort;
 
     @InjectMocks
     private UpdateGalleryService updateGalleryService;
@@ -48,10 +48,10 @@ class UpdateGalleryServiceTest {
         given(user.getExpertNo()).willReturn(expertNo);
 
         Post prevPinnedPost = mock(Post.class);
-        given(readPostPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.of(prevPinnedPost));
+        given(postReadPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.of(prevPinnedPost));
 
         Post curPinnedPost = mock(Post.class);
-        given(readPostPort.findById(postNo)).willReturn(Optional.of(curPinnedPost));
+        given(postReadPort.findById(postNo)).willReturn(Optional.of(curPinnedPost));
 
 
         // when - 서비스 호출
@@ -60,12 +60,12 @@ class UpdateGalleryServiceTest {
         // then - 메서드 호출 검증
         then(userQueryPort).should().findById(currentUserNo);
         then(user).should().getExpertNo();
-        then(readPostPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
+        then(postReadPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
         then(prevPinnedPost).should().unpin();
-        then(updatePostPort).should().update(prevPinnedPost);
-        then(readPostPort).should().findById(postNo);
+        then(postUpdatePort).should().update(prevPinnedPost);
+        then(postReadPort).should().findById(postNo);
         then(curPinnedPost).should().pin();
-        then(updatePostPort).should().update(curPinnedPost);
+        then(postUpdatePort).should().update(curPinnedPost);
     }
 
 }

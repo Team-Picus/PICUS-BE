@@ -6,10 +6,10 @@ import com.picus.core.post.adapter.out.persistence.mapper.PostImagePersistenceMa
 import com.picus.core.post.adapter.out.persistence.mapper.PostPersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
-import com.picus.core.post.application.port.out.CreatePostPort;
-import com.picus.core.post.application.port.out.DeletePostPort;
-import com.picus.core.post.application.port.out.ReadPostPort;
-import com.picus.core.post.application.port.out.UpdatePostPort;
+import com.picus.core.post.application.port.out.PostCreatePort;
+import com.picus.core.post.application.port.out.PostDeletePort;
+import com.picus.core.post.application.port.out.PostReadPort;
+import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
@@ -25,7 +25,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class PostPersistenceAdapter implements CreatePostPort, ReadPostPort, UpdatePostPort, DeletePostPort {
+public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, PostUpdatePort, PostDeletePort {
 
     private final PostJpaRepository postJpaRepository;
     private final PostImageJpaRepository postImageJpaRepository;

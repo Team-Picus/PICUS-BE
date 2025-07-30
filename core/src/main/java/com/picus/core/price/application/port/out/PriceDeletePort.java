@@ -1,5 +1,5 @@
 package com.picus.core.price.application.port.out;
 
-public interface DeletePricePort {
+public interface PriceDeletePort {
     void delete(String priceNo);
 }

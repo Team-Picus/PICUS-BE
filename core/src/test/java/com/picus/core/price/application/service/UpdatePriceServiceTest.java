@@ -5,10 +5,10 @@ import com.picus.core.price.application.port.in.mapper.UpdateOptionAppMapper;
 import com.picus.core.price.application.port.in.mapper.UpdatePackageAppMapper;
 import com.picus.core.price.application.port.in.mapper.UpdatePriceAppMapper;
 import com.picus.core.price.application.port.in.mapper.UpdatePriceRefImageAppMapper;
-import com.picus.core.price.application.port.out.CreatePricePort;
-import com.picus.core.price.application.port.out.DeletePricePort;
-import com.picus.core.price.application.port.out.ReadPricePort;
-import com.picus.core.price.application.port.out.UpdatePricePort;
+import com.picus.core.price.application.port.out.PriceCreatePort;
+import com.picus.core.price.application.port.out.PriceDeletePort;
+import com.picus.core.price.application.port.out.PriceReadPort;
+import com.picus.core.price.application.port.out.PriceUpdatePort;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
@@ -35,10 +35,10 @@ class UpdatePriceServiceTest {
 
     @Mock private UserQueryPort userQueryPort;
 
-    @Mock private ReadPricePort readPricePort;
-    @Mock private CreatePricePort createPricePort;
-    @Mock private UpdatePricePort updatePricePort;
-    @Mock private DeletePricePort deletePricePort;
+    @Mock private PriceReadPort priceReadPort;
+    @Mock private PriceCreatePort priceCreatePort;
+    @Mock private PriceUpdatePort priceUpdatePort;
+    @Mock private PriceDeletePort priceDeletePort;
 
     @Mock private UpdatePriceAppMapper updatePriceAppMapper;
     @Mock private UpdatePriceRefImageAppMapper updatePriceRefImageAppMapper;
@@ -51,10 +51,10 @@ class UpdatePriceServiceTest {
     void setUp() {
         service = new UpdatePriceService(
                 userQueryPort,
-                readPricePort,
-                createPricePort,
-                updatePricePort,
-                deletePricePort,
+                priceReadPort,
+                priceCreatePort,
+                priceUpdatePort,
+                priceDeletePort,
                 updatePriceAppMapper,
                 updatePriceRefImageAppMapper,
                 updatePackageAppMapper,
@@ -90,13 +90,13 @@ class UpdatePriceServiceTest {
         service.update(command, currentUserNo);
 
         // then: 순서대로 호출되었는지 검증
-        InOrder inOrder = inOrder(userQueryPort, user, updatePriceAppMapper, createPricePort);
+        InOrder inOrder = inOrder(userQueryPort, user, updatePriceAppMapper, priceCreatePort);
 
         then(userQueryPort).should(inOrder).findById(currentUserNo);
         then(user).should(inOrder).getExpertNo();
         then(updatePriceAppMapper).should(inOrder).toPriceDomain(cmd);
-        then(createPricePort).should(inOrder).create(priceDomain, "expert-1");
-        then(createPricePort).shouldHaveNoMoreInteractions();
+        then(priceCreatePort).should(inOrder).create(priceDomain, "expert-1");
+        then(priceCreatePort).shouldHaveNoMoreInteractions();
 
     }
 
@@ -123,7 +123,7 @@ class UpdatePriceServiceTest {
         );
 
         Price price = mock(Price.class);
-        given(readPricePort.findById("price-2")).willReturn(price);
+        given(priceReadPort.findById("price-2")).willReturn(price);
         given(price.getExpertNo()).willReturn(currentExpertNo);
 
         // when
@@ -131,14 +131,14 @@ class UpdatePriceServiceTest {
 
         // then: 도메인 메서드 실행 순서 검증
         // 순서 검증을 위한 InOrder 객체 준비
-        InOrder order = inOrder(userQueryPort, user, readPricePort, price, updatePricePort, createPricePort);
+        InOrder order = inOrder(userQueryPort, user, priceReadPort, price, priceUpdatePort, priceCreatePort);
 
         then(userQueryPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
-        then(readPricePort).should(order).findById("price-2");
+        then(priceReadPort).should(order).findById("price-2");
         then(price).should(order).changePriceTheme("FASHION");
-        then(updatePricePort).should(order).update(price, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-        then(createPricePort).shouldHaveNoMoreInteractions();
+        then(priceUpdatePort).should(order).update(price, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        then(priceCreatePort).shouldHaveNoMoreInteractions();
     }
 
     @Test
@@ -185,7 +185,7 @@ class UpdatePriceServiceTest {
 
         // 도메인 객체 및 매핑 설정
         Price price = mock(Price.class);
-        given(readPricePort.findById("price-4")).willReturn(price);
+        given(priceReadPort.findById("price-4")).willReturn(price);
         given(price.getExpertNo()).willReturn(currentExpertNo);
 
         PriceReferenceImage imgNew = mock(PriceReferenceImage.class);
@@ -209,16 +209,16 @@ class UpdatePriceServiceTest {
         // then: 순서 검증
         InOrder order = inOrder(
                 userQueryPort, user,
-                readPricePort, price,
+                priceReadPort, price,
                 updatePriceRefImageAppMapper, price,
                 updatePackageAppMapper, price,
                 updateOptionAppMapper, price,
-                updatePricePort, createPricePort
+                priceUpdatePort, priceCreatePort
         );
 
         then(userQueryPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
-        then(readPricePort).should(order).findById("price-4");
+        then(priceReadPort).should(order).findById("price-4");
         then(price).should(order).changePriceTheme("FASHION");
 
         then(updatePriceRefImageAppMapper).should(order).toDomain(newImgCmd);
@@ -239,8 +239,8 @@ class UpdatePriceServiceTest {
         then(price).should(order).updateOption(optUpd);
         then(price).should(order).deleteOption("opt-3");
 
-        then(updatePricePort).should(order).update(price, List.of("img-3"), List.of("pkg-3"), List.of("opt-3"));
-        then(createPricePort).shouldHaveNoMoreInteractions();
+        then(priceUpdatePort).should(order).update(price, List.of("img-3"), List.of("pkg-3"), List.of("opt-3"));
+        then(priceCreatePort).shouldHaveNoMoreInteractions();
     }
 
     @Test
@@ -266,7 +266,7 @@ class UpdatePriceServiceTest {
         );
 
         Price price = mock(Price.class);
-        given(readPricePort.findById("price-2")).willReturn(price);
+        given(priceReadPort.findById("price-2")).willReturn(price);
         given(price.getExpertNo()).willReturn("diff_expert_no");
 
         // when // then
@@ -330,15 +330,15 @@ class UpdatePriceServiceTest {
         );
 
         Price price = mock(Price.class);
-        given(readPricePort.findById("price-3")).willReturn(price);
+        given(priceReadPort.findById("price-3")).willReturn(price);
         given(price.getExpertNo()).willReturn(currentExpertNo);
 
         // when
         service.update(command, currentUserNo);
 
         // then
-        then(readPricePort).should().findById("price-3");
-        then(deletePricePort).should().delete("price-3");
+        then(priceReadPort).should().findById("price-3");
+        then(priceDeletePort).should().delete("price-3");
     }
 
     @Test
@@ -364,7 +364,7 @@ class UpdatePriceServiceTest {
         );
 
         Price price = mock(Price.class);
-        given(readPricePort.findById("price-3")).willReturn(price);
+        given(priceReadPort.findById("price-3")).willReturn(price);
         given(price.getExpertNo()).willReturn("different_expert_no");
 
         // when then

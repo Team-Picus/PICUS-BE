@@ -1,11 +1,11 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.expert.application.port.out.ReadExpertPort;
-import com.picus.core.expert.application.port.out.UpdateExpertPort;
+import com.picus.core.expert.application.port.out.ExpertReadPort;
+import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.mapper.CreatePostAppMapper;
 import com.picus.core.post.application.port.in.request.CreatePostCommand;
-import com.picus.core.post.application.port.out.CreatePostPort;
+import com.picus.core.post.application.port.out.PostCreatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.user.application.port.out.UserQueryPort;
 import com.picus.core.user.domain.model.User;
@@ -32,13 +32,13 @@ class CreatePostServiceTest {
     @Mock
     UserQueryPort userQueryPort;
     @Mock
-    CreatePostPort createPostPort;
+    PostCreatePort postCreatePort;
     @Mock
     CreatePostAppMapper createPostAppMapper;
     @Mock
-    ReadExpertPort readExpertPort;
+    ExpertReadPort expertReadPort;
     @Mock
-    UpdateExpertPort updateExpertPort;
+    ExpertUpdatePort expertUpdatePort;
 
     @InjectMocks
     CreatePostService createPostService;
@@ -59,24 +59,24 @@ class CreatePostServiceTest {
         Post post = mock(Post.class);
         given(createPostAppMapper.toDomain(req, expertNo)).willReturn(post);
         Expert expert = mock(Expert.class);
-        given(readExpertPort.findById(expertNo)).willReturn(Optional.ofNullable(expert));
+        given(expertReadPort.findById(expertNo)).willReturn(Optional.ofNullable(expert));
 
         // when
         createPostService.create(req);
 
         // then
         InOrder inOrder = Mockito.inOrder(
-                userQueryPort, user, createPostAppMapper, createPostPort,
-                readExpertPort, expert, expert, updateExpertPort
+                userQueryPort, user, createPostAppMapper, postCreatePort,
+                expertReadPort, expert, expert, expertUpdatePort
         );
         then(userQueryPort).should(inOrder).findById(req.currentUserNo());
         then(user).should(inOrder).getExpertNo();
         then(createPostAppMapper).should(inOrder).toDomain(req, expertNo);
-        then(createPostPort).should(inOrder).save(post);
-        then(readExpertPort).should(inOrder).findById(expertNo);
+        then(postCreatePort).should(inOrder).save(post);
+        then(expertReadPort).should(inOrder).findById(expertNo);
         then(expert).should(inOrder).increaseActivityCount();
         then(expert).should(inOrder).updateLastActivityAt(any(LocalDateTime.class));
-        then(updateExpertPort).should(inOrder).update(expert);
+        then(expertUpdatePort).should(inOrder).update(expert);
     }
 
 }

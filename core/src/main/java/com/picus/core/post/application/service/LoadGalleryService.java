@@ -3,7 +3,7 @@ package com.picus.core.post.application.service;
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
 import com.picus.core.post.application.port.in.mapper.LoadGalleryAppMapper;
 import com.picus.core.post.application.port.in.response.LoadGalleryResult;
-import com.picus.core.post.application.port.out.ReadPostPort;
+import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.shared.annotation.UseCase;
@@ -17,14 +17,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LoadGalleryService implements LoadGalleryUseCase {
 
-    private final ReadPostPort readPostPort;
+    private final PostReadPort postReadPort;
 
     private final LoadGalleryAppMapper appMapper;
 
     @Override
     public Optional<LoadGalleryResult> load(String expertNo) {
         // 해당 전문가의 고정처리된 게시물 조회
-        Optional<Post> post = readPostPort.findByExpertNoAndIsPinnedTrue(expertNo);
+        Optional<Post> post = postReadPort.findByExpertNoAndIsPinnedTrue(expertNo);
 
         if(post.isPresent()) { // 고정처리한 게시물이 존재한다면
             // 이미지 순서가 1인 이미지가 썸네일

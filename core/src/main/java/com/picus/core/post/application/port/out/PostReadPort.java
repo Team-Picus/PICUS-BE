@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReadPostPort {
+public interface PostReadPort {
     Optional<Post> findById(String postNo);
 
     Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String expertNo);

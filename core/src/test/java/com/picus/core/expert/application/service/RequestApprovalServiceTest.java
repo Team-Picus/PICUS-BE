@@ -2,7 +2,7 @@ package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
 import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
-import com.picus.core.expert.application.port.out.CreateExpertPort;
+import com.picus.core.expert.application.port.out.ExpertCreatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
@@ -23,12 +23,12 @@ import static org.mockito.BDDMockito.then;
 
 class RequestApprovalServiceTest {
 
-    final CreateExpertPort createExpertPort = Mockito.mock(CreateExpertPort.class);
+    final ExpertCreatePort expertCreatePort = Mockito.mock(ExpertCreatePort.class);
     final UserCommandPort userCommandPort = Mockito.mock(UserCommandPort.class);
     final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(createExpertPort, userCommandPort, appMapper);
+            = new RequestApprovalService(expertCreatePort, userCommandPort, appMapper);
 
 
     @Test
@@ -43,7 +43,7 @@ class RequestApprovalServiceTest {
 
         // then
 
-        then(createExpertPort).should().create(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
+        then(expertCreatePort).should().create(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
         then(userCommandPort).should().assignExpertNo(any(String.class), any(String.class));
     }
 
@@ -96,7 +96,7 @@ class RequestApprovalServiceTest {
         Expert expert = Expert.builder()
                 .expertNo("expert_no1")
                 .build();
-        given(createExpertPort.create(any(Expert.class), any(String.class)))
+        given(expertCreatePort.create(any(Expert.class), any(String.class)))
                 .willReturn(expert);
     }
 

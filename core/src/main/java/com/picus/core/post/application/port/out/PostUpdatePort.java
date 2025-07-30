@@ -4,7 +4,7 @@ import com.picus.core.post.domain.Post;
 
 import java.util.List;
 
-public interface UpdatePostPort {
+public interface PostUpdatePort {
 
     void update(Post post);
 

@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
-import com.picus.core.expert.application.port.out.ReadExpertPort;
+import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.vo.Portfolio;
 import com.picus.core.user.application.port.out.UserQueryPort;
@@ -19,10 +19,10 @@ import static org.mockito.BDDMockito.*;
 
 class LoadExpertServiceTest {
 
-    private final ReadExpertPort readExpertPort = Mockito.mock(ReadExpertPort.class);
+    private final ExpertReadPort expertReadPort = Mockito.mock(ExpertReadPort.class);
     private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
 
-    private final LoadExpertService getExpertService = new LoadExpertService(readExpertPort, userQueryPort);
+    private final LoadExpertService getExpertService = new LoadExpertService(expertReadPort, userQueryPort);
 
     @Test
     @DisplayName("특정 전문가를 조회하는 서비스 메서드의 리턴값 및 상호작용을 검증한다.")
@@ -63,13 +63,13 @@ class LoadExpertServiceTest {
                         .toList());
 
         // then - 메서드 상호작용 검증
-        then(readExpertPort).should().findById(eq(expertNo));
+        then(expertReadPort).should().findById(eq(expertNo));
         then(userQueryPort).should().findUserInfoByExpertNo(eq(expertNo));
     }
 
     private void stubPortResult(Expert expert, UserWithProfileImageDto userWithProfileImageDto, String expertNo) {
-        // ReadExpertPort Stubbing
-        given(readExpertPort.findById(expertNo))
+        // ExpertReadPort Stubbing
+        given(expertReadPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
 
         // UserQueryPort Stubbing

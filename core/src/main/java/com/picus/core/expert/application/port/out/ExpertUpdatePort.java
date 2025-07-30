@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Expert를 수정하는 Out Port
  */
-public interface UpdateExpertPort {
+public interface ExpertUpdatePort {
     /**
      * Expert 도메인만 수정
      */

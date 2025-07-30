@@ -4,7 +4,7 @@ import com.picus.core.price.domain.Price;
 
 import java.util.List;
 
-public interface ReadPricePort {
+public interface PriceReadPort {
 
     List<Price> findByExpertNo(String expertNo);
 

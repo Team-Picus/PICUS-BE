@@ -12,10 +12,10 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
-import com.picus.core.price.application.port.out.CreatePricePort;
-import com.picus.core.price.application.port.out.DeletePricePort;
-import com.picus.core.price.application.port.out.ReadPricePort;
-import com.picus.core.price.application.port.out.UpdatePricePort;
+import com.picus.core.price.application.port.out.PriceCreatePort;
+import com.picus.core.price.application.port.out.PriceDeletePort;
+import com.picus.core.price.application.port.out.PriceReadPort;
+import com.picus.core.price.application.port.out.PriceUpdatePort;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
@@ -31,7 +31,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class PricePersistenceAdapter implements CreatePricePort, ReadPricePort, UpdatePricePort, DeletePricePort {
+public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, PriceUpdatePort, PriceDeletePort {
 
     private final PriceJpaRepository priceJpaRepository;
     private final PackageJpaRepository packageJpaRepository;

@@ -2,7 +2,7 @@ package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.mapper.SuggestPostsAppMapper;
 import com.picus.core.post.application.port.in.response.SuggestPostsResult;
-import com.picus.core.post.application.port.out.ReadPostPort;
+import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class SuggestPostsServiceTest {
 
-    @Mock private ReadPostPort readPostPort;
+    @Mock private PostReadPort postReadPort;
     @Mock private SuggestPostsAppMapper appMapper;
 
     @InjectMocks SuggestPostsService suggestPostsService;
@@ -34,7 +34,7 @@ class SuggestPostsServiceTest {
         int size = 5;
 
         Post post = mock(Post.class);
-        given(readPostPort.findTopNByTitleContainingOrderByTitle(keyword, size))
+        given(postReadPort.findTopNByTitleContainingOrderByTitle(keyword, size))
                 .willReturn(List.of(post));
 
         SuggestPostsResult appResp = mock(SuggestPostsResult.class);
@@ -45,7 +45,7 @@ class SuggestPostsServiceTest {
 
         // then
         assertThat(results).hasSize(1);
-        then(readPostPort).should().findTopNByTitleContainingOrderByTitle(keyword, size);
+        then(postReadPort).should().findTopNByTitleContainingOrderByTitle(keyword, size);
         then(appMapper).should().toAppResp(post);
     }
 
