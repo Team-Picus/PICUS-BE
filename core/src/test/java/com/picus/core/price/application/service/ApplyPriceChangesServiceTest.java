@@ -12,7 +12,7 @@ import com.picus.core.price.domain.model.Package;
 import com.picus.core.price.domain.model.Price;
 import com.picus.core.price.domain.model.PriceReferenceImage;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 class ApplyPriceChangesServiceTest {
 
-    @Mock private UserQueryPort userQueryPort;
+    @Mock private UserReadPort userReadPort;
     @Mock private PriceQueryPort priceQueryPort;
     @Mock private PriceCommandPort priceCommandPort;
     @Mock private PriceCommandAppMapper priceCommandAppMapper;
@@ -44,7 +44,7 @@ class ApplyPriceChangesServiceTest {
     @BeforeEach
     void setUp() {
         service = new ApplyPriceChangesService(
-                userQueryPort,
+                userReadPort,
                 priceQueryPort,
                 priceCommandPort,
                 priceCommandAppMapper,
@@ -60,7 +60,7 @@ class ApplyPriceChangesServiceTest {
         // given
         String currentUserNo = "user-1";
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-1");
 
         PriceCommand cmd = new PriceCommand(
@@ -82,9 +82,9 @@ class ApplyPriceChangesServiceTest {
         service.apply(command, currentUserNo);
 
         // then: 순서대로 호출되었는지 검증
-        InOrder inOrder = inOrder(userQueryPort, user, priceCommandAppMapper, priceCommandPort);
+        InOrder inOrder = inOrder(userReadPort, user, priceCommandAppMapper, priceCommandPort);
 
-        then(userQueryPort).should(inOrder).findById(currentUserNo);
+        then(userReadPort).should(inOrder).findById(currentUserNo);
         then(user).should(inOrder).getExpertNo();
         then(priceCommandAppMapper).should(inOrder).toPriceDomain(cmd);
         then(priceCommandPort).should(inOrder).save(priceDomain, "expert-1");
@@ -98,7 +98,7 @@ class ApplyPriceChangesServiceTest {
         // given
         String currentUserNo = "user-2";
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-2");
 
         PriceCommand cmd = new PriceCommand(
@@ -121,9 +121,9 @@ class ApplyPriceChangesServiceTest {
 
         // then: 도메인 메서드 실행 순서 검증
         // 순서 검증을 위한 InOrder 객체 준비
-        InOrder order = inOrder(userQueryPort, user, priceQueryPort, price, priceCommandPort);
+        InOrder order = inOrder(userReadPort, user, priceQueryPort, price, priceCommandPort);
 
-        then(userQueryPort).should(order).findById(currentUserNo);
+        then(userReadPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
         then(priceQueryPort).should(order).findById("price-2");
         then(price).should(order).changePriceTheme("FASHION");
@@ -137,7 +137,7 @@ class ApplyPriceChangesServiceTest {
         // given
         String currentUserNo = "user-4";
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-4");
 
         // 이미지 커맨드
@@ -196,7 +196,7 @@ class ApplyPriceChangesServiceTest {
 
         // then: 순서 검증
         InOrder order = inOrder(
-                userQueryPort, user,
+                userReadPort, user,
                 priceQueryPort, price,
                 priceRefImageCommandAppMapper, price,
                 packageCommandAppMapper, price,
@@ -204,7 +204,7 @@ class ApplyPriceChangesServiceTest {
                 priceCommandPort
         );
 
-        then(userQueryPort).should(order).findById(currentUserNo);
+        then(userReadPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
         then(priceQueryPort).should(order).findById("price-4");
         then(price).should(order).changePriceTheme("FASHION");
@@ -237,7 +237,7 @@ class ApplyPriceChangesServiceTest {
         // given
         String currentUserNo = "user-4";
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-4");
 
         // 이미지 커맨드
@@ -270,7 +270,7 @@ class ApplyPriceChangesServiceTest {
         // given
         String currentUserNo = "user-3";
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-3");
 
         PriceCommand cmd = new PriceCommand(

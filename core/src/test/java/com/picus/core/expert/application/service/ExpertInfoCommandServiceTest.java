@@ -11,14 +11,13 @@ import com.picus.core.expert.domain.model.Project;
 import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.domain.model.vo.SkillType;
-import com.picus.core.user.application.port.out.UserCommandPort;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserUpdatePort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-import org.mockito.Mock;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,8 +33,8 @@ import static org.mockito.Mockito.mock;
 class ExpertInfoCommandServiceTest {
 
 
-    UserQueryPort userQueryPort = mock(UserQueryPort.class);
-    UserCommandPort userCommandPort = mock(UserCommandPort.class);
+    UserReadPort userReadPort = mock(UserReadPort.class);
+    UserUpdatePort userUpdatePort = mock(UserUpdatePort.class);
     LoadExpertPort loadExpertPort = mock(LoadExpertPort.class);
     UpdateExpertPort updateExpertPort = mock(UpdateExpertPort.class);
 
@@ -45,7 +44,7 @@ class ExpertInfoCommandServiceTest {
     StudioCommandAppMapper studioCommandAppMapper = mock(StudioCommandAppMapper.class);
 
     ExpertInfoCommandService expertInfoCommandService =
-            new ExpertInfoCommandService(userQueryPort, userCommandPort, loadExpertPort, updateExpertPort,
+            new ExpertInfoCommandService(userReadPort, userUpdatePort, loadExpertPort, updateExpertPort,
                     projectCommandAppMapper, skillCommandAppMapper, studioCommandAppMapper);
 
     @Test
@@ -75,20 +74,20 @@ class ExpertInfoCommandServiceTest {
         User user = mock(User.class);
         when(user.getExpertNo()).thenReturn(expertNo);
 
-        given(userQueryPort.findById(userNo)).willReturn(user);
+        given(userReadPort.findById(userNo)).willReturn(user);
         given(loadExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
-        given(userQueryPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
+        given(userReadPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
 
         // when
         expertInfoCommandService.updateExpertBasicInfo(request);
 
         // then
-        then(userQueryPort).should().findById(userNo);
+        then(userReadPort).should().findById(userNo);
         then(loadExpertPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("new-background", List.of("https://new.link"), "New intro");
         then(updateExpertPort).should().updateExpert(expert);
-        then(userQueryPort).should().findUserInfoByExpertNo(expertNo);
-        then(userCommandPort).should().updateNicknameAndImageByExpertNo(argThat(updatedDto ->
+        then(userReadPort).should().findUserInfoByExpertNo(expertNo);
+        then(userUpdatePort).should().updateNicknameAndImageByExpertNo(argThat(updatedDto ->
                 updatedDto.nickname().equals("NewNickname") &&
                         updatedDto.profileImageFileKey().equals("new-profile-img") &&
                         updatedDto.expertNo().equals(expertNo)
@@ -112,7 +111,7 @@ class ExpertInfoCommandServiceTest {
         Expert expert = mock(Expert.class);
         User user = mock(User.class);
 
-        given(userQueryPort.findById(userNo)).willReturn(user);
+        given(userReadPort.findById(userNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(expertNo);
         given(loadExpertPort.findById(expertNo)).willReturn(Optional.of(expert));
 
@@ -120,11 +119,11 @@ class ExpertInfoCommandServiceTest {
         expertInfoCommandService.updateExpertBasicInfo(request);
 
         // then
-        then(userQueryPort).should().findById(userNo);
+        then(userReadPort).should().findById(userNo);
         then(loadExpertPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("bg-key", List.of("https://new.link"), "new intro");
         then(updateExpertPort).should().updateExpert(expert);
-        then(userCommandPort).shouldHaveNoInteractions();
+        then(userUpdatePort).shouldHaveNoInteractions();
     }
 
     @Test
@@ -149,16 +148,16 @@ class ExpertInfoCommandServiceTest {
                 .profileImageFileKey("old-img")
                 .build();
 
-        given(userQueryPort.findById(userNo)).willReturn(user);
-        given(userQueryPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
+        given(userReadPort.findById(userNo)).willReturn(user);
+        given(userReadPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
 
         // when
         expertInfoCommandService.updateExpertBasicInfo(request);
 
         // then
-        then(userQueryPort).should().findById(userNo);
-        then(userQueryPort).should().findUserInfoByExpertNo(expertNo);
-        then(userCommandPort).should().updateNicknameAndImageByExpertNo(argThat(dto ->
+        then(userReadPort).should().findById(userNo);
+        then(userReadPort).should().findUserInfoByExpertNo(expertNo);
+        then(userUpdatePort).should().updateNicknameAndImageByExpertNo(argThat(dto ->
                 dto.nickname().equals("UpdatedNickname") &&
                         dto.profileImageFileKey().equals("updated-profile-img") &&
                         dto.expertNo().equals(expertNo)
@@ -181,10 +180,10 @@ class ExpertInfoCommandServiceTest {
         expertInfoCommandService.updateExpertBasicInfo(request);
 
         // then
-        then(userQueryPort).shouldHaveNoInteractions();
+        then(userReadPort).shouldHaveNoInteractions();
         then(loadExpertPort).shouldHaveNoInteractions();
         then(updateExpertPort).shouldHaveNoInteractions();
-        then(userCommandPort).shouldHaveNoInteractions();
+        then(userUpdatePort).shouldHaveNoInteractions();
     }
 
     @Test
@@ -222,7 +221,7 @@ class ExpertInfoCommandServiceTest {
 
         // --- Mock 정의
         User user = mock(User.class);
-        given(userQueryPort.findById(userNo)).willReturn(user);
+        given(userReadPort.findById(userNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(expertNo);
 
         Expert expert = mock(Expert.class);
@@ -246,7 +245,7 @@ class ExpertInfoCommandServiceTest {
 
         // then
         InOrder inOrder = inOrder(
-                userQueryPort, user,
+                userReadPort, user,
                 loadExpertPort, expert,
                 projectCommandAppMapper, expert,
                 skillCommandAppMapper, expert,
@@ -254,7 +253,7 @@ class ExpertInfoCommandServiceTest {
                 updateExpertPort
         );
 
-        then(userQueryPort).should(inOrder).findById(userNo);
+        then(userReadPort).should(inOrder).findById(userNo);
         then(user).should(inOrder).getExpertNo();
         then(loadExpertPort).should(inOrder).findById(expertNo);
 
@@ -327,9 +326,9 @@ class ExpertInfoCommandServiceTest {
         expertInfoCommandService.updateExpertDetailInfo(request);
 
         // then
-        then(userQueryPort).shouldHaveNoInteractions();
+        then(userReadPort).shouldHaveNoInteractions();
         then(loadExpertPort).shouldHaveNoInteractions();
         then(updateExpertPort).shouldHaveNoInteractions();
-        then(userCommandPort).shouldHaveNoInteractions();
+        then(userUpdatePort).shouldHaveNoInteractions();
     }
 }
