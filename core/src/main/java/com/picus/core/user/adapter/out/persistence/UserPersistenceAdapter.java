@@ -2,8 +2,10 @@ package com.picus.core.user.adapter.out.persistence;
 
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
+import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.mapper.UserPersistenceMapper;
+import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRepository;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.application.port.out.UserUpdatePort;
 import com.picus.core.user.application.port.out.UserCreatePort;
@@ -25,6 +27,8 @@ public class UserPersistenceAdapter
         implements UserUpdatePort, UserReadPort, UserCreatePort {
 
     private final UserJpaRepository userJpaRepository;
+    private final ProfileImageJpaRepository profileImageJpaRepository;
+
     private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
