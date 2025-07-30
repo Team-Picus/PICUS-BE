@@ -2,7 +2,6 @@ package com.picus.core.user.application.port.in.command;
 
 import com.picus.core.shared.common.SelfValidating;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 @Import({
-        UserPersistenceAdapter.class,
+        ReadUserPersistenceAdapter.class,
         UserPersistenceMapper.class,
         ProfileImagePersistenceMapper.class
 })
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.tuple;
 class UserPersistenceAdapterTest {
 
     @Autowired
-    UserPersistenceAdapter userPersistenceAdapter;
+    ReadUserPersistenceAdapter userPersistenceAdapter;
     @Autowired
     UserJpaRepository userJpaRepository;
     @Autowired
