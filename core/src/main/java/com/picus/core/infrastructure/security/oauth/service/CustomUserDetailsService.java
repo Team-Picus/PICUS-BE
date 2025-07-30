@@ -1,6 +1,6 @@
 package com.picus.core.infrastructure.security.oauth.service;
 
-import com.picus.core.user.application.port.in.CompleteSignUpUseCase;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final CompleteSignUpUseCase completeSignUpUseCase;
+    private final UserReadPort userReadPort;
 
     @Override
     public UserDetails loadUserByUsername(String userNo) throws UsernameNotFoundException {
-        User user = completeSignUpUseCase.findById(userNo);
+        User user = userReadPort.findById(userNo);
         return new org.springframework.security.core.userdetails.User(
                 user.getUserNo(),
                 "",
