@@ -6,9 +6,8 @@ import com.picus.core.user.application.port.in.TermManagementUseCase;
 import com.picus.core.user.application.port.in.command.SaveTermCommand;
 import com.picus.core.user.application.port.out.TermCommandPort;
 import com.picus.core.user.application.port.out.TermQueryPort;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.ReadUserPort;
 import com.picus.core.user.domain.model.Term;
-import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +23,7 @@ public class TermManagementService implements TermManagementUseCase {
 
     private final TermQueryPort termQueryPort;
     private final TermCommandPort termCommandPort;
-    private final UserQueryPort userQueryPort;
+    private final ReadUserPort readUserPort;
 
     @Override
     public List<Term> getTerms() {
@@ -33,7 +32,7 @@ public class TermManagementService implements TermManagementUseCase {
 
     @Override
     public void approve(String userNo, List<SaveTermCommand> commands) {
-        if (!userQueryPort.existsById(userNo))
+        if (!readUserPort.existsById(userNo))
             throw new RestApiException(_NOT_FOUND);
 
         for (SaveTermCommand command : commands) {

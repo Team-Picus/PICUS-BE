@@ -6,8 +6,9 @@ import com.picus.core.follow.application.port.out.FollowQueryPort;
 import com.picus.core.follow.domain.model.Follow;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.ReadUserPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,11 +16,12 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._EXI
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @UseCase
+@Transactional
 @RequiredArgsConstructor
 public class FollowManagementService implements FollowManagementUseCase {
 
     private final FollowQueryPort followQueryPort;
-    private final UserQueryPort userQueryPort;
+    private final ReadUserPort readUserPort;
     private final FollowCommandPort followCommandPort;
 
     @Override
@@ -27,7 +29,7 @@ public class FollowManagementService implements FollowManagementUseCase {
         if (followQueryPort.existsById(userNo, expertNo))
             throw new RestApiException(_EXIST_ENTITY);
 
-        if(userQueryPort.existsById(userNo) /* && expertQueryPort.existsById(expertNo)*/)
+        if(!readUserPort.existsById(userNo) /* && expertQueryPort.existsById(expertNo)*/)
             throw new RestApiException(_NOT_FOUND);
 
         followCommandPort.save(userNo, expertNo);

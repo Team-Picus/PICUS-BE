@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface MoodboardJpaRepository extends JpaRepository<MoodboardEntity, MoodboardId> {
 
-    @Query("select mb from MoodboardEntity mb where mb.user.userNo = :user_no")
+    @Query("select mb from MoodboardEntity mb where mb.userNo = :user_no")
     List<MoodboardEntity> findByUser(@Param("user_no") String userNo);
 }

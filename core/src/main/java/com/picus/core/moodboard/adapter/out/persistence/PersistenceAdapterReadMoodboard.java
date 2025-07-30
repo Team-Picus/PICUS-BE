@@ -4,31 +4,37 @@ import com.picus.core.moodboard.adapter.out.persistence.entity.MoodboardEntity;
 import com.picus.core.moodboard.adapter.out.persistence.entity.MoodboardId;
 import com.picus.core.moodboard.adapter.out.persistence.mapper.MoodboardPersistenceMapper;
 import com.picus.core.moodboard.adapter.out.persistence.repository.MoodboardJpaRepository;
-import com.picus.core.moodboard.application.port.out.MoodboardCommandPort;
-import com.picus.core.moodboard.application.port.out.MoodboardQueryPort;
-import com.picus.core.moodboard.domain.model.Moodboard;
+import com.picus.core.moodboard.application.port.out.CreateMoodboardPort;
+import com.picus.core.moodboard.application.port.out.DeleteMoodboardPort;
+import com.picus.core.moodboard.application.port.out.ReadMoodboardPort;
+import com.picus.core.moodboard.domain.Moodboard;
 import com.picus.core.shared.annotation.PersistenceAdapter;
-import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
-import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class MoodboardPersistenceAdapter implements MoodboardCommandPort, MoodboardQueryPort {
+public class PersistenceAdapterReadMoodboard
+        implements CreateMoodboardPort, ReadMoodboardPort, DeleteMoodboardPort {
 
-    private final UserJpaRepository userJpaRepository;
-    private final MoodboardPersistenceMapper moodboardPersistenceMapper;
+    // DI
+    // Repository
     private final MoodboardJpaRepository moodboardJpaRepository;
 
-    @Override
-    public void save(String userNo, String postNo) {
-        UserEntity userEntity = userJpaRepository.getReferenceById(userNo);
-        // PostEntity postEntity = postJpaRepository.getReferenceById(postNo);
+    // Mapper
+    private final MoodboardPersistenceMapper moodboardPersistenceMapper;
 
-//        MoodboardEntity entity = moodboardPersistenceMapper.toEntity(userEntity, postEntity);
-//        moodboardJpaRepository.save(entity);
+
+    // Methods
+    @Override
+    public void create(String userNo, String postNo) {
+        MoodboardEntity entity = MoodboardEntity.builder()
+                .userNo(userNo)
+                .postNo(postNo)
+                .build();
+
+        moodboardJpaRepository.save(entity);
     }
 
     @Override
