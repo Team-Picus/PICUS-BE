@@ -31,7 +31,7 @@ public class IssueTokenService implements IssueTokenUseCase {
                 .orElseThrow(() -> new RestApiException(EXPIRED_REFRESH_TOKEN));
 
         String key = tokenPrefixProperties.toWhitelist(refreshToken);
-        tokenCreatePort.save(key, duration);
+        tokenCreatePort.create(key, duration);
 
         return IssueTokenResult.builder()
                 .accessToken(accessToken)
