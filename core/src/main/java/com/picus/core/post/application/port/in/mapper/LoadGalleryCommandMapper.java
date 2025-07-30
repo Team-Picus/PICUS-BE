@@ -4,14 +4,16 @@ import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import com.picus.core.post.domain.Post;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 
 @Component
 public class LoadGalleryCommandMapper {
 
-    public LoadGalleryResult toAppResp(Post post, String thumbnailUrl) {
+    public LoadGalleryResult toAppResp(Post post, List<String> imageUrls) {
         return LoadGalleryResult.builder()
                 .postNo(post.getPostNo())
-                .thumbnailUrl(thumbnailUrl)
+                .imageUrls(imageUrls)
                 .title(post.getTitle())
                 .oneLineDescription(post.getOneLineDescription())
                 .build();

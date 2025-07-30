@@ -86,10 +86,10 @@ public class LoadGalleryIntegrationTest {
         BaseResponse<Object> body = response.getBody();
         assertThat(body).isNotNull();
 
-        Map<String, String> result = (Map<String, String>) body.getResult();
+        Map<String, Object> result = (Map<String, Object>) body.getResult();
 
         assertThat(result.get("postNo")).isEqualTo(postEntity.getPostNo());
-        assertThat(result.get("thumbnailUrl")).isEqualTo(""); // TODO: fileKey -> url 변환 로직 추가후 재 검증
+        assertThat(result.get("imageUrls")).isEqualTo(List.of("")); // TODO: fileKey -> url 변환 로직 추가후 재 검증
         assertThat(result.get("title")).isEqualTo(postEntity.getTitle());
         assertThat(result.get("oneLineDescription")).isEqualTo(postEntity.getOneLineDescription());
     }

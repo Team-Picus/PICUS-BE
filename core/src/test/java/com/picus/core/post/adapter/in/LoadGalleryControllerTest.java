@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
@@ -45,7 +46,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
         given(loadGalleryUseCase.load(expertNo)).willReturn(Optional.of(appResp));
         LoadGalleryResponse webResp = LoadGalleryResponse.builder()
                 .postNo("")
-                .thumbnailUrl("")
+                .imageUrls(List.of(""))
                 .title("")
                 .oneLineDescription("")
                 .build();
@@ -64,7 +65,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.result.postNo").exists())
                 .andExpect(jsonPath("$.result.title").exists())
                 .andExpect(jsonPath("$.result.oneLineDescription").exists())
-                .andExpect(jsonPath("$.result.thumbnailUrl").exists());
+                .andExpect(jsonPath("$.result.imageUrls").exists());
         // then
 
         then(loadGalleryUseCase).should().load(expertNo);

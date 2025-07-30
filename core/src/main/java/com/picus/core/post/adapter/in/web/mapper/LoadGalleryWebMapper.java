@@ -10,7 +10,7 @@ public class LoadGalleryWebMapper {
     public LoadGalleryResponse toWebResp(LoadGalleryResult appResp) {
         return LoadGalleryResponse.builder()
                 .postNo(appResp.postNo())
-                .thumbnailUrl(appResp.thumbnailUrl())
+                .imageUrls(appResp.imageUrls())
                 .title(appResp.title())
                 .oneLineDescription(appResp.oneLineDescription())
                 .build();

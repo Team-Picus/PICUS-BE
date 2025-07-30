@@ -7,10 +7,9 @@ import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.shared.annotation.UseCase;
-import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @UseCase
@@ -27,16 +26,13 @@ public class LoadGalleryService implements LoadGalleryUseCase {
         Optional<Post> post = postReadPort.findByExpertNoAndIsPinnedTrue(expertNo);
 
         if(post.isPresent()) { // 고정처리한 게시물이 존재한다면
-            // 이미지 순서가 1인 이미지가 썸네일
-            PostImage thumbnail = post.get().getPostImages().stream()
-                    .filter(postImage -> postImage.getImageOrder() == 1)
-                    .findFirst()
-                    .orElseThrow(() -> new RestApiException(GlobalErrorStatus._INTERNAL_SERVER_ERROR));
+            List<PostImage> postImages = post.get().getPostImages();
 
             // TODO: file key -> url 변환 로직
+            List<String> imageUrls = List.of("");
 
             // 매퍼를 통해 LoadGalleryResult 매핑
-            return Optional.ofNullable(appMapper.toAppResp(post.get(), ""));
+            return Optional.ofNullable(appMapper.toAppResp(post.get(), imageUrls));
 
         } else { // 고정처리한 게시물이 존재하지 않는다면 (아직 게시물이 없거나 설정 안했을 수도 있음)
             return Optional.empty();
