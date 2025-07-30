@@ -6,6 +6,7 @@ import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebReque
 import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class RequestApprovalController {
 
     @PostMapping("/approval-requests")
     public BaseResponse<Void> requestApproval(
-            @RequestBody RequestApprovalWebRequest webRequest, @CurrentUser String userNo) {
+            @Valid @RequestBody RequestApprovalWebRequest webRequest, @CurrentUser String userNo) {
 
         RequestApprovalCommand command = webMapper.toCommand(webRequest, userNo);// 웹 요청 -> command
         requestApprovalUseCase.requestApproval(command); // 유스케이스 호출

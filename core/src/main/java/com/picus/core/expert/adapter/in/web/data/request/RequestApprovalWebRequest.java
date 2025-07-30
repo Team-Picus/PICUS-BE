@@ -12,9 +12,9 @@ import java.util.List;
 
 public record RequestApprovalWebRequest(
         @NotBlank String activityCareer,
-        @Size(min = 1) List<@NotBlank String> activityAreas,
+        @NotNull List<@NotBlank String> activityAreas,
         @Valid List<ProjectWebRequest> projects,
-        @Valid @Size(min = 1) List<SkillWebRequest> skills, // 스킬은 적어도 1개는 무조건 있어야 함
+        @Valid @NotNull List<SkillWebRequest> skills, // 스킬은 적어도 1개는 무조건 있어야 함
         @Valid StudioWebRequest studio,
         List<String> portfolioLinks) {
 
