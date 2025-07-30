@@ -44,7 +44,7 @@ class SuggestPostControllerTest extends AbstractSecurityMockSetup {
         SuggestPostResult suggestPostResult = mock(SuggestPostResult.class);
         given(suggestPostUseCase.suggest(keyword, size)).willReturn(List.of(suggestPostResult));
         SuggestPostResponse suggestPostResponse = SuggestPostResponse.builder()
-                .postId("post-123")
+                .postNo("post-123")
                 .title("title")
                 .build();
         given(webMapper.toResponse(suggestPostResult)).willReturn(suggestPostResponse);
@@ -59,7 +59,7 @@ class SuggestPostControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.code").exists())
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.result").isArray())
-                .andExpect(jsonPath("$.result[0].postId").exists())
+                .andExpect(jsonPath("$.result[0].postNo").exists())
                 .andExpect(jsonPath("$.result[0].title").exists());
 
         // then

@@ -3,8 +3,9 @@ package com.picus.core.post.adapter.in.web.data.response;
 import lombok.Builder;
 
 @Builder
-public record SuggestPostResponse(
+public record LoadRandomPostResponse(
         String postNo,
-        String title
+        String nickname,
+        String thumbnailUrl
 ) {
 }

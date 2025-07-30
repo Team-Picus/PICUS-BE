@@ -24,7 +24,7 @@ class SuggestPostWebMapperTest {
         SuggestPostResponse response = webMapper.toResponse(result);
 
         // then
-        assertThat(response.postId()).isEqualTo("post-123");
+        assertThat(response.postNo()).isEqualTo("post-123");
         assertThat(response.title()).isEqualTo("제목");
     }
 

@@ -9,7 +9,7 @@ public class SuggestPostWebMapper {
 
     public SuggestPostResponse toResponse(SuggestPostResult result) {
         return SuggestPostResponse.builder()
-                .postId(result.postNo())
+                .postNo(result.postNo())
                 .title(result.title())
                 .build();
     }
