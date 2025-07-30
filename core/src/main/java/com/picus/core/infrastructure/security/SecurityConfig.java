@@ -9,6 +9,7 @@ import com.picus.core.infrastructure.security.oauth.handler.OAuth2Authentication
 import com.picus.core.infrastructure.security.oauth.repository.OAuth2AuthorizationRequestRepository;
 import com.picus.core.infrastructure.security.oauth.service.CustomOAuth2UserService;
 import com.picus.core.infrastructure.security.oauth.service.CustomUserDetailsService;
+import com.picus.core.user.application.port.in.IssueTokenUseCase;
 import com.picus.core.user.application.port.in.WhitelistTokenUseCase;
 import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
 import com.picus.core.user.application.port.in.ValidateTokenUseCase;
@@ -39,15 +40,17 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CorsProperties corsProperties;
     private final TokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
-    private final SocialAuthenticationUseCase socialAuthenticationUseCase;
     private final CustomOAuth2UserService oAuth2UserService;
+    private final SocialAuthenticationUseCase socialAuthenticationUseCase;
+    private final IssueTokenUseCase issueTokenUseCase;
+    private final ValidateTokenUseCase validateTokenUseCase;
     private final WhitelistTokenUseCase whitelistTokenUseCase;
+
+    private final CorsProperties corsProperties;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
     private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
-    private final ValidateTokenUseCase validateTokenUseCase;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -119,9 +122,8 @@ public class SecurityConfig {
     public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
         return new OAuth2AuthenticationSuccessHandler(
                 socialAuthenticationUseCase,
-                tokenProvider,
-                whitelistTokenUseCase,
-                oAuth2AuthorizationRequestRepository()
+                oAuth2AuthorizationRequestRepository(),
+                issueTokenUseCase
         );
     }
 
