@@ -1,10 +1,10 @@
 package com.picus.core.follow.application.port.out;
 
-import com.picus.core.follow.domain.model.Follow;
+import com.picus.core.follow.domain.Follow;
 
 import java.util.List;
 
-public interface FollowQueryPort {
+public interface ReadFollowPort {
 
     Boolean existsById(String userNo, String expertNo);
 

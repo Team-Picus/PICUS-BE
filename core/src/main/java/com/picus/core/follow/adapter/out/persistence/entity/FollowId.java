@@ -11,13 +11,13 @@ import java.io.Serializable;
 public class FollowId implements Serializable {
 
     @EqualsAndHashCode.Include
-    private String user;
+    private String userNo;
 
     @EqualsAndHashCode.Include
-    private String expert;
+    private String expertNo;
 
-    public FollowId(String user, String expert) {
-        this.user = user;
-        this.expert = expert;
+    public FollowId(String userNo, String expertNo) {
+        this.userNo = userNo;
+        this.expertNo = expertNo;
     }
 }
