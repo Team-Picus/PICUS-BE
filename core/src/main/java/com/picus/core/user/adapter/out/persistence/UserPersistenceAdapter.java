@@ -70,9 +70,9 @@ public class UserPersistenceAdapter
         userEntity.updateNickname(userWithProfileImageDto.nickname());
 
         // 프로필 이미지 수정
-//        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByUserNo(userEntity.getUserNo())
-//                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-//        profileImageEntity.updateFileKey(userWithProfileImageDto.profileImageFileKey());
+        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByUserNo(userEntity.getUserNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        profileImageEntity.updateFileKey(userWithProfileImageDto.profileImageFileKey());
     }
 
     @Override
@@ -104,7 +104,7 @@ public class UserPersistenceAdapter
     }
 
     @Override
-    public List<UserWithProfileImageDto> findUserInfoByNicknameContainingLimited(String keyword, int size) {
+    public List<UserWithProfileImageDto> findTopNUserInfoByNicknameContainingOrderByNickname(String keyword, int size) {
         return userJpaRepository.findByNicknameContainingLimited(keyword, PageRequest.of(0, size));
     }
 }

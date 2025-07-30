@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.out.persistence;
 
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
+import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
@@ -13,10 +13,10 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.picus.core.expert.domain.model.vo.PriceThemeType.FASHION;
+import static com.picus.core.expert.domain.vo.PriceThemeType.FASHION;
 import static org.assertj.core.api.Assertions.*;
 
 @Import({
@@ -165,7 +165,7 @@ class PricePersistenceAdapterTest {
         String expertNo = "expert_no";
 
         // when
-        Price saved = pricePersistenceAdapter.save(price, expertNo);
+        Price saved = pricePersistenceAdapter.create(price, expertNo);
 
         // then
         // Price

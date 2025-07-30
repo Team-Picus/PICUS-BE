@@ -2,7 +2,7 @@ package com.picus.core.user.adapter.out.persistence;
 
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.mapper.ProfileImagePersistenceMapper;
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 @Import({
-        ReadUserPersistenceAdapter.class,
+        UserPersistenceAdapter.class,
         UserPersistenceMapper.class,
         ProfileImagePersistenceMapper.class
 })
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.tuple;
 class UserPersistenceAdapterTest {
 
     @Autowired
-    ReadUserPersistenceAdapter userPersistenceAdapter;
+    UserPersistenceAdapter userPersistenceAdapter;
     @Autowired
     UserJpaRepository userJpaRepository;
     @Autowired
@@ -152,7 +152,7 @@ class UserPersistenceAdapterTest {
 
     @Test
     @DisplayName("특정 닉네임 키워드가 포함된 전문가를 n개를 이름순으로 오름차순 조회한다.")
-    public void findUserInfoByNicknameContainingLimited() throws Exception {
+    public void findTopNUserInfoByNicknameContainingOrderByNickname() throws Exception {
         // given
         String keyword = "nickname";
         int size = 2;
@@ -182,7 +182,7 @@ class UserPersistenceAdapterTest {
                 testFileKey1, testFileKey2, testFileKey3, testFileKey4);
 
         // when
-        List<UserWithProfileImageDto> results = userPersistenceAdapter.findUserInfoByNicknameContainingLimited(keyword, size);
+        List<UserWithProfileImageDto> results = userPersistenceAdapter.findTopNUserInfoByNicknameContainingOrderByNickname(keyword, size);
 
         // then
         assertThat(results).hasSize(2);

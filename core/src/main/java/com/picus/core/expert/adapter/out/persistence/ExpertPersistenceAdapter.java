@@ -4,13 +4,13 @@ package com.picus.core.expert.adapter.out.persistence;
 import com.picus.core.expert.adapter.out.persistence.mapper.ExpertPersistenceMapper;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
-import com.picus.core.expert.application.port.out.LoadExpertPort;
-import com.picus.core.expert.application.port.out.CreateExpertPort;
-import com.picus.core.expert.application.port.out.UpdateExpertPort;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.Studio;
+import com.picus.core.expert.application.port.out.ExpertReadPort;
+import com.picus.core.expert.application.port.out.ExpertCreatePort;
+import com.picus.core.expert.application.port.out.ExpertUpdatePort;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.Project;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.Studio;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
@@ -33,7 +33,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPort, UpdateExpertPort {
+public class ExpertPersistenceAdapter implements ExpertCreatePort, ExpertReadPort, ExpertUpdatePort {
 
     // Jpa Repository
     private final ExpertJpaRepository expertJpaRepository;
@@ -51,7 +51,7 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
 
 
     @Override
-    public Expert saveExpert(Expert expert, String userNo) {
+    public Expert create(Expert expert, String userNo) {
 
         // ExpertEntity 저장
         ExpertEntity saved = saveExpertEntity(expert, userNo);
@@ -90,7 +90,7 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     }
 
     @Override
-    public void updateExpert(Expert expert) {
+    public void update(Expert expert) {
         ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
@@ -99,8 +99,8 @@ public class ExpertPersistenceAdapter implements CreateExpertPort, LoadExpertPor
     }
 
     @Override
-    public void updateExpertWithDetail(Expert expert,
-                                       List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo) {
+    public void update(Expert expert,
+                       List<String> deletedProjectNos, List<String> deletedSkillNos, String deletedStudioNo) {
 
         ExpertEntity expertEntity = expertJpaRepository.findById(expert.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));

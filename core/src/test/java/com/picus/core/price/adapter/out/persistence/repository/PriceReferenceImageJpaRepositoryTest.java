@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.out.persistence.repository;
 
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
+import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceReferenceImageEntity;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")

@@ -1,12 +1,11 @@
 package com.picus.core.expert.adapter.in.web.data.request;
 
-import com.picus.core.expert.application.port.in.command.ChangeStatus;
+import com.picus.core.expert.application.port.in.request.ChangeStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder

@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.out.persistence.entity;
 
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.vo.SkillType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

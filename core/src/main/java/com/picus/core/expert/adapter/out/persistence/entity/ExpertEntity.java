@@ -1,11 +1,8 @@
 package com.picus.core.expert.adapter.out.persistence.entity;
 
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.ActivityArea;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
-import com.picus.core.expert.adapter.out.persistence.converter.ActivityAreasConverter;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.expert.adapter.out.persistence.converter.StringConverter;
-import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.shared.common.BaseEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -28,23 +25,23 @@ public class ExpertEntity extends BaseEntity {
 
     @Id
     @Tsid
-    private String expertNo;
+    private java.lang.String expertNo;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "expert_no")  // User와 PK 공유
     private UserEntity userEntity;
 
-    private String backgroundImageKey;
+    private java.lang.String backgroundImageKey;
 
-    private String intro;
+    private java.lang.String intro;
 
     @Column(nullable = false)
-    private String activityCareer;
+    private java.lang.String activityCareer;
 
     @Convert(converter = StringConverter.class)
     @Column(nullable = false)
-    private List<String> activityAreas;
+    private List<java.lang.String> activityAreas;
 
     @Column(nullable = false)
     private Integer activityCount;
@@ -52,7 +49,7 @@ public class ExpertEntity extends BaseEntity {
     private LocalDateTime lastActivityAt;
 
     @Convert(converter = StringConverter.class)
-    private List<String> portfolioLinks;
+    private List<java.lang.String> portfolioLinks;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -77,14 +74,13 @@ public class ExpertEntity extends BaseEntity {
         if (newExpert.getLastActivityAt() != null) {
             this.lastActivityAt = newExpert.getLastActivityAt();
         }
-        if (newExpert.getPortfolios() != null) {
-            this.portfolioLinks = newExpert.getPortfolios().stream()
-                    .map(Portfolio::getLink)
-                    .toList();
+        if (newExpert.getPortfolioLinks() != null) {
+            this.portfolioLinks = newExpert.getPortfolioLinks();
         }
         if (newExpert.getApprovalStatus() != null) {
             this.approvalStatus = newExpert.getApprovalStatus();
         }
+        this.lastActivityAt = newExpert.getLastActivityAt();
     }
 
     public void bindUserEntity(UserEntity userEntity) {

@@ -12,12 +12,14 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
-import com.picus.core.price.application.port.out.PriceCommandPort;
-import com.picus.core.price.application.port.out.PriceQueryPort;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.application.port.out.PriceCreatePort;
+import com.picus.core.price.application.port.out.PriceDeletePort;
+import com.picus.core.price.application.port.out.PriceReadPort;
+import com.picus.core.price.application.port.out.PriceUpdatePort;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort {
+public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, PriceUpdatePort, PriceDeletePort {
 
     private final PriceJpaRepository priceJpaRepository;
     private final PackageJpaRepository packageJpaRepository;
@@ -74,7 +76,7 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
     }
 
     @Override
-    public Price save(Price price, String expertNo) {
+    public Price create(Price price, String expertNo) {
 
         // PriceEntity 저장
         PriceEntity savedPriceEntity = savePriceEntity(price, expertNo);
@@ -142,8 +144,7 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
     }
 
     private PriceEntity savePriceEntity(Price price, String expertNo) {
-        PriceEntity entity = pricePersistenceMapper.toEntity(price);
-        entity.bindExpertNo(expertNo);
+        PriceEntity entity = pricePersistenceMapper.toEntity(price, expertNo);
         return priceJpaRepository.save(entity);
     }
 
@@ -207,14 +208,16 @@ public class PricePersistenceAdapter implements PriceQueryPort, PriceCommandPort
 
     private void updatePriceReferenceImageEntities(Price price, List<String> deletedPriceRefImageNos, PriceEntity priceEntity) {
         // 삭제
-        priceReferenceImageJpaRepository.deleteByPriceReferenceImageNoIn(deletedPriceRefImageNos);
+        if(!deletedPriceRefImageNos.isEmpty()) {
+            priceReferenceImageJpaRepository.deleteByPriceReferenceImageNoIn(deletedPriceRefImageNos);
 
-        // 삭제 후 이미지 순서 재정렬
-        List<PriceReferenceImageEntity> images =
-                priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo());
+            // 삭제 후 이미지 순서 재정렬
+            List<PriceReferenceImageEntity> images =
+                    priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo());
 
-        for (int i = 0; i < images.size(); i++) {
-            images.get(i).assignImageOrder(i + 1);
+            for (int i = 0; i < images.size(); i++) {
+                images.get(i).assignImageOrder(i + 1);
+            }
         }
 
         // 추가/수정

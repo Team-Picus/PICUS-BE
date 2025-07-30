@@ -14,6 +14,5 @@ public interface UserReadPort {
     Boolean existsById(String userNo);
     Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo);
     List<UserWithProfileImageDto> findUserInfoByNicknameContaining(String keyword);
-    List<UserWithProfileImageDto> findUserInfoByNicknameContainingLimited(String keyword, int size);
-
+    List<UserWithProfileImageDto> findTopNUserInfoByNicknameContainingOrderByNickname(String keyword, int size);
 }

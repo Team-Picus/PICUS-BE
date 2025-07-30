@@ -1,11 +1,11 @@
 package com.picus.core.price.adapter.out.persistence.mapper;
 
-import com.picus.core.expert.domain.model.vo.PriceThemeType;
+import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,14 +22,13 @@ class PricePersistenceMapperTest {
     void toDomain_shouldMapCorrectly() {
         // given
         String testPriceNo = "price123";
+        String testExpertNo = "expert001";
         PriceThemeType testPriceThemeType = PriceThemeType.BEAUTY;
 
-        PriceEntity priceEntity = createPriceEntity(testPriceNo, testPriceThemeType);
+        PriceEntity priceEntity = createPriceEntity(testPriceNo, testExpertNo, testPriceThemeType);
 
         List<Package> packages = createPackages();
-
         List<Option> options = createOptions();
-
         List<PriceReferenceImage> referenceImages = createReferenceImages();
 
         // when
@@ -37,6 +36,7 @@ class PricePersistenceMapperTest {
 
         // then
         assertThat(result.getPriceNo()).isEqualTo(testPriceNo);
+        assertThat(result.getExpertNo()).isEqualTo(testExpertNo);
         assertThat(result.getPriceThemeType()).isEqualTo(testPriceThemeType);
         assertThat(result.getPackages()).isEqualTo(packages);
         assertThat(result.getOptions()).isEqualTo(options);
@@ -50,18 +50,20 @@ class PricePersistenceMapperTest {
         Price price = Price.builder()
                 .priceThemeType(PriceThemeType.FASHION)
                 .build();
+        String expertNo = "expert-123";
 
         // when
-        PriceEntity entity = mapper.toEntity(price);
+        PriceEntity entity = mapper.toEntity(price, expertNo);
 
         // then
+        assertThat(entity.getExpertNo()).isEqualTo("expert-123");
         assertThat(entity.getPriceThemeType()).isEqualTo(PriceThemeType.FASHION);
     }
 
-    private PriceEntity createPriceEntity(String testPriceNo, PriceThemeType testPriceThemeType) {
+    private PriceEntity createPriceEntity(String testPriceNo, String testExpertNo, PriceThemeType testPriceThemeType) {
         return PriceEntity.builder()
                 .priceNo(testPriceNo)
-                .expertNo("expert001")
+                .expertNo(testExpertNo)
                 .priceThemeType(testPriceThemeType)
                 .build();
     }

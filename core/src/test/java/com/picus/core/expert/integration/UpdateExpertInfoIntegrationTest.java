@@ -11,9 +11,8 @@ import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaReposit
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
-import com.picus.core.expert.application.port.in.command.ChangeStatus;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
+import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -38,9 +37,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.*;
-import static com.picus.core.expert.application.port.in.command.ChangeStatus.*;
-import static com.picus.core.expert.domain.model.vo.SkillType.EDIT;
-import static com.picus.core.expert.domain.model.vo.SkillType.LIGHT;
+import static com.picus.core.expert.application.port.in.request.ChangeStatus.*;
+import static com.picus.core.expert.domain.vo.SkillType.EDIT;
+import static com.picus.core.expert.domain.vo.SkillType.LIGHT;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -97,7 +96,7 @@ public class UpdateExpertInfoIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        HttpEntity<UpdateExpertBasicInfoWebRequest> request = settingWebRequest(userNo, givenWebRequest(
+        HttpEntity<UpdateExpertBasicInfoWebRequest> request = settingWebRequest(userEntity, givenWebRequest(
                 "new_profile_key",
                 "new_back_key",
                 "new_nick",
@@ -215,7 +214,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .changeStatus(UPDATE)
                                 .build())
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -297,7 +296,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .build()
                 )
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -343,7 +342,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .build()
                 )
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userNo, request);
+        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -371,8 +370,8 @@ public class UpdateExpertInfoIntegrationTest {
     }
 
 
-    private <T> HttpEntity<T> settingWebRequest(String userNo, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userNo, "ROLE_USER");
+    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
         return new HttpEntity<>(webRequest, headers);

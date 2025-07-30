@@ -5,19 +5,17 @@ import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoW
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.SkillWebRequest;
 import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
-import com.picus.core.expert.application.port.in.command.*;
-import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.application.port.in.request.*;
+import com.picus.core.expert.domain.vo.SkillType;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class UpdateExpertWebMapper {
 
-    public UpdateExpertBasicInfoAppRequest toBasicInfoAppRequest(UpdateExpertBasicInfoWebRequest webRequest, String currentUserNo) {
-        return UpdateExpertBasicInfoAppRequest.builder()
+    public UpdateExpertBasicInfoCommand toBasicInfoAppRequest(UpdateExpertBasicInfoWebRequest webRequest, String currentUserNo) {
+        return UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(currentUserNo)
                 .profileImageFileKey(webRequest.profileImageFileKey())
                 .backgroundImageFileKey(webRequest.backgroundImageFileKey())
@@ -27,9 +25,9 @@ public class UpdateExpertWebMapper {
                 .build();
     }
 
-    public UpdateExpertDetailInfoAppRequest toDetailInfoAppRequest(UpdateExpertDetailInfoWebRequest webRequest, String currentUserNo) {
+    public UpdateExpertDetailInfoCommand toDetailInfoAppRequest(UpdateExpertDetailInfoWebRequest webRequest, String currentUserNo) {
 
-        return UpdateExpertDetailInfoAppRequest.builder()
+        return UpdateExpertDetailInfoCommand.builder()
                 .currentUserNo(currentUserNo)
                 .activityCareer(webRequest.activityCareer())
                 .activityAreas(webRequest.activityAreas())
@@ -39,12 +37,12 @@ public class UpdateExpertWebMapper {
                 .build();
     }
 
-    private List<ProjectCommand> toProjectCommand(List<ProjectWebRequest> projectWebRequests) {
+    private List<UpdateProjectCommand> toProjectCommand(List<ProjectWebRequest> projectWebRequests) {
         if (projectWebRequests == null)
             return List.of();
 
         return projectWebRequests.stream()
-                .map(webRequest -> ProjectCommand.builder()
+                .map(webRequest -> UpdateProjectCommand.builder()
                         .projectNo(webRequest.projectNo())
                         .projectName(webRequest.projectName())
                         .startDate(webRequest.startDate())
@@ -54,12 +52,12 @@ public class UpdateExpertWebMapper {
                 .toList();
     }
 
-    private List<SkillCommand> toSkillCommand(List<SkillWebRequest> skillWebRequests) {
+    private List<UpdateSkillCommand> toSkillCommand(List<SkillWebRequest> skillWebRequests) {
         if (skillWebRequests == null)
             return List.of();
 
         return skillWebRequests.stream()
-                .map(webRequest -> SkillCommand.builder()
+                .map(webRequest -> UpdateSkillCommand.builder()
                         .skillNo(webRequest.skillNo())
                         .skillType(webRequest.skillType() != null ? SkillType.valueOf(webRequest.skillType()) : null) // 수정될 내용이 없어 Null이 넘어올 수도 있음
                         .content(webRequest.content())
@@ -68,8 +66,8 @@ public class UpdateExpertWebMapper {
                 .toList();
     }
 
-    private StudioCommand toStudioCommand(StudioWebRequest studioWebRequest) {
-        return StudioCommand.builder()
+    private UpdateStudioCommand toStudioCommand(StudioWebRequest studioWebRequest) {
+        return UpdateStudioCommand.builder()
                 .studioNo(studioWebRequest.studioNo())
                 .studioName(studioWebRequest.studioName())
                 .employeesCount(studioWebRequest.employeesCount())

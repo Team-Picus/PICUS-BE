@@ -1,14 +1,14 @@
 package com.picus.core.expert.application.port.in.mapper;
 
-import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.vo.ApprovalStatus;
+import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.vo.ApprovalStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public record RequestApprovalAppMapper() {
 
-    public Expert toDomain(RequestApprovalRequest command) {
+    public Expert toDomain(RequestApprovalCommand command) {
         return Expert.builder()
                 .activityCareer(command.activityCareer())
                 .activityAreas(command.activityAreas())
@@ -17,7 +17,7 @@ public record RequestApprovalAppMapper() {
                 .projects(command.projects())
                 .skills(command.skills())
                 .studio(command.studio())
-                .portfolios(command.portfolios())
+                .portfolioLinks(command.portfolioLinks())
                 .build();
     }
 }

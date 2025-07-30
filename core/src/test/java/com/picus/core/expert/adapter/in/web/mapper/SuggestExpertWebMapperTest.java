@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.response.SuggestExpertWebResponse;
-import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
+import com.picus.core.expert.application.port.in.response.SuggestExpertResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class SuggestExpertWebMapperTest {
     @DisplayName("SuggestExpertAppResponse를 SuggestExpertWebResponse로 변환한다")
     void toWebResponse_shouldMapCorrectly() {
         // given
-        SuggestExpertAppResponse appResponse = SuggestExpertAppResponse.builder()
+        SuggestExpertResult appResponse = SuggestExpertResult.builder()
                 .expertNo("ex123")
                 .nickname("닉네임")
                 .profileImageUrl("https://cdn.com/img.jpg")

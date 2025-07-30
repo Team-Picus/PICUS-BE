@@ -1,14 +1,13 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.command.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
 import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
-import com.picus.core.expert.application.port.out.CreateExpertPort;
-import com.picus.core.expert.domain.model.Expert;
-import com.picus.core.expert.domain.model.Project;
-import com.picus.core.expert.domain.model.Skill;
-import com.picus.core.expert.domain.model.Studio;
-import com.picus.core.expert.domain.model.vo.Portfolio;
-import com.picus.core.expert.domain.model.vo.SkillType;
+import com.picus.core.expert.application.port.out.ExpertCreatePort;
+import com.picus.core.expert.domain.Expert;
+import com.picus.core.expert.domain.Project;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.Studio;
+import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.user.application.port.out.UserUpdatePort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,19 +22,19 @@ import static org.mockito.BDDMockito.then;
 
 class RequestApprovalServiceTest {
 
-    final CreateExpertPort createExpertPort = Mockito.mock(CreateExpertPort.class);
+    final ExpertCreatePort expertCreatePort = Mockito.mock(ExpertCreatePort.class);
     final UserUpdatePort userUpdatePort = Mockito.mock(UserUpdatePort.class);
     final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(createExpertPort, userUpdatePort, appMapper);
+            = new RequestApprovalService(expertCreatePort, userUpdatePort, appMapper);
 
 
     @Test
     @DisplayName("전문가 승인요청 메서드 상호작용 검증")
     public void requestApproval_success() throws Exception {
         // given
-        RequestApprovalRequest command = givenRequestApprovalCommand();
+        RequestApprovalCommand command = givenRequestApprovalCommand();
         stubOutPortMethod();
 
         // when
@@ -43,14 +42,14 @@ class RequestApprovalServiceTest {
 
         // then
 
-        then(createExpertPort).should().saveExpert(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
+        then(expertCreatePort).should().create(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
         then(userUpdatePort).should().assignExpertNo(any(String.class), any(String.class));
     }
 
 
 
-    private RequestApprovalRequest givenRequestApprovalCommand() {
-        return RequestApprovalRequest.builder()
+    private RequestApprovalCommand givenRequestApprovalCommand() {
+        return RequestApprovalCommand.builder()
                 .activityCareer("3년차")
                 .projects(List.of(
                         Project.builder()
@@ -81,13 +80,9 @@ class RequestApprovalServiceTest {
                         .businessHours("10:00 - 19:00")
                         .address("서울특별시 마포구 월드컵북로 400")
                         .build())
-                .portfolios(List.of(
-                        Portfolio.builder()
-                                .link("https://myportfolio.com/project1")
-                                .build(),
-                        Portfolio.builder()
-                                .link("https://myportfolio.com/project2")
-                                .build()
+                .portfolioLinks(List.of(
+                        "https://myportfolio.com/project1",
+                        "https://myportfolio.com/project2"
                 ))
                 .userNo("user_no1")
                 .build();
@@ -96,7 +91,7 @@ class RequestApprovalServiceTest {
         Expert expert = Expert.builder()
                 .expertNo("expert_no1")
                 .build();
-        given(createExpertPort.saveExpert(any(Expert.class), any(String.class)))
+        given(expertCreatePort.create(any(Expert.class), any(String.class)))
                 .willReturn(expert);
     }
 

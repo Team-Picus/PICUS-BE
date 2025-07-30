@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
+import com.picus.core.expert.application.port.in.response.SearchExpertResult;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
@@ -39,14 +39,14 @@ class SearchExpertsServiceTest {
                 .willReturn(testDtos);
 
         // when
-        List<SearchExpertAppResponse> results = searchExpertService.searchExperts("any_keyword");
+        List<SearchExpertResult> results = searchExpertService.searchExperts("any_keyword");
 
         // then
         // TODO: profileImageUrl 검증
         assertThat(results).hasSize(1)
                 .extracting(
-                        SearchExpertAppResponse::expertNo,
-                        SearchExpertAppResponse::nickname)
+                        SearchExpertResult::expertNo,
+                        SearchExpertResult::nickname)
                 .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
         then(userReadPort).should()

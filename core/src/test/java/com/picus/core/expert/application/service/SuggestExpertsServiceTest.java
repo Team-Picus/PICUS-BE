@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
+import com.picus.core.expert.application.port.in.response.SuggestExpertResult;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
@@ -35,23 +35,23 @@ class SuggestExpertsServiceTest {
                         .build()
         );
 
-        given(userReadPort.findUserInfoByNicknameContainingLimited(any(String.class), any(Integer.class)))
+        given(userReadPort.findTopNUserInfoByNicknameContainingOrderByNickname(any(String.class), any(Integer.class)))
                 .willReturn(testDtos);
 
         // when
-        List<SuggestExpertAppResponse> results
+        List<SuggestExpertResult> results
                 = suggestExpertsService.suggestExperts("any_keyword", 1);
 
         // then
         // TODO: profileImageUrl 검증
         assertThat(results).hasSize(1)
                 .extracting(
-                        SuggestExpertAppResponse::expertNo,
-                        SuggestExpertAppResponse::nickname
+                        SuggestExpertResult::expertNo,
+                        SuggestExpertResult::nickname
                         )
                 .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
         then(userReadPort).should()
-                .findUserInfoByNicknameContainingLimited(any(String.class), any(Integer.class));
+                .findTopNUserInfoByNicknameContainingOrderByNickname(any(String.class), any(Integer.class));
     }
 }

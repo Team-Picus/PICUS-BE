@@ -1,10 +1,10 @@
 package com.picus.core.price.adapter.out.persistence.mapper;
 
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
-import com.picus.core.price.domain.model.Option;
-import com.picus.core.price.domain.model.Package;
-import com.picus.core.price.domain.model.Price;
-import com.picus.core.price.domain.model.PriceReferenceImage;
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.PriceReferenceImage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +21,7 @@ public class PricePersistenceMapper {
 
         return Price.builder()
                 .priceNo(priceEntity.getPriceNo())
+                .expertNo(priceEntity.getExpertNo())
                 .priceThemeType(priceEntity.getPriceThemeType())
                 .packages(packages)
                 .options(options)
@@ -28,8 +29,9 @@ public class PricePersistenceMapper {
                 .build();
     }
 
-    public PriceEntity toEntity(Price price) {
+    public PriceEntity toEntity(Price price, String expertNo) {
         return PriceEntity.builder()
+                .expertNo(expertNo)
                 .priceThemeType(price.getPriceThemeType())
                 .build();
     }
