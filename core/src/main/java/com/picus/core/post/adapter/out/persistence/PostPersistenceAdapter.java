@@ -87,7 +87,11 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
 
     @Override
     public List<Post> findTopNByTitleContainingOrderByTitle(String keyword, int size) {
-        return List.of();
+        List<PostEntity> postEntities = postJpaRepository.findTopNByTitleContainingOrderByTitle(keyword, size);
+
+        return postEntities.stream()
+                .map(postEntity -> postPersistenceMapper.toDomain(postEntity, List.of()))
+                .toList();
     }
 
     @Override

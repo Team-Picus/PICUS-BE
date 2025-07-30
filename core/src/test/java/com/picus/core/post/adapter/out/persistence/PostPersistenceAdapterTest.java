@@ -325,6 +325,40 @@ class PostPersistenceAdapterTest {
                 .containsExactly(tuple("file.jpg", 1));
     }
 
+    @Test
+    @DisplayName("제목에 특정 키워드가 포함된 Post를 제목 기준으로 정렬해서 N개 조회")
+    public void findTopNByTitleContainingOrderByTitle_success() throws Exception {
+        // given
+        // 데이터베이스에 데이터 셋팅
+        PostEntity postEntity1= createPostEntity("안녕");
+        PostEntity postEntity2 = createPostEntity("데일리 모먼트");
+        PostEntity postEntity3 = createPostEntity("데일리");
+        PostEntity postEntity4 = createPostEntity("일상이 영화가 되는 데일리 시네마");
+        PostEntity postEntity5 = createPostEntity("그날의 데자뷰, 익숙하지만 새로운 순간들");
+        PostEntity postEntity6 = createPostEntity("데일리씬");
+        PostEntity postEntity7 = createPostEntity("하세요");
+        PostEntity postEntity8 = createPostEntity("지갑");
+        postJpaRepository.saveAll(List.of(postEntity1, postEntity2, postEntity3, postEntity4, postEntity5, postEntity6, postEntity7, postEntity8));
+        clearPersistenceContext();
+
+        String keyword = "데";
+        int size = 5;
+
+        // when
+        List<Post> posts = postPersistenceAdapter.findTopNByTitleContainingOrderByTitle(keyword, size);
+
+        // then
+        assertThat(posts).hasSize(size)
+                .extracting(Post::getTitle)
+                .containsExactly(
+                        "데일리",
+                        "데일리 모먼트",
+                        "데일리씬",
+                        "그날의 데자뷰, 익숙하지만 새로운 순간들",
+                        "일상이 영화가 되는 데일리 시네마"
+                );
+    }
+
     /**
      * private 메서드
      */
@@ -371,6 +405,22 @@ class PostPersistenceAdapterTest {
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
                 .isPinned(isPinned)
+                .build();
+        return postJpaRepository.save(postEntity);
+    }
+
+    private PostEntity createPostEntity(String title) {
+        PostEntity postEntity = PostEntity.builder()
+                .packageNo("packageNo")
+                .expertNo("expertNo")
+                .title(title)
+                .oneLineDescription("oneLineDescription")
+                .detailedDescription("detailedDescription")
+                .postThemeTypes(List.of(PostThemeType.BEAUTY))
+                .postMoodTypes(List.of(PostMoodType.VINTAGE))
+                .spaceType(SpaceType.OUTDOOR)
+                .spaceAddress("spaceAddress")
+                .isPinned(false)
                 .build();
         return postJpaRepository.save(postEntity);
     }
