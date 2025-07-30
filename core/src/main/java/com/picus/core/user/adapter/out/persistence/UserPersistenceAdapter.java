@@ -70,9 +70,9 @@ public class UserPersistenceAdapter
         userEntity.updateNickname(userWithProfileImageDto.nickname());
 
         // 프로필 이미지 수정
-//        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByUserNo(userEntity.getUserNo())
-//                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-//        profileImageEntity.updateFileKey(userWithProfileImageDto.profileImageFileKey());
+        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByUserNo(userEntity.getUserNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        profileImageEntity.updateFileKey(userWithProfileImageDto.profileImageFileKey());
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 @Transactional
 public class UpdatePostService implements UpdatePostUseCase {
 
-    private final UserQueryPort userQueryPort;
+    private final UserReadPort userReadPort;
     private final ExpertReadPort expertReadPort;
     private final ExpertUpdatePort expertUpdatePort;
     private final PostUpdatePort postUpdatePort;
@@ -73,7 +73,7 @@ public class UpdatePostService implements UpdatePostUseCase {
      * private 메서드
      */
     private String getCurrentExpertNo(String userNo) {
-        User user = userQueryPort.findById(userNo);
+        User user = userReadPort.findById(userNo);
         return Optional.ofNullable(user.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_FORBIDDEN));
     }

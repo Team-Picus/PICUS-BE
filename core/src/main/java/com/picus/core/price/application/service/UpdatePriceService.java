@@ -13,7 +13,7 @@ import com.picus.core.price.application.port.out.PriceUpdatePort;
 import com.picus.core.price.domain.Price;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 @Transactional
 public class UpdatePriceService implements UpdatePriceUseCase {
 
-    private final UserQueryPort userQueryPort;
+    private final UserReadPort userReadPort;
 
     private final PriceReadPort priceReadPort;
     private final PriceCreatePort priceCreatePort;
@@ -42,7 +42,7 @@ public class UpdatePriceService implements UpdatePriceUseCase {
     @Override
     public void update(UpdatePriceListCommand command, String currentUserNo) {
         // 현재 사용자의 ExpertNo을 받아옴
-        User user = userQueryPort.findById(currentUserNo);
+        User user = userReadPort.findById(currentUserNo);
         String expertNo = Optional.ofNullable(user.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_FORBIDDEN));
 

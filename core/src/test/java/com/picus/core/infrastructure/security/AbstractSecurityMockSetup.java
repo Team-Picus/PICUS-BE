@@ -2,7 +2,7 @@ package com.picus.core.infrastructure.security;
 
 import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.user.application.port.in.TokenValidationQueryPort;
+import com.picus.core.user.application.port.in.ValidateTokenUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -21,7 +21,7 @@ public abstract class AbstractSecurityMockSetup {
     protected TokenProvider tokenProvider;
 
     @MockitoBean
-    protected TokenValidationQueryPort tokenValidationQueryPort;
+    protected ValidateTokenUseCase validateTokenUseCase;
 
     @MockitoBean
     protected ExcludeBlacklistPathProperties excludeBlacklistPathProperties;

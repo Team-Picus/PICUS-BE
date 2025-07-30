@@ -7,7 +7,7 @@ import com.picus.core.post.application.port.in.mapper.CreatePostAppMapper;
 import com.picus.core.post.application.port.in.request.CreatePostCommand;
 import com.picus.core.post.application.port.out.PostCreatePort;
 import com.picus.core.post.domain.Post;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
 class CreatePostServiceTest {
 
     @Mock
-    UserQueryPort userQueryPort;
+    UserReadPort userReadPort;
     @Mock
     PostCreatePort postCreatePort;
     @Mock
@@ -53,7 +53,7 @@ class CreatePostServiceTest {
 
         // Stubbing
         User user = mock(User.class);
-        given(userQueryPort.findById(req.currentUserNo())).willReturn(user);
+        given(userReadPort.findById(req.currentUserNo())).willReturn(user);
         String expertNo = "expert_no";
         given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
@@ -66,10 +66,10 @@ class CreatePostServiceTest {
 
         // then
         InOrder inOrder = Mockito.inOrder(
-                userQueryPort, user, createPostAppMapper, postCreatePort,
+                userReadPort, user, createPostAppMapper, postCreatePort,
                 expertReadPort, expert, expert, expertUpdatePort
         );
-        then(userQueryPort).should(inOrder).findById(req.currentUserNo());
+        then(userReadPort).should(inOrder).findById(req.currentUserNo());
         then(user).should(inOrder).getExpertNo();
         then(createPostAppMapper).should(inOrder).toDomain(req, expertNo);
         then(postCreatePort).should(inOrder).save(post);

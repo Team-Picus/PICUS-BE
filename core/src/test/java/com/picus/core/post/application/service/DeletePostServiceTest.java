@@ -7,7 +7,7 @@ import com.picus.core.post.application.port.out.PostDeletePort;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class DeletePostServiceTest {
 
 
     @Mock
-    UserQueryPort userQueryPort;
+    UserReadPort userReadPort;
     @Mock
     ExpertReadPort expertReadPort;
     @Mock
@@ -52,7 +52,7 @@ class DeletePostServiceTest {
 
         // stubbing
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
         String expertNo = "expert-123";
         given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
@@ -68,7 +68,7 @@ class DeletePostServiceTest {
         deletePostService.delete(postNo, currentUserNo);
 
         // then
-        then(userQueryPort).should().findById(currentUserNo);
+        then(userReadPort).should().findById(currentUserNo);
         then(user).should().getExpertNo();
         then(postReadPort).should().findById(postNo);
         then(postDeletePort).should().delete(postNo);
@@ -88,7 +88,7 @@ class DeletePostServiceTest {
 
         // stubbing
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
         String expertNo = "expert-123";
         given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);

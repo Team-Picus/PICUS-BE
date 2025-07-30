@@ -8,7 +8,7 @@ import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.Studio;
 import com.picus.core.expert.domain.vo.SkillType;
-import com.picus.core.user.application.port.out.UserCommandPort;
+import com.picus.core.user.application.port.out.UserUpdatePort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

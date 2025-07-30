@@ -14,7 +14,7 @@ import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.spy;
 class UpdatePostServiceTest {
 
     @Mock
-    UserQueryPort userQueryPort;
+    UserReadPort userReadPort;
     @Mock
     ExpertReadPort expertReadPort;
     @Mock
@@ -74,7 +74,7 @@ class UpdatePostServiceTest {
                         SpaceType.INDOOR, "space", "pkg-123", userNo);
 
         User mockUser = mock(User.class);
-        given(userQueryPort.findById(userNo)).willReturn(mockUser);
+        given(userReadPort.findById(userNo)).willReturn(mockUser);
         String expertNo = "expert-123";
         given(mockUser.getExpertNo()).willReturn(expertNo);
         Post post = Post.builder().authorNo(expertNo).build();
@@ -87,7 +87,7 @@ class UpdatePostServiceTest {
         updatePostService.update(updatePostCommand);
 
         // then
-        then(userQueryPort).should().findById(userNo);
+        then(userReadPort).should().findById(userNo);
         then(mockUser).should().getExpertNo();
         then(postReadPort).should().findById(postNo);
         then(spyPost).should().updatePost("title", "one", "detail",

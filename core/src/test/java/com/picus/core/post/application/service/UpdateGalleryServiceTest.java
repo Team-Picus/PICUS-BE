@@ -3,7 +3,7 @@ package com.picus.core.post.application.service;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 class UpdateGalleryServiceTest {
 
     @Mock
-    private UserQueryPort userQueryPort;
+    private UserReadPort userReadPort;
     @Mock
     private PostReadPort postReadPort;
     @Mock
@@ -42,7 +42,7 @@ class UpdateGalleryServiceTest {
 
         // stubbing
         User user = mock(User.class);
-        given(userQueryPort.findById(currentUserNo)).willReturn(user);
+        given(userReadPort.findById(currentUserNo)).willReturn(user);
 
         String expertNo = "expert-123";
         given(user.getExpertNo()).willReturn(expertNo);
@@ -58,7 +58,7 @@ class UpdateGalleryServiceTest {
         updateGalleryService.update(postNo, currentUserNo);
 
         // then - 메서드 호출 검증
-        then(userQueryPort).should().findById(currentUserNo);
+        then(userReadPort).should().findById(currentUserNo);
         then(user).should().getExpertNo();
         then(postReadPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
         then(prevPinnedPost).should().unpin();
