@@ -95,7 +95,9 @@ public class UserPersistenceAdapter
 
     @Override
     public User findByExpertNo(String expertNo) {
-        return null;
+        UserEntity userEntity = userJpaRepository.findByExpertNo(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        return userPersistenceMapper.toDomainModel(userEntity);
     }
 
     @Override

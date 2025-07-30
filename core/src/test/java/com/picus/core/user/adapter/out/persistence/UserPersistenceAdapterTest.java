@@ -12,6 +12,7 @@ import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import com.picus.core.user.domain.model.User;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,9 +55,8 @@ class UserPersistenceAdapterTest {
     public void assignExpertNo_success() throws Exception {
         // given
         String expertNo = "expert_no";
-        UserEntity userEntity = givenUserEntity();
-        UserEntity saved = userJpaRepository.save(userEntity);
-        String userNo = saved.getUserNo();
+        UserEntity userEntity = createUserEntity();
+        String userNo = userEntity.getUserNo();
 
         clearPersistenceContext();
 
@@ -76,15 +76,11 @@ class UserPersistenceAdapterTest {
         String testNickname = "nick"; // 테스트 데이터
         String testProfileImageFileKey = "profile_key";
 
-        UserEntity userEntity = givenUserEntity(testNickname); // UserEntity 저장
-        userJpaRepository.save(userEntity);
+        UserEntity userEntity = createUserEntity(testNickname); // UserEntity 저장
 
-        ProfileImageEntity profileImageEntity = givenProfileImageEntity(testProfileImageFileKey, userEntity.getUserNo()); // ProfileImageEntity 저장
-        profileImageJpaRepository.save(profileImageEntity);
+        ProfileImageEntity profileImageEntity = createProfileImageEntity(testProfileImageFileKey, userEntity.getUserNo()); // ProfileImageEntity 저장
 
-        ExpertEntity expertEntity = givenExpertEntity(); // ExpertEntity 저장
-        expertEntity.bindUserEntity(userEntity);
-        expertJpaRepository.save(expertEntity);
+        ExpertEntity expertEntity = createExpertEntity(userEntity); // ExpertEntity 저장
 
         String expertNo = expertEntity.getExpertNo();
         userEntity.assignExpertNo(expertNo); // UserEntity에 ExpertNo 할당
@@ -200,10 +196,8 @@ class UserPersistenceAdapterTest {
     @DisplayName("User의 nickname과 ProfileImage의 file_key를 업데이트 한다.")
     public void updateNicknameAndImageByExpertNo() throws Exception {
         // given
-        UserEntity userEntity = givenUserEntity("old_nick", "expert_no");
-        userJpaRepository.save(userEntity);
-        ProfileImageEntity profileImageEntity = givenProfileImageEntity("old_file_key", userEntity.getUserNo());
-        profileImageJpaRepository.save(profileImageEntity);
+        UserEntity userEntity = createUserEntity("old_nick", "expert_no");
+        ProfileImageEntity profileImageEntity = createProfileImageEntity("old_file_key", userEntity.getUserNo());
         clearPersistenceContext();
 
         UserWithProfileImageDto dto = UserWithProfileImageDto.builder()
@@ -224,9 +218,27 @@ class UserPersistenceAdapterTest {
         assertThat(updatedProfile.getFile_key()).isEqualTo("new_file_key");
     }
 
+    @Test
+    @DisplayName("expertNo로 User를 조회한다.")
+    public void findByExpertNo() throws Exception {
+        // given
+        String expertNo = "expert-1";
+        UserEntity userEntity = createUserEntity("nick", expertNo);
+        clearPersistenceContext();
 
-    private UserEntity givenUserEntity() {
-        return UserEntity.builder()
+        // when
+        User user = userPersistenceAdapter.findByExpertNo(expertNo);
+
+        // then
+        assertThat(user.getUserNo()).isEqualTo(userEntity.getUserNo());
+        assertThat(user.getNickname()).isEqualTo("nick");
+    }
+
+
+
+
+    private UserEntity createUserEntity() {
+        UserEntity userEntity = UserEntity.builder()
                 .name("이름")
                 .nickname("닉네임")
                 .tel("01012345678")
@@ -239,10 +251,11 @@ class UserPersistenceAdapterTest {
                 .myMoodboardCount(2)
                 .expertNo(null)
                 .build();
+        return userJpaRepository.save(userEntity);
     }
 
-    private UserEntity givenUserEntity(String nickname, String name, String email, String providerId, String expertNo) {
-        return UserEntity.builder()
+    private UserEntity createUserEntity(String nickname, String name, String email, String providerId, String expertNo) {
+        UserEntity userEntity = UserEntity.builder()
                 .name(name)
                 .nickname(nickname)
                 .tel("01012345678")
@@ -255,11 +268,12 @@ class UserPersistenceAdapterTest {
                 .myMoodboardCount(2)
                 .expertNo(expertNo)
                 .build();
+        return userJpaRepository.save(userEntity);
     }
 
 
-    private UserEntity givenUserEntity(String nickname) {
-        return UserEntity.builder()
+    private UserEntity createUserEntity(String nickname) {
+        UserEntity userEntity = UserEntity.builder()
                 .name("이름")
                 .nickname(nickname)
                 .tel("01012345678")
@@ -272,10 +286,11 @@ class UserPersistenceAdapterTest {
                 .myMoodboardCount(2)
                 .expertNo(null)
                 .build();
+        return userJpaRepository.save(userEntity);
     }
 
-    private UserEntity givenUserEntity(String nickname, String expertNo) {
-        return UserEntity.builder()
+    private UserEntity createUserEntity(String nickname, String expertNo) {
+        UserEntity userEntity = UserEntity.builder()
                 .name("이름")
                 .nickname(nickname)
                 .tel("01012345678")
@@ -288,17 +303,19 @@ class UserPersistenceAdapterTest {
                 .myMoodboardCount(2)
                 .expertNo(expertNo)
                 .build();
+        return userJpaRepository.save(userEntity);
     }
 
-    private ProfileImageEntity givenProfileImageEntity(String fileKey, String userNo) {
-        return ProfileImageEntity.builder()
+    private ProfileImageEntity createProfileImageEntity(String fileKey, String userNo) {
+        ProfileImageEntity profileImageEntity = ProfileImageEntity.builder()
                 .file_key(fileKey)
                 .userNo(userNo)
                 .build();
+        return profileImageJpaRepository.save(profileImageEntity);
     }
 
-    private ExpertEntity givenExpertEntity() {
-        return ExpertEntity.builder()
+    private ExpertEntity createExpertEntity(UserEntity userEntity) {
+        ExpertEntity expertEntity = ExpertEntity.builder()
                 .backgroundImageKey("img-key")
                 .intro("전문가 소개")
                 .activityCareer("경력 5년")
@@ -307,21 +324,21 @@ class UserPersistenceAdapterTest {
                 .lastActivityAt(LocalDateTime.of(2024, 5, 20, 10, 30))
                 .portfolioLinks(List.of("http://myportfolio.com"))
                 .approvalStatus(ApprovalStatus.PENDING)
+                .userEntity(userEntity)
                 .build();
+        return expertJpaRepository.save(expertEntity);
     }
 
     private void settingDataAtFindUserInfoByNicknameContaining(String testNickname1, String testExpertNo1, String testNickname2, String testExpertNo2, String testNickname3, String testExpertNo3, String testNickname4, String testExpertNo4, String testFileKey1, String testFileKey2, String testFileKey3, String testFileKey4) {
-        UserEntity userEntity1 = givenUserEntity(testNickname1, "name1", "email1@example.com", "social1", testExpertNo1);
-        UserEntity userEntity2 = givenUserEntity(testNickname2, "name2", "email2@example.com", "social2", testExpertNo2);
-        UserEntity userEntity3 = givenUserEntity(testNickname3, "name3", "email3@example.com", "social3", testExpertNo3);
-        UserEntity userEntity4 = givenUserEntity(testNickname4, "name4", "email4@example.com", "social4", testExpertNo4);
-        userJpaRepository.saveAll(List.of(userEntity1, userEntity2, userEntity3, userEntity4));
+        UserEntity userEntity1 = createUserEntity(testNickname1, "name1", "email1@example.com", "social1", testExpertNo1);
+        UserEntity userEntity2 = createUserEntity(testNickname2, "name2", "email2@example.com", "social2", testExpertNo2);
+        UserEntity userEntity3 = createUserEntity(testNickname3, "name3", "email3@example.com", "social3", testExpertNo3);
+        UserEntity userEntity4 = createUserEntity(testNickname4, "name4", "email4@example.com", "social4", testExpertNo4);
 
-        ProfileImageEntity profileImageEntity1 = givenProfileImageEntity(testFileKey1, userEntity1.getUserNo());
-        ProfileImageEntity profileImageEntity2 = givenProfileImageEntity(testFileKey2, userEntity2.getUserNo());
-        ProfileImageEntity profileImageEntity3 = givenProfileImageEntity(testFileKey3, userEntity3.getUserNo());
-        ProfileImageEntity profileImageEntity4 = givenProfileImageEntity(testFileKey4, userEntity4.getUserNo());
-        profileImageJpaRepository.saveAll(List.of(profileImageEntity1, profileImageEntity2, profileImageEntity3, profileImageEntity4));
+        ProfileImageEntity profileImageEntity1 = createProfileImageEntity(testFileKey1, userEntity1.getUserNo());
+        ProfileImageEntity profileImageEntity2 = createProfileImageEntity(testFileKey2, userEntity2.getUserNo());
+        ProfileImageEntity profileImageEntity3 = createProfileImageEntity(testFileKey3, userEntity3.getUserNo());
+        ProfileImageEntity profileImageEntity4 = createProfileImageEntity(testFileKey4, userEntity4.getUserNo());
     }
 
     private void clearPersistenceContext() {
