@@ -7,8 +7,9 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.mapper.UserPersistenceMapper;
 import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRepository;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
-import com.picus.core.user.application.port.out.UserCommandPort;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserUpdatePort;
+import com.picus.core.user.application.port.out.UserCreatePort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.Role;
 import com.picus.core.user.domain.model.User;
@@ -22,7 +23,8 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
+public class UserPersistenceAdapter
+        implements UserUpdatePort, UserReadPort, UserCreatePort {
 
     private final UserJpaRepository userJpaRepository;
     private final ProfileImageJpaRepository profileImageJpaRepository;
@@ -46,7 +48,7 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
     }
 
     @Override
-    public void save(User user) {
+    public void create(User user) {
         UserEntity entity = userPersistenceMapper.toEntity(user);
         userJpaRepository.save(entity);
     }
@@ -68,9 +70,9 @@ public class UserPersistenceAdapter implements UserCommandPort, UserQueryPort {
         userEntity.updateNickname(userWithProfileImageDto.nickname());
 
         // 프로필 이미지 수정
-        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByUserNo(userEntity.getUserNo())
-                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-        profileImageEntity.updateFileKey(userWithProfileImageDto.profileImageFileKey());
+//        ProfileImageEntity profileImageEntity = profileImageJpaRepository.findByUserNo(userEntity.getUserNo())
+//                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+//        profileImageEntity.updateFileKey(userWithProfileImageDto.profileImageFileKey());
     }
 
     @Override

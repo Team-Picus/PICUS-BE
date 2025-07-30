@@ -9,7 +9,6 @@ import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class PostEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String expertNo;
-
+    @Column(nullable = false)
     private String packageNo;
 
     @Column(nullable = false)
@@ -39,7 +38,6 @@ public class PostEntity extends BaseEntity {
     @Column(nullable = false)
     private String oneLineDescription;
 
-    @Column(nullable = false)
     private String detailedDescription;
 
     @Convert(converter = PostThemeTypeConverter.class)

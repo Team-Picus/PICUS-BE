@@ -3,7 +3,7 @@ package com.picus.core.expert.application.service;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
 import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.domain.Expert;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,9 +19,9 @@ import static org.mockito.BDDMockito.*;
 class LoadExpertServiceTest {
 
     private final ExpertReadPort expertReadPort = Mockito.mock(ExpertReadPort.class);
-    private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
+    private final UserReadPort userReadPort = Mockito.mock(UserReadPort.class);
 
-    private final LoadExpertService getExpertService = new LoadExpertService(expertReadPort, userQueryPort);
+    private final LoadExpertService loadExpertService = new LoadExpertService(expertReadPort, userReadPort);
 
     @Test
     @DisplayName("특정 전문가를 조회하는 서비스 메서드의 리턴값 및 상호작용을 검증한다.")
@@ -46,7 +46,7 @@ class LoadExpertServiceTest {
         stubPortResult(expert, dto, expertNo);
 
         // when
-        ExpertBasicInfoResult result = getExpertService.getExpertBasicInfo(expertNo);
+        ExpertBasicInfoResult result = loadExpertService.getExpertBasicInfo(expertNo);
 
         // then - 리턴값 검증
         // TODO: 이미지 key -> url 변환 로직 추가 후 다시 검증
@@ -61,7 +61,7 @@ class LoadExpertServiceTest {
 
         // then - 메서드 상호작용 검증
         then(expertReadPort).should().findById(eq(expertNo));
-        then(userQueryPort).should().findUserInfoByExpertNo(eq(expertNo));
+        then(userReadPort).should().findUserInfoByExpertNo(eq(expertNo));
     }
 
     private void stubPortResult(Expert expert, UserWithProfileImageDto userWithProfileImageDto, String expertNo) {
@@ -69,8 +69,8 @@ class LoadExpertServiceTest {
         given(expertReadPort.findById(expertNo))
                 .willReturn(Optional.of(expert));
 
-        // UserQueryPort Stubbing
-        given(userQueryPort.findUserInfoByExpertNo(expertNo))
+        // userReadPort Stubbing
+        given(userReadPort.findUserInfoByExpertNo(expertNo))
                 .willReturn(Optional.of(userWithProfileImageDto));
     }
 

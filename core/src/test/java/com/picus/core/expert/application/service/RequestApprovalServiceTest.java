@@ -23,11 +23,11 @@ import static org.mockito.BDDMockito.then;
 class RequestApprovalServiceTest {
 
     final ExpertCreatePort expertCreatePort = Mockito.mock(ExpertCreatePort.class);
-    final UserCommandPort userCommandPort = Mockito.mock(UserCommandPort.class);
+    final UserUpdatePort userUpdatePort = Mockito.mock(UserUpdatePort.class);
     final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(expertCreatePort, userCommandPort, appMapper);
+            = new RequestApprovalService(expertCreatePort, userUpdatePort, appMapper);
 
 
     @Test
@@ -43,7 +43,7 @@ class RequestApprovalServiceTest {
         // then
 
         then(expertCreatePort).should().create(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
-        then(userCommandPort).should().assignExpertNo(any(String.class), any(String.class));
+        then(userUpdatePort).should().assignExpertNo(any(String.class), any(String.class));
     }
 
 
