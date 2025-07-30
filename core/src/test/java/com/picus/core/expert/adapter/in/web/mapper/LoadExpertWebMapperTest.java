@@ -16,9 +16,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GetExpertWebMapperTest {
+class LoadExpertWebMapperTest {
 
-    private final GetExpertWebMapper mapper = new GetExpertWebMapper();
+    private final LoadExpertWebMapper mapper = new LoadExpertWebMapper();
 
     @Test
     @DisplayName("Expert 도메인 객체를 기본 정보 WebResponse로 매핑한다")

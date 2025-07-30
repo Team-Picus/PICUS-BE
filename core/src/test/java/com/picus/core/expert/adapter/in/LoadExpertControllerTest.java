@@ -3,7 +3,7 @@ package com.picus.core.expert.adapter.in;
 import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.StudioWebResponse;
-import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
+import com.picus.core.expert.adapter.in.web.mapper.LoadExpertWebMapper;
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
 import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
@@ -39,7 +39,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
     @MockitoBean
     private LoadExpertUseCase loadExpertUseCase;
     @MockitoBean
-    private GetExpertWebMapper getExpertWebMapper;
+    private LoadExpertWebMapper loadExpertWebMapper;
 
     @Test
     @DisplayName("특정 전문가의 기본정보를 조회한다.")
@@ -72,7 +72,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
         // then - 메서드 호출 검증
         then(loadExpertUseCase).should()
                 .getExpertBasicInfo(expertNo);
-        then(getExpertWebMapper).should()
+        then(loadExpertWebMapper).should()
                 .toBasicInfo(any(ExpertBasicInfoResult.class));
     }
 
@@ -102,7 +102,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
         // then - 메서드 호출 검증
         then(loadExpertUseCase).should()
                 .getExpertDetailInfo(expertNo);
-        then(getExpertWebMapper).should()
+        then(loadExpertWebMapper).should()
                 .toDetailInfo(any(Expert.class));
     }
 
@@ -132,7 +132,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
 
         given(loadExpertUseCase.getExpertBasicInfo(expertNo))
                 .willReturn(mockAppResponse);
-        given(getExpertWebMapper.toBasicInfo(mockAppResponse))
+        given(loadExpertWebMapper.toBasicInfo(mockAppResponse))
                 .willReturn(mockWebResponse);
     }
 
@@ -150,7 +150,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
 
         given(loadExpertUseCase.getExpertDetailInfo(expertNo))
                 .willReturn(mockExpert);
-        given(getExpertWebMapper.toDetailInfo(mockExpert))
+        given(loadExpertWebMapper.toDetailInfo(mockExpert))
                 .willReturn(webResponse);
     }
 

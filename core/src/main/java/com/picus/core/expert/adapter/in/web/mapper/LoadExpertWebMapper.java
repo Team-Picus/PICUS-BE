@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class GetExpertWebMapper {
+public class LoadExpertWebMapper {
 
     public LoadExpertBasicInfoWebResponse toBasicInfo(ExpertBasicInfoResult appResponse) {
         return LoadExpertBasicInfoWebResponse.builder()
