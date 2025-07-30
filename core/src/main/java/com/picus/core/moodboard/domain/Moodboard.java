@@ -1,4 +1,4 @@
-package com.picus.core.moodboard.domain.model;
+package com.picus.core.moodboard.domain;
 
 import lombok.Builder;
 import lombok.Getter;

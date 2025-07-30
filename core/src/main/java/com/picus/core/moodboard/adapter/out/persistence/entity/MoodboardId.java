@@ -11,13 +11,13 @@ import java.io.Serializable;
 public class MoodboardId implements Serializable {
 
     @EqualsAndHashCode.Include
-    private String user;
+    private String userNo;
 
     @EqualsAndHashCode.Include
-    private String post;
+    private String postNo;
 
-    public MoodboardId(String user, String post) {
-        this.user = user;
-        this.post = post;
+    public MoodboardId(String userNo, String postNo) {
+        this.userNo = userNo;
+        this.postNo = postNo;
     }
 }

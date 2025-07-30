@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.response.SearchExpertAppResponse;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.ReadUserPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,8 @@ import static org.mockito.BDDMockito.then;
 
 class SearchExpertsServiceTest {
 
-    private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
-    private final SearchExpertsService searchExpertService = new SearchExpertsService(userQueryPort);
+    private final ReadUserPort readUserPort = Mockito.mock(ReadUserPort.class);
+    private final SearchExpertsService searchExpertService = new SearchExpertsService(readUserPort);
 
     @Test
     @DisplayName("특정 키워드가 포함된 닉네임을 가진 전문가 찾기 서비스 메서드의 리턴값 및 상호작용 검증")
@@ -35,7 +35,7 @@ class SearchExpertsServiceTest {
                         .build()
         );
 
-        given(userQueryPort.findUserInfoByNicknameContaining(any(String.class)))
+        given(readUserPort.findUserInfoByNicknameContaining(any(String.class)))
                 .willReturn(testDtos);
 
         // when
@@ -49,7 +49,7 @@ class SearchExpertsServiceTest {
                         SearchExpertAppResponse::nickname)
                 .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
-        then(userQueryPort).should()
+        then(readUserPort).should()
                 .findUserInfoByNicknameContaining(any(String.class));
     }
 

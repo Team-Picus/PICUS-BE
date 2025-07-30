@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.response.SuggestExpertAppResponse;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.ReadUserPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,8 @@ import static org.mockito.BDDMockito.then;
 
 class SuggestExpertsServiceTest {
 
-    private final UserQueryPort userQueryPort = Mockito.mock(UserQueryPort.class);
-    private final SuggestExpertsService suggestExpertsService = new SuggestExpertsService(userQueryPort);
+    private final ReadUserPort readUserPort = Mockito.mock(ReadUserPort.class);
+    private final SuggestExpertsService suggestExpertsService = new SuggestExpertsService(readUserPort);
 
     @Test
     @DisplayName("특정 키워드가 포함된 닉네임을 가진 전문가 n명 찾기 서비스 메서드의 리턴값 및 상호작용을 검증")
@@ -35,7 +35,7 @@ class SuggestExpertsServiceTest {
                         .build()
         );
 
-        given(userQueryPort.findUserInfoByNicknameContainingLimited(any(String.class), any(Integer.class)))
+        given(readUserPort.findUserInfoByNicknameContainingLimited(any(String.class), any(Integer.class)))
                 .willReturn(testDtos);
 
         // when
@@ -51,7 +51,7 @@ class SuggestExpertsServiceTest {
                         )
                 .containsExactlyInAnyOrder(tuple(testExpertNo, testNickname));
 
-        then(userQueryPort).should()
+        then(readUserPort).should()
                 .findUserInfoByNicknameContainingLimited(any(String.class), any(Integer.class));
     }
 }

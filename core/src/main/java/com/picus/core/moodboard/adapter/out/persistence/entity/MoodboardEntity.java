@@ -1,7 +1,5 @@
 package com.picus.core.moodboard.adapter.out.persistence.entity;
 
-import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
-import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,14 +15,10 @@ import java.time.LocalDateTime;
 public class MoodboardEntity {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_no", nullable = false)
-    private UserEntity user;
+    private String userNo;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_no", nullable = false)
-    private PostEntity post;
+    private String postNo;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

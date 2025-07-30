@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Follow {
 
-    private String userNo;  // clientNo
-    private String expertNo;  // expertNo
+    private String userNo;
+    private String expertNo;
     private LocalDateTime followedAt;
 }
