@@ -1,6 +1,5 @@
 package com.picus.core.post.application.port.in.request;
 
-import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -9,8 +8,9 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record CreatePostAppReq(
-        List<PostImage> postImages,
+public record UpdatePostCommand(
+        String postNo,
+        List<UpdatePostImageAppReq> postImages,
         String title,
         String oneLineDescription,
         String detailedDescription,
@@ -21,4 +21,12 @@ public record CreatePostAppReq(
         String packageNo,
         String currentUserNo
 ) {
+
+    @Builder
+    public record UpdatePostImageAppReq(
+            String postImageNo,
+            String fileKey,
+            Integer imageOrder,
+            ChangeStatus changeStatus
+    ) {}
 }

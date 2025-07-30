@@ -2,8 +2,8 @@ package com.picus.core.post.adapter.in.web.mapper;
 
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq.PostImageWebReq;
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq.UpdatePostImageAppReq;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand.UpdatePostImageAppReq;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
 @Component
 public class UpdatePostWebMapper {
 
-    public UpdatePostAppReq toAppReq(UpdatePostWebReq webReq, String postNo, String currentUserNo) {
-        return UpdatePostAppReq.builder()
+    public UpdatePostCommand toAppReq(UpdatePostWebReq webReq, String postNo, String currentUserNo) {
+        return UpdatePostCommand.builder()
                 .postNo(postNo)
                 .postImages(toPostImages(webReq.postImages()))
                 .title(webReq.title())

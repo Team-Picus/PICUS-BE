@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record UpdateOptionAppReq(
+public record UpdateOptionCommand(
         String optionNo,
         String name,
         Integer count,

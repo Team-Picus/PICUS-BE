@@ -14,7 +14,7 @@ public class UpdatePriceWebMapperTest {
     private final UpdatePriceWebMapper mapper = new UpdatePriceWebMapper();
 
     @Test
-    @DisplayName("UpdatePriceListWebReq -> UpdatePriceListAppReq 매핑")
+    @DisplayName("UpdatePriceListWebReq -> UpdatePriceListCommand 매핑")
     void toCommand() {
         // given
         UpdatePriceReferenceImageWebReq imageWebRequest = UpdatePriceReferenceImageWebReq.builder()
@@ -54,7 +54,7 @@ public class UpdatePriceWebMapperTest {
         UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
 
         // when
-        UpdatePriceListAppReq command = mapper.toCommand(webRequest);
+        UpdatePriceListCommand command = mapper.toCommand(webRequest);
 
         // then
         assertThat(command).isNotNull();
@@ -66,32 +66,32 @@ public class UpdatePriceWebMapperTest {
         assertThat(updatePriceAppReq.priceThemeType()).isEqualTo("THEME");
         assertThat(updatePriceAppReq.status()).isEqualTo(ChangeStatus.NEW);
 
-        // UpdatePriceReferenceImageAppReq 모든 필드 검증
+        // UpdatePriceReferenceImageCommand 모든 필드 검증
         assertThat(updatePriceAppReq.priceReferenceImages()).hasSize(1);
-        UpdatePriceReferenceImageAppReq imageCommand = updatePriceAppReq.priceReferenceImages().getFirst();
+        UpdatePriceReferenceImageCommand imageCommand = updatePriceAppReq.priceReferenceImages().getFirst();
         assertThat(imageCommand.priceRefImageNo()).isEqualTo("img-001");
         assertThat(imageCommand.fileKey()).isEqualTo("file-key-001");
         assertThat(imageCommand.imageOrder()).isEqualTo(1);
         assertThat(imageCommand.status()).isEqualTo(ChangeStatus.NEW);
 
-        // UpdatePackageAppReq 모든 필드 검증
+        // UpdatePackageCommand 모든 필드 검증
         assertThat(updatePriceAppReq.packages()).hasSize(1);
-        UpdatePackageAppReq updatePackageAppReq = updatePriceAppReq.packages().getFirst();
-        assertThat(updatePackageAppReq.packageNo()).isEqualTo("pkg-001");
-        assertThat(updatePackageAppReq.name()).isEqualTo("패키지A");
-        assertThat(updatePackageAppReq.price()).isEqualTo(10000);
-        assertThat(updatePackageAppReq.contents()).containsExactly("내용1", "내용2");
-        assertThat(updatePackageAppReq.notice()).isEqualTo("주의사항");
-        assertThat(updatePackageAppReq.status()).isEqualTo(ChangeStatus.NEW);
+        UpdatePackageCommand updatePackageCommand = updatePriceAppReq.packages().getFirst();
+        assertThat(updatePackageCommand.packageNo()).isEqualTo("pkg-001");
+        assertThat(updatePackageCommand.name()).isEqualTo("패키지A");
+        assertThat(updatePackageCommand.price()).isEqualTo(10000);
+        assertThat(updatePackageCommand.contents()).containsExactly("내용1", "내용2");
+        assertThat(updatePackageCommand.notice()).isEqualTo("주의사항");
+        assertThat(updatePackageCommand.status()).isEqualTo(ChangeStatus.NEW);
 
-        // UpdateOptionAppReq 모든 필드 검증
+        // UpdateOptionCommand 모든 필드 검증
         assertThat(updatePriceAppReq.options()).hasSize(1);
-        UpdateOptionAppReq updateOptionAppReq = updatePriceAppReq.options().getFirst();
-        assertThat(updateOptionAppReq.optionNo()).isEqualTo("opt-001");
-        assertThat(updateOptionAppReq.name()).isEqualTo("옵션A");
-        assertThat(updateOptionAppReq.count()).isEqualTo(2);
-        assertThat(updateOptionAppReq.price()).isEqualTo(3000);
-        assertThat(updateOptionAppReq.contents()).containsExactly("옵션내용");
-        assertThat(updateOptionAppReq.status()).isEqualTo(ChangeStatus.NEW);
+        UpdateOptionCommand updateOptionCommand = updatePriceAppReq.options().getFirst();
+        assertThat(updateOptionCommand.optionNo()).isEqualTo("opt-001");
+        assertThat(updateOptionCommand.name()).isEqualTo("옵션A");
+        assertThat(updateOptionCommand.count()).isEqualTo(2);
+        assertThat(updateOptionCommand.price()).isEqualTo(3000);
+        assertThat(updateOptionCommand.contents()).containsExactly("옵션내용");
+        assertThat(updateOptionCommand.status()).isEqualTo(ChangeStatus.NEW);
     }
 }

@@ -3,7 +3,7 @@ package com.picus.core.post.application.port.in.response;
 import lombok.Builder;
 
 @Builder
-public record LoadGalleryAppResp(
+public record LoadGalleryResult(
         String postNo,
         String thumbnailUrl,
         String title,

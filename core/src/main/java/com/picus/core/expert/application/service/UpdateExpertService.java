@@ -37,7 +37,7 @@ public class UpdateExpertService implements UpdateExpertUseCase {
     private final UpdateStudioAppMapper updateStudioAppMapper;
 
     @Override
-    public void updateExpertBasicInfo(UpdateExpertBasicInfoAppReq basicInfoRequest) {
+    public void updateExpertBasicInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
 
         if (!shouldUpdate(basicInfoRequest))
             return;
@@ -77,7 +77,7 @@ public class UpdateExpertService implements UpdateExpertUseCase {
     }
 
     @Override
-    public void updateExpertDetailInfo(UpdateExpertDetailInfoAppReq detailInfoRequest) {
+    public void updateExpertDetailInfo(UpdateExpertDetailInfoCommand detailInfoRequest) {
 
         // 수정할 필요가 있는지 확인
         if (!shouldUpdateExpertDetailInfo(detailInfoRequest))
@@ -117,21 +117,21 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         return currentUser.getExpertNo();
     }
 
-    private boolean shouldUpdate(UpdateExpertBasicInfoAppReq basicInfoRequest) {
+    private boolean shouldUpdate(UpdateExpertBasicInfoCommand basicInfoRequest) {
         return shouldUpdateExpertBasicInfo(basicInfoRequest) || shouldUpdateUserInfo(basicInfoRequest);
     }
 
-    private boolean shouldUpdateExpertBasicInfo(UpdateExpertBasicInfoAppReq basicInfoRequest) {
+    private boolean shouldUpdateExpertBasicInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
         return basicInfoRequest.backgroundImageFileKey() != null ||
                 basicInfoRequest.link() != null ||
                 basicInfoRequest.intro() != null;
     }
 
-    private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoAppReq basicInfoRequest) {
+    private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
         return basicInfoRequest.profileImageFileKey() != null || basicInfoRequest.nickname() != null;
     }
 
-    private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoAppReq detailInfoRequest) {
+    private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoCommand detailInfoRequest) {
         return detailInfoRequest.activityCareer() != null ||
                 !detailInfoRequest.activityAreas().isEmpty() ||
                 !detailInfoRequest.projects().isEmpty() ||
@@ -139,9 +139,9 @@ public class UpdateExpertService implements UpdateExpertUseCase {
                 detailInfoRequest.studio() != null;
     }
 
-    private void updateProject(UpdateExpertDetailInfoAppReq detailInfoRequest, Expert expert, List<String> deletedProjectNos) {
-        List<UpdateProjectAppReq> updateProjectAppReqs = detailInfoRequest.projects();
-        for (UpdateProjectAppReq command : updateProjectAppReqs) {
+    private void updateProject(UpdateExpertDetailInfoCommand detailInfoRequest, Expert expert, List<String> deletedProjectNos) {
+        List<UpdateProjectCommand> updateProjectCommands = detailInfoRequest.projects();
+        for (UpdateProjectCommand command : updateProjectCommands) {
             switch (command.changeStatus()) {
                 case ChangeStatus.NEW:
                     expert.addProject(updateProjectAppMapper.toDomain(command));
@@ -157,9 +157,9 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         }
     }
 
-    private void updateSkill(UpdateExpertDetailInfoAppReq detailInfoRequest, Expert expert, List<String> deletedSkillNos) {
-        List<UpdateSkillAppReq> updateSkillAppReqs = detailInfoRequest.skills();
-        for (UpdateSkillAppReq command : updateSkillAppReqs) {
+    private void updateSkill(UpdateExpertDetailInfoCommand detailInfoRequest, Expert expert, List<String> deletedSkillNos) {
+        List<UpdateSkillCommand> updateSkillCommands = detailInfoRequest.skills();
+        for (UpdateSkillCommand command : updateSkillCommands) {
             switch (command.changeStatus()) {
                 case ChangeStatus.NEW:
                     expert.addSkill(updateSkillAppMapper.toDomain(command));
@@ -175,8 +175,8 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         }
     }
 
-    private String updateStudio(UpdateExpertDetailInfoAppReq request, Expert expert) {
-        UpdateStudioAppReq command = request.studio();
+    private String updateStudio(UpdateExpertDetailInfoCommand request, Expert expert) {
+        UpdateStudioCommand command = request.studio();
         switch (command.changeStatus()) {
             case ChangeStatus.NEW -> expert.addStudio(updateStudioAppMapper.toDomain(command));
             case ChangeStatus.UPDATE -> expert.updateStudio(updateStudioAppMapper.toDomain(command));

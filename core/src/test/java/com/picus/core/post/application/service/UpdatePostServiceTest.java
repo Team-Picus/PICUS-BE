@@ -4,8 +4,8 @@ import com.picus.core.expert.application.port.out.ReadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.request.ChangeStatus;
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq.UpdatePostImageAppReq;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand.UpdatePostImageAppReq;
 import com.picus.core.post.application.port.out.ReadPostPort;
 import com.picus.core.post.application.port.out.UpdatePostPort;
 import com.picus.core.post.domain.Post;
@@ -66,7 +66,7 @@ class UpdatePostServiceTest {
         UpdatePostImageAppReq deleteImage =
                 createUpdatePostImageAppReq("img-456", null, null, ChangeStatus.DELETE);
 
-        UpdatePostAppReq updatePostAppReq =
+        UpdatePostCommand updatePostCommand =
                 createUpdatePostAppReq(
                         postNo, newImage, updateImage, deleteImage,
                         "title", "one", "detail",
@@ -84,7 +84,7 @@ class UpdatePostServiceTest {
         given(readExpertPort.findById(expertNo)).willReturn(Optional.of(mockExpert));
 
         // when
-        updatePostService.update(updatePostAppReq);
+        updatePostService.update(updatePostCommand);
 
         // then
         then(userQueryPort).should().findById(userNo);
@@ -115,7 +115,7 @@ class UpdatePostServiceTest {
         // given
         UpdatePostImageAppReq image1 = createUpdatePostImageAppReq(null, "a.jpg", 1, ChangeStatus.NEW);
         UpdatePostImageAppReq image2 = createUpdatePostImageAppReq(null, "b.jpg", 1, ChangeStatus.NEW); // imageOrder 중복
-        UpdatePostAppReq req = UpdatePostAppReq.builder()
+        UpdatePostCommand req = UpdatePostCommand.builder()
                 .postImages(List.of(image1, image2))
                 .build();
 
@@ -128,12 +128,12 @@ class UpdatePostServiceTest {
     /**
      * private 메서드
      */
-    private UpdatePostAppReq createUpdatePostAppReq(
+    private UpdatePostCommand createUpdatePostAppReq(
             String postNo, UpdatePostImageAppReq newImage, UpdatePostImageAppReq updateImage,
             UpdatePostImageAppReq deleteImage, String title, String oneLine, String detail,
             List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, String packageNo, String userNo) {
-        return UpdatePostAppReq.builder()
+        return UpdatePostCommand.builder()
                 .postNo(postNo)
                 .postImages(List.of(newImage, updateImage, deleteImage))
                 .title(title)

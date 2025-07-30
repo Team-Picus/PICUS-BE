@@ -4,7 +4,7 @@ import com.picus.core.expert.application.port.out.ReadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand;
 import com.picus.core.post.application.port.out.ReadPostPort;
 import com.picus.core.post.application.port.out.UpdatePostPort;
 import com.picus.core.post.domain.Post;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.picus.core.post.application.port.in.request.UpdatePostAppReq.*;
+import static com.picus.core.post.application.port.in.request.UpdatePostCommand.*;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
 @UseCase
@@ -34,27 +34,27 @@ public class UpdatePostService implements UpdatePostUseCase {
     private final ReadPostPort readPostPort;
 
     @Override
-    public void update(UpdatePostAppReq updatePostAppReq) {
+    public void update(UpdatePostCommand updatePostCommand) {
 
         // PostImage 순서 중복 검증
-        checkPostImageOrder(updatePostAppReq.postImages());
+        checkPostImageOrder(updatePostCommand.postImages());
 
         // 글 작성한 사용자의 expertNo 조회
-        String expertNo = getCurrentExpertNo(updatePostAppReq.currentUserNo());
+        String expertNo = getCurrentExpertNo(updatePostCommand.currentUserNo());
 
         // Post 조회
-        Post post = readPostPort.findById(updatePostAppReq.postNo())
+        Post post = readPostPort.findById(updatePostCommand.postNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 수정할 Post의 작성자와 현재 expertNo가 같은지 검증
         throwIfNotOwner(expertNo, post.getAuthorNo());
 
         // Post 수정
-        updatePost(post, updatePostAppReq);
+        updatePost(post, updatePostCommand);
 
         // PostImage 수정
         List<String> deletedPostImageNos = new ArrayList<>();
-        updatePostImage(post, updatePostAppReq.postImages(), deletedPostImageNos);
+        updatePostImage(post, updatePostCommand.postImages(), deletedPostImageNos);
 
         // 수정사항 데이터베이스 반영
         updatePostPort.updateWithPostImage(post, deletedPostImageNos);
@@ -116,16 +116,16 @@ public class UpdatePostService implements UpdatePostUseCase {
         }
     }
 
-    private void updatePost(Post post, UpdatePostAppReq updatePostAppReq) {
+    private void updatePost(Post post, UpdatePostCommand updatePostCommand) {
         post.updatePost(
-                updatePostAppReq.title(),
-                updatePostAppReq.oneLineDescription(),
-                updatePostAppReq.detailedDescription(),
-                updatePostAppReq.postThemeTypes(),
-                updatePostAppReq.postMoodTypes(),
-                updatePostAppReq.spaceType(),
-                updatePostAppReq.spaceAddress(),
-                updatePostAppReq.packageNo()
+                updatePostCommand.title(),
+                updatePostCommand.oneLineDescription(),
+                updatePostCommand.detailedDescription(),
+                updatePostCommand.postThemeTypes(),
+                updatePostCommand.postMoodTypes(),
+                updatePostCommand.spaceType(),
+                updatePostCommand.spaceAddress(),
+                updatePostCommand.packageNo()
         );
     }
 }

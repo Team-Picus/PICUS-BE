@@ -9,8 +9,8 @@ import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoW
 import com.picus.core.expert.adapter.in.web.mapper.UpdateExpertWebMapper;
 import com.picus.core.expert.application.port.in.UpdateExpertUseCase;
 import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateExpertBasicInfoAppReq;
-import com.picus.core.expert.application.port.in.request.UpdateExpertDetailInfoAppReq;
+import com.picus.core.expert.application.port.in.request.UpdateExpertBasicInfoCommand;
+import com.picus.core.expert.application.port.in.request.UpdateExpertDetailInfoCommand;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
         String currentUserNo = TEST_USER_ID;
 
         given(updateExpertWebMapper.toBasicInfoAppRequest(request, currentUserNo))
-                .willReturn(Mockito.mock(UpdateExpertBasicInfoAppReq.class));
+                .willReturn(Mockito.mock(UpdateExpertBasicInfoCommand.class));
 
         // when
         mockMvc.perform(
@@ -70,7 +70,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
         then(updateExpertWebMapper).should()
                 .toBasicInfoAppRequest(eq(request), eq(TEST_USER_ID));
         then(updateExpertUseCase).should()
-                .updateExpertBasicInfo(any(UpdateExpertBasicInfoAppReq.class));
+                .updateExpertBasicInfo(any(UpdateExpertBasicInfoCommand.class));
     }
 
     @Test
@@ -98,7 +98,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                 .build();
 
         given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
-                .willReturn(Mockito.mock(UpdateExpertDetailInfoAppReq.class));
+                .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
 
         // when
         mockMvc.perform(
@@ -115,7 +115,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
         then(updateExpertWebMapper).should()
                 .toDetailInfoAppRequest(request, currentUserNo);
         then(updateExpertUseCase).should()
-                .updateExpertDetailInfo(any(UpdateExpertDetailInfoAppReq.class));
+                .updateExpertDetailInfo(any(UpdateExpertDetailInfoCommand.class));
     }
 
     @Test
@@ -142,7 +142,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                 .build();
 
         given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
-                .willReturn(Mockito.mock(UpdateExpertDetailInfoAppReq.class));
+                .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
 
         // when // then
         mockMvc.perform(
@@ -168,7 +168,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                 .build();
 
         given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
-                .willReturn(Mockito.mock(UpdateExpertDetailInfoAppReq.class));
+                .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
 
         // when // then
         mockMvc.perform(

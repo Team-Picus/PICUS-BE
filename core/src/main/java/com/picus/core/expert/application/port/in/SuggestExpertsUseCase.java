@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.port.in;
 
-import com.picus.core.expert.application.port.in.response.SuggestExpertAppResp;
+import com.picus.core.expert.application.port.in.response.SuggestExpertResult;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
 public interface SuggestExpertsUseCase {
 
 
-    List<SuggestExpertAppResp> suggestExperts(String keyword, int size);
+    List<SuggestExpertResult> suggestExperts(String keyword, int size);
 }

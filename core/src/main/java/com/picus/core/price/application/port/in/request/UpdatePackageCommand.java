@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record UpdatePackageAppReq(
+public record UpdatePackageCommand(
         String packageNo,
         String name,
         Integer price,

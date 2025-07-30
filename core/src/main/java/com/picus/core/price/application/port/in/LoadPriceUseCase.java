@@ -4,7 +4,7 @@ import com.picus.core.price.domain.Price;
 
 import java.util.List;
 
-public interface LoadPriceQuery {
+public interface LoadPriceUseCase {
 
     List<Price> loadByExpertNo(String expertNo);
 }

@@ -1,8 +1,8 @@
 package com.picus.core.post.application.port.in;
 
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand;
 
 public interface UpdatePostUseCase {
 
-    void update(UpdatePostAppReq updatePostAppReq);
+    void update(UpdatePostCommand updatePostCommand);
 }

@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateSkillAppReq;
+import com.picus.core.expert.application.port.in.request.UpdateSkillCommand;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ class UpdateSkillAppRequestAppMapperTest {
     @DisplayName("SkillCommand를 Skill 도메인 객체로 변환한다.")
     void toDomain_success() {
         // given
-        UpdateSkillAppReq command = UpdateSkillAppReq.builder()
+        UpdateSkillCommand command = UpdateSkillCommand.builder()
                 .skillNo("SKILL-001")
                 .skillType(SkillType.CAMERA)
                 .content("카메라 잘 다룸")

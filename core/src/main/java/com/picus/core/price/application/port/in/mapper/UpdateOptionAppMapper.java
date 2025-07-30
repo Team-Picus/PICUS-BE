@@ -1,19 +1,19 @@
 package com.picus.core.price.application.port.in.mapper;
 
-import com.picus.core.price.application.port.in.request.UpdateOptionAppReq;
+import com.picus.core.price.application.port.in.request.UpdateOptionCommand;
 import com.picus.core.price.domain.Option;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UpdateOptionAppMapper {
 
-    public Option toDomain(UpdateOptionAppReq updateOptionAppReq) {
+    public Option toDomain(UpdateOptionCommand updateOptionCommand) {
         return Option.builder()
-                .optionNo(updateOptionAppReq.optionNo())
-                .name(updateOptionAppReq.name())
-                .count(updateOptionAppReq.count())
-                .price(updateOptionAppReq.price())
-                .contents(updateOptionAppReq.contents())
+                .optionNo(updateOptionCommand.optionNo())
+                .name(updateOptionCommand.name())
+                .count(updateOptionCommand.count())
+                .price(updateOptionCommand.price())
+                .contents(updateOptionCommand.contents())
                 .build();
     }
 }

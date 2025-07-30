@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateStudioAppReq;
+import com.picus.core.expert.application.port.in.request.UpdateStudioCommand;
 import com.picus.core.expert.domain.Studio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class UpdateStudioAppRequestAppMapperTest {
     @DisplayName("StudioCommand를 Studio 도메인으로 매핑한다.")
     void toDomain_success() {
         // given
-        UpdateStudioAppReq command = UpdateStudioAppReq.builder()
+        UpdateStudioCommand command = UpdateStudioCommand.builder()
                 .studioNo("ST-001")
                 .studioName("픽어스 스튜디오")
                 .employeesCount(5)

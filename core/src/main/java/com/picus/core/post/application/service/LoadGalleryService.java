@@ -2,7 +2,7 @@ package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
 import com.picus.core.post.application.port.in.mapper.LoadGalleryAppMapper;
-import com.picus.core.post.application.port.in.response.LoadGalleryAppResp;
+import com.picus.core.post.application.port.in.response.LoadGalleryResult;
 import com.picus.core.post.application.port.out.ReadPostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
@@ -22,7 +22,7 @@ public class LoadGalleryService implements LoadGalleryUseCase {
     private final LoadGalleryAppMapper appMapper;
 
     @Override
-    public Optional<LoadGalleryAppResp> load(String expertNo) {
+    public Optional<LoadGalleryResult> load(String expertNo) {
         // 해당 전문가의 고정처리된 게시물 조회
         Optional<Post> post = readPostPort.findByExpertNoAndIsPinnedTrue(expertNo);
 
@@ -35,7 +35,7 @@ public class LoadGalleryService implements LoadGalleryUseCase {
 
             // TODO: file key -> url 변환 로직
 
-            // 매퍼를 통해 LoadGalleryAppResp 매핑
+            // 매퍼를 통해 LoadGalleryResult 매핑
             return Optional.ofNullable(appMapper.toAppResp(post.get(), ""));
 
         } else { // 고정처리한 게시물이 존재하지 않는다면 (아직 게시물이 없거나 설정 안했을 수도 있음)

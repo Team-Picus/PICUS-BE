@@ -2,7 +2,7 @@ package com.picus.core.post.adapter.in.web.mapper;
 
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq.PostImageWebReq;
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -21,7 +21,7 @@ class UpdatePostWebMapperTest {
     private UpdatePostWebMapper webMapper = new UpdatePostWebMapper();
 
     @Test
-    @DisplayName("UpdatePostWebReq -> UpdatePostAppReq 매핑")
+    @DisplayName("UpdatePostWebReq -> UpdatePostCommand 매핑")
     public void toAppReq_success() throws Exception {
         // given
         UpdatePostWebReq webReq = UpdatePostWebReq.builder()
@@ -43,7 +43,7 @@ class UpdatePostWebMapperTest {
         String currentUserNo = "user-123";
 
         // when
-        UpdatePostAppReq appReq = webMapper.toAppReq(webReq, postNo, currentUserNo);
+        UpdatePostCommand appReq = webMapper.toAppReq(webReq, postNo, currentUserNo);
 
         // then
         assertThat(appReq.postNo()).isEqualTo("post-123");
@@ -61,9 +61,9 @@ class UpdatePostWebMapperTest {
         assertThat(appReq.postImages()).hasSize(2);
 
         assertThat(appReq.postImages()).extracting(
-                UpdatePostAppReq.UpdatePostImageAppReq::fileKey,
-                UpdatePostAppReq.UpdatePostImageAppReq::imageOrder,
-                UpdatePostAppReq.UpdatePostImageAppReq::changeStatus
+                UpdatePostCommand.UpdatePostImageAppReq::fileKey,
+                UpdatePostCommand.UpdatePostImageAppReq::imageOrder,
+                UpdatePostCommand.UpdatePostImageAppReq::changeStatus
         ).containsExactly(
                 tuple("img1.jpg", 1, NEW),
                 tuple("img2.jpg", 2, UPDATE)

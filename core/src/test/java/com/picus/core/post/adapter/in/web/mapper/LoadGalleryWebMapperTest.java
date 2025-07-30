@@ -1,7 +1,7 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
 import com.picus.core.post.adapter.in.web.data.response.LoadGalleryWebResp;
-import com.picus.core.post.application.port.in.response.LoadGalleryAppResp;
+import com.picus.core.post.application.port.in.response.LoadGalleryResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +12,10 @@ class LoadGalleryWebMapperTest {
 
     private LoadGalleryWebMapper webMapper = new LoadGalleryWebMapper();
     @Test
-    @DisplayName("LoadGalleryAppResp -> LoadGalleryWebResp 매핑")
+    @DisplayName("LoadGalleryResult -> LoadGalleryWebResp 매핑")
     public void toWebResp() throws Exception {
         // given
-        LoadGalleryAppResp appResp = LoadGalleryAppResp.builder()
+        LoadGalleryResult appResp = LoadGalleryResult.builder()
                 .postNo("post-123")
                 .thumbnailUrl("img.com")
                 .title("title")

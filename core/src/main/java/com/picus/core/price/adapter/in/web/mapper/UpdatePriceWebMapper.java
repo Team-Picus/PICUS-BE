@@ -9,8 +9,8 @@ import java.util.List;
 @Component
 public class UpdatePriceWebMapper {
 
-    public UpdatePriceListAppReq toCommand(UpdatePriceListWebReq webRequest) {
-        return UpdatePriceListAppReq.builder()
+    public UpdatePriceListCommand toCommand(UpdatePriceListWebReq webRequest) {
+        return UpdatePriceListCommand.builder()
                 .prices(toPriceCommand(webRequest.prices()))
                 .build();
     }
@@ -29,10 +29,10 @@ public class UpdatePriceWebMapper {
                 .toList();
     }
 
-    private List<UpdatePriceReferenceImageAppReq> toPriceRefImageCommand(List<UpdatePriceReferenceImageWebReq> webRequests) {
+    private List<UpdatePriceReferenceImageCommand> toPriceRefImageCommand(List<UpdatePriceReferenceImageWebReq> webRequests) {
         if (webRequests == null || webRequests.isEmpty()) return List.of();
         return webRequests.stream()
-                .map(w -> UpdatePriceReferenceImageAppReq.builder()
+                .map(w -> UpdatePriceReferenceImageCommand.builder()
                         .priceRefImageNo(w.priceRefImageNo())
                         .fileKey(w.fileKey())
                         .imageOrder(w.imageOrder())
@@ -41,10 +41,10 @@ public class UpdatePriceWebMapper {
                 .toList();
     }
 
-    private List<UpdatePackageAppReq> toPackageCommand(List<UpdatePackageWebReq> updatePackageWebReqs) {
+    private List<UpdatePackageCommand> toPackageCommand(List<UpdatePackageWebReq> updatePackageWebReqs) {
         if (updatePackageWebReqs == null || updatePackageWebReqs.isEmpty()) return List.of();
         return updatePackageWebReqs.stream()
-                .map(w -> UpdatePackageAppReq.builder()
+                .map(w -> UpdatePackageCommand.builder()
                         .packageNo(w.packageNo())
                         .name(w.name())
                         .price(w.price())
@@ -55,10 +55,10 @@ public class UpdatePriceWebMapper {
                 .toList();
     }
 
-    private List<UpdateOptionAppReq> toOptionCommand(List<UpdateOptionWebReq> updateOptionWebReqs) {
+    private List<UpdateOptionCommand> toOptionCommand(List<UpdateOptionWebReq> updateOptionWebReqs) {
         if (updateOptionWebReqs == null || updateOptionWebReqs.isEmpty()) return List.of();
         return updateOptionWebReqs.stream()
-                .map(w -> UpdateOptionAppReq.builder()
+                .map(w -> UpdateOptionCommand.builder()
                         .optionNo(w.optionNo())
                         .name(w.name())
                         .count(w.count())

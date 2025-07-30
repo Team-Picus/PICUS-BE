@@ -12,6 +12,7 @@ import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,13 @@ public class UpdateGalleryIntegrationTest {
     private UserJpaRepository userJpaRepository;
     @Autowired
     private PostJpaRepository postJpaRepository;
-    
+
+    @AfterEach
+    void tearDown() {
+        postJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();;
+    }
+
     @Test
     @DisplayName("사용자는 자신(전문가)의 갤러리(고정처리 게시물)을 변경할 수 있다. 기존 고정처리된 게시물은 고정해제된다.")
     public void updateGallery() throws Exception {

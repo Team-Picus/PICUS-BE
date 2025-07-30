@@ -6,7 +6,7 @@ import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq.PostImageWebReq;
 import com.picus.core.post.adapter.in.web.mapper.CreatePostWebMapper;
 import com.picus.core.post.application.port.in.CreatePostUseCase;
-import com.picus.core.post.application.port.in.request.CreatePostAppReq;
+import com.picus.core.post.application.port.in.request.CreatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -64,8 +64,8 @@ class CreatePostControllerTest extends AbstractSecurityMockSetup {
 
         String currenUserNo = TEST_USER_ID;
 
-        CreatePostAppReq createPostAppReq = Mockito.mock(CreatePostAppReq.class);
-        given(createPostWebMapper.toAppReq(webReq, currenUserNo)).willReturn(createPostAppReq);
+        CreatePostCommand createPostCommand = Mockito.mock(CreatePostCommand.class);
+        given(createPostWebMapper.toAppReq(webReq, currenUserNo)).willReturn(createPostCommand);
 
         // when // then
         mockMvc.perform(
@@ -80,7 +80,7 @@ class CreatePostControllerTest extends AbstractSecurityMockSetup {
 
         // then
         then(createPostWebMapper).should().toAppReq(webReq, currenUserNo);
-        then(createPostUseCase).should().create(createPostAppReq);
+        then(createPostUseCase).should().create(createPostCommand);
     }
 
     @Test

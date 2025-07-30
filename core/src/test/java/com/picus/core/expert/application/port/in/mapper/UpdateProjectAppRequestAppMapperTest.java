@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
 import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateProjectAppReq;
+import com.picus.core.expert.application.port.in.request.UpdateProjectCommand;
 import com.picus.core.expert.domain.Project;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,11 +15,11 @@ class UpdateProjectAppRequestAppMapperTest {
     private final UpdateProjectAppMapper mapper = new UpdateProjectAppMapper();
 
     @Test
-    @DisplayName("UpdateProjectAppReq 를 Project 도메인 객체로 변환한다.")
+    @DisplayName("UpdateProjectCommand 를 Project 도메인 객체로 변환한다.")
     void toDomain_success() {
         // given
         LocalDateTime now = LocalDateTime.now();
-        UpdateProjectAppReq command = UpdateProjectAppReq.builder()
+        UpdateProjectCommand command = UpdateProjectCommand.builder()
                 .projectNo("PRJ-001")
                 .projectName("뷰티 프로젝트")
                 .startDate(now.minusDays(1))

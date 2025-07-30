@@ -1,13 +1,13 @@
 package com.picus.core.post.application.port.in.mapper;
 
-import com.picus.core.post.application.port.in.request.CreatePostAppReq;
+import com.picus.core.post.application.port.in.request.CreatePostCommand;
 import com.picus.core.post.domain.Post;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreatePostAppMapper {
 
-    public Post toDomain(CreatePostAppReq appReq, String expertNo) {
+    public Post toDomain(CreatePostCommand appReq, String expertNo) {
         return Post.builder()
                 .packageNo(appReq.packageNo())
                 .authorNo(expertNo)

@@ -1,10 +1,10 @@
 package com.picus.core.price.application.port.in.mapper;
 
 import com.picus.core.expert.domain.vo.PriceThemeType;
-import com.picus.core.price.application.port.in.request.UpdateOptionAppReq;
-import com.picus.core.price.application.port.in.request.UpdatePackageAppReq;
+import com.picus.core.price.application.port.in.request.UpdateOptionCommand;
+import com.picus.core.price.application.port.in.request.UpdatePackageCommand;
 import com.picus.core.price.application.port.in.request.UpdatePriceAppReq;
-import com.picus.core.price.application.port.in.request.UpdatePriceReferenceImageAppReq;
+import com.picus.core.price.application.port.in.request.UpdatePriceReferenceImageCommand;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
@@ -26,7 +26,7 @@ public class UpdatePriceAppMapper {
                 .build();
     }
 
-    private List<PriceReferenceImage> toRefImageDomain(List<UpdatePriceReferenceImageAppReq> priceRefImageCommands) {
+    private List<PriceReferenceImage> toRefImageDomain(List<UpdatePriceReferenceImageCommand> priceRefImageCommands) {
         return priceRefImageCommands.stream()
                 .map(priceRefImageCommand -> PriceReferenceImage.builder()
                         .priceRefImageNo(priceRefImageCommand.priceRefImageNo())
@@ -36,8 +36,8 @@ public class UpdatePriceAppMapper {
                 .toList();
     }
 
-    private List<Package> toPackageDomain(List<UpdatePackageAppReq> updatePackageAppReqs) {
-        return updatePackageAppReqs.stream()
+    private List<Package> toPackageDomain(List<UpdatePackageCommand> updatePackageCommands) {
+        return updatePackageCommands.stream()
                 .map(packageCommand -> Package.builder()
                         .packageNo(packageCommand.packageNo())
                         .name(packageCommand.name())
@@ -48,8 +48,8 @@ public class UpdatePriceAppMapper {
                 .toList();
     }
 
-    private List<Option> toOptionDomain(List<UpdateOptionAppReq> updateOptionAppReqs) {
-        return updateOptionAppReqs.stream()
+    private List<Option> toOptionDomain(List<UpdateOptionCommand> updateOptionCommands) {
+        return updateOptionCommands.stream()
                 .map(optionCommand -> Option.builder()
                         .optionNo(optionCommand.optionNo())
                         .name(optionCommand.name())

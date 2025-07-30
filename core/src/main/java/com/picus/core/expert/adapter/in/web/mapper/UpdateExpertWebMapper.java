@@ -14,8 +14,8 @@ import java.util.List;
 @Component
 public class UpdateExpertWebMapper {
 
-    public UpdateExpertBasicInfoAppReq toBasicInfoAppRequest(UpdateExpertBasicInfoWebRequest webRequest, String currentUserNo) {
-        return UpdateExpertBasicInfoAppReq.builder()
+    public UpdateExpertBasicInfoCommand toBasicInfoAppRequest(UpdateExpertBasicInfoWebRequest webRequest, String currentUserNo) {
+        return UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(currentUserNo)
                 .profileImageFileKey(webRequest.profileImageFileKey())
                 .backgroundImageFileKey(webRequest.backgroundImageFileKey())
@@ -25,9 +25,9 @@ public class UpdateExpertWebMapper {
                 .build();
     }
 
-    public UpdateExpertDetailInfoAppReq toDetailInfoAppRequest(UpdateExpertDetailInfoWebRequest webRequest, String currentUserNo) {
+    public UpdateExpertDetailInfoCommand toDetailInfoAppRequest(UpdateExpertDetailInfoWebRequest webRequest, String currentUserNo) {
 
-        return UpdateExpertDetailInfoAppReq.builder()
+        return UpdateExpertDetailInfoCommand.builder()
                 .currentUserNo(currentUserNo)
                 .activityCareer(webRequest.activityCareer())
                 .activityAreas(webRequest.activityAreas())
@@ -37,12 +37,12 @@ public class UpdateExpertWebMapper {
                 .build();
     }
 
-    private List<UpdateProjectAppReq> toProjectCommand(List<ProjectWebRequest> projectWebRequests) {
+    private List<UpdateProjectCommand> toProjectCommand(List<ProjectWebRequest> projectWebRequests) {
         if (projectWebRequests == null)
             return List.of();
 
         return projectWebRequests.stream()
-                .map(webRequest -> UpdateProjectAppReq.builder()
+                .map(webRequest -> UpdateProjectCommand.builder()
                         .projectNo(webRequest.projectNo())
                         .projectName(webRequest.projectName())
                         .startDate(webRequest.startDate())
@@ -52,12 +52,12 @@ public class UpdateExpertWebMapper {
                 .toList();
     }
 
-    private List<UpdateSkillAppReq> toSkillCommand(List<SkillWebRequest> skillWebRequests) {
+    private List<UpdateSkillCommand> toSkillCommand(List<SkillWebRequest> skillWebRequests) {
         if (skillWebRequests == null)
             return List.of();
 
         return skillWebRequests.stream()
-                .map(webRequest -> UpdateSkillAppReq.builder()
+                .map(webRequest -> UpdateSkillCommand.builder()
                         .skillNo(webRequest.skillNo())
                         .skillType(webRequest.skillType() != null ? SkillType.valueOf(webRequest.skillType()) : null) // 수정될 내용이 없어 Null이 넘어올 수도 있음
                         .content(webRequest.content())
@@ -66,8 +66,8 @@ public class UpdateExpertWebMapper {
                 .toList();
     }
 
-    private UpdateStudioAppReq toStudioCommand(StudioWebRequest studioWebRequest) {
-        return UpdateStudioAppReq.builder()
+    private UpdateStudioCommand toStudioCommand(StudioWebRequest studioWebRequest) {
+        return UpdateStudioCommand.builder()
                 .studioNo(studioWebRequest.studioNo())
                 .studioName(studioWebRequest.studioName())
                 .employeesCount(studioWebRequest.employeesCount())

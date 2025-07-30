@@ -2,7 +2,7 @@ package com.picus.core.post.adapter.in.web.mapper;
 
 import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq.PostImageWebReq;
-import com.picus.core.post.application.port.in.request.CreatePostAppReq;
+import com.picus.core.post.application.port.in.request.CreatePostCommand;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
@@ -20,7 +20,7 @@ class CreatePostWebMapperTest {
     private final CreatePostWebMapper webMapper = new CreatePostWebMapper();
 
     @Test
-    @DisplayName("CreatePostWebReq -> CreatePostAppReq 매핑")
+    @DisplayName("CreatePostWebReq -> CreatePostCommand 매핑")
     public void toAppReq() throws Exception {
         // given
         CreatePostWebReq webReq = CreatePostWebReq.builder()
@@ -41,7 +41,7 @@ class CreatePostWebMapperTest {
         String currentUserNo = "user-123";
 
         // when
-        CreatePostAppReq appReq = webMapper.toAppReq(webReq, currentUserNo);
+        CreatePostCommand appReq = webMapper.toAppReq(webReq, currentUserNo);
 
         // then
 

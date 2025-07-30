@@ -105,7 +105,7 @@ public class LoadGalleryIntegrationTest {
 
         // when
         ResponseEntity<BaseResponse<Object>> response = restTemplate.exchange(
-                "/api/v1/experts/{expert_no}/gallery",
+                "/api/v1/experts/posts/{expert_no}/gallery",
                 HttpMethod.GET,
                 httpEntity,
                 new ParameterizedTypeReference<>() {

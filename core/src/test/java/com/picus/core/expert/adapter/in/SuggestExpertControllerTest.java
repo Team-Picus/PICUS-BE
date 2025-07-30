@@ -2,7 +2,7 @@ package com.picus.core.expert.adapter.in;
 
 import com.picus.core.expert.adapter.in.web.mapper.SuggestExpertWebMapper;
 import com.picus.core.expert.application.port.in.SuggestExpertsUseCase;
-import com.picus.core.expert.application.port.in.response.SuggestExpertAppResp;
+import com.picus.core.expert.application.port.in.response.SuggestExpertResult;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,9 +40,9 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
         // given
         String keyword = "nick";
         int size = 2;
-        List<SuggestExpertAppResp> mockResult = List.of(
-                new SuggestExpertAppResp("ex1", "nick1", "aaa"),
-                new SuggestExpertAppResp("ex2", "nick2", "bbb")
+        List<SuggestExpertResult> mockResult = List.of(
+                new SuggestExpertResult("ex1", "nick1", "aaa"),
+                new SuggestExpertResult("ex2", "nick2", "bbb")
         );
 
         stubMethodInController(keyword, mockResult, size);
@@ -93,9 +93,9 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(status().isBadRequest());
     }
 
-    private void stubMethodInController(String keyword, List<SuggestExpertAppResp> mockResult, int size) {
+    private void stubMethodInController(String keyword, List<SuggestExpertResult> mockResult, int size) {
         given(suggestExpertsUseCase.suggestExperts(keyword, size)).willReturn(mockResult);
-        for (SuggestExpertAppResp app : mockResult) {
+        for (SuggestExpertResult app : mockResult) {
             given(suggestExpertWebMapper.toWebResponse(app)).willReturn(
                     new com.picus.core.expert.adapter.in.web.data.response.SuggestExpertWebResponse(
                             app.expertNo(), app.nickname(), app.profileImageUrl()

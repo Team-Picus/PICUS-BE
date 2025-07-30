@@ -5,7 +5,7 @@ import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWe
 import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.StudioWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.GetExpertWebMapper;
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
+import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +73,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
         then(loadExpertUseCase).should()
                 .getExpertBasicInfo(expertNo);
         then(getExpertWebMapper).should()
-                .toBasicInfo(any(ExpertBasicInfoQueryAppResp.class));
+                .toBasicInfo(any(ExpertBasicInfoResult.class));
     }
 
     @Test
@@ -107,7 +107,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
     private void stubMethodAboutBasicInfo(String expertNo) {
-        ExpertBasicInfoQueryAppResp mockAppResponse = ExpertBasicInfoQueryAppResp.builder()
+        ExpertBasicInfoResult mockAppResponse = ExpertBasicInfoResult.builder()
                 .expertNo("")
                 .activityDuration("")
                 .activityCount(100)

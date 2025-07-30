@@ -2,7 +2,7 @@ package com.picus.core.price.adapter.in;
 
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.price.adapter.in.web.mapper.LoadPriceWebMapper;
-import com.picus.core.price.application.port.in.LoadPriceQuery;
+import com.picus.core.price.application.port.in.LoadPriceUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ class LoadPriceControllerTest extends AbstractSecurityMockSetup {
     MockMvc mockMvc;
 
     @MockitoBean
-    LoadPriceQuery loadPriceQuery;
+    LoadPriceUseCase loadPriceUseCase;
     @MockitoBean
     LoadPriceWebMapper loadPriceWebMapper;
 

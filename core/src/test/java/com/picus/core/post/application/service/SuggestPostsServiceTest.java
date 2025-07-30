@@ -1,17 +1,14 @@
 package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.mapper.SuggestPostsAppMapper;
-import com.picus.core.post.application.port.in.response.SuggestPostsAppResp;
+import com.picus.core.post.application.port.in.response.SuggestPostsResult;
 import com.picus.core.post.application.port.out.ReadPostPort;
 import com.picus.core.post.domain.Post;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -40,11 +37,11 @@ class SuggestPostsServiceTest {
         given(readPostPort.findTopNByTitleContainingOrderByTitle(keyword, size))
                 .willReturn(List.of(post));
 
-        SuggestPostsAppResp appResp = mock(SuggestPostsAppResp.class);
+        SuggestPostsResult appResp = mock(SuggestPostsResult.class);
        given(appMapper.toAppResp(post)).willReturn(appResp);
 
         // when
-        List<SuggestPostsAppResp> results = suggestPostsService.suggest(keyword, size);
+        List<SuggestPostsResult> results = suggestPostsService.suggest(keyword, size);
 
         // then
         assertThat(results).hasSize(1);

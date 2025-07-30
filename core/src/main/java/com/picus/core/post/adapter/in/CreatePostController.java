@@ -3,7 +3,7 @@ package com.picus.core.post.adapter.in;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
 import com.picus.core.post.adapter.in.web.mapper.CreatePostWebMapper;
 import com.picus.core.post.application.port.in.CreatePostUseCase;
-import com.picus.core.post.application.port.in.request.CreatePostAppReq;
+import com.picus.core.post.application.port.in.request.CreatePostCommand;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ public class CreatePostController {
 
     @PostMapping
     public BaseResponse<Void> createPost(@RequestBody @Valid CreatePostWebReq webReq, @CurrentUser String userNo) {
-        CreatePostAppReq appReq = createPostWebMapper.toAppReq(webReq, userNo);
+        CreatePostCommand appReq = createPostWebMapper.toAppReq(webReq, userNo);
         createPostUseCase.create(appReq);
         return BaseResponse.onSuccess();
     }

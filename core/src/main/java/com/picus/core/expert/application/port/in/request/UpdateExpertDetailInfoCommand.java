@@ -5,15 +5,15 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record UpdateExpertDetailInfoAppReq(
+public record UpdateExpertDetailInfoCommand(
         String currentUserNo,
         String activityCareer,
         List<String> activityAreas,
-        List<UpdateProjectAppReq> projects,
-        List<UpdateSkillAppReq> skills,
-        UpdateStudioAppReq studio
+        List<UpdateProjectCommand> projects,
+        List<UpdateSkillCommand> skills,
+        UpdateStudioCommand studio
 ) {
-    public UpdateExpertDetailInfoAppReq {
+    public UpdateExpertDetailInfoCommand {
         activityAreas = activityAreas != null ? activityAreas : List.of();
         projects = projects != null ? projects : List.of();
         skills = skills != null ? skills : List.of();

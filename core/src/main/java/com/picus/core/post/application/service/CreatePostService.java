@@ -5,7 +5,7 @@ import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.CreatePostUseCase;
 import com.picus.core.post.application.port.in.mapper.CreatePostAppMapper;
-import com.picus.core.post.application.port.in.request.CreatePostAppReq;
+import com.picus.core.post.application.port.in.request.CreatePostCommand;
 import com.picus.core.post.application.port.out.CreatePostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
@@ -35,13 +35,13 @@ public class CreatePostService implements CreatePostUseCase {
     private final CreatePostAppMapper appMapper;
 
     @Override
-    public void create(CreatePostAppReq createPostAppReq) {
+    public void create(CreatePostCommand createPostCommand) {
 
         // 글 작성한 사용자의 expertNo 조회
-        String expertNo = getCurrentExpertNo(createPostAppReq.currentUserNo());
+        String expertNo = getCurrentExpertNo(createPostCommand.currentUserNo());
 
         // Post 도메인 조립
-        Post post = appMapper.toDomain(createPostAppReq, expertNo);
+        Post post = appMapper.toDomain(createPostCommand, expertNo);
 
         // 데이터베이스에 저장
         createPostPort.save(post);

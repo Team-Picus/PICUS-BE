@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
 import com.picus.core.post.adapter.in.web.mapper.UpdatePostWebMapper;
-import com.picus.core.post.adapter.in.web.mapper.CreatePostWebMapper;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
 import com.picus.core.post.application.port.in.request.ChangeStatus;
-import com.picus.core.post.application.port.in.request.UpdatePostAppReq;
+import com.picus.core.post.application.port.in.request.UpdatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -63,9 +62,9 @@ class UpdatePostControllerTest extends AbstractSecurityMockSetup {
         String postNo = "post-123";
         String currenUserNo = TEST_USER_ID;
 
-        UpdatePostAppReq updatePostAppReq = mock(UpdatePostAppReq.class);
+        UpdatePostCommand updatePostCommand = mock(UpdatePostCommand.class);
         given(updatePostWebMapper.toAppReq(webReq, postNo, currenUserNo))
-                .willReturn(updatePostAppReq);
+                .willReturn(updatePostCommand);
 
         // when
         mockMvc.perform(patch("/api/v1/posts/{post_no}", postNo)
@@ -78,7 +77,7 @@ class UpdatePostControllerTest extends AbstractSecurityMockSetup {
 
         // then
         then(updatePostWebMapper).should().toAppReq(webReq, postNo, currenUserNo);
-        then(updatePostUseCase).should().update(updatePostAppReq);
+        then(updatePostUseCase).should().update(updatePostCommand);
     }
 
     private UpdatePostWebReq.PostImageWebReq createPostImageWebReq(String postImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {

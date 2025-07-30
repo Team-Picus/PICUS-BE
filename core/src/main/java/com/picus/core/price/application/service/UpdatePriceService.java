@@ -1,6 +1,6 @@
 package com.picus.core.price.application.service;
 
-import com.picus.core.price.application.port.in.UpdatePriceCommand;
+import com.picus.core.price.application.port.in.UpdatePriceUseCase;
 import com.picus.core.price.application.port.in.request.*;
 import com.picus.core.price.application.port.in.mapper.UpdateOptionAppMapper;
 import com.picus.core.price.application.port.in.mapper.UpdatePackageAppMapper;
@@ -25,7 +25,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 @UseCase
 @RequiredArgsConstructor
 @Transactional
-public class UpdatePriceService implements UpdatePriceCommand {
+public class UpdatePriceService implements UpdatePriceUseCase {
 
     private final UserQueryPort userQueryPort;
 
@@ -40,7 +40,7 @@ public class UpdatePriceService implements UpdatePriceCommand {
     private final UpdateOptionAppMapper updateOptionAppMapper;
 
     @Override
-    public void update(UpdatePriceListAppReq command, String currentUserNo) {
+    public void update(UpdatePriceListCommand command, String currentUserNo) {
         // 현재 사용자의 ExpertNo을 받아옴
         User user = userQueryPort.findById(currentUserNo);
         String expertNo = Optional.ofNullable(user.getExpertNo())
@@ -74,9 +74,9 @@ public class UpdatePriceService implements UpdatePriceCommand {
 
     private void checkPriceRefImageOrder(List<UpdatePriceAppReq> updatePriceAppReqs) {
         for (UpdatePriceAppReq updatePriceAppReq : updatePriceAppReqs) {
-            List<UpdatePriceReferenceImageAppReq> priceRefImageCommands = updatePriceAppReq.priceReferenceImages();
+            List<UpdatePriceReferenceImageCommand> priceRefImageCommands = updatePriceAppReq.priceReferenceImages();
             Set<Integer> imageOrderSet = new HashSet<>();
-            for (UpdatePriceReferenceImageAppReq command : priceRefImageCommands) {
+            for (UpdatePriceReferenceImageCommand command : priceRefImageCommands) {
                 if (!imageOrderSet.add(command.imageOrder())) {
                     throw new RestApiException(_BAD_REQUEST);
                 }
@@ -117,8 +117,8 @@ public class UpdatePriceService implements UpdatePriceCommand {
 
     // PriceReferenceImage 수정
     private void updatePriceReferenceImage(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedPriceRefImageNos) {
-        List<UpdatePriceReferenceImageAppReq> refImagesCommands = updatePriceAppReq.priceReferenceImages();
-        for (UpdatePriceReferenceImageAppReq refImagesCommand : refImagesCommands) {
+        List<UpdatePriceReferenceImageCommand> refImagesCommands = updatePriceAppReq.priceReferenceImages();
+        for (UpdatePriceReferenceImageCommand refImagesCommand : refImagesCommands) {
             switch (refImagesCommand.status()) {
                 case ChangeStatus.NEW:
                     price.addReferenceImage(updatePriceRefImageAppMapper.toDomain(refImagesCommand));
@@ -136,8 +136,8 @@ public class UpdatePriceService implements UpdatePriceCommand {
 
     // Package 수정
     private void updatePackage(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedPackageNos) {
-        List<UpdatePackageAppReq> updatePackageAppReqs = updatePriceAppReq.packages();
-        for (UpdatePackageAppReq pkgCmd : updatePackageAppReqs) {
+        List<UpdatePackageCommand> updatePackageCommands = updatePriceAppReq.packages();
+        for (UpdatePackageCommand pkgCmd : updatePackageCommands) {
             switch (pkgCmd.status()) {
                 case ChangeStatus.NEW:
                     price.addPackage(updatePackageAppMapper.toDomain(pkgCmd));
@@ -155,8 +155,8 @@ public class UpdatePriceService implements UpdatePriceCommand {
 
     // Option 수정
     private void updateOption(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedOptionNos) {
-        List<UpdateOptionAppReq> updateOptionAppReqs = updatePriceAppReq.options();
-        for (UpdateOptionAppReq optCmd : updateOptionAppReqs) {
+        List<UpdateOptionCommand> updateOptionCommands = updatePriceAppReq.options();
+        for (UpdateOptionCommand optCmd : updateOptionCommands) {
             switch (optCmd.status()) {
                 case ChangeStatus.NEW:
                     price.addOption(updateOptionAppMapper.toDomain(optCmd));

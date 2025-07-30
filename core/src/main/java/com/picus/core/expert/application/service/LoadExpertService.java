@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
+import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
 import com.picus.core.expert.application.port.out.ReadExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.vo.Portfolio;
@@ -30,7 +30,7 @@ public class LoadExpertService implements LoadExpertUseCase {
     }
 
     @Override
-    public ExpertBasicInfoQueryAppResp getExpertBasicInfo(String expertNo) {
+    public ExpertBasicInfoResult getExpertBasicInfo(String expertNo) {
         // expertNo로 Expert 조회
         Expert expert = readExpertPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
@@ -41,7 +41,7 @@ public class LoadExpertService implements LoadExpertUseCase {
 
         // TODO: 배경 이미지, 프로필 이미지 key->url 변환
 
-        return ExpertBasicInfoQueryAppResp.builder()
+        return ExpertBasicInfoResult.builder()
                 .expertNo(expert.getExpertNo())
                 .activityDuration(expert.getActivityDuration())
                 .activityCount(expert.getActivityCount())

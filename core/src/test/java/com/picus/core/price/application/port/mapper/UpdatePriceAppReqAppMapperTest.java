@@ -23,27 +23,27 @@ class UpdatePriceAppReqAppMapperTest {
     @DisplayName("Price 도메인 모델로 전환한다 - 모든 필드 검증 (extracting 버전)")
     void toPriceDomain_success_모든필드검증() {
         // given
-        List<UpdatePriceReferenceImageAppReq> imageCommands = List.of(
-                new UpdatePriceReferenceImageAppReq("img-001", "https://cdn.com/1.jpg", 1, ChangeStatus.NEW),
-                new UpdatePriceReferenceImageAppReq("img-002", "https://cdn.com/2.jpg", 2, ChangeStatus.UPDATE)
+        List<UpdatePriceReferenceImageCommand> imageCommands = List.of(
+                new UpdatePriceReferenceImageCommand("img-001", "https://cdn.com/1.jpg", 1, ChangeStatus.NEW),
+                new UpdatePriceReferenceImageCommand("img-002", "https://cdn.com/2.jpg", 2, ChangeStatus.UPDATE)
         );
 
-        List<UpdatePackageAppReq> updatePackageAppReqs = List.of(
-                new UpdatePackageAppReq("pkg-001", "패키지1", 100000, List.of("내용1", "내용2"), "주의1", ChangeStatus.NEW),
-                new UpdatePackageAppReq("pkg-002", "패키지2", 150000, List.of("내용3"), "주의2", ChangeStatus.UPDATE)
+        List<UpdatePackageCommand> updatePackageCommands = List.of(
+                new UpdatePackageCommand("pkg-001", "패키지1", 100000, List.of("내용1", "내용2"), "주의1", ChangeStatus.NEW),
+                new UpdatePackageCommand("pkg-002", "패키지2", 150000, List.of("내용3"), "주의2", ChangeStatus.UPDATE)
         );
 
-        List<UpdateOptionAppReq> updateOptionAppReqs = List.of(
-                new UpdateOptionAppReq("opt-001", "옵션1", 1, 30000, List.of("옵션설명1"), ChangeStatus.NEW),
-                new UpdateOptionAppReq("opt-002", "옵션2", 2, 50000, List.of("옵션설명2"), ChangeStatus.UPDATE)
+        List<UpdateOptionCommand> updateOptionCommands = List.of(
+                new UpdateOptionCommand("opt-001", "옵션1", 1, 30000, List.of("옵션설명1"), ChangeStatus.NEW),
+                new UpdateOptionCommand("opt-002", "옵션2", 2, 50000, List.of("옵션설명2"), ChangeStatus.UPDATE)
         );
 
         UpdatePriceAppReq updatePriceAppReq = new UpdatePriceAppReq(
                 "price-123",
                 "SNAP",
                 imageCommands,
-                updatePackageAppReqs,
-                updateOptionAppReqs,
+                updatePackageCommands,
+                updateOptionCommands,
                 ChangeStatus.UPDATE
         );
 

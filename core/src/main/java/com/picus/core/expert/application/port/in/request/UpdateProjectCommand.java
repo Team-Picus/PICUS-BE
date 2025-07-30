@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record UpdateProjectAppReq(
+public record UpdateProjectCommand(
         String projectNo,
         String projectName,
         LocalDateTime startDate,

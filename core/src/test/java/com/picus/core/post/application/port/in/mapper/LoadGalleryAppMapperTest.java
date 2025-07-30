@@ -1,6 +1,6 @@
 package com.picus.core.post.application.port.in.mapper;
 
-import com.picus.core.post.application.port.in.response.LoadGalleryAppResp;
+import com.picus.core.post.application.port.in.response.LoadGalleryResult;
 import com.picus.core.post.domain.Post;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ class LoadGalleryAppMapperTest {
 
     private LoadGalleryAppMapper appMapper = new LoadGalleryAppMapper();
     @Test
-    @DisplayName("Post, thumbnailUrl -> LoadGalleryAppResp 매핑")
+    @DisplayName("Post, thumbnailUrl -> LoadGalleryResult 매핑")
     public void toAppResp() throws Exception {
         // given
         Post post = Post.builder()
@@ -22,7 +22,7 @@ class LoadGalleryAppMapperTest {
         String thumbnailUrl = "img.com";
         
         // when
-        LoadGalleryAppResp result = appMapper.toAppResp(post, thumbnailUrl);
+        LoadGalleryResult result = appMapper.toAppResp(post, thumbnailUrl);
 
         // then
         assertThat(result.postNo()).isEqualTo("post-123");

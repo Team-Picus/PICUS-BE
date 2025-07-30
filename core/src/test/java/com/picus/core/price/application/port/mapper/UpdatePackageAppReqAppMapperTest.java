@@ -1,7 +1,7 @@
 package com.picus.core.price.application.port.mapper;
 
 import com.picus.core.price.application.port.in.mapper.UpdatePackageAppMapper;
-import com.picus.core.price.application.port.in.request.UpdatePackageAppReq;
+import com.picus.core.price.application.port.in.request.UpdatePackageCommand;
 import com.picus.core.price.domain.Package;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +14,10 @@ class UpdatePackageAppReqAppMapperTest {
     private final UpdatePackageAppMapper appMapper = new UpdatePackageAppMapper();
 
     @Test
-    @DisplayName("UpdatePackageAppReq -> Package 매핑")
+    @DisplayName("UpdatePackageCommand -> Package 매핑")
     public void toDomain() throws Exception {
         // given
-        UpdatePackageAppReq command = UpdatePackageAppReq.builder()
+        UpdatePackageCommand command = UpdatePackageCommand.builder()
                 .packageNo("pkg01")
                 .name("pkg_name")
                 .price(10000)

@@ -3,7 +3,7 @@ package com.picus.core.expert.adapter.in;
 import com.picus.core.expert.adapter.in.web.mapper.RequestApprovalWebMapper;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
 import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
+import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class RequestApprovalController {
     public BaseResponse<Void> requestApproval(
             @RequestBody RequestApprovalWebRequest webRequest, @CurrentUser String userNo) {
 
-        RequestApprovalAppReq command = webMapper.toCommand(webRequest, userNo);// 웹 요청 -> command
+        RequestApprovalCommand command = webMapper.toCommand(webRequest, userNo);// 웹 요청 -> command
         requestApprovalUseCase.requestApproval(command); // 유스케이스 호출
         return BaseResponse.onSuccess();
     }

@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record UpdateExpertBasicInfoAppReq(
+public record UpdateExpertBasicInfoCommand(
         String currentUserNo,
         String profileImageFileKey,
         String backgroundImageFileKey,

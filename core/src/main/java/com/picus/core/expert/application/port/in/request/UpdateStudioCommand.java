@@ -3,7 +3,7 @@ package com.picus.core.expert.application.port.in.request;
 import lombok.Builder;
 
 @Builder
-public record UpdateStudioAppReq(
+public record UpdateStudioCommand(
         String studioNo,
         String studioName,
         Integer employeesCount,

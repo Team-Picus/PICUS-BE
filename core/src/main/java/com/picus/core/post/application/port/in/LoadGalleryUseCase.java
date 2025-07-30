@@ -1,6 +1,6 @@
 package com.picus.core.post.application.port.in;
 
-import com.picus.core.post.application.port.in.response.LoadGalleryAppResp;
+import com.picus.core.post.application.port.in.response.LoadGalleryResult;
 
 import java.util.Optional;
 
@@ -10,5 +10,5 @@ import java.util.Optional;
  */
 public interface LoadGalleryUseCase {
 
-    Optional<LoadGalleryAppResp> load(String expertNo);
+    Optional<LoadGalleryResult> load(String expertNo);
 }

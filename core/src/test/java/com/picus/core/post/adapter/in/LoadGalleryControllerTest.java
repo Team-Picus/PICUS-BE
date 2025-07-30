@@ -4,7 +4,7 @@ import com.picus.core.post.adapter.in.web.data.response.LoadGalleryWebResp;
 import com.picus.core.post.adapter.in.web.mapper.LoadGalleryWebMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
-import com.picus.core.post.application.port.in.response.LoadGalleryAppResp;
+import com.picus.core.post.application.port.in.response.LoadGalleryResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
         // given
         String expertNo = "expert-123";
 
-        LoadGalleryAppResp appResp = mock(LoadGalleryAppResp.class);
+        LoadGalleryResult appResp = mock(LoadGalleryResult.class);
         given(loadGalleryUseCase.load(expertNo)).willReturn(Optional.of(appResp));
         LoadGalleryWebResp webResp = LoadGalleryWebResp.builder()
                 .postNo("")
@@ -81,7 +81,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
 
         // when
         mockMvc.perform(
-                        get("/api/v1/experts/{expert_no}/gallery",
+                        get("/api/v1/experts/posts/{expert_no}/gallery",
                                 expertNo)
                 )
                 .andDo(print())

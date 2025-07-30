@@ -4,7 +4,7 @@ import com.picus.core.expert.application.port.out.ReadExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.mapper.CreatePostAppMapper;
-import com.picus.core.post.application.port.in.request.CreatePostAppReq;
+import com.picus.core.post.application.port.in.request.CreatePostCommand;
 import com.picus.core.post.application.port.out.CreatePostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.user.application.port.out.UserQueryPort;
@@ -47,7 +47,7 @@ class CreatePostServiceTest {
     @DisplayName("게시물을 작성한다.")
     public void create_success() throws Exception {
         // given
-        CreatePostAppReq req = CreatePostAppReq.builder()
+        CreatePostCommand req = CreatePostCommand.builder()
                 .currentUserNo("user-456")
                 .build();
 

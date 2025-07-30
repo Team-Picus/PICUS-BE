@@ -9,7 +9,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record RequestApprovalAppReq(
+public record RequestApprovalCommand(
         String activityCareer,
         List<String> activityAreas,
         List<Project> projects,

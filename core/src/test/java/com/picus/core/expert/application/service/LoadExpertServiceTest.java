@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
+import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
 import com.picus.core.expert.application.port.out.ReadExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.vo.Portfolio;
@@ -47,7 +47,7 @@ class LoadExpertServiceTest {
         stubPortResult(expert, dto, expertNo);
 
         // when
-        ExpertBasicInfoQueryAppResp result = getExpertService.getExpertBasicInfo(expertNo);
+        ExpertBasicInfoResult result = getExpertService.getExpertBasicInfo(expertNo);
 
         // then - 리턴값 검증
         // TODO: 이미지 key -> url 변환 로직 추가 후 다시 검증

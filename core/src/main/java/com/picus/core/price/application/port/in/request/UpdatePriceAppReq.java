@@ -8,9 +8,9 @@ import java.util.List;
 public record UpdatePriceAppReq(
         String priceNo,
         String priceThemeType,
-        List<UpdatePriceReferenceImageAppReq> priceReferenceImages,
-        List<UpdatePackageAppReq> packages,
-        List<UpdateOptionAppReq> options,
+        List<UpdatePriceReferenceImageCommand> priceReferenceImages,
+        List<UpdatePackageCommand> packages,
+        List<UpdateOptionCommand> options,
         ChangeStatus status
 ) {
 }

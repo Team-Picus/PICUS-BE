@@ -35,7 +35,7 @@ class UpdateExpertWebMapperTest {
         );
 
         // when
-        UpdateExpertBasicInfoAppReq result = mapper.toBasicInfoAppRequest(webRequest, currentUserNo);
+        UpdateExpertBasicInfoCommand result = mapper.toBasicInfoAppRequest(webRequest, currentUserNo);
 
         // then
         assertThat(result.currentUserNo()).isEqualTo("USER123");
@@ -84,7 +84,7 @@ class UpdateExpertWebMapperTest {
 
 
         // when
-        UpdateExpertDetailInfoAppReq result = mapper.toDetailInfoAppRequest(webRequest, currentUserNo);
+        UpdateExpertDetailInfoCommand result = mapper.toDetailInfoAppRequest(webRequest, currentUserNo);
 
         // then
         assertThat(result.currentUserNo()).isEqualTo(currentUserNo);
@@ -92,26 +92,26 @@ class UpdateExpertWebMapperTest {
         assertThat(result.activityAreas()).containsExactly("서울시 강남구", "경기도 성남시");
 
         assertThat(result.projects()).hasSize(1);
-        UpdateProjectAppReq updateProjectAppReq = result.projects().getFirst();
-        assertThat(updateProjectAppReq.projectNo()).isEqualTo("P001");
-        assertThat(updateProjectAppReq.projectName()).isEqualTo("단편영화 제작");
-        assertThat(updateProjectAppReq.startDate()).isEqualTo(LocalDateTime.of(2023, 1, 1, 0, 0));
-        assertThat(updateProjectAppReq.endDate()).isEqualTo(LocalDateTime.of(2023, 3, 1, 0, 0));
-        assertThat(updateProjectAppReq.changeStatus()).isEqualTo(NEW);
+        UpdateProjectCommand updateProjectCommand = result.projects().getFirst();
+        assertThat(updateProjectCommand.projectNo()).isEqualTo("P001");
+        assertThat(updateProjectCommand.projectName()).isEqualTo("단편영화 제작");
+        assertThat(updateProjectCommand.startDate()).isEqualTo(LocalDateTime.of(2023, 1, 1, 0, 0));
+        assertThat(updateProjectCommand.endDate()).isEqualTo(LocalDateTime.of(2023, 3, 1, 0, 0));
+        assertThat(updateProjectCommand.changeStatus()).isEqualTo(NEW);
 
         assertThat(result.skills()).hasSize(1);
-        UpdateSkillAppReq updateSkillAppReq = result.skills().getFirst();
-        assertThat(updateSkillAppReq.skillNo()).isEqualTo("S001");
-        assertThat(updateSkillAppReq.skillType()).isEqualTo(SkillType.CAMERA);
-        assertThat(updateSkillAppReq.content()).isEqualTo("블랙매직 URSA Mini Pro 사용 가능");
-        assertThat(updateSkillAppReq.changeStatus()).isEqualTo(UPDATE);
+        UpdateSkillCommand updateSkillCommand = result.skills().getFirst();
+        assertThat(updateSkillCommand.skillNo()).isEqualTo("S001");
+        assertThat(updateSkillCommand.skillType()).isEqualTo(SkillType.CAMERA);
+        assertThat(updateSkillCommand.content()).isEqualTo("블랙매직 URSA Mini Pro 사용 가능");
+        assertThat(updateSkillCommand.changeStatus()).isEqualTo(UPDATE);
 
-        UpdateStudioAppReq updateStudioAppReq = result.studio();
-        assertThat(updateStudioAppReq.studioNo()).isEqualTo("ST001");
-        assertThat(updateStudioAppReq.studioName()).isEqualTo("필름 하우스");
-        assertThat(updateStudioAppReq.employeesCount()).isEqualTo(4);
-        assertThat(updateStudioAppReq.businessHours()).isEqualTo("09:00 ~ 18:00");
-        assertThat(updateStudioAppReq.address()).isEqualTo("서울특별시 용산구");
-        assertThat(updateStudioAppReq.changeStatus()).isEqualTo(DELETE);
+        UpdateStudioCommand updateStudioCommand = result.studio();
+        assertThat(updateStudioCommand.studioNo()).isEqualTo("ST001");
+        assertThat(updateStudioCommand.studioName()).isEqualTo("필름 하우스");
+        assertThat(updateStudioCommand.employeesCount()).isEqualTo(4);
+        assertThat(updateStudioCommand.businessHours()).isEqualTo("09:00 ~ 18:00");
+        assertThat(updateStudioCommand.address()).isEqualTo("서울특별시 용산구");
+        assertThat(updateStudioCommand.changeStatus()).isEqualTo(DELETE);
     }
 }

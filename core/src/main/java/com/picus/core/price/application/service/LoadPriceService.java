@@ -1,6 +1,6 @@
 package com.picus.core.price.application.service;
 
-import com.picus.core.price.application.port.in.LoadPriceQuery;
+import com.picus.core.price.application.port.in.LoadPriceUseCase;
 import com.picus.core.price.application.port.out.ReadPricePort;
 import com.picus.core.price.domain.Price;
 import com.picus.core.shared.annotation.UseCase;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @UseCase
-public class LoadPriceService implements LoadPriceQuery {
+public class LoadPriceService implements LoadPriceUseCase {
 
     private final ReadPricePort readPricePort;
 

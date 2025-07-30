@@ -79,7 +79,7 @@ class UpdatePriceServiceTest {
                 Collections.emptyList(),  // no options
                 ChangeStatus.NEW
         );
-        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
+        UpdatePriceListCommand command = new UpdatePriceListCommand(
                 Collections.singletonList(cmd)
         );
 
@@ -118,7 +118,7 @@ class UpdatePriceServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.UPDATE
         );
-        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
+        UpdatePriceListCommand command = new UpdatePriceListCommand(
                 Collections.singletonList(cmd)
         );
 
@@ -152,24 +152,24 @@ class UpdatePriceServiceTest {
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
         // 이미지 커맨드
-        UpdatePriceReferenceImageAppReq newImgCmd = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
-        UpdatePriceReferenceImageAppReq updImgCmd = createPriceRefImageCommand("img-2", "file-2", 2, ChangeStatus.UPDATE);
-        UpdatePriceReferenceImageAppReq delImgCmd = createPriceRefImageCommand("img-3", "file-3", 3, ChangeStatus.DELETE);
-        List<UpdatePriceReferenceImageAppReq> imgCmds =
+        UpdatePriceReferenceImageCommand newImgCmd = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
+        UpdatePriceReferenceImageCommand updImgCmd = createPriceRefImageCommand("img-2", "file-2", 2, ChangeStatus.UPDATE);
+        UpdatePriceReferenceImageCommand delImgCmd = createPriceRefImageCommand("img-3", "file-3", 3, ChangeStatus.DELETE);
+        List<UpdatePriceReferenceImageCommand> imgCmds =
                 List.of(newImgCmd, updImgCmd, delImgCmd);
 
         // 패키지 커맨드
-        UpdatePackageAppReq newPkgCmd = createPackageCommand(null, "PKG1", 1000, List.of("A", "B"), "note1", ChangeStatus.NEW);
-        UpdatePackageAppReq updPkgCmd = createPackageCommand("pkg-2", "PKG2", 2000, List.of("C"), "note2", ChangeStatus.UPDATE);
-        UpdatePackageAppReq delPkgCmd = createPackageCommand("pkg-3", "PKG3", 3000, List.of("D"), "note3", ChangeStatus.DELETE);
-        List<UpdatePackageAppReq> pkgCmds =
+        UpdatePackageCommand newPkgCmd = createPackageCommand(null, "PKG1", 1000, List.of("A", "B"), "note1", ChangeStatus.NEW);
+        UpdatePackageCommand updPkgCmd = createPackageCommand("pkg-2", "PKG2", 2000, List.of("C"), "note2", ChangeStatus.UPDATE);
+        UpdatePackageCommand delPkgCmd = createPackageCommand("pkg-3", "PKG3", 3000, List.of("D"), "note3", ChangeStatus.DELETE);
+        List<UpdatePackageCommand> pkgCmds =
                 List.of(newPkgCmd, updPkgCmd, delPkgCmd);
 
         // 옵션 커맨드
-        UpdateOptionAppReq newOptCmd = createOptionCommand(null, "OPT1", 1, 100, List.of("X"), ChangeStatus.NEW);
-        UpdateOptionAppReq updOptCmd = createOptionCommand("opt-2", "OPT2", 2, 200, List.of("Y"), ChangeStatus.UPDATE);
-        UpdateOptionAppReq delOptCmd = createOptionCommand("opt-3", "OPT3", 3, 300, List.of("Z"), ChangeStatus.DELETE);
-        List<UpdateOptionAppReq> optCmds =
+        UpdateOptionCommand newOptCmd = createOptionCommand(null, "OPT1", 1, 100, List.of("X"), ChangeStatus.NEW);
+        UpdateOptionCommand updOptCmd = createOptionCommand("opt-2", "OPT2", 2, 200, List.of("Y"), ChangeStatus.UPDATE);
+        UpdateOptionCommand delOptCmd = createOptionCommand("opt-3", "OPT3", 3, 300, List.of("Z"), ChangeStatus.DELETE);
+        List<UpdateOptionCommand> optCmds =
                 List.of(newOptCmd, updOptCmd, delOptCmd);
 
         UpdatePriceAppReq cmd = new UpdatePriceAppReq(
@@ -180,8 +180,8 @@ class UpdatePriceServiceTest {
                 optCmds,
                 ChangeStatus.UPDATE
         );
-        UpdatePriceListAppReq command =
-                new UpdatePriceListAppReq(List.of(cmd));
+        UpdatePriceListCommand command =
+                new UpdatePriceListCommand(List.of(cmd));
 
         // 도메인 객체 및 매핑 설정
         Price price = mock(Price.class);
@@ -261,7 +261,7 @@ class UpdatePriceServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.UPDATE
         );
-        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
+        UpdatePriceListCommand command = new UpdatePriceListCommand(
                 Collections.singletonList(cmd)
         );
 
@@ -284,9 +284,9 @@ class UpdatePriceServiceTest {
         given(user.getExpertNo()).willReturn("expert-4");
 
         // 이미지 커맨드
-        UpdatePriceReferenceImageAppReq newImgCmd1 = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
-        UpdatePriceReferenceImageAppReq newImgCmd2 = createPriceRefImageCommand(null, "file-2", 1, ChangeStatus.NEW);
-        List<UpdatePriceReferenceImageAppReq> imgCmds =
+        UpdatePriceReferenceImageCommand newImgCmd1 = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
+        UpdatePriceReferenceImageCommand newImgCmd2 = createPriceRefImageCommand(null, "file-2", 1, ChangeStatus.NEW);
+        List<UpdatePriceReferenceImageCommand> imgCmds =
                 List.of(newImgCmd1, newImgCmd2);
 
 
@@ -298,8 +298,8 @@ class UpdatePriceServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.UPDATE
         );
-        UpdatePriceListAppReq command =
-                new UpdatePriceListAppReq(List.of(cmd));
+        UpdatePriceListCommand command =
+                new UpdatePriceListCommand(List.of(cmd));
 
 
         // when // then
@@ -325,7 +325,7 @@ class UpdatePriceServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.DELETE
         );
-        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
+        UpdatePriceListCommand command = new UpdatePriceListCommand(
                 Collections.singletonList(cmd)
         );
 
@@ -359,7 +359,7 @@ class UpdatePriceServiceTest {
                 Collections.emptyList(),
                 ChangeStatus.DELETE
         );
-        UpdatePriceListAppReq command = new UpdatePriceListAppReq(
+        UpdatePriceListCommand command = new UpdatePriceListCommand(
                 Collections.singletonList(cmd)
         );
 
@@ -372,8 +372,8 @@ class UpdatePriceServiceTest {
                 .isInstanceOf(RestApiException.class);
     }
 
-    private UpdatePriceReferenceImageAppReq createPriceRefImageCommand(String priceRefImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
-        return UpdatePriceReferenceImageAppReq.builder()
+    private UpdatePriceReferenceImageCommand createPriceRefImageCommand(String priceRefImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
+        return UpdatePriceReferenceImageCommand.builder()
                 .priceRefImageNo(priceRefImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
@@ -381,8 +381,8 @@ class UpdatePriceServiceTest {
                 .build();
     }
 
-    private UpdatePackageAppReq createPackageCommand(String packageNo, String name, int price, List<String> contents, String notice, ChangeStatus changeStatus) {
-        return UpdatePackageAppReq.builder()
+    private UpdatePackageCommand createPackageCommand(String packageNo, String name, int price, List<String> contents, String notice, ChangeStatus changeStatus) {
+        return UpdatePackageCommand.builder()
                 .packageNo(packageNo)
                 .name(name)
                 .price(price)
@@ -392,8 +392,8 @@ class UpdatePriceServiceTest {
                 .build();
     }
 
-    private UpdateOptionAppReq createOptionCommand(String optionNo, String name, int count, int price, List<String> contents, ChangeStatus changeStatus) {
-        return UpdateOptionAppReq.builder()
+    private UpdateOptionCommand createOptionCommand(String optionNo, String name, int count, int price, List<String> contents, ChangeStatus changeStatus) {
+        return UpdateOptionCommand.builder()
                 .optionNo(optionNo)
                 .name(name)
                 .count(count)

@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
-import com.picus.core.expert.application.port.in.request.RequestApprovalAppReq;
+import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
 import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
 import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.domain.Expert;
@@ -24,7 +24,7 @@ public class RequestApprovalService implements RequestApprovalUseCase {
      * ApprovalStatus가 Pending인 Expert 저장
      */
     @Override
-    public void requestApproval(RequestApprovalAppReq command) {
+    public void requestApproval(RequestApprovalCommand command) {
         Expert expert = appMapper.toDomain(command); // command -> domain
 
         Expert savedExpert = createExpertPort.create(expert, command.userNo());// Expert 저장

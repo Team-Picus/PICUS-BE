@@ -5,7 +5,6 @@ import com.picus.core.expert.application.port.in.mapper.UpdateProjectAppMapper;
 import com.picus.core.expert.application.port.in.mapper.UpdateSkillAppMapper;
 import com.picus.core.expert.application.port.in.mapper.UpdateStudioAppMapper;
 import com.picus.core.expert.application.port.out.ReadExpertPort;
-import com.picus.core.expert.application.port.out.CreateExpertPort;
 import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
@@ -55,7 +54,7 @@ class UpdateExpertServiceTest {
         String userNo = "USER001";
         String expertNo = "EXP001";
 
-        UpdateExpertBasicInfoAppReq request = UpdateExpertBasicInfoAppReq.builder()
+        UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(userNo)
                 .backgroundImageFileKey("new-background")
                 .link(List.of("https://new.link"))
@@ -102,7 +101,7 @@ class UpdateExpertServiceTest {
         String userNo = "USER001";
         String expertNo = "EXP001";
 
-        UpdateExpertBasicInfoAppReq request = UpdateExpertBasicInfoAppReq.builder()
+        UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(userNo)
                 .backgroundImageFileKey("bg-key") // expert 관련 필드만 있음
                 .link(List.of("https://new.link"))
@@ -134,7 +133,7 @@ class UpdateExpertServiceTest {
         String userNo = "USER002";
         String expertNo = "EXP002";
 
-        UpdateExpertBasicInfoAppReq request = UpdateExpertBasicInfoAppReq.builder()
+        UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(userNo)
                 .nickname("UpdatedNickname")
                 .profileImageFileKey("updated-profile-img")
@@ -173,7 +172,7 @@ class UpdateExpertServiceTest {
         // given
         String userNo = "USER003";
 
-        UpdateExpertBasicInfoAppReq request = UpdateExpertBasicInfoAppReq.builder()
+        UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(userNo)
                 .build(); // 모든 필드가 null
 
@@ -195,23 +194,23 @@ class UpdateExpertServiceTest {
         String expertNo = "EXP001";
 
         // --- 요청 DTO 구성
-        UpdateProjectAppReq projectNew = createProjectCommand(null, "추가된 프로젝트",
+        UpdateProjectCommand projectNew = createProjectCommand(null, "추가된 프로젝트",
                 LocalDateTime.of(2024, 1, 1, 10, 0),
                 LocalDateTime.of(2024, 1, 1, 11, 0), ChangeStatus.NEW);
-        UpdateProjectAppReq projectUpdate = createProjectCommand("PRJ002", "수정된 프로젝트",
+        UpdateProjectCommand projectUpdate = createProjectCommand("PRJ002", "수정된 프로젝트",
                 LocalDateTime.of(2023, 12, 1, 10, 0),
                 LocalDateTime.of(2023, 12, 1, 11, 0), ChangeStatus.UPDATE);
-        UpdateProjectAppReq projectDelete = createProjectCommand("PRJ003", "삭제된 프로젝트",
+        UpdateProjectCommand projectDelete = createProjectCommand("PRJ003", "삭제된 프로젝트",
                 LocalDateTime.of(2022, 11, 1, 10, 0),
                 LocalDateTime.of(2022, 11, 1, 11, 0), ChangeStatus.DELETE);
 
-        UpdateSkillAppReq skillNew = createSkillCommand(null, SkillType.LIGHT, "조명 가능", ChangeStatus.NEW);
-        UpdateSkillAppReq skillUpdate = createSkillCommand("SKILL002", SkillType.CAMERA, "카메라 전문가", ChangeStatus.UPDATE);
-        UpdateSkillAppReq skillDelete = createSkillCommand("SKILL003", SkillType.EDIT, "편집 불필요", ChangeStatus.DELETE);
+        UpdateSkillCommand skillNew = createSkillCommand(null, SkillType.LIGHT, "조명 가능", ChangeStatus.NEW);
+        UpdateSkillCommand skillUpdate = createSkillCommand("SKILL002", SkillType.CAMERA, "카메라 전문가", ChangeStatus.UPDATE);
+        UpdateSkillCommand skillDelete = createSkillCommand("SKILL003", SkillType.EDIT, "편집 불필요", ChangeStatus.DELETE);
 
-        UpdateStudioAppReq studioNew = createStudioCommand(null, "스튜디오 신규", 2, "09:00~18:00", "서울시 강남구", ChangeStatus.NEW);
+        UpdateStudioCommand studioNew = createStudioCommand(null, "스튜디오 신규", 2, "09:00~18:00", "서울시 강남구", ChangeStatus.NEW);
 
-        UpdateExpertDetailInfoAppReq request = UpdateExpertDetailInfoAppReq.builder()
+        UpdateExpertDetailInfoCommand request = UpdateExpertDetailInfoCommand.builder()
                 .currentUserNo(userNo)
                 .activityCareer("5년 경력")
                 .activityAreas(List.of("서울", "부산"))
@@ -283,8 +282,8 @@ class UpdateExpertServiceTest {
         then(updateExpertPort).shouldHaveNoMoreInteractions();
     }
 
-    private UpdateProjectAppReq createProjectCommand(String projectNo, String projectName, LocalDateTime startDate, LocalDateTime endDate, ChangeStatus changeStatus) {
-        return UpdateProjectAppReq.builder()
+    private UpdateProjectCommand createProjectCommand(String projectNo, String projectName, LocalDateTime startDate, LocalDateTime endDate, ChangeStatus changeStatus) {
+        return UpdateProjectCommand.builder()
                 .projectNo(projectNo)
                 .projectName(projectName)
                 .startDate(startDate)
@@ -293,8 +292,8 @@ class UpdateExpertServiceTest {
                 .build();
     }
 
-    private UpdateSkillAppReq createSkillCommand(String skillNo, SkillType skillType, String content, ChangeStatus changeStatus) {
-        return UpdateSkillAppReq.builder()
+    private UpdateSkillCommand createSkillCommand(String skillNo, SkillType skillType, String content, ChangeStatus changeStatus) {
+        return UpdateSkillCommand.builder()
                 .skillNo(skillNo)
                 .skillType(skillType)
                 .content(content)
@@ -302,8 +301,8 @@ class UpdateExpertServiceTest {
                 .build();
     }
 
-    private UpdateStudioAppReq createStudioCommand(String studioNo, String studioName, int employeesCount, String businessHours, String address, ChangeStatus changeStatus) {
-        return UpdateStudioAppReq.builder()
+    private UpdateStudioCommand createStudioCommand(String studioNo, String studioName, int employeesCount, String businessHours, String address, ChangeStatus changeStatus) {
+        return UpdateStudioCommand.builder()
                 .studioNo(studioNo)
                 .studioName(studioName)
                 .employeesCount(employeesCount)
@@ -319,7 +318,7 @@ class UpdateExpertServiceTest {
         // given
         String userNo = "USER003";
 
-        UpdateExpertDetailInfoAppReq request = UpdateExpertDetailInfoAppReq.builder()
+        UpdateExpertDetailInfoCommand request = UpdateExpertDetailInfoCommand.builder()
                 .currentUserNo(userNo)
                 .build(); // 모든 필드가 null
 

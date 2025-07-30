@@ -1,11 +1,10 @@
 package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.mapper.LoadGalleryAppMapper;
-import com.picus.core.post.application.port.in.response.LoadGalleryAppResp;
+import com.picus.core.post.application.port.in.response.LoadGalleryResult;
 import com.picus.core.post.application.port.out.ReadPostPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,12 +41,12 @@ class LoadGalleryServiceTest {
                 ))
                 .build();
         given(readPostPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.of(post));
-        LoadGalleryAppResp loadGalleryAppResp = mock(LoadGalleryAppResp.class);
-        given(appMapper.toAppResp(post, "")).willReturn(loadGalleryAppResp); // TODO: fileKey -> url 변환로직 추가 후 수정
+        LoadGalleryResult loadGalleryResult = mock(LoadGalleryResult.class);
+        given(appMapper.toAppResp(post, "")).willReturn(loadGalleryResult); // TODO: fileKey -> url 변환로직 추가 후 수정
 
 
         // when
-        Optional<LoadGalleryAppResp> result = loadGalleryService.load(expertNo);
+        Optional<LoadGalleryResult> result = loadGalleryService.load(expertNo);
 
         // then
         assertThat(result).isPresent();
@@ -66,7 +65,7 @@ class LoadGalleryServiceTest {
 
 
         // when
-        Optional<LoadGalleryAppResp> result = loadGalleryService.load(expertNo);
+        Optional<LoadGalleryResult> result = loadGalleryService.load(expertNo);
 
         // then
         assertThat(result).isEmpty();

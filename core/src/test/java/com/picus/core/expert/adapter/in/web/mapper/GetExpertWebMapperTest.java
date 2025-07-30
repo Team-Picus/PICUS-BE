@@ -2,7 +2,7 @@ package com.picus.core.expert.adapter.in.web.mapper;
 
 import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
 import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoQueryAppResp;
+import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
@@ -24,7 +24,7 @@ class GetExpertWebMapperTest {
     @DisplayName("Expert 도메인 객체를 기본 정보 WebResponse로 매핑한다")
     void toBasicInfo_shouldMapCorrectly() {
         // given
-        ExpertBasicInfoQueryAppResp appResponse = ExpertBasicInfoQueryAppResp.builder()
+        ExpertBasicInfoResult appResponse = ExpertBasicInfoResult.builder()
                 .expertNo("expert_no")
                 .activityDuration("3년")
                 .activityCount(12)

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-public record ExpertBasicInfoQueryAppResp(
+public record ExpertBasicInfoResult(
         String expertNo,
         String activityDuration,
         Integer activityCount,

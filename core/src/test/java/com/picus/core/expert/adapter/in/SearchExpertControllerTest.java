@@ -3,7 +3,7 @@ package com.picus.core.expert.adapter.in;
 import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
 import com.picus.core.expert.application.port.in.SearchExpertsUseCase;
-import com.picus.core.expert.application.port.in.response.SearchExpertAppResp;
+import com.picus.core.expert.application.port.in.response.SearchExpertResult;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,9 +42,9 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     void searchExperts_success() throws Exception {
         // given
         String keyword = "nick";
-        List<SearchExpertAppResp> mockAppResponses = List.of(
-                new SearchExpertAppResp("ex1", "nick1", "url1"),
-                new SearchExpertAppResp("ex2", "nick2", "url2")
+        List<SearchExpertResult> mockAppResponses = List.of(
+                new SearchExpertResult("ex1", "nick1", "url1"),
+                new SearchExpertResult("ex2", "nick2", "url2")
         );
         List<SearchExpertWebResponse> mockWebResponses = List.of(
                 SearchExpertWebResponse.builder()
@@ -75,7 +75,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.result[0].profileImageUrl").exists());
 
         then(searchExpertsUseCase).should().searchExperts(keyword);
-        for (SearchExpertAppResp appResponse : mockAppResponses) {
+        for (SearchExpertResult appResponse : mockAppResponses) {
             then(searchExpertWebMapper).should().toWebResponse(appResponse);
         }
     }
@@ -88,7 +88,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
     private void stubMethodInController(String keyword,
-                                        List<SearchExpertAppResp> appResponses,
+                                        List<SearchExpertResult> appResponses,
                                         List<SearchExpertWebResponse> webResponses) {
         given(searchExpertsUseCase.searchExperts(keyword)).willReturn(appResponses);
 
