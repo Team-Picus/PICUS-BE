@@ -330,15 +330,14 @@ class PostPersistenceAdapterTest {
     public void findTopNByTitleContainingOrderByTitle_success() throws Exception {
         // given
         // 데이터베이스에 데이터 셋팅
-        PostEntity postEntity1 = createPostEntity("안녕");
-        PostEntity postEntity2 = createPostEntity("데일리 모먼트");
-        PostEntity postEntity3 = createPostEntity("데일리");
-        PostEntity postEntity4 = createPostEntity("일상이 영화가 되는 데일리 시네마");
-        PostEntity postEntity5 = createPostEntity("그날의 데자뷰, 익숙하지만 새로운 순간들");
-        PostEntity postEntity6 = createPostEntity("데일리씬");
-        PostEntity postEntity7 = createPostEntity("하세요");
-        PostEntity postEntity8 = createPostEntity("지갑");
-        postJpaRepository.saveAll(List.of(postEntity1, postEntity2, postEntity3, postEntity4, postEntity5, postEntity6, postEntity7, postEntity8));
+        createPostEntity("안녕");
+        createPostEntity("데일리 모먼트");
+        createPostEntity("데일리");
+        createPostEntity("일상이 영화가 되는 데일리 시네마");
+        createPostEntity("그날의 데자뷰, 익숙하지만 새로운 순간들");
+        createPostEntity("데일리씬");
+        createPostEntity("하세요");
+        createPostEntity("지갑");
         clearPersistenceContext();
 
         String keyword = "데";
@@ -378,8 +377,6 @@ class PostPersistenceAdapterTest {
         PostEntity postEntity5 = createPostEntity("t5");
         PostImageEntity postImgEntity5 = createPostImageEntity("f5", 1, postEntity5);
 
-        postJpaRepository.saveAll(List.of(postEntity1, postEntity2, postEntity3, postEntity4, postEntity5));
-        postImageJpaRepository.saveAll(List.of(postImgEntity1, postImgEntity2, postImgEntity3, postImgEntity4, postImgEntity5));
         clearPersistenceContext();
 
         // when
@@ -387,6 +384,29 @@ class PostPersistenceAdapterTest {
 
         // then
         assertThat(postResults).hasSize(3);
+        for (Post post : postResults) {
+            assertThat(post.getPostImages()).isNotEmpty();
+        }
+    }
+
+    @Test
+    @DisplayName("랜덤으로 N개의 Post를 조회할 때 현재 데이터 수가 N보다 작으면 현재 데이터 수만큼만 반환된다.")
+    public void findRandomTopN_ifN_isBiggerThan_postNums() throws Exception {
+        // given
+        int size = 3;
+        PostEntity postEntity1 = createPostEntity("t1");
+        PostImageEntity postImgEntity1 = createPostImageEntity("f1", 1, postEntity1);
+
+        PostEntity postEntity2 = createPostEntity("t2");
+        PostImageEntity postImgEntity2 = createPostImageEntity("f2", 1, postEntity2);
+
+        clearPersistenceContext();
+
+        // when
+        List<Post> postResults = postPersistenceAdapter.findRandomTopN(size);
+
+        // then
+        assertThat(postResults).hasSize(2);
         for (Post post : postResults) {
             assertThat(post.getPostImages()).isNotEmpty();
         }

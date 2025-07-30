@@ -32,7 +32,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @ActiveProfiles("test")
-public class SuggestPostsIntegrationTest {
+public class SuggestPostIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
