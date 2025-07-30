@@ -1,7 +1,7 @@
 package com.picus.core.user.adapter.in.web.mapper;
 
 import com.picus.core.user.adapter.in.web.data.request.SignUpRequest;
-import com.picus.core.user.adapter.in.web.data.response.GetProfileResponse;
+import com.picus.core.user.adapter.in.web.data.response.LoadProfileResponse;
 import com.picus.core.user.application.port.in.command.CompleteProfileCommand;
 import com.picus.core.user.domain.model.User;
 import org.springframework.stereotype.Component;
@@ -18,8 +18,8 @@ public class SignUpWebMapper {
                 .build();
     }
 
-    public GetProfileResponse toResponse(User user, String fileKey) {
-        return GetProfileResponse
+    public LoadProfileResponse toResponse(User user, String fileKey) {
+        return LoadProfileResponse
                 .builder()
                 .nickname(user.getNickname())
                 .email(user.getEmail())

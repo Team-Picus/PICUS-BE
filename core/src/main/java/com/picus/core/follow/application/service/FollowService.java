@@ -9,7 +9,7 @@ import com.picus.core.follow.application.port.out.ReadFollowPort;
 import com.picus.core.follow.domain.Follow;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.ReadUserPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +25,7 @@ public class FollowService
         implements FollowUseCase, UnfollowUseCase, LoadFollowingUseCase {
 
     private final ReadFollowPort readFollowPort;
-    private final ReadUserPort readUserPort;
+    private final UserReadPort userReadPort;
     private final CreateFollowPort createFollowPort;
     private final DeleteFollowPort deleteFollowPort;
 
@@ -34,7 +34,7 @@ public class FollowService
         if (readFollowPort.existsById(userNo, expertNo))
             throw new RestApiException(_EXIST_ENTITY);
 
-        if(!readUserPort.existsById(userNo) /* && readExpertPort.existsById(expertNo)*/)
+        if(!userReadPort.existsById(userNo) /* && readExpertPort.existsById(expertNo)*/)
             throw new RestApiException(_NOT_FOUND);
 
         createFollowPort.create(userNo, expertNo);
