@@ -3,9 +3,9 @@ package com.picus.core.follow.application.service;
 import com.picus.core.follow.application.port.in.FollowUseCase;
 import com.picus.core.follow.application.port.in.LoadFollowingUseCase;
 import com.picus.core.follow.application.port.in.UnfollowUseCase;
-import com.picus.core.follow.application.port.out.CreateFollowPort;
-import com.picus.core.follow.application.port.out.DeleteFollowPort;
-import com.picus.core.follow.application.port.out.ReadFollowPort;
+import com.picus.core.follow.application.port.out.FollowCreatePort;
+import com.picus.core.follow.application.port.out.FollowDeletePort;
+import com.picus.core.follow.application.port.out.FollowReadPort;
 import com.picus.core.follow.domain.Follow;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -24,32 +24,32 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 public class FollowService
         implements FollowUseCase, UnfollowUseCase, LoadFollowingUseCase {
 
-    private final ReadFollowPort readFollowPort;
+    private final FollowReadPort followReadPort;
     private final UserReadPort userReadPort;
-    private final CreateFollowPort createFollowPort;
-    private final DeleteFollowPort deleteFollowPort;
+    private final FollowCreatePort followCreatePort;
+    private final FollowDeletePort followDeletePort;
 
     @Override
     public void follow(String userNo, String expertNo) {
-        if (readFollowPort.existsById(userNo, expertNo))
+        if (followReadPort.existsById(userNo, expertNo))
             throw new RestApiException(_EXIST_ENTITY);
 
         if(!userReadPort.existsById(userNo) /* && readExpertPort.existsById(expertNo)*/)
             throw new RestApiException(_NOT_FOUND);
 
-        createFollowPort.create(userNo, expertNo);
+        followCreatePort.create(userNo, expertNo);
     }
 
     @Override
     public void unfollow(String userNo, String expertNo) {
-        if (!readFollowPort.existsById(userNo, expertNo))
+        if (!followReadPort.existsById(userNo, expertNo))
             throw new RestApiException(_NOT_FOUND);
 
-        deleteFollowPort.delete(userNo, expertNo);
+        followDeletePort.delete(userNo, expertNo);
     }
 
     @Override
     public List<Follow> getFollows(String userNo) {
-        return readFollowPort.findByUserNo(userNo);
+        return followReadPort.findByUserNo(userNo);
     }
 }

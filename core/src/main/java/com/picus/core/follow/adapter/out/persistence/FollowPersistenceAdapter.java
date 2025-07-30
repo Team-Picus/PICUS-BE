@@ -4,9 +4,9 @@ import com.picus.core.follow.adapter.out.persistence.entity.FollowEntity;
 import com.picus.core.follow.adapter.out.persistence.entity.FollowId;
 import com.picus.core.follow.adapter.out.persistence.mapper.FollowPersistenceMapper;
 import com.picus.core.follow.adapter.out.persistence.repository.FollowJpaRepository;
-import com.picus.core.follow.application.port.out.CreateFollowPort;
-import com.picus.core.follow.application.port.out.DeleteFollowPort;
-import com.picus.core.follow.application.port.out.ReadFollowPort;
+import com.picus.core.follow.application.port.out.FollowCreatePort;
+import com.picus.core.follow.application.port.out.FollowDeletePort;
+import com.picus.core.follow.application.port.out.FollowReadPort;
 import com.picus.core.follow.domain.Follow;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ import java.util.List;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ReadFollowPersistenceAdapter
-        implements ReadFollowPort, CreateFollowPort, DeleteFollowPort {
+public class FollowPersistenceAdapter
+        implements FollowReadPort, FollowCreatePort, FollowDeletePort {
 
     private final FollowJpaRepository followJpaRepository;
     private final FollowPersistenceMapper followPersistenceMapper;
