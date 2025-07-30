@@ -32,7 +32,7 @@ public class LoadGalleryService implements LoadGalleryUseCase {
             List<String> imageUrls = List.of("");
 
             // 매퍼를 통해 LoadGalleryResult 매핑
-            return Optional.ofNullable(appMapper.toAppResp(post.get(), imageUrls));
+            return Optional.ofNullable(appMapper.toResult(post.get(), imageUrls));
 
         } else { // 고정처리한 게시물이 존재하지 않는다면 (아직 게시물이 없거나 설정 안했을 수도 있음)
             return Optional.empty();

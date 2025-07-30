@@ -76,7 +76,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
 
         then(searchExpertsUseCase).should().searchExperts(keyword);
         for (SearchExpertResult appResponse : mockAppResponses) {
-            then(searchExpertWebMapper).should().toWebResponse(appResponse);
+            then(searchExpertWebMapper).should().toResponse(appResponse);
         }
     }
 
@@ -93,7 +93,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
         given(searchExpertsUseCase.searchExperts(keyword)).willReturn(appResponses);
 
         for (int i = 0; i < appResponses.size(); i++) {
-            given(searchExpertWebMapper.toWebResponse(appResponses.get(i))).willReturn(webResponses.get(i));
+            given(searchExpertWebMapper.toResponse(appResponses.get(i))).willReturn(webResponses.get(i));
         }
     }
 }

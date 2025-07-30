@@ -27,7 +27,7 @@ public class LoadPriceController {
         List<Price> pricesByExpert = loadPriceUseCase.loadByExpertNo(expertNo); // 유스케이스 호출
 
         List<LoadPriceResponse> webResponses = pricesByExpert.stream() // 매퍼로 변환
-                .map(loadPriceWebMapper::toWebResponse)
+                .map(loadPriceWebMapper::toResponse)
                 .toList();
         return BaseResponse.onSuccess(webResponses);
     }

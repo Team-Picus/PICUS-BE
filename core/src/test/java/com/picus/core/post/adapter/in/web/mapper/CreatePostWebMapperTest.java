@@ -21,7 +21,7 @@ class CreatePostWebMapperTest {
 
     @Test
     @DisplayName("CreatePostRequest -> CreatePostCommand 매핑")
-    public void toAppReq() throws Exception {
+    public void toCommand() throws Exception {
         // given
         CreatePostRequest webReq = CreatePostRequest.builder()
                 .postImages(List.of(
@@ -41,7 +41,7 @@ class CreatePostWebMapperTest {
         String currentUserNo = "user-123";
 
         // when
-        CreatePostCommand appReq = webMapper.toAppReq(webReq, currentUserNo);
+        CreatePostCommand appReq = webMapper.toCommand(webReq, currentUserNo);
 
         // then
 

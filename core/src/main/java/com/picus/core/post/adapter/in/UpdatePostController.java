@@ -20,7 +20,7 @@ public class UpdatePostController {
     @PatchMapping("/{post_no}")
     public BaseResponse<Void> updatePost(
             @RequestBody UpdatePostRequest webReq, @PathVariable("post_no") String postNo, @CurrentUser String userNo) {
-        UpdatePostCommand appReq = updatePostWebMapper.toAppReq(webReq, postNo, userNo);
+        UpdatePostCommand appReq = updatePostWebMapper.toCommand(webReq, postNo, userNo);
         updatePostUseCase.update(appReq);
         return BaseResponse.onSuccess();
     }

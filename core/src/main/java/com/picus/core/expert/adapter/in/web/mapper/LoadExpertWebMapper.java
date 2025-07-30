@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 public class LoadExpertWebMapper {
 
-    public LoadExpertBasicInfoResponse toBasicInfo(ExpertBasicInfoResult appResponse) {
+    public LoadExpertBasicInfoResponse toBasicInfoResponse(ExpertBasicInfoResult appResponse) {
         return LoadExpertBasicInfoResponse.builder()
                 .expertNo(appResponse.expertNo())
                 .activityDuration(appResponse.activityDuration())
@@ -31,18 +31,18 @@ public class LoadExpertWebMapper {
                 .build();
     }
 
-    public LoadExpertDetailInfoResponse toDetailInfo(Expert expert) {
+    public LoadExpertDetailInfoResponse toDetailInfoResponse(Expert expert) {
 
         return LoadExpertDetailInfoResponse.builder()
                 .activityCareer(expert.getActivityCareer())
-                .projects(toProjectWebResponse(expert.getProjects()))
-                .skills(toSkillWebResponse(expert.getSkills()))
+                .projects(toProjectResponse(expert.getProjects()))
+                .skills(toSkillResponse(expert.getSkills()))
                 .activityAreas(expert.getActivityAreas())
-                .studio(toStudioWebResponse(expert.getStudio()))
+                .studio(toStudioResponse(expert.getStudio()))
                 .build();
     }
 
-    private List<ProjectResponse> toProjectWebResponse(List<Project> projects) {
+    private List<ProjectResponse> toProjectResponse(List<Project> projects) {
         return projects.stream()
                 .map(project -> ProjectResponse.builder()
                         .projectNo(project.getProjectNo())
@@ -53,7 +53,7 @@ public class LoadExpertWebMapper {
                 ).toList();
     }
 
-    private List<SkillResponse> toSkillWebResponse(List<Skill> skills) {
+    private List<SkillResponse> toSkillResponse(List<Skill> skills) {
         return skills.stream()
                 .map(skill -> SkillResponse.builder()
                         .skillNo(skill.getSkillNo())
@@ -63,7 +63,7 @@ public class LoadExpertWebMapper {
                 ).toList();
     }
 
-    private StudioResponse toStudioWebResponse(Studio studio) {
+    private StudioResponse toStudioResponse(Studio studio) {
         return StudioResponse.builder()
                 .studioNo(studio.getStudioNo())
                 .studioName(studio.getStudioName())

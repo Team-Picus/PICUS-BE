@@ -23,7 +23,7 @@ class UpdateExpertWebMapperTest {
 
     @Test
     @DisplayName("ExpertBasicInfoCommandWebRequest를 ExpertBasicInfoCommandRequest로 변환한다.")
-    void toBasicInfoAppRequest_should_map_all_fields_correctly() {
+    void toBasicInfoCommand_should_map_all_fields_correctly() {
         // given
         String currentUserNo = "USER123";
         UpdateExpertBasicInfoRequest webRequest = new UpdateExpertBasicInfoRequest(
@@ -35,7 +35,7 @@ class UpdateExpertWebMapperTest {
         );
 
         // when
-        UpdateExpertBasicInfoCommand result = mapper.toBasicInfoAppRequest(webRequest, currentUserNo);
+        UpdateExpertBasicInfoCommand result = mapper.toBasicInfoCommand(webRequest, currentUserNo);
 
         // then
         assertThat(result.currentUserNo()).isEqualTo("USER123");
@@ -48,7 +48,7 @@ class UpdateExpertWebMapperTest {
 
     @Test
     @DisplayName("toDetailInfoAppRequest: 웹 요청 DTO가 도메인 요청 DTO로 정확히 변환된다.")
-    void toDetailInfoAppRequest_success() {
+    void toDetailInfoCommand_success() {
         // given
         String currentUserNo = "USER123";
 
@@ -84,7 +84,7 @@ class UpdateExpertWebMapperTest {
 
 
         // when
-        UpdateExpertDetailInfoCommand result = mapper.toDetailInfoAppRequest(webRequest, currentUserNo);
+        UpdateExpertDetailInfoCommand result = mapper.toDetailInfoCommand(webRequest, currentUserNo);
 
         // then
         assertThat(result.currentUserNo()).isEqualTo(currentUserNo);

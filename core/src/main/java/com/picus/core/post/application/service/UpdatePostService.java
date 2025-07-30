@@ -83,17 +83,17 @@ public class UpdatePostService implements UpdatePostUseCase {
             throw new RestApiException(_FORBIDDEN);
     }
 
-    private void checkPostImageOrder(List<UpdatePostImageAppReq> updatePostImageAppReqs) {
+    private void checkPostImageOrder(List<UpdatePostImageCommand> updatePostImageCommands) {
         Set<Integer> imageOrderSet = new HashSet<>();
-        for (UpdatePostImageAppReq imageAppReq : updatePostImageAppReqs) {
+        for (UpdatePostImageCommand imageAppReq : updatePostImageCommands) {
             if (!imageOrderSet.add(imageAppReq.imageOrder())) {
                 throw new RestApiException(_BAD_REQUEST);
             }
         }
     }
 
-    private void updatePostImage(Post post, List<UpdatePostImageAppReq> imageAppReqs, List<String> deletedPostImageNos) {
-        for (UpdatePostImageAppReq imageAppReq : imageAppReqs) {
+    private void updatePostImage(Post post, List<UpdatePostImageCommand> imageAppReqs, List<String> deletedPostImageNos) {
+        for (UpdatePostImageCommand imageAppReq : imageAppReqs) {
             switch (imageAppReq.changeStatus()) {
                 case NEW:
                     post.addPostImage(PostImage.builder()

@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class CreatePostWebMapper {
 
-    public CreatePostCommand toAppReq(CreatePostRequest webReq, String currentUserNo) {
+    public CreatePostCommand toCommand(CreatePostRequest webReq, String currentUserNo) {
         return CreatePostCommand.builder()
                 .postImages(toPostImages(webReq))
                 .title(webReq.title())

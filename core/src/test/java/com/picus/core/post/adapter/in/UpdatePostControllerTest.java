@@ -63,7 +63,7 @@ class UpdatePostControllerTest extends AbstractSecurityMockSetup {
         String currenUserNo = TEST_USER_ID;
 
         UpdatePostCommand updatePostCommand = mock(UpdatePostCommand.class);
-        given(updatePostWebMapper.toAppReq(webReq, postNo, currenUserNo))
+        given(updatePostWebMapper.toCommand(webReq, postNo, currenUserNo))
                 .willReturn(updatePostCommand);
 
         // when
@@ -76,7 +76,7 @@ class UpdatePostControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("요청에 성공하였습니다."));
 
         // then
-        then(updatePostWebMapper).should().toAppReq(webReq, postNo, currenUserNo);
+        then(updatePostWebMapper).should().toCommand(webReq, postNo, currenUserNo);
         then(updatePostUseCase).should().update(updatePostCommand);
     }
 

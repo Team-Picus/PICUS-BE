@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class UpdateExpertWebMapper {
 
-    public UpdateExpertBasicInfoCommand toBasicInfoAppRequest(UpdateExpertBasicInfoRequest webRequest, String currentUserNo) {
+    public UpdateExpertBasicInfoCommand toBasicInfoCommand(UpdateExpertBasicInfoRequest webRequest, String currentUserNo) {
         return UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(currentUserNo)
                 .profileImageFileKey(webRequest.profileImageFileKey())
@@ -25,7 +25,7 @@ public class UpdateExpertWebMapper {
                 .build();
     }
 
-    public UpdateExpertDetailInfoCommand toDetailInfoAppRequest(UpdateExpertDetailInfoRequest webRequest, String currentUserNo) {
+    public UpdateExpertDetailInfoCommand toDetailInfoCommand(UpdateExpertDetailInfoRequest webRequest, String currentUserNo) {
 
         return UpdateExpertDetailInfoCommand.builder()
                 .currentUserNo(currentUserNo)

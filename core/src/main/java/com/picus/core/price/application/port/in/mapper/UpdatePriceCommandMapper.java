@@ -3,7 +3,7 @@ package com.picus.core.price.application.port.in.mapper;
 import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.price.application.port.in.command.UpdateOptionCommand;
 import com.picus.core.price.application.port.in.command.UpdatePackageCommand;
-import com.picus.core.price.application.port.in.command.UpdatePriceAppReq;
+import com.picus.core.price.application.port.in.command.UpdatePriceCommand;
 import com.picus.core.price.application.port.in.command.UpdatePriceReferenceImageCommand;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 public class UpdatePriceCommandMapper {
 
-    public Price toPriceDomain(UpdatePriceAppReq updatePriceAppReq) {
+    public Price toPriceDomain(UpdatePriceCommand updatePriceCommand) {
         return Price.builder()
-                .priceNo(updatePriceAppReq.priceNo())
-                .priceThemeType(PriceThemeType.valueOf(updatePriceAppReq.priceThemeType()))
-                .priceReferenceImages(toRefImageDomain(updatePriceAppReq.priceReferenceImages()))
-                .packages(toPackageDomain(updatePriceAppReq.packages()))
-                .options(toOptionDomain(updatePriceAppReq.options()))
+                .priceNo(updatePriceCommand.priceNo())
+                .priceThemeType(PriceThemeType.valueOf(updatePriceCommand.priceThemeType()))
+                .priceReferenceImages(toRefImageDomain(updatePriceCommand.priceReferenceImages()))
+                .packages(toPackageDomain(updatePriceCommand.packages()))
+                .options(toOptionDomain(updatePriceCommand.options()))
                 .build();
     }
 

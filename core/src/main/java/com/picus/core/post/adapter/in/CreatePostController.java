@@ -20,7 +20,7 @@ public class CreatePostController {
 
     @PostMapping
     public BaseResponse<Void> createPost(@RequestBody @Valid CreatePostRequest webReq, @CurrentUser String userNo) {
-        CreatePostCommand appReq = createPostWebMapper.toAppReq(webReq, userNo);
+        CreatePostCommand appReq = createPostWebMapper.toCommand(webReq, userNo);
         createPostUseCase.create(appReq);
         return BaseResponse.onSuccess();
     }

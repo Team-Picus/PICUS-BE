@@ -31,7 +31,7 @@ public class SuggestExpertController {
 
         return BaseResponse.onSuccess(
                 suggestExpertAppResponse.stream()
-                        .map(suggestExpertWebMapper::toWebResponse)
+                        .map(suggestExpertWebMapper::toResponse)
                         .toList()
         );
     }

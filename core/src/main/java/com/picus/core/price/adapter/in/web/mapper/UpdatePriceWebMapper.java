@@ -15,10 +15,10 @@ public class UpdatePriceWebMapper {
                 .build();
     }
 
-    private List<UpdatePriceAppReq> toPriceCommand(List<UpdatePriceWebReq> updatePriceWebRequests) {
+    private List<UpdatePriceCommand> toPriceCommand(List<UpdatePriceWebReq> updatePriceWebRequests) {
         if (updatePriceWebRequests == null || updatePriceWebRequests.isEmpty()) return List.of();
         return updatePriceWebRequests.stream()
-                .map(w -> UpdatePriceAppReq.builder()
+                .map(w -> UpdatePriceCommand.builder()
                         .priceNo(w.priceNo())
                         .priceThemeType(w.priceThemeType())
                         .priceReferenceImages(toPriceRefImageCommand(w.priceReferenceImages()))

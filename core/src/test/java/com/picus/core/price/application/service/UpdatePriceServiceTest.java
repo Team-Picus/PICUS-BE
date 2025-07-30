@@ -71,7 +71,7 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-1");
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-1",
                 "FASHION",
                 Collections.emptyList(),  // no images
@@ -110,7 +110,7 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
                 "FASHION",
                 Collections.emptyList(),
@@ -172,7 +172,7 @@ class UpdatePriceServiceTest {
         List<UpdateOptionCommand> optCmds =
                 List.of(newOptCmd, updOptCmd, delOptCmd);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-4",
                 "FASHION",
                 imgCmds,
@@ -253,7 +253,7 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
                 "FASHION",
                 Collections.emptyList(),
@@ -290,7 +290,7 @@ class UpdatePriceServiceTest {
                 List.of(newImgCmd1, newImgCmd2);
 
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-4",
                 "FASHION",
                 imgCmds,
@@ -317,7 +317,7 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",
                 "THEME_C",
                 Collections.emptyList(),
@@ -351,7 +351,7 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",
                 "THEME_C",
                 Collections.emptyList(),

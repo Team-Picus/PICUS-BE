@@ -30,7 +30,7 @@ public class SearchExpertController {
 
         return BaseResponse.onSuccess(
                 searchExpertAppRespons.stream()
-                        .map(searchExpertWebMapper::toWebResponse)
+                        .map(searchExpertWebMapper::toResponse)
                         .toList()
         );
     }

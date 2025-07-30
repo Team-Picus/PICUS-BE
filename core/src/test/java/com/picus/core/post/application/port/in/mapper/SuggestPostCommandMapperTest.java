@@ -1,19 +1,19 @@
 package com.picus.core.post.application.port.in.mapper;
 
-import com.picus.core.post.application.port.in.result.SuggestPostsResult;
+import com.picus.core.post.application.port.in.result.SuggestPostResult;
 import com.picus.core.post.domain.Post;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SuggestPostsCommandMapperTest {
+class SuggestPostCommandMapperTest {
 
-    private SuggestPostsCommandMapper appMapper = new SuggestPostsCommandMapper();
+    private SuggestPostCommandMapper appMapper = new SuggestPostCommandMapper();
 
     @Test
-    @DisplayName("Post -> SuggestPostsResult 매핑")
-    public void toAppResp() throws Exception {
+    @DisplayName("Post -> SuggestPostResult 매핑")
+    public void toResult() throws Exception {
         // given
         Post post = Post.builder()
                 .postNo("post-123")
@@ -21,7 +21,7 @@ class SuggestPostsCommandMapperTest {
                 .build();
 
         // when
-        SuggestPostsResult appResp = appMapper.toAppResp(post);
+        SuggestPostResult appResp = appMapper.toResult(post);
 
         // then
         assertThat(appResp.postNo()).isEqualTo("post-123");

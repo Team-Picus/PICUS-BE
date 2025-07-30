@@ -65,7 +65,7 @@ class CreatePostControllerTest extends AbstractSecurityMockSetup {
         String currenUserNo = TEST_USER_ID;
 
         CreatePostCommand createPostCommand = Mockito.mock(CreatePostCommand.class);
-        given(createPostWebMapper.toAppReq(webReq, currenUserNo)).willReturn(createPostCommand);
+        given(createPostWebMapper.toCommand(webReq, currenUserNo)).willReturn(createPostCommand);
 
         // when // then
         mockMvc.perform(
@@ -79,7 +79,7 @@ class CreatePostControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("요청에 성공하였습니다."));
 
         // then
-        then(createPostWebMapper).should().toAppReq(webReq, currenUserNo);
+        then(createPostWebMapper).should().toCommand(webReq, currenUserNo);
         then(createPostUseCase).should().create(createPostCommand);
     }
 

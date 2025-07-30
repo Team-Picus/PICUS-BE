@@ -21,7 +21,7 @@ class LoadPriceWebMapperTest {
 
     @Test
     @DisplayName("Price 도메인 객체를 WebResponse로 변환한다")
-    void toWebResponse_shouldMapCorrectly() {
+    void toResponse_shouldMapCorrectly() {
         // given
         PriceReferenceImage image = PriceReferenceImage.builder()
                 .priceRefImageNo("img_no")
@@ -55,7 +55,7 @@ class LoadPriceWebMapperTest {
                 .build();
 
         // when
-        LoadPriceResponse response = mapper.toWebResponse(price);
+        LoadPriceResponse response = mapper.toResponse(price);
 
         // then
         assertThat(response.priceNo()).isEqualTo("P123");

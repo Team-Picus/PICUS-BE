@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public record UpdatePostCommand(
         String postNo,
-        List<UpdatePostImageAppReq> postImages,
+        List<UpdatePostImageCommand> postImages,
         String title,
         String oneLineDescription,
         String detailedDescription,
@@ -23,7 +23,7 @@ public record UpdatePostCommand(
 ) {
 
     @Builder
-    public record UpdatePostImageAppReq(
+    public record UpdatePostImageCommand(
             String postImageNo,
             String fileKey,
             Integer imageOrder,

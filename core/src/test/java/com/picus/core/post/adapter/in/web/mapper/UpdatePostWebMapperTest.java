@@ -22,7 +22,7 @@ class UpdatePostWebMapperTest {
 
     @Test
     @DisplayName("UpdatePostRequest -> UpdatePostCommand 매핑")
-    public void toAppReq_success() throws Exception {
+    public void toCommand_success() throws Exception {
         // given
         UpdatePostRequest webReq = UpdatePostRequest.builder()
                 .postImages(List.of(
@@ -43,7 +43,7 @@ class UpdatePostWebMapperTest {
         String currentUserNo = "user-123";
 
         // when
-        UpdatePostCommand appReq = webMapper.toAppReq(webReq, postNo, currentUserNo);
+        UpdatePostCommand appReq = webMapper.toCommand(webReq, postNo, currentUserNo);
 
         // then
         assertThat(appReq.postNo()).isEqualTo("post-123");
@@ -61,9 +61,9 @@ class UpdatePostWebMapperTest {
         assertThat(appReq.postImages()).hasSize(2);
 
         assertThat(appReq.postImages()).extracting(
-                UpdatePostCommand.UpdatePostImageAppReq::fileKey,
-                UpdatePostCommand.UpdatePostImageAppReq::imageOrder,
-                UpdatePostCommand.UpdatePostImageAppReq::changeStatus
+                UpdatePostCommand.UpdatePostImageCommand::fileKey,
+                UpdatePostCommand.UpdatePostImageCommand::imageOrder,
+                UpdatePostCommand.UpdatePostImageCommand::changeStatus
         ).containsExactly(
                 tuple("img1.jpg", 1, NEW),
                 tuple("img2.jpg", 2, UPDATE)

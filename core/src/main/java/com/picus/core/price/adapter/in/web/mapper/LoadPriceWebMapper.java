@@ -15,17 +15,17 @@ import java.util.List;
 @Component
 public class LoadPriceWebMapper {
 
-    public LoadPriceResponse toWebResponse(Price price) {
+    public LoadPriceResponse toResponse(Price price) {
         return LoadPriceResponse.builder()
                 .priceNo(price.getPriceNo())
                 .priceThemeType(price.getPriceThemeType().toString())
-                .priceReferenceImages(toPriceReferenceImageWebResponse(price.getPriceReferenceImages()))
-                .packages(toPackageWebResponse(price.getPackages()))
-                .options(toOptionWebResponse(price.getOptions()))
+                .priceReferenceImages(toPriceReferenceImageResponse(price.getPriceReferenceImages()))
+                .packages(toPackageResponse(price.getPackages()))
+                .options(toOptionResponse(price.getOptions()))
                 .build();
     }
 
-    private List<PriceReferenceImageResponse> toPriceReferenceImageWebResponse(List<PriceReferenceImage> priceReferenceImages) {
+    private List<PriceReferenceImageResponse> toPriceReferenceImageResponse(List<PriceReferenceImage> priceReferenceImages) {
         return priceReferenceImages.stream()
                 .map(priceReferenceImage -> PriceReferenceImageResponse.builder()
                         .priceRefImageNo(priceReferenceImage.getPriceRefImageNo())
@@ -35,7 +35,7 @@ public class LoadPriceWebMapper {
                 ).toList();
     }
 
-    private List<PackageResponse> toPackageWebResponse(List<Package> packages) {
+    private List<PackageResponse> toPackageResponse(List<Package> packages) {
         return packages.stream()
                 .map(p -> PackageResponse.builder()
                         .packageNo(p.getPackageNo())
@@ -47,7 +47,7 @@ public class LoadPriceWebMapper {
                 ).toList();
     }
 
-    private List<OptionResponse> toOptionWebResponse(List<Option> options) {
+    private List<OptionResponse> toOptionResponse(List<Option> options) {
         return options.stream()
                 .map(option -> OptionResponse.builder()
                         .optionNo(option.getOptionNo())

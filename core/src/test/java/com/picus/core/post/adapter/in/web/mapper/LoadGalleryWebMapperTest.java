@@ -15,7 +15,7 @@ class LoadGalleryWebMapperTest {
     private LoadGalleryWebMapper webMapper = new LoadGalleryWebMapper();
     @Test
     @DisplayName("LoadGalleryResult -> LoadGalleryResponse 매핑")
-    public void toWebResp() throws Exception {
+    public void toResponse() throws Exception {
         // given
         LoadGalleryResult appResp = LoadGalleryResult.builder()
                 .postNo("post-123")
@@ -24,7 +24,7 @@ class LoadGalleryWebMapperTest {
                 .oneLineDescription("one")
                 .build();
         // when
-        LoadGalleryResponse webResp = webMapper.toWebResp(appResp);
+        LoadGalleryResponse webResp = webMapper.toResponse(appResp);
 
         // then
         assertThat(webResp.postNo()).isEqualTo("post-123");

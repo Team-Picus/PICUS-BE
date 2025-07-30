@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class LoadGalleryCommandMapper {
 
-    public LoadGalleryResult toAppResp(Post post, List<String> imageUrls) {
+    public LoadGalleryResult toResult(Post post, List<String> imageUrls) {
         return LoadGalleryResult.builder()
                 .postNo(post.getPostNo())
                 .imageUrls(imageUrls)

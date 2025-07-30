@@ -38,7 +38,7 @@ class UpdatePriceAppReqAppMapperTest {
                 new UpdateOptionCommand("opt-002", "옵션2", 2, 50000, List.of("옵션설명2"), ChangeStatus.UPDATE)
         );
 
-        UpdatePriceAppReq updatePriceAppReq = new UpdatePriceAppReq(
+        UpdatePriceCommand updatePriceCommand = new UpdatePriceCommand(
                 "price-123",
                 "SNAP",
                 imageCommands,
@@ -48,7 +48,7 @@ class UpdatePriceAppReqAppMapperTest {
         );
 
         // when
-        Price result = mapper.toPriceDomain(updatePriceAppReq);
+        Price result = mapper.toPriceDomain(updatePriceCommand);
 
         // then
         assertThat(result.getPriceNo()).isEqualTo("price-123");

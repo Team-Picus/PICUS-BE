@@ -14,7 +14,7 @@ class LoadGalleryCommandMapperTest {
     private LoadGalleryCommandMapper appMapper = new LoadGalleryCommandMapper();
     @Test
     @DisplayName("Post, imageUrls -> LoadGalleryResult 매핑")
-    public void toAppResp() throws Exception {
+    public void toResult() throws Exception {
         // given
         Post post = Post.builder()
                 .postNo("post-123")
@@ -24,7 +24,7 @@ class LoadGalleryCommandMapperTest {
         List<String> imageUrls = List.of("img.com");
 
         // when
-        LoadGalleryResult result = appMapper.toAppResp(post, imageUrls);
+        LoadGalleryResult result = appMapper.toResult(post, imageUrls);
 
         // then
         assertThat(result.postNo()).isEqualTo("post-123");

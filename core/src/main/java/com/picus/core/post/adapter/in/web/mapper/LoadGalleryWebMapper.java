@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoadGalleryWebMapper {
 
-    public LoadGalleryResponse toWebResp(LoadGalleryResult appResp) {
+    public LoadGalleryResponse toResponse(LoadGalleryResult appResp) {
         return LoadGalleryResponse.builder()
                 .postNo(appResp.postNo())
                 .imageUrls(appResp.imageUrls())

@@ -61,22 +61,22 @@ public class UpdatePriceWebMapperTest {
 
         // PriceCommand의 모든 필드 검증
         assertThat(command.prices()).hasSize(1);
-        UpdatePriceAppReq updatePriceAppReq = command.prices().getFirst();
-        assertThat(updatePriceAppReq.priceNo()).isEqualTo("price-001");
-        assertThat(updatePriceAppReq.priceThemeType()).isEqualTo("THEME");
-        assertThat(updatePriceAppReq.status()).isEqualTo(ChangeStatus.NEW);
+        UpdatePriceCommand updatePriceCommand = command.prices().getFirst();
+        assertThat(updatePriceCommand.priceNo()).isEqualTo("price-001");
+        assertThat(updatePriceCommand.priceThemeType()).isEqualTo("THEME");
+        assertThat(updatePriceCommand.status()).isEqualTo(ChangeStatus.NEW);
 
         // UpdatePriceReferenceImageCommand 모든 필드 검증
-        assertThat(updatePriceAppReq.priceReferenceImages()).hasSize(1);
-        UpdatePriceReferenceImageCommand imageCommand = updatePriceAppReq.priceReferenceImages().getFirst();
+        assertThat(updatePriceCommand.priceReferenceImages()).hasSize(1);
+        UpdatePriceReferenceImageCommand imageCommand = updatePriceCommand.priceReferenceImages().getFirst();
         assertThat(imageCommand.priceRefImageNo()).isEqualTo("img-001");
         assertThat(imageCommand.fileKey()).isEqualTo("file-key-001");
         assertThat(imageCommand.imageOrder()).isEqualTo(1);
         assertThat(imageCommand.status()).isEqualTo(ChangeStatus.NEW);
 
         // UpdatePackageCommand 모든 필드 검증
-        assertThat(updatePriceAppReq.packages()).hasSize(1);
-        UpdatePackageCommand updatePackageCommand = updatePriceAppReq.packages().getFirst();
+        assertThat(updatePriceCommand.packages()).hasSize(1);
+        UpdatePackageCommand updatePackageCommand = updatePriceCommand.packages().getFirst();
         assertThat(updatePackageCommand.packageNo()).isEqualTo("pkg-001");
         assertThat(updatePackageCommand.name()).isEqualTo("패키지A");
         assertThat(updatePackageCommand.price()).isEqualTo(10000);
@@ -85,8 +85,8 @@ public class UpdatePriceWebMapperTest {
         assertThat(updatePackageCommand.status()).isEqualTo(ChangeStatus.NEW);
 
         // UpdateOptionCommand 모든 필드 검증
-        assertThat(updatePriceAppReq.options()).hasSize(1);
-        UpdateOptionCommand updateOptionCommand = updatePriceAppReq.options().getFirst();
+        assertThat(updatePriceCommand.options()).hasSize(1);
+        UpdateOptionCommand updateOptionCommand = updatePriceCommand.options().getFirst();
         assertThat(updateOptionCommand.optionNo()).isEqualTo("opt-001");
         assertThat(updateOptionCommand.name()).isEqualTo("옵션A");
         assertThat(updateOptionCommand.count()).isEqualTo(2);

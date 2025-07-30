@@ -25,13 +25,13 @@ public class LoadExpertController {
     public BaseResponse<LoadExpertBasicInfoResponse> getExpertBasicInfo(@PathVariable("expert_no") String expertNo) {
 
         ExpertBasicInfoResult appResponse = loadExpertUseCase.getExpertBasicInfo(expertNo);
-        return BaseResponse.onSuccess(loadExpertWebMapper.toBasicInfo(appResponse));
+        return BaseResponse.onSuccess(loadExpertWebMapper.toBasicInfoResponse(appResponse));
     }
 
     @GetMapping("/{expert_no}/detail_info")
     public BaseResponse<LoadExpertDetailInfoResponse> getExpertDetailInfo(@PathVariable("expert_no") String expertNo) {
         Expert expert = loadExpertUseCase.getExpertDetailInfo(expertNo);
-        return BaseResponse.onSuccess(loadExpertWebMapper.toDetailInfo(expert));
+        return BaseResponse.onSuccess(loadExpertWebMapper.toDetailInfoResponse(expert));
     }
 
 

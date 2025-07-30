@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record UpdatePriceListCommand(
-        List<UpdatePriceAppReq> prices
+        List<UpdatePriceCommand> prices
 ) {
 }

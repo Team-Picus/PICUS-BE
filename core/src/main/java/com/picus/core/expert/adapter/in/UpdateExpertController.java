@@ -25,7 +25,7 @@ public class UpdateExpertController {
     public BaseResponse<Void> updateExpertBasicInfo(@RequestBody UpdateExpertBasicInfoRequest webRequest,
                                                     @CurrentUser String userNo) {
         // 유스케이스 호출
-        updateExpertUseCase.updateExpertBasicInfo(updateExpertWebMapper.toBasicInfoAppRequest(webRequest, userNo));
+        updateExpertUseCase.updateExpertBasicInfo(updateExpertWebMapper.toBasicInfoCommand(webRequest, userNo));
         return BaseResponse.onSuccess();
     }
 
@@ -33,7 +33,7 @@ public class UpdateExpertController {
     public BaseResponse<Void> updateExpertDetailInfo(@RequestBody @Valid UpdateExpertDetailInfoRequest webRequest,
                                                      @CurrentUser String userNo) {
         // 유스케이스 호출
-        updateExpertUseCase.updateExpertDetailInfo(updateExpertWebMapper.toDetailInfoAppRequest(webRequest, userNo));
+        updateExpertUseCase.updateExpertDetailInfo(updateExpertWebMapper.toDetailInfoCommand(webRequest, userNo));
         return BaseResponse.onSuccess();
     }
 }

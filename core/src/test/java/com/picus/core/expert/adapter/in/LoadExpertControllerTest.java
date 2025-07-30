@@ -73,7 +73,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
         then(loadExpertUseCase).should()
                 .getExpertBasicInfo(expertNo);
         then(loadExpertWebMapper).should()
-                .toBasicInfo(any(ExpertBasicInfoResult.class));
+                .toBasicInfoResponse(any(ExpertBasicInfoResult.class));
     }
 
     @Test
@@ -103,7 +103,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
         then(loadExpertUseCase).should()
                 .getExpertDetailInfo(expertNo);
         then(loadExpertWebMapper).should()
-                .toDetailInfo(any(Expert.class));
+                .toDetailInfoResponse(any(Expert.class));
     }
 
     private void stubMethodAboutBasicInfo(String expertNo) {
@@ -132,7 +132,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
 
         given(loadExpertUseCase.getExpertBasicInfo(expertNo))
                 .willReturn(mockAppResponse);
-        given(loadExpertWebMapper.toBasicInfo(mockAppResponse))
+        given(loadExpertWebMapper.toBasicInfoResponse(mockAppResponse))
                 .willReturn(mockWebResponse);
     }
 
@@ -150,7 +150,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
 
         given(loadExpertUseCase.getExpertDetailInfo(expertNo))
                 .willReturn(mockExpert);
-        given(loadExpertWebMapper.toDetailInfo(mockExpert))
+        given(loadExpertWebMapper.toDetailInfoResponse(mockExpert))
                 .willReturn(webResponse);
     }
 

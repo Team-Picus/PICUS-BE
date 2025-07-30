@@ -14,7 +14,7 @@ class SuggestExpertWebMapperTest {
 
     @Test
     @DisplayName("SuggestExpertAppResponse를 SuggestExpertWebResponse로 변환한다")
-    void toWebResponse_shouldMapCorrectly() {
+    void toResponse_shouldMapCorrectly() {
         // given
         SuggestExpertResult appResponse = SuggestExpertResult.builder()
                 .expertNo("ex123")
@@ -23,7 +23,7 @@ class SuggestExpertWebMapperTest {
                 .build();
 
         // when
-        SuggestExpertResponse webResponse = mapper.toWebResponse(appResponse);
+        SuggestExpertResponse webResponse = mapper.toResponse(appResponse);
 
         // then
         assertThat(webResponse.expertNo()).isEqualTo("ex123");

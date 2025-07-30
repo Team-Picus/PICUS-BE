@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SuggestExpertWebMapper {
 
-    public SuggestExpertResponse toWebResponse(SuggestExpertResult suggestExpertResult) {
+    public SuggestExpertResponse toResponse(SuggestExpertResult suggestExpertResult) {
         return SuggestExpertResponse.builder()
                 .expertNo(suggestExpertResult.expertNo())
                 .nickname(suggestExpertResult.nickname())

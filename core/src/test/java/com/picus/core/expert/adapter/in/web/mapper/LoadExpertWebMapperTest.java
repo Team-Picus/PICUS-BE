@@ -22,7 +22,7 @@ class LoadExpertWebMapperTest {
 
     @Test
     @DisplayName("Expert 도메인 객체를 기본 정보 WebResponse로 매핑한다")
-    void toBasicInfo_shouldMapCorrectly() {
+    void toBasicInfo_Response_shouldMapCorrectly() {
         // given
         ExpertBasicInfoResult appResponse = ExpertBasicInfoResult.builder()
                 .expertNo("expert_no")
@@ -37,7 +37,7 @@ class LoadExpertWebMapperTest {
                 .build();
 
         // when
-        LoadExpertBasicInfoResponse result = mapper.toBasicInfo(appResponse);
+        LoadExpertBasicInfoResponse result = mapper.toBasicInfoResponse(appResponse);
 
         // then
         assertThat(result).isNotNull();
@@ -54,7 +54,7 @@ class LoadExpertWebMapperTest {
 
     @Test
     @DisplayName("Expert 도메인 객체를 상세 정보 WebResponse로 매핑한다")
-    void toDetailInfo_shouldMapCorrectly() {
+    void toDetailInfo_Response_shouldMapCorrectly() {
         // given
 
         List<Project> projects = List.of(Project.builder()
@@ -86,7 +86,7 @@ class LoadExpertWebMapperTest {
                 .build();
 
         // when
-        LoadExpertDetailInfoResponse response = mapper.toDetailInfo(expert);
+        LoadExpertDetailInfoResponse response = mapper.toDetailInfoResponse(expert);
 
         // then
         assertThat(response.activityCareer()).isEqualTo("5년차 백엔드 개발자");

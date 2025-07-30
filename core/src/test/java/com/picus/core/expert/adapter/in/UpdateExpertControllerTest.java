@@ -52,7 +52,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
         UpdateExpertBasicInfoRequest request = givenWebRequest();
         String currentUserNo = TEST_USER_ID;
 
-        given(updateExpertWebMapper.toBasicInfoAppRequest(request, currentUserNo))
+        given(updateExpertWebMapper.toBasicInfoCommand(request, currentUserNo))
                 .willReturn(Mockito.mock(UpdateExpertBasicInfoCommand.class));
 
         // when
@@ -68,7 +68,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
 
         // then - 메서드 호출 검증
         then(updateExpertWebMapper).should()
-                .toBasicInfoAppRequest(eq(request), eq(TEST_USER_ID));
+                .toBasicInfoCommand(eq(request), eq(TEST_USER_ID));
         then(updateExpertUseCase).should()
                 .updateExpertBasicInfo(any(UpdateExpertBasicInfoCommand.class));
     }
@@ -97,7 +97,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                         .build())
                 .build();
 
-        given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
+        given(updateExpertWebMapper.toDetailInfoCommand(request, currentUserNo))
                 .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
 
         // when
@@ -113,7 +113,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
 
         // then
         then(updateExpertWebMapper).should()
-                .toDetailInfoAppRequest(request, currentUserNo);
+                .toDetailInfoCommand(request, currentUserNo);
         then(updateExpertUseCase).should()
                 .updateExpertDetailInfo(any(UpdateExpertDetailInfoCommand.class));
     }
@@ -141,7 +141,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                         .build())
                 .build();
 
-        given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
+        given(updateExpertWebMapper.toDetailInfoCommand(request, currentUserNo))
                 .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
 
         // when // then
@@ -167,7 +167,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                         .build()))
                 .build();
 
-        given(updateExpertWebMapper.toDetailInfoAppRequest(request, currentUserNo))
+        given(updateExpertWebMapper.toDetailInfoCommand(request, currentUserNo))
                 .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
 
         // when // then

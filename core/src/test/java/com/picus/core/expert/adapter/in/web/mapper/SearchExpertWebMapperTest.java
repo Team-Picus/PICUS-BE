@@ -14,7 +14,7 @@ class SearchExpertWebMapperTest {
 
     @Test
     @DisplayName("SearchExpertAppResponse를 SearchExpertWebResponse로 변환한다")
-    void toWebResponse_shouldMapCorrectly() {
+    void toResponse_shouldMapCorrectly() {
         // given
         SearchExpertResult appResponse = SearchExpertResult.builder()
                 .expertNo("ex-001")
@@ -23,7 +23,7 @@ class SearchExpertWebMapperTest {
                 .build();
 
         // when
-        SearchExpertResponse webResponse = mapper.toWebResponse(appResponse);
+        SearchExpertResponse webResponse = mapper.toResponse(appResponse);
 
         // then
         assertThat(webResponse.expertNo()).isEqualTo("ex-001");

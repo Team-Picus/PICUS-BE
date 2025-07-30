@@ -42,7 +42,7 @@ class LoadGalleryServiceTest {
                 .build();
         given(postReadPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.of(post));
         LoadGalleryResult loadGalleryResult = mock(LoadGalleryResult.class);
-        given(appMapper.toAppResp(post, List.of(""))).willReturn(loadGalleryResult); // TODO: fileKey -> url 변환로직 추가 후 수정
+        given(appMapper.toResult(post, List.of(""))).willReturn(loadGalleryResult); // TODO: fileKey -> url 변환로직 추가 후 수정
 
 
         // when
@@ -52,7 +52,7 @@ class LoadGalleryServiceTest {
         assertThat(result).isPresent();
 
         then(postReadPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
-        then(appMapper).should().toAppResp(post, List.of(""));
+        then(appMapper).should().toResult(post, List.of(""));
     }
 
     @Test

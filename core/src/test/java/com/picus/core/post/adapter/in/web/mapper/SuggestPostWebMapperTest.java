@@ -1,27 +1,27 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.response.SuggestPostsResponse;
-import com.picus.core.post.application.port.in.result.SuggestPostsResult;
+import com.picus.core.post.adapter.in.web.data.response.SuggestPostResponse;
+import com.picus.core.post.application.port.in.result.SuggestPostResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SuggestPostsWebMapperTest {
+class SuggestPostWebMapperTest {
 
-    private SuggestPostsWebMapper webMapper = new SuggestPostsWebMapper();
+    private SuggestPostWebMapper webMapper = new SuggestPostWebMapper();
 
     @Test
-    @DisplayName("SuggestPostsResult -> SuggestPostsResponse 매핑")
+    @DisplayName("SuggestPostResult -> SuggestPostResponse 매핑")
     public void toResponse() throws Exception {
         // given
-        SuggestPostsResult result = SuggestPostsResult.builder()
+        SuggestPostResult result = SuggestPostResult.builder()
                 .postNo("post-123")
                 .title("제목")
                 .build();
 
         // when
-        SuggestPostsResponse response = webMapper.toResponse(result);
+        SuggestPostResponse response = webMapper.toResponse(result);
 
         // then
         assertThat(response.postId()).isEqualTo("post-123");

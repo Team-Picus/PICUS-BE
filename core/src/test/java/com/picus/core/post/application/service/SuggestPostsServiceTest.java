@@ -1,7 +1,7 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.post.application.port.in.mapper.SuggestPostsCommandMapper;
-import com.picus.core.post.application.port.in.result.SuggestPostsResult;
+import com.picus.core.post.application.port.in.mapper.SuggestPostCommandMapper;
+import com.picus.core.post.application.port.in.result.SuggestPostResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +22,10 @@ import static org.mockito.Mockito.mock;
 class SuggestPostsServiceTest {
 
     @Mock private PostReadPort postReadPort;
-    @Mock private SuggestPostsCommandMapper appMapper;
+    @Mock private SuggestPostCommandMapper appMapper;
 
-    @InjectMocks SuggestPostsService suggestPostsService;
+    @InjectMocks
+    SuggestPostService suggestPostsService;
 
     @Test
     @DisplayName("게시물 검색어 추천")
@@ -37,16 +38,16 @@ class SuggestPostsServiceTest {
         given(postReadPort.findTopNByTitleContainingOrderByTitle(keyword, size))
                 .willReturn(List.of(post));
 
-        SuggestPostsResult appResp = mock(SuggestPostsResult.class);
-       given(appMapper.toAppResp(post)).willReturn(appResp);
+        SuggestPostResult appResp = mock(SuggestPostResult.class);
+       given(appMapper.toResult(post)).willReturn(appResp);
 
         // when
-        List<SuggestPostsResult> results = suggestPostsService.suggest(keyword, size);
+        List<SuggestPostResult> results = suggestPostsService.suggest(keyword, size);
 
         // then
         assertThat(results).hasSize(1);
         then(postReadPort).should().findTopNByTitleContainingOrderByTitle(keyword, size);
-        then(appMapper).should().toAppResp(post);
+        then(appMapper).should().toResult(post);
     }
 
 

@@ -97,7 +97,7 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
     private void stubMethodInController(String keyword, List<SuggestExpertResult> mockResult, int size) {
         given(suggestExpertsUseCase.suggestExperts(keyword, size)).willReturn(mockResult);
         for (SuggestExpertResult app : mockResult) {
-            given(suggestExpertWebMapper.toWebResponse(app)).willReturn(
+            given(suggestExpertWebMapper.toResponse(app)).willReturn(
                     new SuggestExpertResponse(
                             app.expertNo(), app.nickname(), app.profileImageUrl()
                     )

@@ -1,7 +1,7 @@
 package com.picus.core.post.integration;
 
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.post.adapter.in.web.data.response.SuggestPostsResponse;
+import com.picus.core.post.adapter.in.web.data.response.SuggestPostResponse;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.domain.vo.PostMoodType;
@@ -12,7 +12,6 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,7 +71,7 @@ public class SuggestPostsIntegrationTest {
         HttpEntity<Void> request = settingWebRequest(createUserEntity(), null);
 
         // when
-        ResponseEntity<BaseResponse<List<SuggestPostsResponse>>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<List<SuggestPostResponse>>> response = restTemplate.exchange(
                 "/api/v1/posts/search/suggestions?keyword={keyword}&size={size}",
                 HttpMethod.GET,
                 request,
@@ -84,12 +83,12 @@ public class SuggestPostsIntegrationTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        BaseResponse<List<SuggestPostsResponse>> body = response.getBody();
+        BaseResponse<List<SuggestPostResponse>> body = response.getBody();
         assertThat(body).isNotNull();
 
-        List<SuggestPostsResponse> result = body.getResult();
+        List<SuggestPostResponse> result = body.getResult();
         assertThat(result).hasSize(5)
-                .extracting(SuggestPostsResponse::title)
+                .extracting(SuggestPostResponse::title)
                 .containsExactly(
                         "데일리",
                         "데일리 모먼트",

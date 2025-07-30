@@ -50,7 +50,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
                 .title("")
                 .oneLineDescription("")
                 .build();
-        given(webMapper.toWebResp(appResp)).willReturn(webResp);
+        given(webMapper.toResponse(appResp)).willReturn(webResp);
 
         // when
         mockMvc.perform(
@@ -69,7 +69,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
         // then
 
         then(loadGalleryUseCase).should().load(expertNo);
-        then(webMapper).should().toWebResp(appResp);
+        then(webMapper).should().toResponse(appResp);
     }
 
     @Test
