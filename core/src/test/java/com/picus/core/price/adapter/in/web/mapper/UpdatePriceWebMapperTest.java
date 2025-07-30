@@ -42,7 +42,7 @@ public class UpdatePriceWebMapperTest {
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdatePriceWebReq updatePriceWebRequest = UpdatePriceWebReq.builder()
+        UpdatePriceRequest updatePriceWebRequest = UpdatePriceRequest.builder()
                 .priceNo("price-001")
                 .priceThemeType("THEME")
                 .priceReferenceImages(List.of(imageWebRequest))

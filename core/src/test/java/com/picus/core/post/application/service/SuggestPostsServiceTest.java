@@ -1,6 +1,5 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.post.application.port.in.mapper.SuggestPostCommandMapper;
 import com.picus.core.post.application.port.in.result.SuggestPostResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
@@ -21,8 +20,8 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class SuggestPostsServiceTest {
 
-    @Mock private PostReadPort postReadPort;
-    @Mock private SuggestPostCommandMapper appMapper;
+    @Mock
+    private PostReadPort postReadPort;
 
     @InjectMocks
     SuggestPostService suggestPostsService;
@@ -34,20 +33,21 @@ class SuggestPostsServiceTest {
         String keyword = "k";
         int size = 5;
 
-        Post post = mock(Post.class);
+        Post post = Post.builder()
+                .postNo("post-123")
+                .title("title")
+                .build();
         given(postReadPort.findTopNByTitleContainingOrderByTitle(keyword, size))
                 .willReturn(List.of(post));
-
-        SuggestPostResult appResp = mock(SuggestPostResult.class);
-       given(appMapper.toResult(post)).willReturn(appResp);
 
         // when
         List<SuggestPostResult> results = suggestPostsService.suggest(keyword, size);
 
         // then
-        assertThat(results).hasSize(1);
+        assertThat(results).hasSize(1)
+                .extracting(SuggestPostResult::postNo, SuggestPostResult::title)
+                .containsExactly(tuple("post-123", "title"));
         then(postReadPort).should().findTopNByTitleContainingOrderByTitle(keyword, size);
-        then(appMapper).should().toResult(post);
     }
 
 

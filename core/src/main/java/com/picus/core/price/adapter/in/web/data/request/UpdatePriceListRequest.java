@@ -8,5 +8,5 @@ import java.util.List;
 
 @Builder
 public record UpdatePriceListRequest(
-    @NotNull @Valid List<UpdatePriceWebReq> prices
+    @NotNull @Valid List<UpdatePriceRequest> prices
 ) {}

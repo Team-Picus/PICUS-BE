@@ -1,7 +1,6 @@
 package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.SuggestPostUseCase;
-import com.picus.core.post.application.port.in.mapper.SuggestPostCommandMapper;
 import com.picus.core.post.application.port.in.result.SuggestPostResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
@@ -15,8 +14,6 @@ import java.util.List;
 public class SuggestPostService implements SuggestPostUseCase {
 
     private final PostReadPort postReadPort;
-    private final SuggestPostCommandMapper appMapper;
-
     @Override
     public List<SuggestPostResult> suggest(String keyword, int size) {
 
@@ -25,7 +22,11 @@ public class SuggestPostService implements SuggestPostUseCase {
 
         // 응답 객체로 변환
         return posts.stream()
-                .map(appMapper::toResult)
+                .map(post -> SuggestPostResult.builder()
+                                .postNo(post.getPostNo())
+                                .title(post.getTitle())
+                                .build()
+                )
                 .toList();
     }
 }

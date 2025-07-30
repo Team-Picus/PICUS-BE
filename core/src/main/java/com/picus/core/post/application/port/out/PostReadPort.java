@@ -21,4 +21,6 @@ public interface PostReadPort {
         (내부적으로는 가나다순)
      */
     List<Post> findTopNByTitleContainingOrderByTitle(String keyword, int size);
+
+    List<Post> findRandomTopN(int size);
 }

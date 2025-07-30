@@ -100,7 +100,7 @@ public class UpdatePriceIntegrationTest {
                 createOptionWebRequest(null, "new_opt_name", 2, 10,
                         List.of("new_cnt"), NEW); // 추가
 
-        UpdatePriceWebReq updatePriceWebRequest =
+        UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest(null, "FASHION", NEW,
                         List.of(newImgWebReq), List.of(newPkgWebReq), List.of(newOptWebReq));
 
@@ -215,7 +215,7 @@ public class UpdatePriceIntegrationTest {
                 createOptionWebRequest(optEntity2.getOptionNo(), null, null, null,
                         null, DELETE); // 삭제
 
-        UpdatePriceWebReq updatePriceWebRequest =
+        UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest(priceEntity.getPriceNo(), "FASHION", UPDATE,
                         List.of(newImgWebReq, uptImgWebReq, delImgWebReq),
                         List.of(newPkgWebReq, uptPkgWebReq, delPkgWebReq),
@@ -304,7 +304,7 @@ public class UpdatePriceIntegrationTest {
 
         // 요청 값 셋팅
 
-        UpdatePriceWebReq updatePriceWebRequest =
+        UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest(priceEntity.getPriceNo(), null, DELETE,
                         null, null, null);
 
@@ -446,9 +446,9 @@ public class UpdatePriceIntegrationTest {
                 .build();
     }
 
-    private UpdatePriceWebReq createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
-                                                    List<UpdatePriceReferenceImageRequest> priceReferenceImages, List<UpdatePackageRequest> packages, List<UpdateOptionRequest> options) {
-        return UpdatePriceWebReq.builder()
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
+                                                     List<UpdatePriceReferenceImageRequest> priceReferenceImages, List<UpdatePackageRequest> packages, List<UpdateOptionRequest> options) {
+        return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
                 .priceThemeType(theme)
                 .priceReferenceImages(priceReferenceImages)

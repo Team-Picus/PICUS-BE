@@ -94,6 +94,11 @@ public class UserPersistenceAdapter
     }
 
     @Override
+    public User findByExpertNo(String expertNo) {
+        return null;
+    }
+
+    @Override
     public Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo) {
         return userJpaRepository.findUserInfoByExpertNo(expertNo);
     }

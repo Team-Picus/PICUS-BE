@@ -15,7 +15,7 @@ public class UpdatePriceWebMapper {
                 .build();
     }
 
-    private List<UpdatePriceCommand> toPriceCommand(List<UpdatePriceWebReq> updatePriceWebRequests) {
+    private List<UpdatePriceCommand> toPriceCommand(List<UpdatePriceRequest> updatePriceWebRequests) {
         if (updatePriceWebRequests == null || updatePriceWebRequests.isEmpty()) return List.of();
         return updatePriceWebRequests.stream()
                 .map(w -> UpdatePriceCommand.builder()

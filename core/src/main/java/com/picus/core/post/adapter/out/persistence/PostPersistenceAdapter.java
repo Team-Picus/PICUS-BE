@@ -95,6 +95,11 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
     }
 
     @Override
+    public List<Post> findRandomTopN(int size) {
+        return List.of();
+    }
+
+    @Override
     public void update(Post post) {
         PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));

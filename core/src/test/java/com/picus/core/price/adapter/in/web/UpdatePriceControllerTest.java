@@ -57,7 +57,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                 createOptionWebRequest("opt-001", "옵션A", 2,
                         3000, List.of("옵션내용"), ChangeStatus.NEW);
 
-        UpdatePriceWebReq updatePriceWebRequest =
+        UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest("price-001", "THEME", ChangeStatus.NEW,
                         imageWebRequest, updatePackageRequest, updateOptionRequest);
 
@@ -101,7 +101,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
     public void applyPriceChanges_PriceWebRequest_change_status_null() throws Exception {
         // given
 
-        UpdatePriceWebReq updatePriceWebRequest =
+        UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest("price-001", "THEME", null);
 
         UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
@@ -136,7 +136,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                 createOptionWebRequest("opt-001", "옵션A", 2,
                         3000, List.of("옵션내용"), ChangeStatus.NEW);
 
-        UpdatePriceWebReq updatePriceWebRequest =
+        UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest("price-001", "THEME", ChangeStatus.NEW,
                         imageWebRequest, updatePackageRequest, updateOptionRequest);
 
@@ -191,10 +191,10 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
         return updateOptionRequest;
     }
 
-    private UpdatePriceWebReq createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
-                                                    UpdatePriceReferenceImageRequest imageWebRequest,
-                                                    UpdatePackageRequest updatePackageRequest, UpdateOptionRequest updateOptionRequest) {
-        return UpdatePriceWebReq.builder()
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
+                                                     UpdatePriceReferenceImageRequest imageWebRequest,
+                                                     UpdatePackageRequest updatePackageRequest, UpdateOptionRequest updateOptionRequest) {
+        return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
                 .priceThemeType(theme)
                 .priceReferenceImages(List.of(imageWebRequest))
@@ -204,8 +204,8 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                 .build();
     }
 
-    private UpdatePriceWebReq createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus) {
-        return UpdatePriceWebReq.builder()
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus) {
+        return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
                 .priceThemeType(theme)
                 .status(changeStatus)

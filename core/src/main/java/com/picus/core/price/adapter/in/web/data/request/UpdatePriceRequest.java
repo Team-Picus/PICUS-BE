@@ -8,7 +8,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record UpdatePriceWebReq(
+public record UpdatePriceRequest(
         String priceNo,
         String priceThemeType,
         @Valid List<UpdatePriceReferenceImageRequest> priceReferenceImages,
