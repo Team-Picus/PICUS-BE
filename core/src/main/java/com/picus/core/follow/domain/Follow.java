@@ -1,4 +1,4 @@
-package com.picus.core.follow.domain.model;
+package com.picus.core.follow.domain;
 
 import lombok.Builder;
 import lombok.Getter;

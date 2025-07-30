@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface FollowJpaRepository extends JpaRepository<FollowEntity, FollowId> {
 
-    @Query("select f from FollowEntity f where f.user.userNo = :user_no")
+    @Query("select f from FollowEntity f where f.userNo = :user_no")
     List<FollowEntity> findByUserNo(@Param("user_no") String userNo);
 }
