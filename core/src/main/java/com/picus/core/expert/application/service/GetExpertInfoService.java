@@ -7,7 +7,7 @@ import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserQueryPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 public class GetExpertInfoService implements GetExpertInfoQuery {
 
     private final LoadExpertPort loadExpertPort;
-    private final UserQueryPort userQueryPort;
+    private final UserReadPort userReadPort;
 
     @Override
     public Expert getExpertDetailInfo(String expertNo) {
@@ -36,7 +36,7 @@ public class GetExpertInfoService implements GetExpertInfoQuery {
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // expertNo로 User 정보 조회
-        UserWithProfileImageDto userInfo = userQueryPort.findUserInfoByExpertNo(expertNo)
+        UserWithProfileImageDto userInfo = userReadPort.findUserInfoByExpertNo(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // TODO: 배경 이미지, 프로필 이미지 key->url 변환

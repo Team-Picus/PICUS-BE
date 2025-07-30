@@ -10,11 +10,13 @@ import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
