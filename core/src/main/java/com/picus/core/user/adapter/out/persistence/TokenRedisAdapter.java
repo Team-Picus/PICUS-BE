@@ -33,12 +33,12 @@ public class TokenRedisAdapter
     }
 
     @Override
-    public void save(String key, Duration duration) {
+    public void create(String key, Duration duration) {
         redisTemplate.opsForValue().set(key, "", duration);
     }
 
     @Override
-    public void save(String key, String value, Duration duration) {
+    public void create(String key, String value, Duration duration) {
         redisTemplate.opsForValue().set(key, value, duration);
     }
 

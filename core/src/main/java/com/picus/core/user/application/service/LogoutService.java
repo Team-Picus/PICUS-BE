@@ -31,7 +31,7 @@ public class LogoutService implements LogoutUseCase {
         Duration duration = tokenProvider.getRemainingDuration(token)
                 .orElseThrow(() -> new RestApiException(EXPIRED_MEMBER_JWT));
 
-        tokenCreatePort.save(key, duration);
+        tokenCreatePort.create(key, duration);
         tokenDeletePort.delete(tokenPrefixProperties.toRefresh(userNo));
     }
 }
