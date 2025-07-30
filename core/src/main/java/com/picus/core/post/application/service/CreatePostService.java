@@ -4,8 +4,8 @@ import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.CreatePostUseCase;
-import com.picus.core.post.application.port.in.mapper.CreatePostAppMapper;
-import com.picus.core.post.application.port.in.request.CreatePostCommand;
+import com.picus.core.post.application.port.in.mapper.CreatePostCommandMapper;
+import com.picus.core.post.application.port.in.command.CreatePostCommand;
 import com.picus.core.post.application.port.out.PostCreatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
@@ -32,7 +32,7 @@ public class CreatePostService implements CreatePostUseCase {
     private final ExpertReadPort expertReadPort;
     private final ExpertUpdatePort expertUpdatePort;
 
-    private final CreatePostAppMapper appMapper;
+    private final CreatePostCommandMapper appMapper;
 
     @Override
     public void create(CreatePostCommand createPostCommand) {

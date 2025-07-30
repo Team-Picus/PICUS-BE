@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
-import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateProjectCommand;
+import com.picus.core.expert.application.port.in.command.ChangeStatus;
+import com.picus.core.expert.application.port.in.command.UpdateProjectCommand;
 import com.picus.core.expert.domain.Project;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UpdateProjectAppRequestAppMapperTest {
 
-    private final UpdateProjectAppMapper mapper = new UpdateProjectAppMapper();
+    private final UpdateProjectCommandMapper mapper = new UpdateProjectCommandMapper();
 
     @Test
     @DisplayName("UpdateProjectCommand 를 Project 도메인 객체로 변환한다.")

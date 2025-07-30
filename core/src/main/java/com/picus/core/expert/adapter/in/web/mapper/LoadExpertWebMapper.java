@@ -1,11 +1,11 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.ProjectWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.SkillWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.StudioWebResponse;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse.ProjectResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse.SkillResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse.StudioResponse;
+import com.picus.core.expert.application.port.in.result.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
@@ -17,8 +17,8 @@ import java.util.List;
 @Component
 public class LoadExpertWebMapper {
 
-    public LoadExpertBasicInfoWebResponse toBasicInfo(ExpertBasicInfoResult appResponse) {
-        return LoadExpertBasicInfoWebResponse.builder()
+    public LoadExpertBasicInfoResponse toBasicInfo(ExpertBasicInfoResult appResponse) {
+        return LoadExpertBasicInfoResponse.builder()
                 .expertNo(appResponse.expertNo())
                 .activityDuration(appResponse.activityDuration())
                 .activityCount(appResponse.activityCount())
@@ -31,9 +31,9 @@ public class LoadExpertWebMapper {
                 .build();
     }
 
-    public LoadExpertDetailInfoWebResponse toDetailInfo(Expert expert) {
+    public LoadExpertDetailInfoResponse toDetailInfo(Expert expert) {
 
-        return LoadExpertDetailInfoWebResponse.builder()
+        return LoadExpertDetailInfoResponse.builder()
                 .activityCareer(expert.getActivityCareer())
                 .projects(toProjectWebResponse(expert.getProjects()))
                 .skills(toSkillWebResponse(expert.getSkills()))
@@ -42,9 +42,9 @@ public class LoadExpertWebMapper {
                 .build();
     }
 
-    private List<ProjectWebResponse> toProjectWebResponse(List<Project> projects) {
+    private List<ProjectResponse> toProjectWebResponse(List<Project> projects) {
         return projects.stream()
-                .map(project -> ProjectWebResponse.builder()
+                .map(project -> ProjectResponse.builder()
                         .projectNo(project.getProjectNo())
                         .projectName(project.getProjectName())
                         .startDate(project.getStartDate())
@@ -53,9 +53,9 @@ public class LoadExpertWebMapper {
                 ).toList();
     }
 
-    private List<SkillWebResponse> toSkillWebResponse(List<Skill> skills) {
+    private List<SkillResponse> toSkillWebResponse(List<Skill> skills) {
         return skills.stream()
-                .map(skill -> SkillWebResponse.builder()
+                .map(skill -> SkillResponse.builder()
                         .skillNo(skill.getSkillNo())
                         .skillType(skill.getSkillType())
                         .content(skill.getContent())
@@ -63,8 +63,8 @@ public class LoadExpertWebMapper {
                 ).toList();
     }
 
-    private StudioWebResponse toStudioWebResponse(Studio studio) {
-        return StudioWebResponse.builder()
+    private StudioResponse toStudioWebResponse(Studio studio) {
+        return StudioResponse.builder()
                 .studioNo(studio.getStudioNo())
                 .studioName(studio.getStudioName())
                 .employeesCount(studio.getEmployeesCount())

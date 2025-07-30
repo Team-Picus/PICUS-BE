@@ -1,10 +1,10 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.post.adapter.in.web.data.response.LoadGalleryWebResp;
+import com.picus.core.post.adapter.in.web.data.response.LoadGalleryResponse;
 import com.picus.core.post.adapter.in.web.mapper.LoadGalleryWebMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
 
         LoadGalleryResult appResp = mock(LoadGalleryResult.class);
         given(loadGalleryUseCase.load(expertNo)).willReturn(Optional.of(appResp));
-        LoadGalleryWebResp webResp = LoadGalleryWebResp.builder()
+        LoadGalleryResponse webResp = LoadGalleryResponse.builder()
                 .postNo("")
                 .thumbnailUrl("")
                 .title("")

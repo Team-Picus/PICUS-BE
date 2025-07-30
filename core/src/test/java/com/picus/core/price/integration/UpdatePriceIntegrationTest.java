@@ -14,7 +14,7 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
-import com.picus.core.price.application.port.in.request.ChangeStatus;
+import com.picus.core.price.application.port.in.command.ChangeStatus;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
@@ -37,7 +37,7 @@ import java.util.Optional;
 
 import static com.picus.core.expert.domain.vo.PriceThemeType.BEAUTY;
 import static com.picus.core.expert.domain.vo.PriceThemeType.FASHION;
-import static com.picus.core.price.application.port.in.request.ChangeStatus.*;
+import static com.picus.core.price.application.port.in.command.ChangeStatus.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -89,14 +89,14 @@ public class UpdatePriceIntegrationTest {
         commitTestTransaction();
 
         // 요청 값 셋팅
-        UpdatePriceReferenceImageWebReq newImgWebReq =
+        UpdatePriceReferenceImageRequest newImgWebReq =
                 createPriceRefImageWebRequest(null, "new_file_key", 1, NEW); // 새로 추가
 
-        UpdatePackageWebReq newPkgWebReq =
+        UpdatePackageRequest newPkgWebReq =
                 createPackageWebRequest(null, "new_pkg_name", 10, List.of("new_cnt"),
                         "new_notice", NEW); // 추가
 
-        UpdateOptionWebReq newOptWebReq =
+        UpdateOptionRequest newOptWebReq =
                 createOptionWebRequest(null, "new_opt_name", 2, 10,
                         List.of("new_cnt"), NEW); // 추가
 
@@ -104,9 +104,9 @@ public class UpdatePriceIntegrationTest {
                 createPriceWebRequest(null, "FASHION", NEW,
                         List.of(newImgWebReq), List.of(newPkgWebReq), List.of(newOptWebReq));
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
-        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity, webRequest);
+        HttpEntity<UpdatePriceListRequest> request = settingWebRequest(userEntity, webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -186,32 +186,32 @@ public class UpdatePriceIntegrationTest {
         commitTestTransaction();
 
         // 요청 값 셋팅
-        UpdatePriceReferenceImageWebReq newImgWebReq =
+        UpdatePriceReferenceImageRequest newImgWebReq =
                 createPriceRefImageWebRequest(null, "new_file_key", 1, NEW); // 새로 추가
-        UpdatePriceReferenceImageWebReq uptImgWebReq =
+        UpdatePriceReferenceImageRequest uptImgWebReq =
                 createPriceRefImageWebRequest(refImageEntity1.getPriceReferenceImageNo(), refImageEntity1.getFileKey(),
                         2, UPDATE); // 수정
-        UpdatePriceReferenceImageWebReq delImgWebReq =
+        UpdatePriceReferenceImageRequest delImgWebReq =
                 createPriceRefImageWebRequest(refImageEntity2.getPriceReferenceImageNo(),
                         null, null, DELETE); // 삭제
 
-        UpdatePackageWebReq newPkgWebReq =
+        UpdatePackageRequest newPkgWebReq =
                 createPackageWebRequest(null, "new_pkg_name", 10, List.of("new_cnt"),
                         "new_notice", NEW); // 추가
-        UpdatePackageWebReq uptPkgWebReq =
+        UpdatePackageRequest uptPkgWebReq =
                 createPackageWebRequest(pkgEntity1.getPackageNo(), "changed_pkg_name", 10,
                         List.of("changed_cnt"), "changed_notice", UPDATE); // 수정
-        UpdatePackageWebReq delPkgWebReq =
+        UpdatePackageRequest delPkgWebReq =
                 createPackageWebRequest(pkgEntity2.getPackageNo(), null, null,
                         null, null, DELETE); // 삭제
 
-        UpdateOptionWebReq newOptWebReq =
+        UpdateOptionRequest newOptWebReq =
                 createOptionWebRequest(null, "new_opt_name", 2, 10,
                         List.of("new_cnt"), NEW); // 추가
-        UpdateOptionWebReq uptOptWebReq =
+        UpdateOptionRequest uptOptWebReq =
                 createOptionWebRequest(optEntity1.getOptionNo(), "changed_opt_name", 1, 5,
                         List.of("changed_cnt"), UPDATE); // 수정
-        UpdateOptionWebReq delOptWebReq =
+        UpdateOptionRequest delOptWebReq =
                 createOptionWebRequest(optEntity2.getOptionNo(), null, null, null,
                         null, DELETE); // 삭제
 
@@ -221,9 +221,9 @@ public class UpdatePriceIntegrationTest {
                         List.of(newPkgWebReq, uptPkgWebReq, delPkgWebReq),
                         List.of(newOptWebReq, uptOptWebReq, delOptWebReq));
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
-        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity, webRequest);
+        HttpEntity<UpdatePriceListRequest> request = settingWebRequest(userEntity, webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -308,9 +308,9 @@ public class UpdatePriceIntegrationTest {
                 createPriceWebRequest(priceEntity.getPriceNo(), null, DELETE,
                         null, null, null);
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
-        HttpEntity<UpdatePriceListWebReq> request = settingWebRequest(userEntity, webRequest);
+        HttpEntity<UpdatePriceListRequest> request = settingWebRequest(userEntity, webRequest);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -412,9 +412,9 @@ public class UpdatePriceIntegrationTest {
         TestTransaction.end(); // 실제 커밋 수행
     }
 
-    private UpdatePriceReferenceImageWebReq createPriceRefImageWebRequest(String priceRefImageNo, String fileKey,
-                                                                          Integer imageOrder, ChangeStatus changeStatus) {
-        return UpdatePriceReferenceImageWebReq.builder()
+    private UpdatePriceReferenceImageRequest createPriceRefImageWebRequest(String priceRefImageNo, String fileKey,
+                                                                           Integer imageOrder, ChangeStatus changeStatus) {
+        return UpdatePriceReferenceImageRequest.builder()
                 .priceRefImageNo(priceRefImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
@@ -422,9 +422,9 @@ public class UpdatePriceIntegrationTest {
                 .build();
     }
 
-    private UpdatePackageWebReq createPackageWebRequest(String packageNo, String name, Integer price, List<String> contents,
-                                                        String notice, ChangeStatus changeStatus) {
-        return UpdatePackageWebReq.builder()
+    private UpdatePackageRequest createPackageWebRequest(String packageNo, String name, Integer price, List<String> contents,
+                                                         String notice, ChangeStatus changeStatus) {
+        return UpdatePackageRequest.builder()
                 .packageNo(packageNo)
                 .name(name)
                 .price(price)
@@ -434,9 +434,9 @@ public class UpdatePriceIntegrationTest {
                 .build();
     }
 
-    private UpdateOptionWebReq createOptionWebRequest(String optionNo, String name, Integer count, Integer price,
-                                                      List<String> contents, ChangeStatus changeStatus) {
-        return UpdateOptionWebReq.builder()
+    private UpdateOptionRequest createOptionWebRequest(String optionNo, String name, Integer count, Integer price,
+                                                       List<String> contents, ChangeStatus changeStatus) {
+        return UpdateOptionRequest.builder()
                 .optionNo(optionNo)
                 .name(name)
                 .count(count)
@@ -447,7 +447,7 @@ public class UpdatePriceIntegrationTest {
     }
 
     private UpdatePriceWebReq createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
-                                                    List<UpdatePriceReferenceImageWebReq> priceReferenceImages, List<UpdatePackageWebReq> packages, List<UpdateOptionWebReq> options) {
+                                                    List<UpdatePriceReferenceImageRequest> priceReferenceImages, List<UpdatePackageRequest> packages, List<UpdateOptionRequest> options) {
         return UpdatePriceWebReq.builder()
                 .priceNo(priceNo)
                 .priceThemeType(theme)

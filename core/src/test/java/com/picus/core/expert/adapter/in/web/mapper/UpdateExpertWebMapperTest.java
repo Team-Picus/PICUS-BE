@@ -1,11 +1,11 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.SkillWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
-import com.picus.core.expert.application.port.in.request.*;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.ProjectWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.SkillWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.StudioWebRequest;
+import com.picus.core.expert.application.port.in.command.*;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picus.core.expert.application.port.in.request.ChangeStatus.*;
+import static com.picus.core.expert.application.port.in.command.ChangeStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -26,7 +26,7 @@ class UpdateExpertWebMapperTest {
     void toBasicInfoAppRequest_should_map_all_fields_correctly() {
         // given
         String currentUserNo = "USER123";
-        UpdateExpertBasicInfoWebRequest webRequest = new UpdateExpertBasicInfoWebRequest(
+        UpdateExpertBasicInfoRequest webRequest = new UpdateExpertBasicInfoRequest(
                 "profile-img-key",
                 "background-img-key",
                 "test-nickname",
@@ -52,7 +52,7 @@ class UpdateExpertWebMapperTest {
         // given
         String currentUserNo = "USER123";
 
-        UpdateExpertDetailInfoWebRequest webRequest = UpdateExpertDetailInfoWebRequest.builder()
+        UpdateExpertDetailInfoRequest webRequest = UpdateExpertDetailInfoRequest.builder()
                 .activityCareer("촬영 경력 3년")
                 .activityAreas(List.of("서울시 강남구", "경기도 성남시"))
                 .projects(List.of(

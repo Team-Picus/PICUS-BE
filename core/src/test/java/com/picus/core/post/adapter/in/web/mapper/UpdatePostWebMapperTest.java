@@ -1,8 +1,8 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq.PostImageWebReq;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest.PostImageRequest;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.picus.core.post.application.port.in.request.ChangeStatus.*;
-import static com.picus.core.post.application.port.in.request.ChangeStatus.NEW;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.*;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.NEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -21,13 +21,13 @@ class UpdatePostWebMapperTest {
     private UpdatePostWebMapper webMapper = new UpdatePostWebMapper();
 
     @Test
-    @DisplayName("UpdatePostWebReq -> UpdatePostCommand 매핑")
+    @DisplayName("UpdatePostRequest -> UpdatePostCommand 매핑")
     public void toAppReq_success() throws Exception {
         // given
-        UpdatePostWebReq webReq = UpdatePostWebReq.builder()
+        UpdatePostRequest webReq = UpdatePostRequest.builder()
                 .postImages(List.of(
-                        PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
-                        PostImageWebReq.builder().postImageNo("img-123").fileKey("img2.jpg").imageOrder(2).changeStatus(UPDATE).build()
+                        PostImageRequest.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
+                        PostImageRequest.builder().postImageNo("img-123").fileKey("img2.jpg").imageOrder(2).changeStatus(UPDATE).build()
                 ))
                 .title("테스트 제목")
                 .oneLineDescription("한 줄 설명")

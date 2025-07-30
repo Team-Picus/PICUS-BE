@@ -4,8 +4,8 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
-import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq.PostImageWebReq;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest.PostImageWebReq;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
@@ -77,10 +77,10 @@ public class CreatePostIntegrationTest {
         commitTestTransaction();
 
         // 입력값 셋팅
-        CreatePostWebReq webReq = createWebReq(
+        CreatePostRequest webReq = createWebReq(
                 List.of(
-                        CreatePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
-                        CreatePostWebReq.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()
+                        CreatePostRequest.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
+                        CreatePostRequest.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()
                 ),
                 "테스트 제목",
                 "한 줄 설명",
@@ -93,7 +93,7 @@ public class CreatePostIntegrationTest {
         );
 
         // 요청 셋팅
-        HttpEntity<CreatePostWebReq> httpEntity = settingWebRequest(userEntity, webReq);
+        HttpEntity<CreatePostRequest> httpEntity = settingWebRequest(userEntity, webReq);
 
         // when - API 요청
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -174,7 +174,7 @@ public class CreatePostIntegrationTest {
         return expertJpaRepository.save(expertEntity);
     }
 
-    private CreatePostWebReq createWebReq(
+    private CreatePostRequest createWebReq(
             List<PostImageWebReq> postImages,
             String title,
             String oneLineDescription,
@@ -185,7 +185,7 @@ public class CreatePostIntegrationTest {
             String spaceAddress,
             String packageNo
     ) {
-        return CreatePostWebReq.builder()
+        return CreatePostRequest.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

@@ -1,8 +1,8 @@
 package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
-import com.picus.core.post.application.port.in.mapper.LoadGalleryAppMapper;
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.application.port.in.mapper.LoadGalleryCommandMapper;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
@@ -19,7 +19,7 @@ public class LoadGalleryService implements LoadGalleryUseCase {
 
     private final PostReadPort postReadPort;
 
-    private final LoadGalleryAppMapper appMapper;
+    private final LoadGalleryCommandMapper appMapper;
 
     @Override
     public Optional<LoadGalleryResult> load(String expertNo) {

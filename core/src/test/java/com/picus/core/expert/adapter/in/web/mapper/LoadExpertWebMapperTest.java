@@ -1,8 +1,8 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse;
+import com.picus.core.expert.application.port.in.result.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
@@ -37,7 +37,7 @@ class LoadExpertWebMapperTest {
                 .build();
 
         // when
-        LoadExpertBasicInfoWebResponse result = mapper.toBasicInfo(appResponse);
+        LoadExpertBasicInfoResponse result = mapper.toBasicInfo(appResponse);
 
         // then
         assertThat(result).isNotNull();
@@ -86,7 +86,7 @@ class LoadExpertWebMapperTest {
                 .build();
 
         // when
-        LoadExpertDetailInfoWebResponse response = mapper.toDetailInfo(expert);
+        LoadExpertDetailInfoResponse response = mapper.toDetailInfo(expert);
 
         // then
         assertThat(response.activityCareer()).isEqualTo("5년차 백엔드 개발자");

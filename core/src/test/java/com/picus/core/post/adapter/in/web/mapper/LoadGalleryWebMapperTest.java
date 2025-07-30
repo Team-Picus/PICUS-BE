@@ -1,7 +1,7 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.response.LoadGalleryWebResp;
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.adapter.in.web.data.response.LoadGalleryResponse;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class LoadGalleryWebMapperTest {
 
     private LoadGalleryWebMapper webMapper = new LoadGalleryWebMapper();
     @Test
-    @DisplayName("LoadGalleryResult -> LoadGalleryWebResp 매핑")
+    @DisplayName("LoadGalleryResult -> LoadGalleryResponse 매핑")
     public void toWebResp() throws Exception {
         // given
         LoadGalleryResult appResp = LoadGalleryResult.builder()
@@ -22,7 +22,7 @@ class LoadGalleryWebMapperTest {
                 .oneLineDescription("one")
                 .build();
         // when
-        LoadGalleryWebResp webResp = webMapper.toWebResp(appResp);
+        LoadGalleryResponse webResp = webMapper.toWebResp(appResp);
 
         // then
         assertThat(webResp.postNo()).isEqualTo("post-123");

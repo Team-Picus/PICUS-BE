@@ -2,11 +2,11 @@ package com.picus.core.post.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
 import com.picus.core.post.adapter.in.web.mapper.UpdatePostWebMapper;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
-import com.picus.core.post.application.port.in.request.ChangeStatus;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.application.port.in.command.ChangeStatus;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -22,8 +22,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
-import static com.picus.core.post.application.port.in.request.ChangeStatus.NEW;
-import static com.picus.core.post.application.port.in.request.ChangeStatus.UPDATE;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.NEW;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.UPDATE;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -51,8 +51,8 @@ class UpdatePostControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("Post 수정 요청 - 성공")
     public void updatePost_success() throws Exception {
         // given
-        UpdatePostWebReq webReq = createUpdatePostWebReq(List.of(
-                        UpdatePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
+        UpdatePostRequest webReq = createUpdatePostWebReq(List.of(
+                        UpdatePostRequest.PostImageRequest.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
                         createPostImageWebReq(null, "img1.jpg", 1, NEW),
                         createPostImageWebReq("img-123", "img2.jpg", 2, UPDATE)
                 ), "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
@@ -80,8 +80,8 @@ class UpdatePostControllerTest extends AbstractSecurityMockSetup {
         then(updatePostUseCase).should().update(updatePostCommand);
     }
 
-    private UpdatePostWebReq.PostImageWebReq createPostImageWebReq(String postImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
-        return UpdatePostWebReq.PostImageWebReq.builder()
+    private UpdatePostRequest.PostImageRequest createPostImageWebReq(String postImageNo, String fileKey, int imageOrder, ChangeStatus changeStatus) {
+        return UpdatePostRequest.PostImageRequest.builder()
                 .postImageNo(postImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
@@ -89,8 +89,8 @@ class UpdatePostControllerTest extends AbstractSecurityMockSetup {
                 .build();
     }
 
-    private UpdatePostWebReq createUpdatePostWebReq(List<UpdatePostWebReq.PostImageWebReq> postImages, String title, String oneLineDescription, String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress, String packageNo) {
-        return UpdatePostWebReq.builder()
+    private UpdatePostRequest createUpdatePostWebReq(List<UpdatePostRequest.PostImageRequest> postImages, String title, String oneLineDescription, String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress, String packageNo) {
+        return UpdatePostRequest.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

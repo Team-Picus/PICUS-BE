@@ -1,6 +1,6 @@
 package com.picus.core.post.application.port.in;
 
-import com.picus.core.post.application.port.in.response.SuggestPostsResult;
+import com.picus.core.post.application.port.in.result.SuggestPostsResult;
 
 import java.util.List;
 

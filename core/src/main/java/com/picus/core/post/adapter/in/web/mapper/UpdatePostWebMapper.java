@@ -1,9 +1,9 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq.PostImageWebReq;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand.UpdatePostImageAppReq;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest.PostImageRequest;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand.UpdatePostImageAppReq;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class UpdatePostWebMapper {
 
-    public UpdatePostCommand toAppReq(UpdatePostWebReq webReq, String postNo, String currentUserNo) {
+    public UpdatePostCommand toAppReq(UpdatePostRequest webReq, String postNo, String currentUserNo) {
         return UpdatePostCommand.builder()
                 .postNo(postNo)
                 .postImages(toPostImages(webReq.postImages()))
@@ -27,8 +27,8 @@ public class UpdatePostWebMapper {
                 .build();
     }
 
-    private List<UpdatePostImageAppReq> toPostImages(List<PostImageWebReq> postImageWebReqs) {
-        return postImageWebReqs.stream()
+    private List<UpdatePostImageAppReq> toPostImages(List<PostImageRequest> postImageRequests) {
+        return postImageRequests.stream()
                 .map(webReq ->
                         UpdatePostImageAppReq.builder()
                                 .postImageNo(webReq.postImageNo())

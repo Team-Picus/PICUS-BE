@@ -1,7 +1,7 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.post.application.port.in.mapper.SuggestPostsAppMapper;
-import com.picus.core.post.application.port.in.response.SuggestPostsResult;
+import com.picus.core.post.application.port.in.mapper.SuggestPostsCommandMapper;
+import com.picus.core.post.application.port.in.result.SuggestPostsResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 class SuggestPostsServiceTest {
 
     @Mock private PostReadPort postReadPort;
-    @Mock private SuggestPostsAppMapper appMapper;
+    @Mock private SuggestPostsCommandMapper appMapper;
 
     @InjectMocks SuggestPostsService suggestPostsService;
 

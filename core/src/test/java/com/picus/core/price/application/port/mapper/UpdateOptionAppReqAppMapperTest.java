@@ -1,7 +1,7 @@
 package com.picus.core.price.application.port.mapper;
 
-import com.picus.core.price.application.port.in.mapper.UpdateOptionAppMapper;
-import com.picus.core.price.application.port.in.request.UpdateOptionCommand;
+import com.picus.core.price.application.port.in.mapper.UpdateOptionCommandMapper;
+import com.picus.core.price.application.port.in.command.UpdateOptionCommand;
 import com.picus.core.price.domain.Option;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +11,7 @@ import java.util.List;
 
 class UpdateOptionAppReqAppMapperTest {
 
-    private final UpdateOptionAppMapper appMapper = new UpdateOptionAppMapper();
+    private final UpdateOptionCommandMapper appMapper = new UpdateOptionCommandMapper();
 
     @Test
     @DisplayName("UpdateOptionCommand -> Option 매핑")

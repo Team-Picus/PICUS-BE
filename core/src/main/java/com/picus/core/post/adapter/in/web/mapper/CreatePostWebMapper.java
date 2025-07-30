@@ -1,7 +1,7 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
-import com.picus.core.post.application.port.in.request.CreatePostCommand;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest;
+import com.picus.core.post.application.port.in.command.CreatePostCommand;
 import com.picus.core.post.domain.PostImage;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class CreatePostWebMapper {
 
-    public CreatePostCommand toAppReq(CreatePostWebReq webReq, String currentUserNo) {
+    public CreatePostCommand toAppReq(CreatePostRequest webReq, String currentUserNo) {
         return CreatePostCommand.builder()
                 .postImages(toPostImages(webReq))
                 .title(webReq.title())
@@ -25,7 +25,7 @@ public class CreatePostWebMapper {
                 .build();
     }
 
-    private List<PostImage> toPostImages(CreatePostWebReq webReq) {
+    private List<PostImage> toPostImages(CreatePostRequest webReq) {
         return webReq.postImages().stream()
                 .map(postImageWebReq ->
                         PostImage.builder()

@@ -4,7 +4,7 @@ import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.post.adapter.in.web.data.response.SuggestPostsResponse;
 import com.picus.core.post.adapter.in.web.mapper.SuggestPostsWebMapper;
 import com.picus.core.post.application.port.in.SuggestPostsUseCase;
-import com.picus.core.post.application.port.in.response.SuggestPostsResult;
+import com.picus.core.post.application.port.in.result.SuggestPostsResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

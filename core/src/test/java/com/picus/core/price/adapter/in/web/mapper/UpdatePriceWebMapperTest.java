@@ -1,7 +1,7 @@
 package com.picus.core.price.adapter.in.web.mapper;
 
 import com.picus.core.price.adapter.in.web.data.request.*;
-import com.picus.core.price.application.port.in.request.*;
+import com.picus.core.price.application.port.in.command.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,17 +14,17 @@ public class UpdatePriceWebMapperTest {
     private final UpdatePriceWebMapper mapper = new UpdatePriceWebMapper();
 
     @Test
-    @DisplayName("UpdatePriceListWebReq -> UpdatePriceListCommand 매핑")
+    @DisplayName("UpdatePriceListRequest -> UpdatePriceListCommand 매핑")
     void toCommand() {
         // given
-        UpdatePriceReferenceImageWebReq imageWebRequest = UpdatePriceReferenceImageWebReq.builder()
+        UpdatePriceReferenceImageRequest imageWebRequest = UpdatePriceReferenceImageRequest.builder()
                 .priceRefImageNo("img-001")
                 .fileKey("file-key-001")
                 .imageOrder(1)
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdatePackageWebReq updatePackageWebReq = UpdatePackageWebReq.builder()
+        UpdatePackageRequest updatePackageRequest = UpdatePackageRequest.builder()
                 .packageNo("pkg-001")
                 .name("패키지A")
                 .price(10000)
@@ -33,7 +33,7 @@ public class UpdatePriceWebMapperTest {
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdateOptionWebReq updateOptionWebReq = UpdateOptionWebReq.builder()
+        UpdateOptionRequest updateOptionRequest = UpdateOptionRequest.builder()
                 .optionNo("opt-001")
                 .name("옵션A")
                 .count(2)
@@ -46,12 +46,12 @@ public class UpdatePriceWebMapperTest {
                 .priceNo("price-001")
                 .priceThemeType("THEME")
                 .priceReferenceImages(List.of(imageWebRequest))
-                .packages(List.of(updatePackageWebReq))
-                .options(List.of(updateOptionWebReq))
+                .packages(List.of(updatePackageRequest))
+                .options(List.of(updateOptionRequest))
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
         // when
         UpdatePriceListCommand command = mapper.toCommand(webRequest);

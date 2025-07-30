@@ -3,7 +3,7 @@ package com.picus.core.post.adapter.in;
 import com.picus.core.post.adapter.in.web.data.response.SuggestPostsResponse;
 import com.picus.core.post.adapter.in.web.mapper.SuggestPostsWebMapper;
 import com.picus.core.post.application.port.in.SuggestPostsUseCase;
-import com.picus.core.post.application.port.in.response.SuggestPostsResult;
+import com.picus.core.post.application.port.in.result.SuggestPostsResult;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

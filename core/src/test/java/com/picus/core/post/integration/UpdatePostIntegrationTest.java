@@ -4,12 +4,12 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
-import com.picus.core.post.application.port.in.request.ChangeStatus;
+import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SpaceType;
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picus.core.post.application.port.in.request.ChangeStatus.*;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -86,7 +86,7 @@ public class UpdatePostIntegrationTest {
         commitTestTransaction();
 
         // 입력 값 셋팅
-        UpdatePostWebReq webReq = createWebReq(List.of(
+        UpdatePostRequest webReq = createWebReq(List.of(
                         createPostImageWebReq(null, "new_file_key", 1, NEW), // 새로 추가된 이미지
                         createPostImageWebReq(postImageEntity1.getPostImageNo(), "file_key", 2, UPDATE), // 수정된 이미지
                         createPostImageWebReq(postImageEntity2.getPostImageNo(), null, null, DELETE) // 삭제된 이미지
@@ -94,7 +94,7 @@ public class UpdatePostIntegrationTest {
                 List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
                 SpaceType.OUTDOOR, "new_address", "package-456");
 
-        HttpEntity<UpdatePostWebReq> httpEntity = settingWebRequest(userEntity, webReq);
+        HttpEntity<UpdatePostRequest> httpEntity = settingWebRequest(userEntity, webReq);
 
         // when
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -200,11 +200,11 @@ public class UpdatePostIntegrationTest {
         return postImageJpaRepository.save(postImageEntity);
     }
 
-    private UpdatePostWebReq createWebReq(
-            List<UpdatePostWebReq.PostImageWebReq> postImages, String title, String oneLineDescription,
+    private UpdatePostRequest createWebReq(
+            List<UpdatePostRequest.PostImageRequest> postImages, String title, String oneLineDescription,
             String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, String packageNo) {
-        return UpdatePostWebReq.builder()
+        return UpdatePostRequest.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
@@ -217,9 +217,9 @@ public class UpdatePostIntegrationTest {
                 .build();
     }
 
-    private UpdatePostWebReq.PostImageWebReq createPostImageWebReq(
+    private UpdatePostRequest.PostImageRequest createPostImageWebReq(
             String postImageNo, String fileKey, Integer imageOrder, ChangeStatus changeStatus) {
-        return UpdatePostWebReq.PostImageWebReq.builder()
+        return UpdatePostRequest.PostImageRequest.builder()
                 .postImageNo(postImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)

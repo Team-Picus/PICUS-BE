@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.in.web.data.request;
 
-import com.picus.core.price.application.port.in.request.ChangeStatus;
+import com.picus.core.price.application.port.in.command.ChangeStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -11,9 +11,9 @@ import java.util.List;
 public record UpdatePriceWebReq(
         String priceNo,
         String priceThemeType,
-        @Valid List<UpdatePriceReferenceImageWebReq> priceReferenceImages,
-        @Valid List<UpdatePackageWebReq> packages,
-        @Valid List<UpdateOptionWebReq> options,
+        @Valid List<UpdatePriceReferenceImageRequest> priceReferenceImages,
+        @Valid List<UpdatePackageRequest> packages,
+        @Valid List<UpdateOptionRequest> options,
         @NotNull ChangeStatus status
 ) {
 }

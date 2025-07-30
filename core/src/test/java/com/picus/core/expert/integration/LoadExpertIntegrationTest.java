@@ -1,7 +1,7 @@
 package com.picus.core.expert.integration;
 
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.*;
+import static com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -109,7 +109,7 @@ public class LoadExpertIntegrationTest {
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
 
         // when
-        ResponseEntity<BaseResponse<LoadExpertBasicInfoWebResponse>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<LoadExpertBasicInfoResponse>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/basic_info",
                 HttpMethod.GET,
                 request,
@@ -120,10 +120,10 @@ public class LoadExpertIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<LoadExpertBasicInfoWebResponse> body = response.getBody();
+        BaseResponse<LoadExpertBasicInfoResponse> body = response.getBody();
         assertThat(body).isNotNull();
 
-        LoadExpertBasicInfoWebResponse result = body.getResult();
+        LoadExpertBasicInfoResponse result = body.getResult();
 
         assertThat(result.expertNo()).isEqualTo(expertNo);
         assertThat(result.activityDuration()).isNotNull(); // 현재 시간 기반으로 계산되는거라 정확한 값 검증 힘듦
@@ -187,7 +187,7 @@ public class LoadExpertIntegrationTest {
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
 
         // when
-        ResponseEntity<BaseResponse<LoadExpertDetailInfoWebResponse>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<LoadExpertDetailInfoResponse>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/detail_info",
                 HttpMethod.GET,
                 request,
@@ -198,21 +198,21 @@ public class LoadExpertIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<LoadExpertDetailInfoWebResponse> body = response.getBody();
+        BaseResponse<LoadExpertDetailInfoResponse> body = response.getBody();
         assertThat(body).isNotNull();
 
-        LoadExpertDetailInfoWebResponse result = body.getResult();
+        LoadExpertDetailInfoResponse result = body.getResult();
 
         assertThat(result.activityCareer()).isEqualTo("경력 5년");
         assertThat(result.activityAreas()).isEqualTo(List.of("서울 강북구"));
 
         // Projects
-        List<ProjectWebResponse> projectWebResponses = result.projects();
-        assertThat(projectWebResponses).hasSize(2)
+        List<ProjectResponse> projectResponses = result.projects();
+        assertThat(projectResponses).hasSize(2)
                 .extracting(
-                        ProjectWebResponse::projectName,
-                        ProjectWebResponse::startDate,
-                        ProjectWebResponse::endDate
+                        ProjectResponse::projectName,
+                        ProjectResponse::startDate,
+                        ProjectResponse::endDate
                 )
                 .containsExactlyInAnyOrder(
                         tuple(
@@ -226,16 +226,16 @@ public class LoadExpertIntegrationTest {
                                 testProjects.get(1).getEndDate()
                         )
                 );
-        assertThat(projectWebResponses)
-                .extracting(ProjectWebResponse::projectNo)
+        assertThat(projectResponses)
+                .extracting(ProjectResponse::projectNo)
                 .containsExactlyInAnyOrder(settingDetailDataResult.projectNos.get(0), settingDetailDataResult.projectNos.get(1));
 
         // Skills
-        List<SkillWebResponse> skillWebResponses = result.skills();
-        assertThat(skillWebResponses).hasSize(2)
+        List<SkillResponse> skillResponses = result.skills();
+        assertThat(skillResponses).hasSize(2)
                 .extracting(
-                        SkillWebResponse::skillType,
-                        SkillWebResponse::content
+                        SkillResponse::skillType,
+                        SkillResponse::content
                 )
                 .containsExactlyInAnyOrder(
                         tuple(
@@ -245,20 +245,20 @@ public class LoadExpertIntegrationTest {
                                 testSkills.get(1).getSkillType(),
                                 testSkills.get(1).getContent())
                 );
-        assertThat(skillWebResponses)
-                .extracting(SkillWebResponse::skillNo)
+        assertThat(skillResponses)
+                .extracting(SkillResponse::skillNo)
                 .containsExactlyInAnyOrder(settingDetailDataResult.skillNos.get(0), settingDetailDataResult.skillNos.get(1));
 
         // Studio
-        StudioWebResponse studioWebResponse = result.studio();
-        assertThat(studioWebResponse).isNotNull();
-        assertThat(studioWebResponse)
+        StudioResponse studioResponse = result.studio();
+        assertThat(studioResponse).isNotNull();
+        assertThat(studioResponse)
                 .extracting(
-                        StudioWebResponse::studioNo,
-                        StudioWebResponse::studioName,
-                        StudioWebResponse::employeesCount,
-                        StudioWebResponse::businessHours,
-                        StudioWebResponse::address
+                        StudioResponse::studioNo,
+                        StudioResponse::studioName,
+                        StudioResponse::employeesCount,
+                        StudioResponse::businessHours,
+                        StudioResponse::address
                 )
                 .containsExactly(
                         settingDetailDataResult.studioNo,

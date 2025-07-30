@@ -1,8 +1,8 @@
 package com.picus.core.post.application.service;
 
 import com.picus.core.post.application.port.in.SuggestPostsUseCase;
-import com.picus.core.post.application.port.in.mapper.SuggestPostsAppMapper;
-import com.picus.core.post.application.port.in.response.SuggestPostsResult;
+import com.picus.core.post.application.port.in.mapper.SuggestPostsCommandMapper;
+import com.picus.core.post.application.port.in.result.SuggestPostsResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
@@ -15,7 +15,7 @@ import java.util.List;
 public class SuggestPostsService implements SuggestPostsUseCase {
 
     private final PostReadPort postReadPort;
-    private final SuggestPostsAppMapper appMapper;
+    private final SuggestPostsCommandMapper appMapper;
 
     @Override
     public List<SuggestPostsResult> suggest(String keyword, int size) {

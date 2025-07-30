@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
-import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateSkillCommand;
+import com.picus.core.expert.application.port.in.command.ChangeStatus;
+import com.picus.core.expert.application.port.in.command.UpdateSkillCommand;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UpdateSkillAppRequestAppMapperTest {
 
-    private final UpdateSkillAppMapper mapper = new UpdateSkillAppMapper();
+    private final UpdateSkillCommandMapper mapper = new UpdateSkillCommandMapper();
 
     @Test
     @DisplayName("SkillCommand를 Skill 도메인 객체로 변환한다.")

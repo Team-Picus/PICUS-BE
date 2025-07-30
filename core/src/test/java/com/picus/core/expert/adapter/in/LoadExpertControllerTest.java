@@ -1,11 +1,11 @@
 package com.picus.core.expert.adapter.in;
 
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse.StudioWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse.StudioResponse;
 import com.picus.core.expert.adapter.in.web.mapper.LoadExpertWebMapper;
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
+import com.picus.core.expert.application.port.in.result.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
@@ -118,7 +118,7 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
                 .profileImageUrl("")
                 .build();
         // Mock이면 값들이 Null로 채워지는데, 그러면 exists()검증이 안됨
-        LoadExpertBasicInfoWebResponse mockWebResponse = LoadExpertBasicInfoWebResponse.builder()
+        LoadExpertBasicInfoResponse mockWebResponse = LoadExpertBasicInfoResponse.builder()
                 .expertNo("")
                 .activityDuration("")
                 .activityCount(100)
@@ -139,13 +139,13 @@ class LoadExpertControllerTest extends AbstractSecurityMockSetup {
     private void stubMethodAboutDetailInfo(String expertNo) {
         Expert mockExpert = mock(Expert.class);
         // Mock이면 값들이 Null로 채워지는데, 그러면 exists()검증이 안됨
-        LoadExpertDetailInfoWebResponse webResponse =
-                LoadExpertDetailInfoWebResponse.builder()
+        LoadExpertDetailInfoResponse webResponse =
+                LoadExpertDetailInfoResponse.builder()
                         .activityCareer("")
                         .projects(List.of())
                         .skills(List.of())
                         .activityAreas(List.of())
-                        .studio(StudioWebResponse.builder().build())
+                        .studio(StudioResponse.builder().build())
                         .build();
 
         given(loadExpertUseCase.getExpertDetailInfo(expertNo))

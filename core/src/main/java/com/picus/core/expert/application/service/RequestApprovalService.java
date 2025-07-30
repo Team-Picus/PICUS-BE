@@ -1,8 +1,8 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
-import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
-import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
+import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
+import com.picus.core.expert.application.port.in.mapper.RequestApprovalCommandMapper;
 import com.picus.core.expert.application.port.out.ExpertCreatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.shared.annotation.UseCase;
@@ -17,7 +17,7 @@ public class RequestApprovalService implements RequestApprovalUseCase {
 
     private final ExpertCreatePort expertCreatePort;
     private final UserUpdatePort userUpdatePort;
-    private final RequestApprovalAppMapper appMapper;
+    private final RequestApprovalCommandMapper appMapper;
 
     /**
      * 전문가 승인 요청

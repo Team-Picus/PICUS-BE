@@ -3,8 +3,8 @@ package com.picus.core.post.application.service;
 import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
-import com.picus.core.post.application.port.in.mapper.CreatePostAppMapper;
-import com.picus.core.post.application.port.in.request.CreatePostCommand;
+import com.picus.core.post.application.port.in.mapper.CreatePostCommandMapper;
+import com.picus.core.post.application.port.in.command.CreatePostCommand;
 import com.picus.core.post.application.port.out.PostCreatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.user.application.port.out.UserReadPort;
@@ -34,7 +34,7 @@ class CreatePostServiceTest {
     @Mock
     PostCreatePort postCreatePort;
     @Mock
-    CreatePostAppMapper createPostAppMapper;
+    CreatePostCommandMapper createPostCommandMapper;
     @Mock
     ExpertReadPort expertReadPort;
     @Mock
@@ -57,7 +57,7 @@ class CreatePostServiceTest {
         String expertNo = "expert_no";
         given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
-        given(createPostAppMapper.toDomain(req, expertNo)).willReturn(post);
+        given(createPostCommandMapper.toDomain(req, expertNo)).willReturn(post);
         Expert expert = mock(Expert.class);
         given(expertReadPort.findById(expertNo)).willReturn(Optional.ofNullable(expert));
 
@@ -66,12 +66,12 @@ class CreatePostServiceTest {
 
         // then
         InOrder inOrder = Mockito.inOrder(
-                userReadPort, user, createPostAppMapper, postCreatePort,
+                userReadPort, user, createPostCommandMapper, postCreatePort,
                 expertReadPort, expert, expert, expertUpdatePort
         );
         then(userReadPort).should(inOrder).findById(req.currentUserNo());
         then(user).should(inOrder).getExpertNo();
-        then(createPostAppMapper).should(inOrder).toDomain(req, expertNo);
+        then(createPostCommandMapper).should(inOrder).toDomain(req, expertNo);
         then(postCreatePort).should(inOrder).save(post);
         then(expertReadPort).should(inOrder).findById(expertNo);
         then(expert).should(inOrder).increaseActivityCount();

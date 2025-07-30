@@ -1,7 +1,7 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.post.application.port.in.mapper.LoadGalleryAppMapper;
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.application.port.in.mapper.LoadGalleryCommandMapper;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 class LoadGalleryServiceTest {
 
     @Mock private PostReadPort postReadPort;
-    @Mock private LoadGalleryAppMapper appMapper;
+    @Mock private LoadGalleryCommandMapper appMapper;
 
     @InjectMocks LoadGalleryService loadGalleryService;
 

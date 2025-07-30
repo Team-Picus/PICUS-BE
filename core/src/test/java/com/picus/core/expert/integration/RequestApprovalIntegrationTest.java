@@ -1,6 +1,6 @@
 package com.picus.core.expert.integration;
 
-import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalRequest;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
@@ -73,12 +73,12 @@ public class RequestApprovalIntegrationTest {
 
         String expertNo = userEntity.getUserNo(); // UserEntity의 PK와 ExpertEntity의 PK는 같음
         String accessToken = tokenProvider.createAccessToken(expertNo, userEntity.getRole().toString());
-        RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest();
+        RequestApprovalRequest webRequest = givenRequestApprovalWebRequest();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        HttpEntity<RequestApprovalWebRequest> httpEntity = new HttpEntity<>(webRequest, headers);
+        HttpEntity<RequestApprovalRequest> httpEntity = new HttpEntity<>(webRequest, headers);
 
         // when
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -170,33 +170,33 @@ public class RequestApprovalIntegrationTest {
         return userJpaRepository.save(userEntity);
     }
 
-    private RequestApprovalWebRequest givenRequestApprovalWebRequest() {
-        return new RequestApprovalWebRequest(
+    private RequestApprovalRequest givenRequestApprovalWebRequest() {
+        return new RequestApprovalRequest(
                 "3년차",
                 List.of("서울 강북구", "서울 강동구"),
                 List.of(
-                        RequestApprovalWebRequest.ProjectWebRequest.builder()
+                        RequestApprovalRequest.ProjectWebRequest.builder()
                                 .projectName("단편영화 촬영 프로젝트")
                                 .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                                 .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                                 .build(),
-                        RequestApprovalWebRequest.ProjectWebRequest.builder()
+                        RequestApprovalRequest.ProjectWebRequest.builder()
                                 .projectName("뮤직비디오 조명 작업")
                                 .startDate(LocalDateTime.of(2023, 1, 10, 0, 0))
                                 .endDate(LocalDateTime.of(2023, 2, 20, 0, 0))
                                 .build()
                 ),
                 List.of(
-                        RequestApprovalWebRequest.SkillWebRequest.builder()
+                        RequestApprovalRequest.SkillWebRequest.builder()
                                 .skillType(SkillType.CAMERA)
                                 .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
                                 .build(),
-                        RequestApprovalWebRequest.SkillWebRequest.builder()
+                        RequestApprovalRequest.SkillWebRequest.builder()
                                 .skillType(SkillType.EDIT)
                                 .content("프리미어 프로 및 다빈치 리졸브 활용 편집 가능")
                                 .build()
                 ),
-                RequestApprovalWebRequest.StudioWebRequest.builder()
+                RequestApprovalRequest.StudioWebRequest.builder()
                         .studioName("크리에이티브 필름")
                         .employeesCount(5)
                         .businessHours("10:00 - 19:00")

@@ -1,8 +1,8 @@
 package com.picus.core.expert.integration;
 
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.ProjectWebRequest;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.ProjectEntity;
 import com.picus.core.expert.adapter.out.persistence.entity.SkillEntity;
@@ -36,8 +36,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.*;
-import static com.picus.core.expert.application.port.in.request.ChangeStatus.*;
+import static com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.*;
+import static com.picus.core.expert.application.port.in.command.ChangeStatus.*;
 import static com.picus.core.expert.domain.vo.SkillType.EDIT;
 import static com.picus.core.expert.domain.vo.SkillType.LIGHT;
 import static org.assertj.core.api.Assertions.*;
@@ -96,7 +96,7 @@ public class UpdateExpertInfoIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        HttpEntity<UpdateExpertBasicInfoWebRequest> request = settingWebRequest(userEntity, givenWebRequest(
+        HttpEntity<UpdateExpertBasicInfoRequest> request = settingWebRequest(userEntity, givenWebRequest(
                 "new_profile_key",
                 "new_back_key",
                 "new_nick",
@@ -168,7 +168,7 @@ public class UpdateExpertInfoIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        UpdateExpertDetailInfoWebRequest request = builder()
+        UpdateExpertDetailInfoRequest request = builder()
                 .activityCareer("수정 후 경력")
                 .activityAreas(List.of("수정 후 지역", "새로운 지역"))
                 .projects(List.of(
@@ -214,7 +214,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .changeStatus(UPDATE)
                                 .build())
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
+        HttpEntity<UpdateExpertDetailInfoRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -287,7 +287,7 @@ public class UpdateExpertInfoIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        UpdateExpertDetailInfoWebRequest request = builder()
+        UpdateExpertDetailInfoRequest request = builder()
                 .activityAreas(List.of("지역", "새로운 지역")) // activityAreas는 기존값을 함께 넘겨야 함
                 .studio(
                         StudioWebRequest.builder()
@@ -296,7 +296,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .build()
                 )
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
+        HttpEntity<UpdateExpertDetailInfoRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -330,7 +330,7 @@ public class UpdateExpertInfoIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        UpdateExpertDetailInfoWebRequest request = builder()
+        UpdateExpertDetailInfoRequest request = builder()
                 .activityAreas(List.of("지역", "새로운 지역")) // activityAreas는 기존값을 함께 넘겨야 함
                 .studio(
                         StudioWebRequest.builder()
@@ -342,7 +342,7 @@ public class UpdateExpertInfoIntegrationTest {
                                 .build()
                 )
                 .build();
-        HttpEntity<UpdateExpertDetailInfoWebRequest> httpEntity = settingWebRequest(userEntity, request);
+        HttpEntity<UpdateExpertDetailInfoRequest> httpEntity = settingWebRequest(userEntity, request);
 
         // when
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -471,8 +471,8 @@ public class UpdateExpertInfoIntegrationTest {
                 .build();
     }
 
-    private UpdateExpertBasicInfoWebRequest givenWebRequest(String profileKey, String backgroundImageFileKey, String nickname, List<String> links, String intro) {
-        return UpdateExpertBasicInfoWebRequest.builder()
+    private UpdateExpertBasicInfoRequest givenWebRequest(String profileKey, String backgroundImageFileKey, String nickname, List<String> links, String intro) {
+        return UpdateExpertBasicInfoRequest.builder()
                 .profileImageFileKey(profileKey)
                 .backgroundImageFileKey(backgroundImageFileKey)
                 .nickname(nickname)

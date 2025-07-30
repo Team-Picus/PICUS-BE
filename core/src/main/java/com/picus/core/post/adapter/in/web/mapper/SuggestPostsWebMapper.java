@@ -1,7 +1,7 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
 import com.picus.core.post.adapter.in.web.data.response.SuggestPostsResponse;
-import com.picus.core.post.application.port.in.response.SuggestPostsResult;
+import com.picus.core.post.application.port.in.result.SuggestPostsResult;
 import org.springframework.stereotype.Component;
 
 @Component

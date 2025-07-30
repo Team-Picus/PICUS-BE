@@ -1,10 +1,10 @@
 package com.picus.core.expert.adapter.in;
 
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoWebResponse;
-import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertBasicInfoResponse;
+import com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetailInfoResponse;
 import com.picus.core.expert.adapter.in.web.mapper.LoadExpertWebMapper;
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
+import com.picus.core.expert.application.port.in.result.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ public class LoadExpertController {
     private final LoadExpertWebMapper loadExpertWebMapper;
 
     @GetMapping("/{expert_no}/basic_info")
-    public BaseResponse<LoadExpertBasicInfoWebResponse> getExpertBasicInfo(@PathVariable("expert_no") String expertNo) {
+    public BaseResponse<LoadExpertBasicInfoResponse> getExpertBasicInfo(@PathVariable("expert_no") String expertNo) {
 
         ExpertBasicInfoResult appResponse = loadExpertUseCase.getExpertBasicInfo(expertNo);
         return BaseResponse.onSuccess(loadExpertWebMapper.toBasicInfo(appResponse));
     }
 
     @GetMapping("/{expert_no}/detail_info")
-    public BaseResponse<LoadExpertDetailInfoWebResponse> getExpertDetailInfo(@PathVariable("expert_no") String expertNo) {
+    public BaseResponse<LoadExpertDetailInfoResponse> getExpertDetailInfo(@PathVariable("expert_no") String expertNo) {
         Expert expert = loadExpertUseCase.getExpertDetailInfo(expertNo);
         return BaseResponse.onSuccess(loadExpertWebMapper.toDetailInfo(expert));
     }

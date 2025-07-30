@@ -1,8 +1,8 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
-import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq.PostImageWebReq;
-import com.picus.core.post.application.port.in.request.CreatePostCommand;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest.PostImageWebReq;
+import com.picus.core.post.application.port.in.command.CreatePostCommand;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
@@ -20,10 +20,10 @@ class CreatePostWebMapperTest {
     private final CreatePostWebMapper webMapper = new CreatePostWebMapper();
 
     @Test
-    @DisplayName("CreatePostWebReq -> CreatePostCommand 매핑")
+    @DisplayName("CreatePostRequest -> CreatePostCommand 매핑")
     public void toAppReq() throws Exception {
         // given
-        CreatePostWebReq webReq = CreatePostWebReq.builder()
+        CreatePostRequest webReq = CreatePostRequest.builder()
                 .postImages(List.of(
                         PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
                         PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()

@@ -1,7 +1,7 @@
 package com.picus.core.price.application.port.mapper;
 
-import com.picus.core.price.application.port.in.mapper.UpdatePackageAppMapper;
-import com.picus.core.price.application.port.in.request.UpdatePackageCommand;
+import com.picus.core.price.application.port.in.mapper.UpdatePackageCommandMapper;
+import com.picus.core.price.application.port.in.command.UpdatePackageCommand;
 import com.picus.core.price.domain.Package;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UpdatePackageAppReqAppMapperTest {
-    private final UpdatePackageAppMapper appMapper = new UpdatePackageAppMapper();
+    private final UpdatePackageCommandMapper appMapper = new UpdatePackageCommandMapper();
 
     @Test
     @DisplayName("UpdatePackageCommand -> Package 매핑")

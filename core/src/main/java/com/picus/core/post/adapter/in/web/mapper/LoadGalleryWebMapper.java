@@ -1,14 +1,14 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.response.LoadGalleryWebResp;
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.adapter.in.web.data.response.LoadGalleryResponse;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LoadGalleryWebMapper {
 
-    public LoadGalleryWebResp toWebResp(LoadGalleryResult appResp) {
-        return LoadGalleryWebResp.builder()
+    public LoadGalleryResponse toWebResp(LoadGalleryResult appResp) {
+        return LoadGalleryResponse.builder()
                 .postNo(appResp.postNo())
                 .thumbnailUrl(appResp.thumbnailUrl())
                 .title(appResp.title())

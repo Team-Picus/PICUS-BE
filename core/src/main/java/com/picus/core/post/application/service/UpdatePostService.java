@@ -4,7 +4,7 @@ import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.picus.core.post.application.port.in.request.UpdatePostCommand.*;
+import static com.picus.core.post.application.port.in.command.UpdatePostCommand.*;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
 @UseCase

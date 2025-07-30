@@ -1,16 +1,16 @@
 package com.picus.core.expert.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.SkillWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.ProjectWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.SkillWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.StudioWebRequest;
 import com.picus.core.expert.adapter.in.web.mapper.UpdateExpertWebMapper;
 import com.picus.core.expert.application.port.in.UpdateExpertUseCase;
-import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateExpertBasicInfoCommand;
-import com.picus.core.expert.application.port.in.request.UpdateExpertDetailInfoCommand;
+import com.picus.core.expert.application.port.in.command.ChangeStatus;
+import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoCommand;
+import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoCommand;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("전문가의 기본정보를 수정한다.")
     public void updateExpertBasicInfo_success() throws Exception {
         // given
-        UpdateExpertBasicInfoWebRequest request = givenWebRequest();
+        UpdateExpertBasicInfoRequest request = givenWebRequest();
         String currentUserNo = TEST_USER_ID;
 
         given(updateExpertWebMapper.toBasicInfoAppRequest(request, currentUserNo))
@@ -78,7 +78,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
     public void updateExpertDetailInfo_success() throws Exception {
         // given
         String currentUserNo = TEST_USER_ID;
-        UpdateExpertDetailInfoWebRequest request = UpdateExpertDetailInfoWebRequest.builder()
+        UpdateExpertDetailInfoRequest request = UpdateExpertDetailInfoRequest.builder()
                 .activityCareer("촬영 5년 경력")
                 .activityAreas(List.of("서울", "부산"))
                 .projects(List.of(ProjectWebRequest.builder()
@@ -123,7 +123,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
     public void updateExpertDetailInfo_activityAreas_null() throws Exception {
         // given
         String currentUserNo = TEST_USER_ID;
-        UpdateExpertDetailInfoWebRequest request = UpdateExpertDetailInfoWebRequest.builder()
+        UpdateExpertDetailInfoRequest request = UpdateExpertDetailInfoRequest.builder()
                 .activityCareer("촬영 5년 경력")
                 .projects(List.of(ProjectWebRequest.builder()
                         .projectName("프로젝트1")
@@ -159,7 +159,7 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
     public void updateExpertDetailInfo_change_status_null() throws Exception {
         // given
         String currentUserNo = TEST_USER_ID;
-        UpdateExpertDetailInfoWebRequest request = UpdateExpertDetailInfoWebRequest.builder()
+        UpdateExpertDetailInfoRequest request = UpdateExpertDetailInfoRequest.builder()
                 .activityCareer("촬영 5년 경력")
                 .activityAreas(List.of("서울", "부산"))
                 .projects(List.of(ProjectWebRequest.builder()
@@ -181,8 +181,8 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
 
-    private UpdateExpertBasicInfoWebRequest givenWebRequest() {
-        return UpdateExpertBasicInfoWebRequest.builder()
+    private UpdateExpertBasicInfoRequest givenWebRequest() {
+        return UpdateExpertBasicInfoRequest.builder()
                 .backgroundImageFileKey("new-background")
                 .link(List.of("https://new.link"))
                 .intro("New intro")
