@@ -21,7 +21,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class UserTermPersistenceAdapter implements  UserTermCreatePort {
+public class UserTermPersistenceAdapter implements UserTermCreatePort {
 
     private final TermJpaRepository termJpaRepository;
     private final UserTermJpaRepository userTermJpaRepository;

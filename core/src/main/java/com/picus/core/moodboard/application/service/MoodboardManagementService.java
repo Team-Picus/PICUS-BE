@@ -3,9 +3,9 @@ package com.picus.core.moodboard.application.service;
 import com.picus.core.moodboard.application.port.in.CreateMoodboardUseCase;
 import com.picus.core.moodboard.application.port.in.LoadMoodboardUseCase;
 import com.picus.core.moodboard.application.port.in.MoodboardManagementUseCase;
-import com.picus.core.moodboard.application.port.out.CreateMoodboardPort;
-import com.picus.core.moodboard.application.port.out.DeleteMoodboardPort;
-import com.picus.core.moodboard.application.port.out.ReadMoodboardPort;
+import com.picus.core.moodboard.application.port.out.MoodboardCreatePort;
+import com.picus.core.moodboard.application.port.out.MoodboardDeletePort;
+import com.picus.core.moodboard.application.port.out.MoodboardReadPort;
 import com.picus.core.moodboard.domain.Moodboard;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -24,16 +24,16 @@ public class MoodboardManagementService
         implements MoodboardManagementUseCase, CreateMoodboardUseCase, LoadMoodboardUseCase {
 
     private final UserReadPort userReadPort;
-    private final CreateMoodboardPort createMoodboardPort;
-    private final DeleteMoodboardPort deleteMoodboardPort;
-    private final ReadMoodboardPort readMoodboardPort;
+    private final MoodboardCreatePort moodboardCreatePort;
+    private final MoodboardDeletePort moodboardDeletePort;
+    private final MoodboardReadPort moodboardReadPort;
 
     @Override
     public void create(String userNo, String postNo) {
         if (!userReadPort.existsById(userNo) /* || !readPostPort.existsById(postNo) */)
             throw new RestApiException(_NOT_FOUND);
 
-        createMoodboardPort.create(userNo, postNo);
+        moodboardCreatePort.create(userNo, postNo);
     }
 
     @Override
@@ -41,14 +41,14 @@ public class MoodboardManagementService
         if (!userReadPort.existsById(userNo) /* || !readPostPort.existsById(postNo) */)
             throw new RestApiException(_NOT_FOUND);
 
-        if(!readMoodboardPort.existsById(userNo, postNo))
+        if(!moodboardReadPort.existsById(userNo, postNo))
             throw new RestApiException(_NOT_FOUND);
 
-        deleteMoodboardPort.delete(userNo, postNo);
+        moodboardDeletePort.delete(userNo, postNo);
     }
 
     @Override
     public List<Moodboard> loadAll(String userNo) {
-        return readMoodboardPort.findByUserNo(userNo);
+        return moodboardReadPort.findByUserNo(userNo);
     }
 }
