@@ -10,8 +10,8 @@ import com.picus.core.expert.application.port.out.UpdateExpertPort;
 import com.picus.core.expert.domain.model.Expert;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserCommandPort;
-import com.picus.core.user.application.port.out.ReadUserPort;
+import com.picus.core.user.application.port.out.UserUpdatePort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,8 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 @Transactional
 public class ExpertInfoCommandService implements ExpertInfoCommand {
 
-    private final ReadUserPort readUserPort;
-    private final UserCommandPort userCommandPort;
+    private final UserReadPort userReadPort;
+    private final UserUpdatePort userUpdatePort;
     private final LoadExpertPort loadExpertPort;
     private final UpdateExpertPort updateExpertPort;
 
@@ -61,7 +61,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
         // User쪽 정보가 수정될 필요가 있는지 확인
         if (shouldUpdateUserInfo(basicInfoRequest)) {
             // User 정보 로드
-            UserWithProfileImageDto userWithProfileImageDto = readUserPort.findUserInfoByExpertNo(expertNo)
+            UserWithProfileImageDto userWithProfileImageDto = userReadPort.findUserInfoByExpertNo(expertNo)
                     .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
             // User 수정
@@ -72,7 +72,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
                             ? basicInfoRequest.profileImageFileKey() : userWithProfileImageDto.profileImageFileKey())
                     .expertNo(expertNo)
                     .build();
-            userCommandPort.updateNicknameAndImageByExpertNo(updatedDto);
+            userUpdatePort.updateNicknameAndImageByExpertNo(updatedDto);
         }
     }
 
@@ -113,7 +113,7 @@ public class ExpertInfoCommandService implements ExpertInfoCommand {
      */
     private String getExpertNo(String userNo) {
         // ExpertNo를 알기 위해 현재 User 로드
-        User currentUser = readUserPort.findById(userNo);
+        User currentUser = userReadPort.findById(userNo);
         return currentUser.getExpertNo();
     }
 

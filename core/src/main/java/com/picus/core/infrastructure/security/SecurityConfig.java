@@ -9,9 +9,9 @@ import com.picus.core.infrastructure.security.oauth.handler.OAuth2Authentication
 import com.picus.core.infrastructure.security.oauth.repository.OAuth2AuthorizationRequestRepository;
 import com.picus.core.infrastructure.security.oauth.service.CustomOAuth2UserService;
 import com.picus.core.infrastructure.security.oauth.service.CustomUserDetailsService;
-import com.picus.core.user.application.port.in.TokenManagementCommandPort;
+import com.picus.core.user.application.port.in.WhitelistTokenUseCase;
 import com.picus.core.user.application.port.in.SocialAuthenticationUseCase;
-import com.picus.core.user.application.port.in.TokenValidationQueryPort;
+import com.picus.core.user.application.port.in.ValidateTokenUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,10 +44,10 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final SocialAuthenticationUseCase socialAuthenticationUseCase;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final TokenManagementCommandPort tokenManagementCommandPort;
+    private final WhitelistTokenUseCase whitelistTokenUseCase;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
     private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
-    private final TokenValidationQueryPort tokenValidationQueryPort;
+    private final ValidateTokenUseCase validateTokenUseCase;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -107,7 +107,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties, excludeWhitelistPathProperties, tokenValidationQueryPort, tokenManagementCommandPort);
+        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties, excludeWhitelistPathProperties, validateTokenUseCase, whitelistTokenUseCase);
     }
 
     @Bean
@@ -120,7 +120,7 @@ public class SecurityConfig {
         return new OAuth2AuthenticationSuccessHandler(
                 socialAuthenticationUseCase,
                 tokenProvider,
-                tokenManagementCommandPort,
+                whitelistTokenUseCase,
                 oAuth2AuthorizationRequestRepository()
         );
     }

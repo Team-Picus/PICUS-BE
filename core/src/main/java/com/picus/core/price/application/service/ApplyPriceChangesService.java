@@ -11,7 +11,7 @@ import com.picus.core.price.application.port.out.PriceQueryPort;
 import com.picus.core.price.domain.model.Price;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.ReadUserPort;
+import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 @Transactional
 public class ApplyPriceChangesService implements ApplyPriceChangesUseCase {
 
-    private final ReadUserPort readUserPort;
+    private final UserReadPort userReadPort;
     private final PriceQueryPort priceQueryPort;
     private final PriceCommandPort priceCommandPort;
 
@@ -38,7 +38,7 @@ public class ApplyPriceChangesService implements ApplyPriceChangesUseCase {
     @Override
     public void apply(ApplyPriceChangesCommand command, String currentUserNo) {
         // 현재 사용자의 ExpertNo을 받아옴
-        User user = readUserPort.findById(currentUserNo);
+        User user = userReadPort.findById(currentUserNo);
         String expertNo = Optional.ofNullable(user.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 

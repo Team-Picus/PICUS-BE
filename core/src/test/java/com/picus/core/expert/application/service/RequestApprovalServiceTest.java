@@ -9,7 +9,7 @@ import com.picus.core.expert.domain.model.Skill;
 import com.picus.core.expert.domain.model.Studio;
 import com.picus.core.expert.domain.model.vo.Portfolio;
 import com.picus.core.expert.domain.model.vo.SkillType;
-import com.picus.core.user.application.port.out.UserCommandPort;
+import com.picus.core.user.application.port.out.UserUpdatePort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,11 +24,11 @@ import static org.mockito.BDDMockito.then;
 class RequestApprovalServiceTest {
 
     final CreateExpertPort createExpertPort = Mockito.mock(CreateExpertPort.class);
-    final UserCommandPort userCommandPort = Mockito.mock(UserCommandPort.class);
+    final UserUpdatePort userUpdatePort = Mockito.mock(UserUpdatePort.class);
     final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
 
     private final RequestApprovalService requestApprovalService
-            = new RequestApprovalService(createExpertPort, userCommandPort, appMapper);
+            = new RequestApprovalService(createExpertPort, userUpdatePort, appMapper);
 
 
     @Test
@@ -44,7 +44,7 @@ class RequestApprovalServiceTest {
         // then
 
         then(createExpertPort).should().saveExpert(any(Expert.class), any(String.class)); // out port를 호출했는지 검증
-        then(userCommandPort).should().assignExpertNo(any(String.class), any(String.class));
+        then(userUpdatePort).should().assignExpertNo(any(String.class), any(String.class));
     }
 
 

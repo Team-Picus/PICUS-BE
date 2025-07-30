@@ -1,8 +1,8 @@
 package com.picus.core.infrastructure.security.jwt;
 
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.in.TokenManagementCommandPort;
-import com.picus.core.user.application.port.in.TokenValidationQueryPort;
+import com.picus.core.user.application.port.in.WhitelistTokenUseCase;
+import com.picus.core.user.application.port.in.ValidateTokenUseCase;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,8 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
     private final ExcludeWhitelistPathProperties excludeWhitelistPathProperties;
-    private final TokenValidationQueryPort tokenValidationQueryPort;
-    private final TokenManagementCommandPort tokenManagementCommandPort;
+    private final ValidateTokenUseCase validateTokenUseCase;
+    private final WhitelistTokenUseCase whitelistTokenUseCase;
 
     private static final PathPatternParser pathPatternParser = new PathPatternParser();
 
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .orElseThrow(() -> new RestApiException(EMPTY_JWT));
 
             // 토큰 캐시 확인
-            if (tokenValidationQueryPort.isWhitelistToken(token)) {
+            if (validateTokenUseCase.isWhitelistToken(token)) {
                 setAuthentication(token);
                 filterChain.doFilter(request, response);
                 return;
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 토큰 캐시
             if(isExcludedPathForWhitelist(request)) {
-                tokenManagementCommandPort.whitelist(token, Duration.ofSeconds(30));
+                whitelistTokenUseCase.whitelist(token, Duration.ofSeconds(30));
             }
 
             filterChain.doFilter(request, response);
