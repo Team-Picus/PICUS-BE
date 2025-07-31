@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.in.web.mapper;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse;
 import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse.PriceReferenceImageResponse;
 import com.picus.core.price.domain.Option;

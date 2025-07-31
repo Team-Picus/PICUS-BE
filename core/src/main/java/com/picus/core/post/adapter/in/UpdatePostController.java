@@ -6,6 +6,7 @@ import com.picus.core.post.application.port.in.UpdatePostUseCase;
 import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class UpdatePostController {
 
     @PatchMapping("/{post_no}")
     public BaseResponse<Void> updatePost(
-            @RequestBody UpdatePostRequest webReq, @PathVariable("post_no") String postNo, @CurrentUser String userNo) {
+            @RequestBody @Valid UpdatePostRequest webReq, @PathVariable("post_no") String postNo, @CurrentUser String userNo) {
         UpdatePostCommand appReq = updatePostWebMapper.toCommand(webReq, postNo, userNo);
         updatePostUseCase.update(appReq);
         return BaseResponse.onSuccess();

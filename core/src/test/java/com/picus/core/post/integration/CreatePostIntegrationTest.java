@@ -12,6 +12,7 @@ import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaReposi
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -85,7 +86,7 @@ public class CreatePostIntegrationTest {
                 "테스트 제목",
                 "한 줄 설명",
                 "자세한 설명",
-                List.of(PostThemeType.BEAUTY),
+                List.of(PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY),
                 List.of(PostMoodType.COZY),
                 SpaceType.INDOOR,
                 "서울시 강남구",
@@ -112,7 +113,7 @@ public class CreatePostIntegrationTest {
         assertThat(postEntities).hasSize(1)
                 .extracting(
                         "packageNo", "title", "oneLineDescription", "detailedDescription",
-                        "postThemeTypes", "postMoodTypes", "spaceType", "spaceAddress", "isPinned"
+                        "postThemeTypes", "snapSubThemes", "postMoodTypes", "spaceType", "spaceAddress", "isPinned"
                 )
                 .containsExactly(
                         tuple(
@@ -120,7 +121,8 @@ public class CreatePostIntegrationTest {
                                 "테스트 제목",
                                 "한 줄 설명",
                                 "자세한 설명",
-                                List.of(PostThemeType.BEAUTY),
+                                List.of(PostThemeType.SNAP),
+                                List.of(SnapSubTheme.FAMILY),
                                 List.of(PostMoodType.COZY),
                                 SpaceType.INDOOR,
                                 "서울시 강남구",
@@ -179,7 +181,7 @@ public class CreatePostIntegrationTest {
             String title,
             String oneLineDescription,
             String detailedDescription,
-            List<PostThemeType> postThemeTypes,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
             List<PostMoodType> postMoodTypes,
             SpaceType spaceType,
             String spaceAddress,
@@ -191,6 +193,7 @@ public class CreatePostIntegrationTest {
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)

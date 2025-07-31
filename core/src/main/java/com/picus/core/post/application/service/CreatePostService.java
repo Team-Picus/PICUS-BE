@@ -48,7 +48,7 @@ public class CreatePostService implements CreatePostUseCase {
 
         // TODO: 저장 후 해당 이미지 키들 레디스에서 삭제
 
-        // TODO Expert의 활동 수, 최근 활동일 갱신
+        // Expert의 활동 수, 최근 활동일 갱신
         updateExpertInfo(expertNo);
     }
     /**

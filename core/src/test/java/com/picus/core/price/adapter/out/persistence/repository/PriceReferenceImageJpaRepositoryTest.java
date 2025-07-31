@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.out.persistence.repository;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceReferenceImageEntity;
 import org.junit.jupiter.api.Test;

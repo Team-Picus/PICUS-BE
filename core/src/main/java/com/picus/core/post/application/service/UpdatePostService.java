@@ -92,25 +92,25 @@ public class UpdatePostService implements UpdatePostUseCase {
         }
     }
 
-    private void updatePostImage(Post post, List<UpdatePostImageCommand> imageAppReqs, List<String> deletedPostImageNos) {
-        for (UpdatePostImageCommand imageAppReq : imageAppReqs) {
-            switch (imageAppReq.changeStatus()) {
+    private void updatePostImage(Post post, List<UpdatePostImageCommand> imageCommands, List<String> deletedPostImageNos) {
+        for (UpdatePostImageCommand imageCommand : imageCommands) {
+            switch (imageCommand.changeStatus()) {
                 case NEW:
                     post.addPostImage(PostImage.builder()
-                            .fileKey(imageAppReq.fileKey())
-                            .imageOrder(imageAppReq.imageOrder())
+                            .fileKey(imageCommand.fileKey())
+                            .imageOrder(imageCommand.imageOrder())
                             .build());
                     break;
                 case UPDATE:
                     post.updatePostImage(PostImage.builder()
-                            .postImageNo(imageAppReq.postImageNo())
-                            .fileKey(imageAppReq.fileKey())
-                            .imageOrder(imageAppReq.imageOrder())
+                            .postImageNo(imageCommand.postImageNo())
+                            .fileKey(imageCommand.fileKey())
+                            .imageOrder(imageCommand.imageOrder())
                             .build());
                     break;
                 case DELETE:
-                    post.deletePostImage(imageAppReq.postImageNo());
-                    deletedPostImageNos.add(imageAppReq.postImageNo());
+                    post.deletePostImage(imageCommand.postImageNo());
+                    deletedPostImageNos.add(imageCommand.postImageNo());
                     break;
             }
         }
@@ -122,6 +122,7 @@ public class UpdatePostService implements UpdatePostUseCase {
                 updatePostCommand.oneLineDescription(),
                 updatePostCommand.detailedDescription(),
                 updatePostCommand.postThemeTypes(),
+                updatePostCommand.snapSubThemes(),
                 updatePostCommand.postMoodTypes(),
                 updatePostCommand.spaceType(),
                 updatePostCommand.spaceAddress(),

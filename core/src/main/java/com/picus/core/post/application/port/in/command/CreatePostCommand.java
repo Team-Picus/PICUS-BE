@@ -3,6 +3,7 @@ package com.picus.core.post.application.port.in.command;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import lombok.Builder;
 
@@ -15,6 +16,7 @@ public record CreatePostCommand(
         String oneLineDescription,
         String detailedDescription,
         List<PostThemeType> postThemeTypes,
+        List<SnapSubTheme> snapSubThemes,
         List<PostMoodType> postMoodTypes,
         SpaceType spaceType,
         String spaceAddress,

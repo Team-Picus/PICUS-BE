@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.out.persistence;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
@@ -28,7 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.picus.core.expert.domain.vo.PriceThemeType.FASHION;
+import static com.picus.core.price.domain.vo.PriceThemeType.FASHION;
 import static org.assertj.core.api.Assertions.*;
 
 @Import({

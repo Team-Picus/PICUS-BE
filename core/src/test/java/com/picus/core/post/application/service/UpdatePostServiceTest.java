@@ -12,6 +12,7 @@ import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserReadPort;
@@ -70,7 +71,7 @@ class UpdatePostServiceTest {
                 createUpdatePostAppReq(
                         postNo, newImage, updateImage, deleteImage,
                         "title", "one", "detail",
-                        List.of(PostThemeType.BEAUTY), List.of(PostMoodType.VINTAGE),
+                        List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE), List.of(PostMoodType.VINTAGE),
                         SpaceType.INDOOR, "space", "pkg-123", userNo);
 
         User mockUser = mock(User.class);
@@ -91,7 +92,7 @@ class UpdatePostServiceTest {
         then(mockUser).should().getExpertNo();
         then(postReadPort).should().findById(postNo);
         then(spyPost).should().updatePost("title", "one", "detail",
-                List.of(PostThemeType.BEAUTY), List.of(PostMoodType.VINTAGE),
+                List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE), List.of(PostMoodType.VINTAGE),
                 SpaceType.INDOOR, "space", "pkg-123");
         then(spyPost).should().addPostImage(PostImage.builder()
                 .fileKey(newImage.fileKey())
@@ -131,7 +132,7 @@ class UpdatePostServiceTest {
     private UpdatePostCommand createUpdatePostAppReq(
             String postNo, UpdatePostImageCommand newImage, UpdatePostImageCommand updateImage,
             UpdatePostImageCommand deleteImage, String title, String oneLine, String detail,
-            List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, String packageNo, String userNo) {
         return UpdatePostCommand.builder()
                 .postNo(postNo)
@@ -140,6 +141,7 @@ class UpdatePostServiceTest {
                 .oneLineDescription(oneLine)
                 .detailedDescription(detail)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)

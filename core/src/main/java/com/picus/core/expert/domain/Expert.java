@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,11 +75,11 @@ public class Expert {
         this.activityAreas = activityAreas;
         this.activityCount = activityCount;
         this.lastActivityAt = lastActivityAt;
-        this.portfolioLinks = portfolioLinks == null ? new ArrayList<>() : portfolioLinks;
+        this.portfolioLinks = portfolioLinks == null ? Collections.emptyList() : portfolioLinks; // NPE 방지
         this.approvalStatus = approvalStatus;
         this.studio = studio;
-        this.skills = skills == null ? new ArrayList<>() : skills;
-        this.projects = projects == null ? new ArrayList<>() : projects;
+        this.skills = skills == null ? Collections.emptyList() : skills;
+        this.projects = projects == null ? Collections.emptyList() : projects;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;

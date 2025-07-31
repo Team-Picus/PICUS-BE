@@ -6,6 +6,7 @@ import com.picus.core.post.application.port.in.command.CreatePostCommand;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,8 @@ class CreatePostWebMapperTest {
                 .title("테스트 제목")
                 .oneLineDescription("한 줄 설명")
                 .detailedDescription("자세한 설명입니다.")
-                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT))
+                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.SNAP))
+                .snapSubThemes(List.of(SnapSubTheme.FAMILY))
                 .postMoodTypes(List.of(PostMoodType.COZY))
                 .spaceType(SpaceType.INDOOR)
                 .spaceAddress("서울시 강남구")
@@ -54,7 +56,8 @@ class CreatePostWebMapperTest {
         assertThat(appReq.title()).isEqualTo("테스트 제목");
         assertThat(appReq.oneLineDescription()).isEqualTo("한 줄 설명");
         assertThat(appReq.detailedDescription()).isEqualTo("자세한 설명입니다.");
-        assertThat(appReq.postThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
+        assertThat(appReq.postThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.SNAP));
+        assertThat(appReq.snapSubThemes()).isEqualTo(List.of(SnapSubTheme.FAMILY));
         assertThat(appReq.postMoodTypes()).isEqualTo(List.of(PostMoodType.COZY));
         assertThat(appReq.spaceType()).isEqualTo(SpaceType.INDOOR);
         assertThat(appReq.spaceAddress()).isEqualTo("서울시 강남구");

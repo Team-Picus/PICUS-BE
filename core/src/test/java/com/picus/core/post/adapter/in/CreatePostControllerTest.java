@@ -176,28 +176,6 @@ class CreatePostControllerTest extends AbstractSecurityMockSetup {
     }
 
     @Test
-    @DisplayName("Post 작성 요청 - detailedDescription이 blank이면 실패")
-    public void write_fail_detailedDescriptionBlank() throws Exception {
-        CreatePostRequest webReq = createCreatePostWebReq(
-                List.of(PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),
-                "테스트 제목",
-                "한 줄 설명",
-                " ",
-                List.of(PostThemeType.BEAUTY),
-                List.of(PostMoodType.COZY),
-                SpaceType.INDOOR,
-                "서울시 강남구",
-                "pkg-001"
-        );
-
-        mockMvc.perform(post("/api/v1/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(webReq)))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     @DisplayName("Post 작성 요청 - postThemeTypes 비어있으면 실패")
     public void createPost_fail_ThemeTypesEmpty() throws Exception {
         CreatePostRequest webReq = createCreatePostWebReq(
@@ -265,7 +243,7 @@ class CreatePostControllerTest extends AbstractSecurityMockSetup {
     }
 
     @Test
-    @DisplayName("Post 작성 요청 - spaceAddress가 blank이면 실패")
+    @DisplayName("Post 작성 요청 - spaceAddress가 blank면 실패")
     public void write_fail_spaceAddressBlank() throws Exception {
         CreatePostRequest webReq = createCreatePostWebReq(
                 List.of(PostImageWebReq.builder().fileKey("img.jpg").imageOrder(1).build()),

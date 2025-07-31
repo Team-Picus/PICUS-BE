@@ -17,6 +17,7 @@ public class CreatePostWebMapper {
                 .oneLineDescription(webReq.oneLineDescription())
                 .detailedDescription(webReq.detailedDescription())
                 .postThemeTypes(webReq.postThemeTypes())
+                .snapSubThemes(webReq.snapSubThemes())
                 .postMoodTypes(webReq.postMoodTypes())
                 .spaceType(webReq.spaceType())
                 .spaceAddress(webReq.spaceAddress())

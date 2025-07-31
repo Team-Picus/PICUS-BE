@@ -15,6 +15,7 @@ public class CreatePostCommandMapper {
                 .oneLineDescription(appReq.oneLineDescription())
                 .detailedDescription(appReq.detailedDescription())
                 .postThemeTypes(appReq.postThemeTypes())
+                .snapSubThemes(appReq.snapSubThemes())
                 .postMoodTypes(appReq.postMoodTypes())
                 .spaceType(appReq.spaceType())
                 .spaceAddress(appReq.spaceAddress())

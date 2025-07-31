@@ -1,4 +1,4 @@
-package com.picus.core.expert.domain.vo;
+package com.picus.core.price.domain.vo;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

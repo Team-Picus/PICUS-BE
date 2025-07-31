@@ -10,6 +10,7 @@ import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.config.JpaAuditingConfiguration;
 import jakarta.persistence.EntityManager;
@@ -25,8 +26,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static com.picus.core.post.domain.vo.PostMoodType.*;
+import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
+import static com.picus.core.post.domain.vo.PostThemeType.SNAP;
+import static com.picus.core.post.domain.vo.SnapSubTheme.ADMISSION;
+import static org.assertj.core.api.Assertions.*;
 
 
 @Import({
@@ -56,9 +60,9 @@ class PostPersistenceAdapterTest {
     public void save_success() throws Exception {
         // given
         Post post = createPost(null, "package-123", "expert-456",
-                "테스트 제목", "한 줄 설명",
-                "자세한 설명입니다.", List.of(PostThemeType.BEAUTY, PostThemeType.EVENT),
-                List.of(PostMoodType.COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
+                "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
+                List.of(BEAUTY, SNAP), List.of(SnapSubTheme.FAMILY),
+                List.of(COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
                 List.of(
                         PostImage.builder()
                                 .fileKey("img_1.jpg")
@@ -84,8 +88,9 @@ class PostPersistenceAdapterTest {
         assertThat(postEntity.getTitle()).isEqualTo("테스트 제목");
         assertThat(postEntity.getOneLineDescription()).isEqualTo("한 줄 설명");
         assertThat(postEntity.getDetailedDescription()).isEqualTo("자세한 설명입니다.");
-        assertThat(postEntity.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
-        assertThat(postEntity.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.COZY));
+        assertThat(postEntity.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
+        assertThat(postEntity.getSnapSubThemes()).isEqualTo(List.of(SnapSubTheme.FAMILY));
+        assertThat(postEntity.getPostMoodTypes()).isEqualTo(List.of(COZY));
         assertThat(postEntity.getSpaceType()).isEqualTo(SpaceType.INDOOR);
         assertThat(postEntity.getSpaceAddress()).isEqualTo("서울특별시 강남구");
         assertThat(postEntity.getIsPinned()).isEqualTo(false);
@@ -107,8 +112,8 @@ class PostPersistenceAdapterTest {
         // given
         // 데이터베이스에 데이터 셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "제목", "설명",
-                "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "package-123", "expert-456", "제목", "설명", "상세 설명",
+                List.of(SNAP), List.of(SnapSubTheme.FAMILY), List.of(COZY),
                 SpaceType.INDOOR, "서울시 강남구", false
         );
         createPostImageEntity("file.jpg", 1, postEntity);
@@ -129,6 +134,7 @@ class PostPersistenceAdapterTest {
         assertThat(post.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
         assertThat(post.getDetailedDescription()).isEqualTo(postEntity.getDetailedDescription());
         assertThat(post.getPostThemeTypes()).isEqualTo(postEntity.getPostThemeTypes());
+        assertThat(post.getSnapSubThemes()).isEqualTo(postEntity.getSnapSubThemes());
         assertThat(post.getPostMoodTypes()).isEqualTo(postEntity.getPostMoodTypes());
         assertThat(post.getSpaceType()).isEqualTo(postEntity.getSpaceType());
         assertThat(post.getSpaceAddress()).isEqualTo(postEntity.getSpaceAddress());
@@ -146,8 +152,8 @@ class PostPersistenceAdapterTest {
 
         // 데이터베이스에 데이터셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "old_title", "old_one",
-                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "package-123", "expert-456", "old_title", "old_one", "old_detail",
+                List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         clearPersistenceContext();
@@ -155,7 +161,7 @@ class PostPersistenceAdapterTest {
         // 수정할 Post 객체
         Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
                 "new_title", "new_one", "new_detail",
-                List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
+                List.of(BEAUTY, SNAP), List.of(SnapSubTheme.FAMILY), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", true, List.of()
         );
 
@@ -173,8 +179,9 @@ class PostPersistenceAdapterTest {
         assertThat(postResult.getTitle()).isEqualTo("new_title");
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
         assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
-        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
-        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.VINTAGE));
+        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
+        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(SnapSubTheme.FAMILY));
+        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(VINTAGE));
         assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
         assertThat(postResult.getIsPinned()).isEqualTo(true);
@@ -188,8 +195,8 @@ class PostPersistenceAdapterTest {
 
         // 데이터베이스에 데이터셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "old_title", "old_one",
-                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "package-123", "expert-456", "old_title", "old_one", "old_detail",
+                List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         PostImageEntity postImageEntity1 = createPostImageEntity("file_key", 1, postEntity);
@@ -200,7 +207,7 @@ class PostPersistenceAdapterTest {
         // 수정할 Post 객체
         Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
                 "new_title", "new_one", "new_detail",
-                List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
+                List.of(BEAUTY, SNAP), List.of(SnapSubTheme.FAMILY), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", true,
                 List.of(
                         createPostImage(null, "new_file_key", 1), // 추가된 이미지
@@ -223,8 +230,9 @@ class PostPersistenceAdapterTest {
         assertThat(postResult.getTitle()).isEqualTo("new_title");
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
         assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
-        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
-        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.VINTAGE));
+        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
+        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(SnapSubTheme.FAMILY));
+        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(VINTAGE));
         assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
         assertThat(postResult.getIsPinned()).isEqualTo(true);
@@ -247,8 +255,8 @@ class PostPersistenceAdapterTest {
         // given
         // 데이터베이스에 데이터셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "old_title", "old_one",
-                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "package-123", "expert-456", "old_title", "old_one", "old_detail",
+                List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         createPostImageEntity("file_key", 1, postEntity);
@@ -270,13 +278,13 @@ class PostPersistenceAdapterTest {
         // given
         String expertNo = "expert-456";
         PostEntity postEntity1 = createPostEntity(
-                "package-123", expertNo, "old_title", "old_one",
-                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "package-123", expertNo, "old_title", "old_one", "old_detail",
+                List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         PostEntity postEntity2 = createPostEntity(
-                "package-123", expertNo, "old_title", "old_one",
-                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "package-123", expertNo, "old_title", "old_one", "old_detail",
+                List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         clearPersistenceContext();
@@ -295,8 +303,8 @@ class PostPersistenceAdapterTest {
         // given
         // 데이터베이스에 데이터 셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "제목", "설명",
-                "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "package-123", "expert-456", "제목", "설명", "상세 설명",
+                List.of(SNAP), List.of(ADMISSION), List.of(COZY),
                 SpaceType.INDOOR, "서울시 강남구", true
         );
         createPostImageEntity("file.jpg", 1, postEntity);
@@ -316,6 +324,7 @@ class PostPersistenceAdapterTest {
         assertThat(result.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
         assertThat(result.getDetailedDescription()).isEqualTo(postEntity.getDetailedDescription());
         assertThat(result.getPostThemeTypes()).isEqualTo(postEntity.getPostThemeTypes());
+        assertThat(result.getSnapSubThemes()).isEqualTo(postEntity.getSnapSubThemes());
         assertThat(result.getPostMoodTypes()).isEqualTo(postEntity.getPostMoodTypes());
         assertThat(result.getSpaceType()).isEqualTo(postEntity.getSpaceType());
         assertThat(result.getSpaceAddress()).isEqualTo(postEntity.getSpaceAddress());
@@ -446,7 +455,7 @@ class PostPersistenceAdapterTest {
      * private 메서드
      */
     private Post createPost(String postNo, String packageNo, String authorNo, String title, String oneLineDescription,
-                            String detailedDescription, List<PostThemeType> postThemeTypes,
+                            String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                             boolean isPinned, List<PostImage> postImages) {
         return Post.builder()
@@ -457,6 +466,7 @@ class PostPersistenceAdapterTest {
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
@@ -473,8 +483,8 @@ class PostPersistenceAdapterTest {
                 .build();
     }
 
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
-                                        String detailedDescription, List<PostThemeType> postThemeTypes,
+    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription, String detailedDescription,
+                                        List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
@@ -484,6 +494,7 @@ class PostPersistenceAdapterTest {
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
@@ -499,8 +510,9 @@ class PostPersistenceAdapterTest {
                 .title(title)
                 .oneLineDescription("oneLineDescription")
                 .detailedDescription("detailedDescription")
-                .postThemeTypes(List.of(PostThemeType.BEAUTY))
-                .postMoodTypes(List.of(PostMoodType.VINTAGE))
+                .postThemeTypes(List.of(BEAUTY))
+                .snapSubThemes(List.of())
+                .postMoodTypes(List.of(VINTAGE))
                 .spaceType(SpaceType.OUTDOOR)
                 .spaceAddress("spaceAddress")
                 .isPinned(false)
@@ -515,8 +527,8 @@ class PostPersistenceAdapterTest {
                 .title(title)
                 .oneLineDescription("oneLineDescription")
                 .detailedDescription("detailedDescription")
-                .postThemeTypes(List.of(PostThemeType.BEAUTY))
-                .postMoodTypes(List.of(PostMoodType.VINTAGE))
+                .postThemeTypes(List.of(BEAUTY))
+                .postMoodTypes(List.of(VINTAGE))
                 .spaceType(SpaceType.OUTDOOR)
                 .spaceAddress("spaceAddress")
                 .isPinned(isPinned)

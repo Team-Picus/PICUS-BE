@@ -12,6 +12,7 @@ import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -34,6 +35,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.picus.core.post.application.port.in.command.ChangeStatus.*;
+import static com.picus.core.post.domain.vo.PostMoodType.VINTAGE;
+import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
+import static com.picus.core.post.domain.vo.PostThemeType.SNAP;
+import static com.picus.core.post.domain.vo.SnapSubTheme.ADMISSION;
+import static com.picus.core.post.domain.vo.SnapSubTheme.FAMILY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -77,7 +83,7 @@ public class UpdatePostIntegrationTest {
 
         PostEntity postEntity = createPostEntity(
                 "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
-                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "old_detail", List.of(BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         PostImageEntity postImageEntity1 = createPostImageEntity("file_key", 1, postEntity);
@@ -91,7 +97,7 @@ public class UpdatePostIntegrationTest {
                         createPostImageWebReq(postImageEntity1.getPostImageNo(), "file_key", 2, UPDATE), // 수정된 이미지
                         createPostImageWebReq(postImageEntity2.getPostImageNo(), null, null, DELETE) // 삭제된 이미지
                 ), "new_title", "new_one", "new_detail",
-                List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
+                List.of(BEAUTY, SNAP), List.of(ADMISSION), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", "package-456");
 
         HttpEntity<UpdatePostRequest> httpEntity = settingWebRequest(userEntity, webReq);
@@ -118,8 +124,9 @@ public class UpdatePostIntegrationTest {
         assertThat(postResult.getTitle()).isEqualTo("new_title");
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
         assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
-        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
-        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.VINTAGE));
+        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
+        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(ADMISSION));
+        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(VINTAGE));
         assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
 
@@ -201,8 +208,8 @@ public class UpdatePostIntegrationTest {
     }
 
     private UpdatePostRequest createWebReq(
-            List<UpdatePostRequest.PostImageRequest> postImages, String title, String oneLineDescription,
-            String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
+            List<UpdatePostRequest.PostImageRequest> postImages, String title, String oneLineDescription, String detailedDescription,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, String packageNo) {
         return UpdatePostRequest.builder()
                 .postImages(postImages)
@@ -210,6 +217,7 @@ public class UpdatePostIntegrationTest {
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)

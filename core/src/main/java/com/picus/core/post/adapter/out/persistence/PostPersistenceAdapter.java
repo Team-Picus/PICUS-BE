@@ -122,7 +122,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         // PostEntity 수정
         postEntity.updatePostEntity(
                 post.getPackageNo(), post.getTitle(), post.getOneLineDescription(),
-                post.getDetailedDescription(), post.getPostThemeTypes(), post.getPostMoodTypes(),
+                post.getDetailedDescription(), post.getPostThemeTypes(), post.getSnapSubThemes(), post.getPostMoodTypes(),
                 post.getSpaceType(), post.getSpaceAddress(), post.getIsPinned()
         );
     }
@@ -135,7 +135,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         // PostEntity 수정
         postEntity.updatePostEntity(
                 post.getPackageNo(), post.getTitle(), post.getOneLineDescription(),
-                post.getDetailedDescription(), post.getPostThemeTypes(), post.getPostMoodTypes(),
+                post.getDetailedDescription(), post.getPostThemeTypes(), post.getSnapSubThemes(), post.getPostMoodTypes(),
                 post.getSpaceType(), post.getSpaceAddress(), post.getIsPinned()
         );
 

@@ -2,16 +2,17 @@ package com.picus.core.post.domain;
 
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Builder
 @Getter
 public class Post {
 
@@ -23,32 +24,58 @@ public class Post {
     private String title;
     private String oneLineDescription;
     private String detailedDescription;
-    @Builder.Default
-    private List<PostThemeType> postThemeTypes = new ArrayList<>();
-    @Builder.Default
-    private List<PostMoodType> postMoodTypes = new ArrayList<>();
+    private List<PostThemeType> postThemeTypes;
+    private List<SnapSubTheme> snapSubThemes;
+    private List<PostMoodType> postMoodTypes;
     private SpaceType spaceType;
     private String spaceAddress;
     private Boolean isPinned;
-    @Builder.Default
-    private List<PostImage> postImages = new ArrayList<>();
+    private List<PostImage> postImages;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
+    @Builder
+    private Post(String postNo, String authorNo, String packageNo, String title, String oneLineDescription,
+                String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
+                List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress, Boolean isPinned,
+                List<PostImage> postImages, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
+        this.postNo = postNo;
+        this.authorNo = authorNo;
+        this.packageNo = packageNo;
+        this.title = title;
+        this.oneLineDescription = oneLineDescription;
+        this.detailedDescription = detailedDescription;
+        this.postThemeTypes = postThemeTypes == null ? Collections.emptyList() : postThemeTypes;
+        this.snapSubThemes = snapSubThemes == null ? Collections.emptyList() : snapSubThemes;
+        this.postMoodTypes = postMoodTypes == null ? Collections.emptyList() : postMoodTypes;
+        this.spaceType = spaceType;
+        this.spaceAddress = spaceAddress;
+        this.isPinned = isPinned;
+        this.postImages = postImages == null ? Collections.emptyList() : postImages;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+
+        validateSnapSubThemes(); // SnapSubTheme 유효성 검증
+    }
+
     public void updatePost(
             String title, String oneLineDescription, String detailedDescription,
-            List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, String packageNo
     ) {
         applyIfNotNull(title, val -> this.title = val);
         applyIfNotNull(oneLineDescription, val -> this.oneLineDescription = val);
         applyIfNotNull(detailedDescription, val -> this.detailedDescription = val);
         applyIfNotNull(postThemeTypes, val -> this.postThemeTypes = val);
+        applyIfNotNull(snapSubThemes, val -> this.snapSubThemes = val);
         applyIfNotNull(postMoodTypes, val -> this.postMoodTypes = val);
         applyIfNotNull(spaceType, val -> this.spaceType = val);
         applyIfNotNull(spaceAddress, val -> this.spaceAddress = val);
-        this.packageNo = packageNo; // packageNo는 null 가능
+        applyIfNotNull(packageNo, val -> this.packageNo = packageNo);
+
+        validateSnapSubThemes(); // SnapSubTheme 유효성 검증
     }
 
     public void addPostImage(PostImage newImage) {
@@ -97,6 +124,19 @@ public class Post {
     private <T> void applyIfNotNull(T value, Consumer<T> setter) {
         if (value != null) {
             setter.accept(value);
+        }
+    }
+
+    private void validateSnapSubThemes() {
+        boolean containsSnap = this.postThemeTypes.contains(PostThemeType.SNAP);
+        boolean hasSubThemes = this.snapSubThemes != null && !this.snapSubThemes.isEmpty();
+
+        if (containsSnap && !hasSubThemes) {
+            throw new IllegalStateException("SNAP 테마가 설정되어 있으나 세부 테마(snapSubThemes)가 비어 있습니다.");
+        }
+
+        if (!containsSnap && hasSubThemes) {
+            throw new IllegalStateException("SNAP 테마가 없는데 세부 테마(snapSubThemes)가 존재합니다.");
         }
     }
 }

@@ -3,6 +3,7 @@ package com.picus.core.post.adapter.in.web.data.request;
 import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -14,22 +15,23 @@ import java.util.List;
 
 @Builder
 public record UpdatePostRequest(
-        @Valid @Size(min = 1, max = 10) List<PostImageRequest> postImages,
+        @Valid @NotNull @Size(min = 1, max = 10) List<PostImageRequest> postImages,
         @NotBlank String title,
         @NotBlank String oneLineDescription,
-        @NotBlank String detailedDescription,
-        @Size(min = 1) List<PostThemeType> postThemeTypes,
-        @Size(min = 1) List<PostMoodType> postMoodTypes,
+        String detailedDescription,
+        @NotNull @Size(min = 1) List<PostThemeType> postThemeTypes,
+        List<SnapSubTheme> snapSubThemes,
+        @NotNull @Size(min = 1) List<PostMoodType> postMoodTypes,
         @NotNull SpaceType spaceType,
         @NotBlank String spaceAddress,
-        String packageNo
+        @NotBlank String packageNo
 ) {
 
     @Builder
     public record PostImageRequest(
             String postImageNo,
-            @NotNull String fileKey,
-            @NotNull Integer imageOrder,
-            @NotNull ChangeStatus changeStatus
+            String fileKey,
+            Integer imageOrder,
+            ChangeStatus changeStatus
     ){}
 }

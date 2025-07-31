@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.out.persistence.mapper;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;

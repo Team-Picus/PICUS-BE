@@ -1,6 +1,6 @@
 package com.picus.core.price.domain;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

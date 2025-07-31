@@ -1,6 +1,6 @@
 package com.picus.core.price.integration;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
