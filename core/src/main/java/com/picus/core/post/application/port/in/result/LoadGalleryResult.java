@@ -7,8 +7,15 @@ import java.util.List;
 @Builder
 public record LoadGalleryResult(
         String postNo,
-        List<String> imageUrls,
+        List<PostImageResult> images,
         String title,
         String oneLineDescription
 ) {
+    @Builder
+    public record PostImageResult(
+            String imageNo,
+            String fileKey,
+            String imageUrl,
+            Integer imageOrder
+    ){}
 }

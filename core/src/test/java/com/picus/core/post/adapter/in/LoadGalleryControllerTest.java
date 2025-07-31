@@ -46,7 +46,14 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
         given(loadGalleryUseCase.load(expertNo)).willReturn(Optional.of(appResp));
         LoadGalleryResponse webResp = LoadGalleryResponse.builder()
                 .postNo("")
-                .imageUrls(List.of(""))
+                .images(List.of(
+                        LoadGalleryResponse.PostImageResponse.builder()
+                                .imageNo("")
+                                .fileKey("")
+                                .imageUrl("")
+                                .imageOrder(0)
+                                .build()
+                ))
                 .title("")
                 .oneLineDescription("")
                 .build();
@@ -65,9 +72,12 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.result.postNo").exists())
                 .andExpect(jsonPath("$.result.title").exists())
                 .andExpect(jsonPath("$.result.oneLineDescription").exists())
-                .andExpect(jsonPath("$.result.imageUrls").exists());
+                .andExpect(jsonPath("$.result.images").isArray())
+                .andExpect(jsonPath("$.result.images[0].imageNo").exists())
+                .andExpect(jsonPath("$.result.images[0].fileKey").exists())
+                .andExpect(jsonPath("$.result.images[0].imageUrl").exists())
+                .andExpect(jsonPath("$.result.images[0].imageOrder").exists());
         // then
-
         then(loadGalleryUseCase).should().load(expertNo);
         then(webMapper).should().toResponse(appResp);
     }

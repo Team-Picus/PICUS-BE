@@ -16,6 +16,7 @@ import java.util.Optional;
 public class LoadGalleryService implements LoadGalleryUseCase {
 
     private final PostReadPort postReadPort;
+
     @Override
     public Optional<LoadGalleryResult> load(String expertNo) {
         // 해당 전문가의 고정처리된 게시물 조회
@@ -28,10 +29,18 @@ public class LoadGalleryService implements LoadGalleryUseCase {
             // TODO: file key -> url 변환 로직
             List<String> imageUrls = List.of("");
 
-            // 매퍼를 통해 LoadGalleryResult 매핑
+            // LoadGalleryResult 매핑
+            List<LoadGalleryResult.PostImageResult> postImageResults = postImages.stream()
+                    .map(postImage -> LoadGalleryResult.PostImageResult.builder()
+                            .imageNo(postImage.getPostImageNo())
+                            .fileKey(postImage.getFileKey())
+                            .imageUrl("") // 변환 로직 후 기입
+                            .imageOrder(postImage.getImageOrder())
+                            .build()
+                    ).toList();
             return Optional.ofNullable(LoadGalleryResult.builder()
                     .postNo(post.getPostNo())
-                    .imageUrls(imageUrls)
+                    .images(postImageResults)
                     .title(post.getTitle())
                     .oneLineDescription(post.getOneLineDescription())
                     .build());

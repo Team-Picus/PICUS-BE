@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -52,7 +53,15 @@ class LoadGalleryServiceTest {
         assertThat(result.get().postNo()).isEqualTo("post-123");
         assertThat(result.get().title()).isEqualTo("title");
         assertThat(result.get().oneLineDescription()).isEqualTo("one");
-        assertThat(result.get().imageUrls()).containsExactly(""); // TODO: filekey -> url 변환 로직 필요
+        assertThat(result.get().images()).hasSize(2)
+                .extracting(
+                        LoadGalleryResult.PostImageResult::fileKey,
+                        LoadGalleryResult.PostImageResult::imageUrl,
+                        LoadGalleryResult.PostImageResult::imageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple("file1.jpg", "", 1),
+                        tuple("file2.jpg", "", 2)
+                ); // TODO: filekey -> url 변환 로직 필요
 
         then(postReadPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
     }

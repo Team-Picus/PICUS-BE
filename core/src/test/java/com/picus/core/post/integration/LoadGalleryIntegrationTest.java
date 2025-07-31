@@ -1,6 +1,7 @@
 package com.picus.core.post.integration;
 
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import com.picus.core.post.adapter.in.web.data.response.LoadGalleryResponse;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
@@ -65,7 +66,7 @@ public class LoadGalleryIntegrationTest {
                 "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "서울시 강남구", true
         );
-        createPostImageEntity("file.jpg", 1, postEntity);
+        PostImageEntity postImageEntity = createPostImageEntity("file.jpg", 1, postEntity);
         commitTestTransaction();
 
         // 웹 요청 셋팅
@@ -89,7 +90,14 @@ public class LoadGalleryIntegrationTest {
         Map<String, Object> result = (Map<String, Object>) body.getResult();
 
         assertThat(result.get("postNo")).isEqualTo(postEntity.getPostNo());
-        assertThat(result.get("imageUrls")).isEqualTo(List.of("")); // TODO: fileKey -> url 변환 로직 추가후 재 검증
+
+        List<Map<String, Object>> images = (List<Map<String, Object>>) result.get("images");
+        Map<String, Object> firstImage = images.get(0);
+        assertThat(firstImage.get("imageNo")).isEqualTo(postImageEntity.getPostImageNo());
+        assertThat(firstImage.get("fileKey")).isEqualTo("file.jpg");
+        assertThat(firstImage.get("imageUrl")).isEqualTo(""); // TODO: fileKey -> url 변환 로직 추가후 재 검증
+        assertThat(firstImage.get("imageOrder")).isEqualTo(1);
+
         assertThat(result.get("title")).isEqualTo(postEntity.getTitle());
         assertThat(result.get("oneLineDescription")).isEqualTo(postEntity.getOneLineDescription());
     }
