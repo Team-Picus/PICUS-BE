@@ -29,6 +29,7 @@ public class LoadPriceWebMapper {
         return priceReferenceImages.stream()
                 .map(priceReferenceImage -> PriceReferenceImageResponse.builder()
                         .priceRefImageNo(priceReferenceImage.getPriceRefImageNo())
+                        .fileKey(priceReferenceImage.getFileKey())
                         .imageUrl(priceReferenceImage.getImageUrl())
                         .imageOrder(priceReferenceImage.getImageOrder())
                         .build()

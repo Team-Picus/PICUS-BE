@@ -65,10 +65,11 @@ class LoadPriceWebMapperTest {
         assertThat(imageResponses).hasSize(1)
                 .extracting(
                         PriceReferenceImageResponse::priceRefImageNo,
+                        PriceReferenceImageResponse::fileKey,
                         PriceReferenceImageResponse::imageUrl,
                         PriceReferenceImageResponse::imageOrder
                 ).containsExactlyInAnyOrder(
-                        tuple("img_no", "https://cdn.picus.com/image.jpg", 1)
+                        tuple("img_no", "file-key", "https://cdn.picus.com/image.jpg", 1)
                 );
 
         List<PackageResponse> packageResponses = response.packages();

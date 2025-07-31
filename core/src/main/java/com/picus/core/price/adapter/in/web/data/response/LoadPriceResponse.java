@@ -16,6 +16,7 @@ public record LoadPriceResponse(
     @Builder
     public record PriceReferenceImageResponse(
         String priceRefImageNo,
+        String fileKey,
         String imageUrl,
         Integer imageOrder
     ) {}

@@ -138,10 +138,12 @@ public class LoadPriceIntegrationTest {
         // PriceReferenceImage TODO: key -> url 후 재검증 필요
         List<PriceReferenceImageResponse> imageResults = first.priceReferenceImages();
         assertThat(imageResults).hasSize(1)
-                .extracting(PriceReferenceImageResponse::priceRefImageNo,
+                .extracting(
+                        PriceReferenceImageResponse::priceRefImageNo,
+                        PriceReferenceImageResponse::fileKey,
                         PriceReferenceImageResponse::imageUrl,
                         PriceReferenceImageResponse::imageOrder)
-                .contains(tuple(referenceImageEntity.getPriceReferenceImageNo(), null, 1));
+                .contains(tuple(referenceImageEntity.getPriceReferenceImageNo(), "file-key-123", null, 1));
     }
 
     private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
