@@ -93,9 +93,12 @@ public class UpdatePostIntegrationTest {
 
         // 입력 값 셋팅
         UpdatePostRequest webReq = createWebReq(List.of(
-                        createPostImageWebReq(null, "new_file_key", 1, NEW), // 새로 추가된 이미지
-                        createPostImageWebReq(postImageEntity1.getPostImageNo(), "file_key", 2, UPDATE), // 수정된 이미지
-                        createPostImageWebReq(postImageEntity2.getPostImageNo(), null, null, DELETE) // 삭제된 이미지
+                        createPostImageWebReq(null,
+                                "new_file_key", 1, NEW), // 새로 추가된 이미지
+                        createPostImageWebReq(postImageEntity1.getPostImageNo(),
+                                "chg_file_key", 2, UPDATE), // 수정된 이미지
+                        createPostImageWebReq(postImageEntity2.getPostImageNo(),
+                                postImageEntity2.getFileKey(), postImageEntity2.getImageOrder(), DELETE) // 삭제된 이미지
                 ), "new_title", "new_one", "new_detail",
                 List.of(BEAUTY, SNAP), List.of(ADMISSION), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", "package-456");
@@ -138,7 +141,7 @@ public class UpdatePostIntegrationTest {
                         PostImageEntity::getImageOrder
                 ).containsExactlyInAnyOrder(
                         tuple("new_file_key", 1),
-                        tuple("file_key", 2)
+                        tuple("chg_file_key", 2)
                 );
 
         ExpertEntity updatedExpertEntity = expertJpaRepository.findById(expertEntity.getExpertNo())
@@ -165,6 +168,7 @@ public class UpdatePostIntegrationTest {
                 .build();
         return userJpaRepository.save(userEntity);
     }
+
     private ExpertEntity createExpertEntity(UserEntity userEntity, LocalDateTime lastActivityAt) {
         ExpertEntity expertEntity = ExpertEntity.builder()
                 .activityCareer("activityCareer")

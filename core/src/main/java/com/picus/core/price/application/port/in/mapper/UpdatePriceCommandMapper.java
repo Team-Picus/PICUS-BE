@@ -1,6 +1,5 @@
 package com.picus.core.price.application.port.in.mapper;
 
-import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.application.port.in.command.UpdateOptionCommand;
 import com.picus.core.price.application.port.in.command.UpdatePackageCommand;
 import com.picus.core.price.application.port.in.command.UpdatePriceCommand;
@@ -19,7 +18,8 @@ public class UpdatePriceCommandMapper {
     public Price toPriceDomain(UpdatePriceCommand updatePriceCommand) {
         return Price.builder()
                 .priceNo(updatePriceCommand.priceNo())
-                .priceThemeType(PriceThemeType.valueOf(updatePriceCommand.priceThemeType()))
+                .priceThemeType(updatePriceCommand.priceThemeType())
+                .snapSubTheme(updatePriceCommand.snapSubTheme())
                 .priceReferenceImages(toRefImageDomain(updatePriceCommand.priceReferenceImages()))
                 .packages(toPackageDomain(updatePriceCommand.packages()))
                 .options(toOptionDomain(updatePriceCommand.options()))

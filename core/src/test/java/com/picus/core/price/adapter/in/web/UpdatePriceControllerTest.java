@@ -8,6 +8,7 @@ import com.picus.core.price.adapter.in.web.mapper.UpdatePriceWebMapper;
 import com.picus.core.price.application.port.in.UpdatePriceUseCase;
 import com.picus.core.price.application.port.in.command.UpdatePriceListCommand;
 import com.picus.core.price.application.port.in.command.ChangeStatus;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -58,7 +59,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                         3000, List.of("옵션내용"), ChangeStatus.NEW);
 
         UpdatePriceRequest updatePriceWebRequest =
-                createPriceWebRequest("price-001", "THEME", ChangeStatus.NEW,
+                createPriceWebRequest("price-001", PriceThemeType.FASHION, ChangeStatus.NEW,
                         imageWebRequest, updatePackageRequest, updateOptionRequest);
 
         UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
@@ -102,7 +103,30 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
         // given
 
         UpdatePriceRequest updatePriceWebRequest =
-                createPriceWebRequest("price-001", "THEME", null);
+                createPriceWebRequest("price-001", PriceThemeType.FASHION, null);
+
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
+
+        given(webMapper.toCommand(webRequest))
+                .willReturn(Mockito.mock(UpdatePriceListCommand.class));
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/experts/prices")
+                                .content(objectMapper.writeValueAsString(webRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("가격정보 변경 Controller 입력값 PriceWebRequest의 priceThemeType이 빠지면 에러가 발생한다.")
+    public void applyPriceChanges_PriceWebRequest_priceThemeType_null() throws Exception {
+        // given
+
+        UpdatePriceRequest updatePriceWebRequest =
+                createPriceWebRequest("price-001", null, ChangeStatus.UPDATE);
 
         UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
@@ -137,7 +161,7 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                         3000, List.of("옵션내용"), ChangeStatus.NEW);
 
         UpdatePriceRequest updatePriceWebRequest =
-                createPriceWebRequest("price-001", "THEME", ChangeStatus.NEW,
+                createPriceWebRequest("price-001", PriceThemeType.FASHION, ChangeStatus.NEW,
                         imageWebRequest, updatePackageRequest, updateOptionRequest);
 
         UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
@@ -191,12 +215,12 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
         return updateOptionRequest;
     }
 
-    private UpdatePriceRequest createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, PriceThemeType priceThemeType, ChangeStatus changeStatus,
                                                      UpdatePriceReferenceImageRequest imageWebRequest,
                                                      UpdatePackageRequest updatePackageRequest, UpdateOptionRequest updateOptionRequest) {
         return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
-                .priceThemeType(theme)
+                .priceThemeType(priceThemeType)
                 .priceReferenceImages(List.of(imageWebRequest))
                 .packages(List.of(updatePackageRequest))
                 .options(List.of(updateOptionRequest))
@@ -204,10 +228,10 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                 .build();
     }
 
-    private UpdatePriceRequest createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus) {
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, PriceThemeType priceThemeType, ChangeStatus changeStatus) {
         return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
-                .priceThemeType(theme)
+                .priceThemeType(priceThemeType)
                 .status(changeStatus)
                 .build();
     }

@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UpdatePackageAppReqAppMapperTest {
+class UpdatePackageCommandMapperTest {
     private final UpdatePackageCommandMapper appMapper = new UpdatePackageCommandMapper();
 
     @Test

@@ -7,6 +7,7 @@ import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
 import com.picus.core.price.domain.Package;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class UpdatePriceAppReqAppMapperTest {
+class UpdatePriceCommandMapperTest {
 
     private final UpdatePriceCommandMapper mapper = new UpdatePriceCommandMapper();
 
@@ -40,7 +41,8 @@ class UpdatePriceAppReqAppMapperTest {
 
         UpdatePriceCommand updatePriceCommand = new UpdatePriceCommand(
                 "price-123",
-                "SNAP",
+                PriceThemeType.SNAP,
+                SnapSubTheme.ADMISSION,
                 imageCommands,
                 updatePackageCommands,
                 updateOptionCommands,
@@ -53,6 +55,7 @@ class UpdatePriceAppReqAppMapperTest {
         // then
         assertThat(result.getPriceNo()).isEqualTo("price-123");
         assertThat(result.getPriceThemeType()).isEqualTo(PriceThemeType.SNAP);
+        assertThat(result.getSnapSubTheme()).isEqualTo(SnapSubTheme.ADMISSION);
 
         // 이미지 필드 전체 검증
         assertThat(result.getPriceReferenceImages())

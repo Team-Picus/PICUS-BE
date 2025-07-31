@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.picus.core.price.application.port.in.command.ChangeStatus.DELETE;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
 @UseCase
@@ -60,7 +61,7 @@ public class UpdatePriceService implements UpdatePriceUseCase {
                 case ChangeStatus.UPDATE:
                     updatePrice(updatePriceCommand, expertNo);
                     break;
-                case ChangeStatus.DELETE:
+                case DELETE:
                     deletePrice(updatePriceCommand.priceNo(), expertNo);
                     break;
             }
@@ -77,7 +78,7 @@ public class UpdatePriceService implements UpdatePriceUseCase {
             List<UpdatePriceReferenceImageCommand> priceRefImageCommands = updatePriceCommand.priceReferenceImages();
             Set<Integer> imageOrderSet = new HashSet<>();
             for (UpdatePriceReferenceImageCommand command : priceRefImageCommands) {
-                if (!imageOrderSet.add(command.imageOrder())) {
+                if (!command.status().equals(DELETE) && !imageOrderSet.add(command.imageOrder())) {
                     throw new RestApiException(_BAD_REQUEST);
                 }
             }
@@ -101,7 +102,7 @@ public class UpdatePriceService implements UpdatePriceUseCase {
         List<String> deletedOptionNos = new ArrayList<>();
 
         // Price 정보 업데이트
-        price.changePriceTheme(updatePriceCommand.priceThemeType());
+        price.changePriceTheme(updatePriceCommand.priceThemeType(), updatePriceCommand.snapSubTheme());
 
         // PriceReferenceImage 정보 업데이트
         updatePriceReferenceImage(updatePriceCommand, price, deletedPriceRefImageNos);
@@ -126,7 +127,7 @@ public class UpdatePriceService implements UpdatePriceUseCase {
                 case ChangeStatus.UPDATE:
                     price.updateReferenceImage(updatePriceRefImageCommandMapper.toDomain(refImagesCommand));
                     break;
-                case ChangeStatus.DELETE:
+                case DELETE:
                     price.deleteReferenceImage(refImagesCommand.priceRefImageNo());
                     deletedPriceRefImageNos.add(refImagesCommand.priceRefImageNo());
                     break;
@@ -145,7 +146,7 @@ public class UpdatePriceService implements UpdatePriceUseCase {
                 case ChangeStatus.UPDATE:
                     price.updatePackage(updatePackageCommandMapper.toDomain(pkgCmd));
                     break;
-                case ChangeStatus.DELETE:
+                case DELETE:
                     price.deletePackage(pkgCmd.packageNo());
                     deletedPackageNos.add(pkgCmd.packageNo());
                     break;
@@ -164,7 +165,7 @@ public class UpdatePriceService implements UpdatePriceUseCase {
                 case ChangeStatus.UPDATE:
                     price.updateOption(updateOptionCommandMapper.toDomain(optCmd));
                     break;
-                case ChangeStatus.DELETE:
+                case DELETE:
                     price.deleteOption(optCmd.optionNo());
                     deletedOptionNos.add(optCmd.optionNo());
                     break;

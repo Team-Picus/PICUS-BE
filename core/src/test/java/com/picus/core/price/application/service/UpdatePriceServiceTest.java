@@ -13,6 +13,8 @@ import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
@@ -27,6 +29,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
+import static com.picus.core.price.domain.vo.PriceThemeType.SNAP;
+import static com.picus.core.price.domain.vo.SnapSubTheme.FRIENDSHIP;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.*;
 
@@ -73,7 +77,8 @@ class UpdatePriceServiceTest {
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-1",
-                "FASHION",
+                SNAP,
+                FRIENDSHIP,
                 Collections.emptyList(),  // no images
                 Collections.emptyList(),  // no packages
                 Collections.emptyList(),  // no options
@@ -112,7 +117,8 @@ class UpdatePriceServiceTest {
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
-                "FASHION",
+                SNAP,
+                FRIENDSHIP,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -136,7 +142,7 @@ class UpdatePriceServiceTest {
         then(userReadPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
         then(priceReadPort).should(order).findById("price-2");
-        then(price).should(order).changePriceTheme("FASHION");
+        then(price).should(order).changePriceTheme(SNAP, FRIENDSHIP);
         then(priceUpdatePort).should(order).update(price, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         then(priceCreatePort).shouldHaveNoMoreInteractions();
     }
@@ -174,7 +180,8 @@ class UpdatePriceServiceTest {
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-4",
-                "FASHION",
+                PriceThemeType.FASHION,
+                null,
                 imgCmds,
                 pkgCmds,
                 optCmds,
@@ -219,7 +226,7 @@ class UpdatePriceServiceTest {
         then(userReadPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
         then(priceReadPort).should(order).findById("price-4");
-        then(price).should(order).changePriceTheme("FASHION");
+        then(price).should(order).changePriceTheme(PriceThemeType.FASHION, null);
 
         then(updatePriceRefImageCommandMapper).should(order).toDomain(newImgCmd);
         then(price).should(order).addReferenceImage(imgNew);
@@ -255,7 +262,8 @@ class UpdatePriceServiceTest {
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
-                "FASHION",
+                PriceThemeType.FASHION,
+                null,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -292,7 +300,8 @@ class UpdatePriceServiceTest {
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-4",
-                "FASHION",
+                PriceThemeType.FASHION,
+                null,
                 imgCmds,
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -319,7 +328,8 @@ class UpdatePriceServiceTest {
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",
-                "THEME_C",
+                PriceThemeType.FASHION,
+                null,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -353,7 +363,8 @@ class UpdatePriceServiceTest {
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",
-                "THEME_C",
+                PriceThemeType.FASHION,
+                null,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),

@@ -1,42 +1,90 @@
 package com.picus.core.price.domain;
 
 import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static com.picus.core.price.domain.vo.PriceThemeType.*;
+import static com.picus.core.price.domain.vo.SnapSubTheme.FRIENDSHIP;
 import static org.assertj.core.api.Assertions.*;
 
 
 class PriceTest {
 
     @Test
+    @DisplayName("Price를 생성할 때, SNAP 테마로 설정되어 있으나 세부 테마(snapSubTheme)가 비어 있는 경우 에러가 발생한다.")
+    public void createPrice_error1() throws Exception {
+        // given // when // then
+        assertThatThrownBy(() ->
+                Price.builder()
+                        .priceThemeType(SNAP)
+                        .snapSubTheme(null)
+                        .build()
+        ).isInstanceOf(IllegalStateException.class)
+                .hasMessage("SNAP 테마로 설정되어 있으나 세부 테마(snapSubTheme)가 비어 있습니다.");
+    }
+
+    @Test
+    @DisplayName("Price를 생성할 때, SNAP 테마가 아닌데 세부 테마(snapSubTheme)가 존재하는 경우 에러가 발생한다.")
+    public void createPrice_error2() throws Exception {
+        // given // when // then
+        assertThatThrownBy(() ->
+                Price.builder()
+                        .priceThemeType(FASHION)
+                        .snapSubTheme(SnapSubTheme.ADMISSION)
+                        .build()
+        ).isInstanceOf(IllegalStateException.class)
+                .hasMessage("SNAP 테마가 아닌데 세부 테마(snapSubTheme)가 존재합니다.");
+    }
+
+    @Test
     @DisplayName("Price의 PriceThemeType을 변경한다.")
     public void changePriceTheme_success() throws Exception {
         // given
         Price price = Price.builder()
-                .priceThemeType(PriceThemeType.FASHION)
+                .priceThemeType(FASHION)
+                .snapSubTheme(null)
                 .build();
 
         // when
-        price.changePriceTheme("BEAUTY");
+        price.changePriceTheme(BEAUTY, null);
 
         // then
         assertThat(price.getPriceThemeType())
-                .isEqualTo(PriceThemeType.BEAUTY);
+                .isEqualTo(BEAUTY);
     }
 
     @Test
-    @DisplayName("잘못된 PriceThemeType Enum을 넘겨주면 오류가 발생한다.")
-    public void changePriceTheme_wrong_enum() throws Exception {
+    @DisplayName("Price의 PriceThemeType을 변경할 때 SNAP 테마로 설정되어 있으나 세부 테마(snapSubTheme)가 비어 있는 경우 에러가 발생한다.")
+    public void changePriceTheme_error1() throws Exception {
         // given
         Price price = Price.builder()
-                .priceThemeType(PriceThemeType.FASHION)
+                .priceThemeType(FASHION)
+                .snapSubTheme(null)
                 .build();
 
-        // then
-        assertThatThrownBy(() -> price.changePriceTheme("WRONG"));
+        // when // then
+        assertThatThrownBy(() -> price.changePriceTheme(SNAP, null))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("SNAP 테마로 설정되어 있으나 세부 테마(snapSubTheme)가 비어 있습니다.");
+    }
+
+    @Test
+    @DisplayName("Price의 PriceThemeType을 변경할 때 SNAP 테마가 아닌데 세부 테마(snapSubTheme)가 존재하는 경우 에러가 발생한다.")
+    public void changePriceTheme_error2() throws Exception {
+        // given
+        Price price = Price.builder()
+                .priceThemeType(FASHION)
+                .snapSubTheme(null)
+                .build();
+
+        // when // then
+        assertThatThrownBy(() -> price.changePriceTheme(BEAUTY, FRIENDSHIP))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("SNAP 테마가 아닌데 세부 테마(snapSubTheme)가 존재합니다.");
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
+import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.application.port.out.PostUpdatePort;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.picus.core.post.application.port.in.command.ChangeStatus.DELETE;
 import static com.picus.core.post.application.port.in.command.UpdatePostCommand.*;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
@@ -85,8 +87,8 @@ public class UpdatePostService implements UpdatePostUseCase {
 
     private void checkPostImageOrder(List<UpdatePostImageCommand> updatePostImageCommands) {
         Set<Integer> imageOrderSet = new HashSet<>();
-        for (UpdatePostImageCommand imageAppReq : updatePostImageCommands) {
-            if (!imageOrderSet.add(imageAppReq.imageOrder())) {
+        for (UpdatePostImageCommand command : updatePostImageCommands) {
+            if (!command.changeStatus().equals(DELETE) && !imageOrderSet.add(command.imageOrder())) {
                 throw new RestApiException(_BAD_REQUEST);
             }
         }

@@ -15,10 +15,12 @@ import com.picus.core.price.adapter.out.persistence.repository.PackageJpaReposit
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
 import com.picus.core.price.application.port.in.command.ChangeStatus;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,9 +37,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.picus.core.price.domain.vo.PriceThemeType.BEAUTY;
-import static com.picus.core.price.domain.vo.PriceThemeType.FASHION;
 import static com.picus.core.price.application.port.in.command.ChangeStatus.*;
+import static com.picus.core.price.domain.vo.PriceThemeType.*;
+import static com.picus.core.price.domain.vo.SnapSubTheme.ADMISSION;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -101,7 +103,7 @@ public class UpdatePriceIntegrationTest {
                         List.of("new_cnt"), NEW); // 추가
 
         UpdatePriceRequest updatePriceWebRequest =
-                createPriceWebRequest(null, "FASHION", NEW,
+                createPriceWebRequest(null, SNAP, ADMISSION, NEW,
                         List.of(newImgWebReq), List.of(newPkgWebReq), List.of(newOptWebReq));
 
         UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
@@ -123,8 +125,8 @@ public class UpdatePriceIntegrationTest {
         // Price 검증
         List<PriceEntity> savedPriceEntity = priceJpaRepository.findAll();
         assertThat(savedPriceEntity).hasSize(1)
-                .extracting(PriceEntity::getPriceThemeType)
-                .containsExactly(FASHION);
+                .extracting(PriceEntity::getPriceThemeType, PriceEntity::getSnapSubTheme)
+                .containsExactly(tuple(SNAP, ADMISSION));
 
         // PriceReferenceImage 검증
         List<PriceReferenceImageEntity> savedPriceRefImageEntity = priceReferenceImageJpaRepository.findAll();
@@ -172,7 +174,7 @@ public class UpdatePriceIntegrationTest {
         ExpertEntity expertEntity = createExpertEntity(userEntity);
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
-        PriceEntity priceEntity = createPriceEntity(expertEntity.getExpertNo(), BEAUTY);
+        PriceEntity priceEntity = createPriceEntity(expertEntity.getExpertNo(), BEAUTY, null);
 
         PackageEntity pkgEntity1 = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
         PackageEntity pkgEntity2 = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
@@ -193,7 +195,7 @@ public class UpdatePriceIntegrationTest {
                         2, UPDATE); // 수정
         UpdatePriceReferenceImageRequest delImgWebReq =
                 createPriceRefImageWebRequest(refImageEntity2.getPriceReferenceImageNo(),
-                        null, null, DELETE); // 삭제
+                        refImageEntity2.getFileKey(), refImageEntity2.getImageOrder(), DELETE); // 삭제
 
         UpdatePackageRequest newPkgWebReq =
                 createPackageWebRequest(null, "new_pkg_name", 10, List.of("new_cnt"),
@@ -202,8 +204,8 @@ public class UpdatePriceIntegrationTest {
                 createPackageWebRequest(pkgEntity1.getPackageNo(), "changed_pkg_name", 10,
                         List.of("changed_cnt"), "changed_notice", UPDATE); // 수정
         UpdatePackageRequest delPkgWebReq =
-                createPackageWebRequest(pkgEntity2.getPackageNo(), null, null,
-                        null, null, DELETE); // 삭제
+                createPackageWebRequest(pkgEntity2.getPackageNo(), pkgEntity2.getName(), pkgEntity2.getPrice(),
+                        pkgEntity2.getContents(), pkgEntity2.getNotice(), DELETE); // 삭제
 
         UpdateOptionRequest newOptWebReq =
                 createOptionWebRequest(null, "new_opt_name", 2, 10,
@@ -212,11 +214,11 @@ public class UpdatePriceIntegrationTest {
                 createOptionWebRequest(optEntity1.getOptionNo(), "changed_opt_name", 1, 5,
                         List.of("changed_cnt"), UPDATE); // 수정
         UpdateOptionRequest delOptWebReq =
-                createOptionWebRequest(optEntity2.getOptionNo(), null, null, null,
-                        null, DELETE); // 삭제
+                createOptionWebRequest(optEntity2.getOptionNo(), optEntity2.getName(), optEntity2.getCount(),
+                        optEntity2.getPrice(), optEntity2.getContents(), DELETE); // 삭제
 
         UpdatePriceRequest updatePriceWebRequest =
-                createPriceWebRequest(priceEntity.getPriceNo(), "FASHION", UPDATE,
+                createPriceWebRequest(priceEntity.getPriceNo(), SNAP, ADMISSION, UPDATE,
                         List.of(newImgWebReq, uptImgWebReq, delImgWebReq),
                         List.of(newPkgWebReq, uptPkgWebReq, delPkgWebReq),
                         List.of(newOptWebReq, uptOptWebReq, delOptWebReq));
@@ -241,7 +243,8 @@ public class UpdatePriceIntegrationTest {
         Optional<PriceEntity> optionalPriceEntity = priceJpaRepository.findById(priceEntity.getPriceNo());
         assertThat(optionalPriceEntity).isPresent();
         PriceEntity updatedPrice = optionalPriceEntity.get();
-        assertThat(updatedPrice.getPriceThemeType()).isEqualTo(FASHION);
+        assertThat(updatedPrice.getPriceThemeType()).isEqualTo(SNAP);
+        assertThat(updatedPrice.getSnapSubTheme()).isEqualTo(ADMISSION);
 
         // PriceReferenceImage 검증
         List<PriceReferenceImageEntity> updatedImages = priceReferenceImageJpaRepository.findByPriceEntity_PriceNo(priceEntity.getPriceNo());
@@ -292,21 +295,44 @@ public class UpdatePriceIntegrationTest {
         ExpertEntity expertEntity = createExpertEntity(userEntity);
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
-        PriceEntity priceEntity = createPriceEntity(expertEntity.getExpertNo(), BEAUTY);
+        PriceEntity priceEntity = createPriceEntity(expertEntity.getExpertNo(), BEAUTY, null);
 
-        createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
+        PackageEntity packageEntity = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
 
-        createReferenceImageEntity(priceEntity, "file_key", 1);
+        PriceReferenceImageEntity referenceImageEntity = createReferenceImageEntity(priceEntity, "file_key", 1);
 
-        createOptionEntity(priceEntity, "name", 0, 0, List.of("content"));
+        OptionEntity optionEntity = createOptionEntity(priceEntity, "name", 0, 0, List.of("content"));
 
         commitTestTransaction();
 
         // 요청 값 셋팅
 
         UpdatePriceRequest updatePriceWebRequest =
-                createPriceWebRequest(priceEntity.getPriceNo(), null, DELETE,
-                        null, null, null);
+                createPriceWebRequest(priceEntity.getPriceNo(), BEAUTY, null, DELETE,
+                        List.of(createPriceRefImageWebRequest(
+                                referenceImageEntity.getPriceReferenceImageNo(),
+                                referenceImageEntity.getFileKey(),
+                                referenceImageEntity.getImageOrder(),
+                                DELETE
+                        )),
+                        List.of(createPackageWebRequest(
+                                        packageEntity.getPackageNo(),
+                                        packageEntity.getName(),
+                                        packageEntity.getPrice(),
+                                        packageEntity.getContents(),
+                                        packageEntity.getNotice(),
+                                        DELETE
+                                )
+                        ),
+                        List.of(createOptionWebRequest(
+                                optionEntity.getOptionNo(),
+                                optionEntity.getName(),
+                                optionEntity.getCount(),
+                                optionEntity.getPrice(),
+                                optionEntity.getContents(),
+                                DELETE
+                        ))
+                );
 
         UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
@@ -329,10 +355,11 @@ public class UpdatePriceIntegrationTest {
         assertThat(optionalPriceEntity).isNotPresent();
     }
 
-    private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
+    private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType, SnapSubTheme snapSubTheme) {
         PriceEntity priceEntity = PriceEntity.builder()
                 .expertNo(expertNo)
                 .priceThemeType(priceThemeType)
+                .snapSubTheme(snapSubTheme)
                 .build();
         return priceJpaRepository.save(priceEntity);
     }
@@ -446,11 +473,13 @@ public class UpdatePriceIntegrationTest {
                 .build();
     }
 
-    private UpdatePriceRequest createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
-                                                     List<UpdatePriceReferenceImageRequest> priceReferenceImages, List<UpdatePackageRequest> packages, List<UpdateOptionRequest> options) {
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, PriceThemeType priceThemeType, SnapSubTheme snapSubTheme,
+                                                     ChangeStatus changeStatus, List<UpdatePriceReferenceImageRequest> priceReferenceImages,
+                                                     List<UpdatePackageRequest> packages, List<UpdateOptionRequest> options) {
         return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
-                .priceThemeType(theme)
+                .priceThemeType(priceThemeType)
+                .snapSubTheme(snapSubTheme)
                 .priceReferenceImages(priceReferenceImages)
                 .packages(packages)
                 .options(options)

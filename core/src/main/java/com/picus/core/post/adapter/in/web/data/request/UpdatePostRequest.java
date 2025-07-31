@@ -30,8 +30,8 @@ public record UpdatePostRequest(
     @Builder
     public record PostImageRequest(
             String postImageNo,
-            String fileKey,
-            Integer imageOrder,
-            ChangeStatus changeStatus
+            @NotBlank String fileKey,
+            @NotNull Integer imageOrder,
+            @NotNull ChangeStatus changeStatus
     ){}
 }

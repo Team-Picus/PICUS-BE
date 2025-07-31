@@ -2,6 +2,8 @@ package com.picus.core.price.adapter.in.web.mapper;
 
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.application.port.in.command.*;
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +46,8 @@ public class UpdatePriceWebMapperTest {
 
         UpdatePriceRequest updatePriceWebRequest = UpdatePriceRequest.builder()
                 .priceNo("price-001")
-                .priceThemeType("THEME")
+                .priceThemeType(PriceThemeType.SNAP)
+                .snapSubTheme(SnapSubTheme.ADMISSION)
                 .priceReferenceImages(List.of(imageWebRequest))
                 .packages(List.of(updatePackageRequest))
                 .options(List.of(updateOptionRequest))
@@ -63,7 +66,8 @@ public class UpdatePriceWebMapperTest {
         assertThat(command.prices()).hasSize(1);
         UpdatePriceCommand updatePriceCommand = command.prices().getFirst();
         assertThat(updatePriceCommand.priceNo()).isEqualTo("price-001");
-        assertThat(updatePriceCommand.priceThemeType()).isEqualTo("THEME");
+        assertThat(updatePriceCommand.priceThemeType()).isEqualTo(PriceThemeType.SNAP);
+        assertThat(updatePriceCommand.snapSubTheme()).isEqualTo(SnapSubTheme.ADMISSION);
         assertThat(updatePriceCommand.status()).isEqualTo(ChangeStatus.NEW);
 
         // UpdatePriceReferenceImageCommand 모든 필드 검증

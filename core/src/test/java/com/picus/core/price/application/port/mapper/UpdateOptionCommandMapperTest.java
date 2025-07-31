@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class UpdateOptionAppReqAppMapperTest {
+class UpdateOptionCommandMapperTest {
 
     private final UpdateOptionCommandMapper appMapper = new UpdateOptionCommandMapper();
 

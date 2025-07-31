@@ -6,6 +6,7 @@ import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,9 +24,10 @@ class PricePersistenceMapperTest {
         // given
         String testPriceNo = "price123";
         String testExpertNo = "expert001";
-        PriceThemeType testPriceThemeType = PriceThemeType.BEAUTY;
+        PriceThemeType testPriceThemeType = PriceThemeType.SNAP;
+        SnapSubTheme testSnapSubTheme = SnapSubTheme.ADMISSION;
 
-        PriceEntity priceEntity = createPriceEntity(testPriceNo, testExpertNo, testPriceThemeType);
+        PriceEntity priceEntity = createPriceEntity(testPriceNo, testExpertNo, testPriceThemeType, testSnapSubTheme);
 
         List<Package> packages = createPackages();
         List<Option> options = createOptions();
@@ -38,6 +40,7 @@ class PricePersistenceMapperTest {
         assertThat(result.getPriceNo()).isEqualTo(testPriceNo);
         assertThat(result.getExpertNo()).isEqualTo(testExpertNo);
         assertThat(result.getPriceThemeType()).isEqualTo(testPriceThemeType);
+        assertThat(result.getSnapSubTheme()).isEqualTo(testSnapSubTheme);
         assertThat(result.getPackages()).isEqualTo(packages);
         assertThat(result.getOptions()).isEqualTo(options);
         assertThat(result.getPriceReferenceImages()).isEqualTo(referenceImages);
@@ -48,7 +51,8 @@ class PricePersistenceMapperTest {
     void toEntity_shouldMapCorrectly() {
         // given
         Price price = Price.builder()
-                .priceThemeType(PriceThemeType.FASHION)
+                .priceThemeType(PriceThemeType.SNAP)
+                .snapSubTheme(SnapSubTheme.ADMISSION)
                 .build();
         String expertNo = "expert-123";
 
@@ -57,14 +61,16 @@ class PricePersistenceMapperTest {
 
         // then
         assertThat(entity.getExpertNo()).isEqualTo("expert-123");
-        assertThat(entity.getPriceThemeType()).isEqualTo(PriceThemeType.FASHION);
+        assertThat(entity.getPriceThemeType()).isEqualTo(price.getPriceThemeType());
+        assertThat(entity.getSnapSubTheme()).isEqualTo(price.getSnapSubTheme());
     }
 
-    private PriceEntity createPriceEntity(String testPriceNo, String testExpertNo, PriceThemeType testPriceThemeType) {
+    private PriceEntity createPriceEntity(String testPriceNo, String testExpertNo, PriceThemeType testPriceThemeType, SnapSubTheme snapSubTheme) {
         return PriceEntity.builder()
                 .priceNo(testPriceNo)
                 .expertNo(testExpertNo)
                 .priceThemeType(testPriceThemeType)
+                .snapSubTheme(snapSubTheme)
                 .build();
     }
 

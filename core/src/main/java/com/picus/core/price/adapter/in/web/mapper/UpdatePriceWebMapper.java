@@ -21,6 +21,7 @@ public class UpdatePriceWebMapper {
                 .map(w -> UpdatePriceCommand.builder()
                         .priceNo(w.priceNo())
                         .priceThemeType(w.priceThemeType())
+                        .snapSubTheme(w.snapSubTheme())
                         .priceReferenceImages(toPriceRefImageCommand(w.priceReferenceImages()))
                         .packages(toPackageCommand(w.packages()))
                         .options(toOptionCommand(w.options()))
