@@ -138,7 +138,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
     }
 
     private List<PriceReferenceImage> findPriceRefImagesByPriceNo(PriceEntity priceEntity) {
-        return priceReferenceImageJpaRepository.findByPriceEntity_PriceNo(priceEntity.getPriceNo()).stream()
+        return priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo()).stream()
                 .map(priceReferenceImagePersistenceMapper::toDomain)
                 .toList();
     }

@@ -114,6 +114,7 @@ class PricePersistenceAdapterTest {
         createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
         createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
         createReferenceImageEntity(priceEntity, "file-key-123", 1);
+        createReferenceImageEntity(priceEntity, "file-key-456", 2);
 
         clearPersistenceContext();
 
@@ -143,10 +144,9 @@ class PricePersistenceAdapterTest {
         assertThat(opt.getContents()).isEqualTo(List.of("마사지 추가"));
 
         // PriceReferenceImage 검증
-        assertThat(result.getPriceReferenceImages()).hasSize(1);
-        PriceReferenceImage referenceImg = result.getPriceReferenceImages().getFirst();
-        assertThat(referenceImg.getFileKey()).isEqualTo("file-key-123");
-        assertThat(referenceImg.getImageOrder()).isEqualTo(1);
+        assertThat(result.getPriceReferenceImages()).hasSize(2)
+                .extracting(PriceReferenceImage::getFileKey, PriceReferenceImage::getImageOrder)
+                .containsExactly(tuple("file-key-123", 1), tuple("file-key-456", 2));
     }
 
     @Test
