@@ -29,6 +29,6 @@ public interface PostJpaRepository extends JpaRepository<PostEntity, String> {
             """)
     List<PostEntity> findTopNByTitleContainingOrderByTitle(String keyword, int size);
 
-    @Query(value = "select * from posts ORDER BY RAND() LIMIT :size", nativeQuery = true)
-    List<PostEntity> findRandomTopN(int size);
+    @Query(value = "select * from posts WHERE posts.is_pinned = true ORDER BY RAND() LIMIT :size", nativeQuery = true)
+    List<PostEntity> findRandomTopNByIsPinnedTrue(int size);
 }

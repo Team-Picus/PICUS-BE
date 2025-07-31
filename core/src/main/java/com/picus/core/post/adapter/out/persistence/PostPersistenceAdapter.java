@@ -17,7 +17,6 @@ import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,9 +95,9 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
     }
 
     @Override
-    public List<Post> findRandomTopN(int size) {
-        // PostEntity 랜덤하게 N개 조회
-        List<PostEntity> postEntities = postJpaRepository.findRandomTopN(size);
+    public List<Post> findRandomTopNByIsPinnedTrue(int size) {
+        // 고정 처리된 PostEntity 랜덤하게 N개 조회
+        List<PostEntity> postEntities = postJpaRepository.findRandomTopNByIsPinnedTrue(size);
 
         return postEntities.stream()
                 .map(postEntity -> {

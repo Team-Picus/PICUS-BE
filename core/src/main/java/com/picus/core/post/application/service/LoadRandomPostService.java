@@ -7,7 +7,6 @@ import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class LoadRandomPostService implements LoadRandomPostUseCase {
     @Override
     public List<LoadRandomPostResult> load(int size) {
         // 랜덤으로 게시물 N개 가져오기
-        List<Post> posts = postReadPort.findRandomTopN(size);
+        List<Post> posts = postReadPort.findRandomTopNByIsPinnedTrue(size);
 
         // Results 반환
         return posts.stream()

@@ -14,6 +14,7 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,13 @@ public class LoadRandomPostIntegrationTest {
     @Autowired
     private PostImageJpaRepository postImageJpaRepository;
 
+    @AfterEach
+    void tearDown() {
+        postImageJpaRepository.deleteAllInBatch();
+        postJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
+
     @Test
     @DisplayName("사용자는 랜덤으로 선정된 N개의 게시물을 조회할 수 있다.")
     public void load() throws Exception {
@@ -56,19 +64,19 @@ public class LoadRandomPostIntegrationTest {
 
         UserEntity userEntity = createUserEntity(expertNo);
 
-        PostEntity postEntity1 = createPostEntity("t1", expertNo);
+        PostEntity postEntity1 = createPostEntity("t1", expertNo, true);
         PostImageEntity postImgEntity1 = createPostImageEntity("f1", 1, postEntity1);
 
-        PostEntity postEntity2 = createPostEntity("t2", expertNo);
+        PostEntity postEntity2 = createPostEntity("t2", expertNo, true);
         PostImageEntity postImgEntity2 = createPostImageEntity("f2", 1, postEntity2);
 
-        PostEntity postEntity3 = createPostEntity("t3", expertNo);
+        PostEntity postEntity3 = createPostEntity("t3", expertNo, true);
         PostImageEntity postImgEntity3 = createPostImageEntity("f3", 1, postEntity3);
 
-        PostEntity postEntity4 = createPostEntity("t4", expertNo);
+        PostEntity postEntity4 = createPostEntity("t4", expertNo, true);
         PostImageEntity postImgEntity4 = createPostImageEntity("f4", 1, postEntity4);
 
-        PostEntity postEntity5 = createPostEntity("t5", expertNo);
+        PostEntity postEntity5 = createPostEntity("t5", expertNo, true);
         PostImageEntity postImgEntity5 = createPostImageEntity("f5", 1, postEntity5);
         commitTestTransaction();
 
@@ -112,7 +120,7 @@ public class LoadRandomPostIntegrationTest {
         return userJpaRepository.save(userEntity);
     }
 
-    private PostEntity createPostEntity(String title, String expertNo) {
+    private PostEntity createPostEntity(String title, String expertNo, boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
                 .packageNo("packageNo")
                 .expertNo(expertNo)
@@ -123,7 +131,7 @@ public class LoadRandomPostIntegrationTest {
                 .postMoodTypes(List.of(PostMoodType.VINTAGE))
                 .spaceType(SpaceType.OUTDOOR)
                 .spaceAddress("spaceAddress")
-                .isPinned(false)
+                .isPinned(isPinned)
                 .build();
         return postJpaRepository.save(postEntity);
     }

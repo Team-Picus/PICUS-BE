@@ -359,28 +359,28 @@ class PostPersistenceAdapterTest {
     }
 
     @Test
-    @DisplayName("랜덤으로 N개의 Post를 조회한다.")
-    public void findRandomTopN() throws Exception {
+    @DisplayName("랜덤으로 N개의 고정처리된 Post를 조회한다.")
+    public void findRandomTopNByIsPinnedTrue() throws Exception {
         // given
         int size = 3;
-        PostEntity postEntity1 = createPostEntity("t1");
+        PostEntity postEntity1 = createPostEntity("t1", true);
         PostImageEntity postImgEntity1 = createPostImageEntity("f1", 1, postEntity1);
 
-        PostEntity postEntity2 = createPostEntity("t2");
+        PostEntity postEntity2 = createPostEntity("t2", true);
         PostImageEntity postImgEntity2 = createPostImageEntity("f2", 1, postEntity2);
 
-        PostEntity postEntity3 = createPostEntity("t3");
+        PostEntity postEntity3 = createPostEntity("t3", true);
         PostImageEntity postImgEntity3 = createPostImageEntity("f3", 1, postEntity3);
 
-        PostEntity postEntity4 = createPostEntity("t4");
+        PostEntity postEntity4 = createPostEntity("t4", true);
         PostImageEntity postImgEntity4 = createPostImageEntity("f4", 1, postEntity4);
-        PostEntity postEntity5 = createPostEntity("t5");
+        PostEntity postEntity5 = createPostEntity("t5", true);
         PostImageEntity postImgEntity5 = createPostImageEntity("f5", 1, postEntity5);
 
         clearPersistenceContext();
 
         // when
-        List<Post> postResults = postPersistenceAdapter.findRandomTopN(size);
+        List<Post> postResults = postPersistenceAdapter.findRandomTopNByIsPinnedTrue(size);
 
         // then
         assertThat(postResults).hasSize(3);
@@ -390,20 +390,50 @@ class PostPersistenceAdapterTest {
     }
 
     @Test
-    @DisplayName("랜덤으로 N개의 Post를 조회할 때 현재 데이터 수가 N보다 작으면 현재 데이터 수만큼만 반환된다.")
-    public void findRandomTopN_ifN_isBiggerThan_postNums() throws Exception {
+    @DisplayName("랜덤으로 N개의 고정처리된 Post를 조회한다. isPinned가 false면 리턴되지 않는다.")
+    public void findRandomTopNByIsPinnedTrue_Only_IsPinnedTrue() throws Exception {
         // given
         int size = 3;
-        PostEntity postEntity1 = createPostEntity("t1");
+        PostEntity postEntity1 = createPostEntity("t1", true);
         PostImageEntity postImgEntity1 = createPostImageEntity("f1", 1, postEntity1);
 
-        PostEntity postEntity2 = createPostEntity("t2");
+        PostEntity postEntity2 = createPostEntity("t2", true);
+        PostImageEntity postImgEntity2 = createPostImageEntity("f2", 1, postEntity2);
+
+        PostEntity postEntity3 = createPostEntity("t3", true);
+        PostImageEntity postImgEntity3 = createPostImageEntity("f3", 1, postEntity3);
+
+        PostEntity postEntity4 = createPostEntity("t4", false);
+        PostImageEntity postImgEntity4 = createPostImageEntity("f4", 1, postEntity4);
+        PostEntity postEntity5 = createPostEntity("t5", false);
+        PostImageEntity postImgEntity5 = createPostImageEntity("f5", 1, postEntity5);
+
+        clearPersistenceContext();
+
+        // when
+        List<Post> postResults = postPersistenceAdapter.findRandomTopNByIsPinnedTrue(size);
+
+        // then
+        assertThat(postResults).hasSize(3)
+                .extracting(Post::getTitle)
+                .containsExactlyInAnyOrder("t1", "t2", "t3");
+    }
+
+    @Test
+    @DisplayName("랜덤으로 N개의 Post를 조회할 때 현재 데이터 수가 N보다 작으면 현재 데이터 수만큼만 반환된다.")
+    public void findRandomTopNByIsPinnedTrue_ifN_isBiggerThan_postNums() throws Exception {
+        // given
+        int size = 3;
+        PostEntity postEntity1 = createPostEntity("t1", true);
+        PostImageEntity postImgEntity1 = createPostImageEntity("f1", 1, postEntity1);
+
+        PostEntity postEntity2 = createPostEntity("t2", true);
         PostImageEntity postImgEntity2 = createPostImageEntity("f2", 1, postEntity2);
 
         clearPersistenceContext();
 
         // when
-        List<Post> postResults = postPersistenceAdapter.findRandomTopN(size);
+        List<Post> postResults = postPersistenceAdapter.findRandomTopNByIsPinnedTrue(size);
 
         // then
         assertThat(postResults).hasSize(2);
@@ -474,6 +504,22 @@ class PostPersistenceAdapterTest {
                 .spaceType(SpaceType.OUTDOOR)
                 .spaceAddress("spaceAddress")
                 .isPinned(false)
+                .build();
+        return postJpaRepository.save(postEntity);
+    }
+
+    private PostEntity createPostEntity(String title, boolean isPinned) {
+        PostEntity postEntity = PostEntity.builder()
+                .packageNo("packageNo")
+                .expertNo("expertNo")
+                .title(title)
+                .oneLineDescription("oneLineDescription")
+                .detailedDescription("detailedDescription")
+                .postThemeTypes(List.of(PostThemeType.BEAUTY))
+                .postMoodTypes(List.of(PostMoodType.VINTAGE))
+                .spaceType(SpaceType.OUTDOOR)
+                .spaceAddress("spaceAddress")
+                .isPinned(isPinned)
                 .build();
         return postJpaRepository.save(postEntity);
     }

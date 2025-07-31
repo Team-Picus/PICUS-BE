@@ -6,8 +6,6 @@ import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +45,7 @@ class LoadRandomPostServiceTest {
                 createPost("post-4", "au-4"),
                 createPost("post-5", "au-5")
         );
-        given(postReadPort.findRandomTopN(size)).willReturn(posts);
+        given(postReadPort.findRandomTopNByIsPinnedTrue(size)).willReturn(posts);
 
         List<User> users = List.of(
                 createUser("nick1"),
@@ -78,7 +76,7 @@ class LoadRandomPostServiceTest {
                         tuple("post-5", "nick5", "")
                 );
         // then - 메서드 호출 검증
-        then(postReadPort).should().findRandomTopN(size);
+        then(postReadPort).should().findRandomTopNByIsPinnedTrue(size);
         for (Post post : posts) {
             then(userReadPort).should().findByExpertNo(post.getAuthorNo());
         }

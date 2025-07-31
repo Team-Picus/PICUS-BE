@@ -22,5 +22,8 @@ public interface PostReadPort {
      */
     List<Post> findTopNByTitleContainingOrderByTitle(String keyword, int size);
 
-    List<Post> findRandomTopN(int size);
+    /**
+     * 고정처리된 게시물(갤러리)을 랜덤으로 N개 가져옴
+     */
+    List<Post> findRandomTopNByIsPinnedTrue(int size);
 }
