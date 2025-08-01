@@ -11,6 +11,7 @@ import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,10 +47,12 @@ class LoadPostDetailServiceTest {
                 List.of(COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
                 List.of(
                         PostImage.builder()
+                                .postImageNo("img-1")
                                 .fileKey("img_1.jpg")
                                 .imageOrder(1)
                                 .build(),
                         PostImage.builder()
+                                .postImageNo("img-2")
                                 .fileKey("img_2.jpg")
                                 .imageOrder(2)
                                 .build()
@@ -78,18 +81,23 @@ class LoadPostDetailServiceTest {
         assertThat(result.spaceAddress()).isEqualTo(post.getSpaceAddress());
         assertThat(result.packageNo()).isEqualTo(post.getPackageNo());
         assertThat(result.updatedAt()).isEqualTo(post.getUpdatedAt());
-        assertThat(result.images()).hasSize(post.getPostImages().size());
-        for (int i = 0; i < post.getPostImages().size(); i++) {
-            assertThat(result.images().get(i).fileKey()).isEqualTo(post.getPostImages().get(i).getFileKey());
-            assertThat(result.images().get(i).imageOrder()).isEqualTo(post.getPostImages().get(i).getImageOrder());
-        }
+        assertThat(result.images()).hasSize(post.getPostImages().size())
+                .extracting(
+                        LoadPostDetailResult.PostImageResult::imageNo,
+                        LoadPostDetailResult.PostImageResult::fileKey,
+                        LoadPostDetailResult.PostImageResult::imageUrl, // TODO: filekey->url 변환 로직 필요
+                        LoadPostDetailResult.PostImageResult::imageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple("img-1", "img_1.jpg", "", 1),
+                        tuple("img-2", "img_2.jpg", "", 2)
+                );
 
         then(postReadPort).should().findById(postNo);
         then(userReadPort).should().findByExpertNo(authorNo);
     }
 
     private void stub(Post post, User user) {
-        given(postReadPort.findById(post.getPostNo())).willReturn(Optional.ofNullable(post));
+        given(postReadPort.findById(post.getPostNo())).willReturn(Optional.of(post));
         given(userReadPort.findByExpertNo(post.getAuthorNo()))
                 .willReturn(user);
     }
