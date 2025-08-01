@@ -11,8 +11,8 @@ public class UpdateOptionCommandMapper {
         return Option.builder()
                 .optionNo(updateOptionCommand.optionNo())
                 .name(updateOptionCommand.name())
-                .count(updateOptionCommand.count())
-                .price(updateOptionCommand.price())
+                .unitSize(updateOptionCommand.count())
+                .pricePerUnit(updateOptionCommand.price())
                 .contents(updateOptionCommand.contents())
                 .build();
     }

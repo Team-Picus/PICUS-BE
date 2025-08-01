@@ -53,8 +53,8 @@ public class UpdatePriceCommandMapper {
                 .map(optionCommand -> Option.builder()
                         .optionNo(optionCommand.optionNo())
                         .name(optionCommand.name())
-                        .count(optionCommand.count())
-                        .price(optionCommand.price())
+                        .unitSize(optionCommand.count())
+                        .pricePerUnit(optionCommand.price())
                         .contents(optionCommand.contents())
                         .build())
                 .toList();

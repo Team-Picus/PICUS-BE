@@ -29,7 +29,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.picus.core.price.domain.vo.PriceThemeType.*;
 import static com.picus.core.price.domain.vo.PriceThemeType.FASHION;
 import static com.picus.core.price.domain.vo.PriceThemeType.SNAP;
 import static com.picus.core.price.domain.vo.SnapSubTheme.ADMISSION;
@@ -95,8 +94,8 @@ class PricePersistenceAdapterTest {
         assertThat(result.getOptions()).hasSize(1);
         Option opt = result.getOptions().getFirst();
         assertThat(opt.getName()).isEqualTo("옵션 A");
-        assertThat(opt.getCount()).isEqualTo(1);
-        assertThat(opt.getPrice()).isEqualTo(5000);
+        assertThat(opt.getUnitSize()).isEqualTo(1);
+        assertThat(opt.getPricePerUnit()).isEqualTo(5000);
         assertThat(opt.getContents()).isEqualTo(List.of("마사지 추가"));
 
         // PriceReferenceImage 검증
@@ -139,8 +138,8 @@ class PricePersistenceAdapterTest {
         assertThat(result.getOptions()).hasSize(1);
         Option opt = result.getOptions().getFirst();
         assertThat(opt.getName()).isEqualTo("옵션 A");
-        assertThat(opt.getCount()).isEqualTo(1);
-        assertThat(opt.getPrice()).isEqualTo(5000);
+        assertThat(opt.getUnitSize()).isEqualTo(1);
+        assertThat(opt.getPricePerUnit()).isEqualTo(5000);
         assertThat(opt.getContents()).isEqualTo(List.of("마사지 추가"));
 
         // PriceReferenceImage 검증
@@ -222,15 +221,15 @@ class PricePersistenceAdapterTest {
                         o -> {
                             assertThat(o.getOptionNo()).isNotNull();
                             assertThat(o.getName()).isEqualTo("옵션1");
-                            assertThat(o.getCount()).isEqualTo(1);
-                            assertThat(o.getPrice()).isEqualTo(100);
+                            assertThat(o.getUnitSize()).isEqualTo(1);
+                            assertThat(o.getPricePerUnit()).isEqualTo(100);
                             assertThat(o.getContents()).isEqualTo(List.of("X"));
                         },
                         o -> {
                             assertThat(o.getOptionNo()).isNotNull();
                             assertThat(o.getName()).isEqualTo("옵션2");
-                            assertThat(o.getCount()).isEqualTo(2);
-                            assertThat(o.getPrice()).isEqualTo(200);
+                            assertThat(o.getUnitSize()).isEqualTo(2);
+                            assertThat(o.getPricePerUnit()).isEqualTo(200);
                             assertThat(o.getContents()).isEqualTo(List.of("Y"));
                         }
                 );
@@ -321,8 +320,8 @@ class PricePersistenceAdapterTest {
         assertThat(optionResults).hasSize(2)
                 .extracting(
                         OptionEntity::getName,
-                        OptionEntity::getCount,
-                        OptionEntity::getPrice,
+                        OptionEntity::getUnitSize,
+                        OptionEntity::getPricePerUnit,
                         OptionEntity::getContents
                 ).containsExactlyInAnyOrder(
                         tuple("new_opt_name", 2, 10, List.of("new_cnt")),
@@ -376,12 +375,12 @@ class PricePersistenceAdapterTest {
         return packageJpaRepository.save(pkgEntity);
     }
 
-    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int count, int price, List<String> content) {
+    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int unitSize, int pricePerUnit, List<String> content) {
         OptionEntity optionEntity = OptionEntity.builder()
                 .priceEntity(priceEntity)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(unitSize)
+                .pricePerUnit(pricePerUnit)
                 .contents(content)
                 .build();
         return optionJpaRepository.save(optionEntity);
@@ -432,8 +431,8 @@ class PricePersistenceAdapterTest {
         return Option.builder()
                 .optionNo(optionNo)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(count)
+                .pricePerUnit(price)
                 .contents(contents)
                 .build();
     }

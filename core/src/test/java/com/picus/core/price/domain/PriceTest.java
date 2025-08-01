@@ -1,6 +1,5 @@
 package com.picus.core.price.domain;
 
-import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -256,8 +255,8 @@ class PriceTest {
                 .extracting(
                         Option::getOptionNo,
                         Option::getName,
-                        Option::getCount,
-                        Option::getPrice,
+                        Option::getUnitSize,
+                        Option::getPricePerUnit,
                         Option::getContents
                 )
                 .containsExactlyInAnyOrder(
@@ -285,8 +284,8 @@ class PriceTest {
                 .extracting(
                         Option::getOptionNo,
                         Option::getName,
-                        Option::getCount,
-                        Option::getPrice,
+                        Option::getUnitSize,
+                        Option::getPricePerUnit,
                         Option::getContents
                 )
                 .containsExactlyInAnyOrder(
@@ -335,8 +334,8 @@ class PriceTest {
         return Option.builder()
                 .optionNo(optionNo)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(count)
+                .pricePerUnit(price)
                 .contents(contents)
                 .build();
     }

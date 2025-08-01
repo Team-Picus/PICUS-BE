@@ -165,12 +165,12 @@ public class LoadPriceIntegrationTest {
         return packageJpaRepository.save(pkgEntity);
     }
 
-    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int count, int price, List<String> content) {
+    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int unitSize, int pricePerUnit, List<String> content) {
         OptionEntity optionEntity = OptionEntity.builder()
                 .priceEntity(priceEntity)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(unitSize)
+                .pricePerUnit(pricePerUnit)
                 .contents(content)
                 .build();
         return optionJpaRepository.save(optionEntity);

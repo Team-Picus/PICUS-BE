@@ -53,8 +53,8 @@ public class LoadPriceWebMapper {
                 .map(option -> OptionResponse.builder()
                         .optionNo(option.getOptionNo())
                         .name(option.getName())
-                        .count(option.getCount())
-                        .price(option.getPrice())
+                        .count(option.getUnitSize())
+                        .price(option.getPricePerUnit())
                         .contents(option.getContents())
                         .build()
                 ).toList();

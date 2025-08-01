@@ -41,8 +41,8 @@ class LoadPriceWebMapperTest {
         Option option = Option.builder()
                 .optionNo("opt_no")
                 .name("옵션A")
-                .count(2)
-                .price(20000)
+                .unitSize(2)
+                .pricePerUnit(20000)
                 .contents(List.of("옵션내용1", "옵션내용2"))
                 .build();
 

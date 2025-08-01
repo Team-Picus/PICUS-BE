@@ -260,7 +260,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
                 // PK가 있다 = 수정
                 OptionEntity entity = optionJpaRepository.findById(optionNo)
                         .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-                entity.updateEntity(domain.getName(), domain.getCount(), domain.getPrice(), domain.getContents());
+                entity.updateEntity(domain.getName(), domain.getUnitSize(), domain.getPricePerUnit(), domain.getContents());
             } else {
                 // PK가 없다 = 저장
                 OptionEntity entity = optionPersistenceMapper.toEntity(domain);

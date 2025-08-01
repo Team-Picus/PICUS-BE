@@ -1,6 +1,5 @@
 package com.picus.core.price.domain;
 
-import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.domain.vo.SnapSubTheme;
 import lombok.Builder;
@@ -138,8 +137,8 @@ public class Price {
             for (Option opt : this.options) {
                 if (changedOption.getOptionNo().equals(opt.getOptionNo())) {
                     // Option 엔티티 쪽에 정의된 updateOption(...) 호출
-                    opt.updateOption(changedOption.getName(), changedOption.getCount(),
-                            changedOption.getPrice(), changedOption.getContents());
+                    opt.updateOption(changedOption.getName(), changedOption.getUnitSize(),
+                            changedOption.getPricePerUnit(), changedOption.getContents());
                     break;
                 }
             }

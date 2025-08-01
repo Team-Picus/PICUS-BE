@@ -33,8 +33,8 @@ class UpdateOptionCommandMapperTest {
                 .extracting(
                         Option::getOptionNo,
                         Option::getName,
-                        Option::getCount,
-                        Option::getPrice,
+                        Option::getUnitSize,
+                        Option::getPricePerUnit,
                         Option::getContents
                 )
                 .containsExactly(

@@ -30,10 +30,10 @@ public class OptionEntity {
     private String name;
 
     @Column(nullable = false)
-    private Integer count;
+    private Integer unitSize;
 
     @Column(nullable = false)
-    private Integer price;
+    private Integer pricePerUnit;
 
     @Column(nullable = false)
     @Convert(converter = StringConverter.class)
@@ -43,10 +43,10 @@ public class OptionEntity {
         this.priceEntity = priceEntity;
     }
 
-    public void updateEntity(String name, int count, int price, List<String> contents) {
+    public void updateEntity(String name, int unitSize, int pricePerUnit, List<String> contents) {
         this.name = name;
-        this.count = count;
-        this.price = price;
+        this.unitSize = unitSize;
+        this.pricePerUnit = pricePerUnit;
         this.contents = contents;
     }
 }

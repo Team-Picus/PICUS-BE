@@ -20,7 +20,6 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -155,8 +154,8 @@ public class UpdatePriceIntegrationTest {
         assertThat(savedOptions).hasSize(1)
                 .extracting(
                         OptionEntity::getName,
-                        OptionEntity::getCount,
-                        OptionEntity::getPrice,
+                        OptionEntity::getUnitSize,
+                        OptionEntity::getPricePerUnit,
                         OptionEntity::getContents
                 ).containsExactlyInAnyOrder(
                         tuple("new_opt_name", 2, 10, List.of("new_cnt"))
@@ -214,8 +213,8 @@ public class UpdatePriceIntegrationTest {
                 createOptionWebRequest(optEntity1.getOptionNo(), "changed_opt_name", 1, 5,
                         List.of("changed_cnt"), UPDATE); // 수정
         UpdateOptionRequest delOptWebReq =
-                createOptionWebRequest(optEntity2.getOptionNo(), optEntity2.getName(), optEntity2.getCount(),
-                        optEntity2.getPrice(), optEntity2.getContents(), DELETE); // 삭제
+                createOptionWebRequest(optEntity2.getOptionNo(), optEntity2.getName(), optEntity2.getUnitSize(),
+                        optEntity2.getPricePerUnit(), optEntity2.getContents(), DELETE); // 삭제
 
         UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest(priceEntity.getPriceNo(), SNAP, ADMISSION, UPDATE,
@@ -275,8 +274,8 @@ public class UpdatePriceIntegrationTest {
         assertThat(updatedOptions).hasSize(2)
                 .extracting(
                         OptionEntity::getName,
-                        OptionEntity::getCount,
-                        OptionEntity::getPrice,
+                        OptionEntity::getUnitSize,
+                        OptionEntity::getPricePerUnit,
                         OptionEntity::getContents
                 ).containsExactlyInAnyOrder(
                         tuple("new_opt_name", 2, 10, List.of("new_cnt")),
@@ -327,8 +326,8 @@ public class UpdatePriceIntegrationTest {
                         List.of(createOptionWebRequest(
                                 optionEntity.getOptionNo(),
                                 optionEntity.getName(),
-                                optionEntity.getCount(),
-                                optionEntity.getPrice(),
+                                optionEntity.getUnitSize(),
+                                optionEntity.getPricePerUnit(),
                                 optionEntity.getContents(),
                                 DELETE
                         ))
@@ -375,12 +374,12 @@ public class UpdatePriceIntegrationTest {
         return packageJpaRepository.save(pkgEntity);
     }
 
-    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int count, int price, List<String> content) {
+    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int unitSize, int pricePerUnit, List<String> content) {
         OptionEntity optionEntity = OptionEntity.builder()
                 .priceEntity(priceEntity)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(unitSize)
+                .pricePerUnit(pricePerUnit)
                 .contents(content)
                 .build();
         return optionJpaRepository.save(optionEntity);
