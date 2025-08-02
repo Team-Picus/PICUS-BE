@@ -14,7 +14,7 @@ public record UpdateOptionRequest(
         @NotBlank String name,
         @NotNull Integer count,
         @NotNull Integer price,
-        @NotNull @Size(min = 1) List<String> contents,
+        List<String> contents,
         @NotNull ChangeStatus status
 ) {
 }

@@ -14,7 +14,7 @@ public record UpdatePackageRequest(
         @NotBlank String name,
         @NotNull Integer price,
         @NotNull @Size(min = 1) List<String> contents,
-        @NotBlank String notice,
+        String notice,
         @NotNull ChangeStatus status
 ) {
 }

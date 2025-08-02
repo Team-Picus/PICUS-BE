@@ -5,6 +5,7 @@ import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.domain.vo.SnapSubTheme;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 import java.util.List;
@@ -14,9 +15,9 @@ public record UpdatePriceRequest(
         String priceNo,
         @NotNull PriceThemeType priceThemeType,
         SnapSubTheme snapSubTheme,
-        @Valid List<UpdatePriceReferenceImageRequest> priceReferenceImages,
-        @Valid List<UpdatePackageRequest> packages,
-        @Valid List<UpdateOptionRequest> options,
+        @Valid @Size(min = 1) List<UpdatePriceReferenceImageRequest> priceReferenceImages,
+        @Valid @Size(min = 1) List<UpdatePackageRequest> packages,
+        @Valid @Size(min = 1) List<UpdateOptionRequest> options,
         @NotNull ChangeStatus status
 ) {
 }

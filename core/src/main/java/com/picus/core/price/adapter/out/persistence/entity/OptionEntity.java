@@ -35,7 +35,7 @@ public class OptionEntity {
     @Column(nullable = false)
     private Integer pricePerUnit;
 
-    @Column(nullable = false)
+    @Builder.Default
     @Convert(converter = StringConverter.class)
     private List<String> contents = new ArrayList<>();
 
