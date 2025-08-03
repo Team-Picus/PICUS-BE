@@ -35,15 +35,15 @@ class SearchPostWebMapperTest {
 
         SearchPostCommand command = mapper.toCommand(request);
 
-        assertThat(command.getThemeTypes()).containsExactly(PostThemeType.SNAP);
-        assertThat(command.getSnapSubThemes()).containsExactly(SnapSubTheme.FAMILY);
-        assertThat(command.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
-        assertThat(command.getAddress()).isEqualTo("서울 강남구");
-        assertThat(command.getMoodTypes()).containsExactly(PostMoodType.COZY);
-        assertThat(command.getSortBy()).isEqualTo("updatedAt");
-        assertThat(command.getSortDirection()).isEqualTo("DESC");
-        assertThat(command.getLastPostNo()).isEqualTo("post-123");
-        assertThat(command.getSize()).isEqualTo(20);
+        assertThat(command.themeTypes()).containsExactly(PostThemeType.SNAP);
+        assertThat(command.snapSubThemes()).containsExactly(SnapSubTheme.FAMILY);
+        assertThat(command.spaceType()).isEqualTo(SpaceType.OUTDOOR);
+        assertThat(command.address()).isEqualTo("서울 강남구");
+        assertThat(command.moodTypes()).containsExactly(PostMoodType.COZY);
+        assertThat(command.sortBy()).isEqualTo("updatedAt");
+        assertThat(command.sortDirection()).isEqualTo("DESC");
+        assertThat(command.lastPostNo()).isEqualTo("post-123");
+        assertThat(command.size()).isEqualTo(20);
     }
 
     @Test
@@ -66,9 +66,9 @@ class SearchPostWebMapperTest {
         assertThat(response.isLast()).isTrue();
         assertThat(response.posts()).hasSize(1);
         SearchPostResponse.PostResponse post = response.posts().getFirst();
-        assertThat(post.postNo()).isEqualTo("123");
+        assertThat(post.postNo()).isEqualTo("post-123");
         assertThat(post.thumbnailUrl()).isEqualTo("http://img.url");
         assertThat(post.authorNickname()).isEqualTo("John");
-        assertThat(post.title()).isEqualTo("My Post");
+        assertThat(post.title()).isEqualTo("Post");
     }
 }

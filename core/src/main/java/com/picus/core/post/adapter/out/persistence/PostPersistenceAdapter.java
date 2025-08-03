@@ -1,5 +1,6 @@
 package com.picus.core.post.adapter.out.persistence;
 
+import com.picus.core.post.adapter.out.persistence.dto.SearchPostCond;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.mapper.PostImagePersistenceMapper;
@@ -112,6 +113,11 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
                     return postPersistenceMapper.toDomain(postEntity, postImages);
                 })
                 .toList();
+    }
+
+    @Override
+    public List<Post> findBySearchCond(SearchPostCond cond, String cursor, String sortBy, String sortDirection, int size) {
+        return List.of();
     }
 
     @Override

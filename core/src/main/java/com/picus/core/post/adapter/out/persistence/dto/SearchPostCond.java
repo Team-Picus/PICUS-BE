@@ -1,4 +1,4 @@
-package com.picus.core.post.application.port.in.command;
+package com.picus.core.post.adapter.out.persistence.dto;
 
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
@@ -9,14 +9,11 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record SearchPostCommand(
+public record SearchPostCond(
         List<PostThemeType> themeTypes,
         List<SnapSubTheme> snapSubThemes,
         SpaceType spaceType,
         String address,
-        List<PostMoodType> moodTypes,
-        String sortBy,
-        String sortDirection,
-        String lastPostNo,
-        int size
-) {}
+        List<PostMoodType> moodTypes
+) {
+}

@@ -1,5 +1,6 @@
 package com.picus.core.post.application.port.out;
 
+import com.picus.core.post.adapter.out.persistence.dto.SearchPostCond;
 import com.picus.core.post.domain.Post;
 
 import java.time.LocalDateTime;
@@ -26,4 +27,14 @@ public interface PostReadPort {
      * 고정처리된 게시물(갤러리)을 랜덤으로 N개 가져옴
      */
     List<Post> findRandomTopNByIsPinnedTrue(int size);
+
+    /**
+     * @param cond: 게시물 검색 조건
+     * @param cursor: 커서(마지막으로 조회한 게시물)
+     * @param sortBy: 정렬 기준
+     * @param sortDirection: 정렬 방향
+     * @param size: 조회 갯수
+     * @return: 검색 결과
+     */
+    List<Post> findBySearchCond(SearchPostCond cond, String cursor, String sortBy, String sortDirection, int size);
 }
