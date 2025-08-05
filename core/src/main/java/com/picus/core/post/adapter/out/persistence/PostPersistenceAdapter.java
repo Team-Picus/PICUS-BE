@@ -3,6 +3,7 @@ package com.picus.core.post.adapter.out.persistence;
 import com.picus.core.post.adapter.out.persistence.dto.SearchPostCond;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
+import com.picus.core.post.adapter.out.persistence.entity.QPostEntity;
 import com.picus.core.post.adapter.out.persistence.mapper.PostImagePersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.mapper.PostPersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
@@ -13,15 +14,28 @@ import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
+import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryFactory;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import static com.picus.core.post.adapter.out.persistence.entity.QPostEntity.postEntity;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
+import static org.springframework.util.StringUtils.hasText;
 
 
 @PersistenceAdapter
@@ -31,9 +45,12 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
     private final PostJpaRepository postJpaRepository;
     private final PostImageJpaRepository postImageJpaRepository;
 
+    private final JPAQueryFactory queryFactory; // querydsl
+
     private final PostPersistenceMapper postPersistenceMapper;
     private final PostImagePersistenceMapper postImagePersistenceMapper;
 
+    // 저장
     @Override
     public Post save(Post post) {
         PostEntity postEntity = savePostEntity(post); // PostEntity 저장
@@ -43,6 +60,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         return postPersistenceMapper.toDomain(postEntity, postImages);
     }
 
+    // id로 단건 조회
     @Override
     public Optional<Post> findById(String postNo) {
         Optional<PostEntity> optionalPostEntity = postJpaRepository.findById(postNo);
@@ -61,11 +79,13 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         return Optional.of(post);
     }
 
+    // expertNo로 제일 최신 updatedAt 조회
     @Override
     public Optional<LocalDateTime> findTopUpdatedAtByExpertNo(String expertNo) {
         return postJpaRepository.findTopUpdatedAtByExpertNo(expertNo);
     }
 
+    // 고정처리된 특정 expertNo Post 조회
     @Override
     public Optional<Post> findByExpertNoAndIsPinnedTrue(String expertNo) {
         // 특정 전문가의 고정처리한 게시물 조회
@@ -86,6 +106,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         return Optional.of(post);
     }
 
+    // title에 특정 keyword가 포함된 Post title로 정렬해서 N개 조회
     @Override
     public List<Post> findTopNByTitleContainingOrderByTitle(String keyword, int size) {
         List<PostEntity> postEntities = postJpaRepository.findTopNByTitleContainingOrderByTitle(keyword, size);
@@ -95,6 +116,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
                 .toList();
     }
 
+    // 고정처리된 게시물 N개 랜덤하게 조회
     @Override
     public List<Post> findRandomTopNByIsPinnedTrue(int size) {
         // 고정 처리된 PostEntity 랜덤하게 N개 조회
@@ -115,11 +137,35 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
                 .toList();
     }
 
+    // Post 특정 검색 조건으로 조회
     @Override
     public List<Post> findBySearchCond(SearchPostCond cond, String cursor, String sortBy, String sortDirection, int size) {
-        return List.of();
+
+        return queryFactory
+                .selectFrom(postEntity)
+                .where(
+                        themeTypesIn(cond.themeTypes()),
+                        snapSubThemesIn(cond.snapSubThemes()),
+                        moodTypesIn(cond.moodTypes()),
+                        spaceTypeEq(cond.spaceType()),
+                        addressEq(cond.address()),
+                        cursorCond(cursor, sortBy, sortDirection)
+                )
+                .orderBy(sortOrder(sortBy, sortDirection))
+                .limit(size)
+                .fetch()
+                .stream()
+                .map(post -> {
+                    List<PostImageEntity> imageEntities = postImageJpaRepository.findByPostEntity_PostNo(post.getPostNo());
+                    List<PostImage> postImages = imageEntities.stream()
+                            .map(postImagePersistenceMapper::toDomain)
+                            .toList();
+                    return postPersistenceMapper.toDomain(post, postImages);
+                })
+                .toList();
     }
 
+    // PostEntity만 수정
     @Override
     public void update(Post post) {
         PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
@@ -133,6 +179,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         );
     }
 
+    // PostImage도 함께 수정
     @Override
     public void updateWithPostImage(Post post, List<String> deletedPostImageNos) {
         PostEntity postEntity = postJpaRepository.findById(post.getPostNo())
@@ -185,6 +232,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         }
     }
 
+    // 삭제
     @Override
     public void delete(String postNo) {
         // PostImageEntity 삭제
@@ -215,5 +263,54 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         return postImageJpaRepository.saveAll(postImageEntities).stream()
                 .map(postImagePersistenceMapper::toDomain)
                 .toList();
+    }
+
+    private BooleanBuilder themeTypesIn(List<PostThemeType> types) {
+        return (types != null && !types.isEmpty())
+                ? new BooleanBuilder(postEntity.postThemeTypes.any().in(types))
+                : new BooleanBuilder();
+    }
+
+    private BooleanBuilder snapSubThemesIn(List<SnapSubTheme> subs) {
+        return (subs != null && !subs.isEmpty())
+                ? new BooleanBuilder(postEntity.snapSubThemes.any().in(subs))
+                : new BooleanBuilder();
+    }
+
+    private BooleanBuilder moodTypesIn(List<PostMoodType> moods) {
+        return (moods != null && !moods.isEmpty())
+                ? new BooleanBuilder(postEntity.postMoodTypes.any().in(moods))
+                : new BooleanBuilder();
+    }
+
+    private BooleanBuilder spaceTypeEq(SpaceType type) {
+        return (type != null)
+                ? new BooleanBuilder(postEntity.spaceType.eq(type))
+                : new BooleanBuilder();
+    }
+
+    private BooleanBuilder addressEq(String address) {
+        return (hasText(address))
+                ? new BooleanBuilder(postEntity.spaceAddress.eq(address))
+                : new BooleanBuilder();
+    }
+
+    private BooleanBuilder cursorCond(String cursor, String sortBy, String sortDirection) {
+        if (!hasText(cursor)) return new BooleanBuilder();
+
+        boolean isDESC = "DESC".equalsIgnoreCase(sortDirection);
+
+        try {
+            // 현재는 sortBy가 "createdAt"뿐이므로 바로 createdAt 리턴
+            return new BooleanBuilder(
+                    isDESC ? postEntity.createdAt.lt(LocalDateTime.parse(cursor)) : postEntity.createdAt.gt(LocalDateTime.parse(cursor)));
+        } catch (Exception e) {
+            return new BooleanBuilder();
+        }
+    }
+    private OrderSpecifier<?> sortOrder(String sortBy, String sortDirection) {
+        boolean isDESC = "DESC".equalsIgnoreCase(sortDirection);
+        // 현재는 sortBy가 "createdAt"뿐이므로 바로 createdAt 리턴
+        return isDESC ? postEntity.createdAt.desc() : postEntity.createdAt.asc();
     }
 }

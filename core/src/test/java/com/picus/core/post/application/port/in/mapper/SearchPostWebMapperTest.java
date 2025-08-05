@@ -42,7 +42,7 @@ class SearchPostWebMapperTest {
         assertThat(command.moodTypes()).containsExactly(PostMoodType.COZY);
         assertThat(command.sortBy()).isEqualTo("updatedAt");
         assertThat(command.sortDirection()).isEqualTo("DESC");
-        assertThat(command.lastPostNo()).isEqualTo("post-123");
+        assertThat(command.cursor()).isEqualTo("post-123");
         assertThat(command.size()).isEqualTo(20);
     }
 

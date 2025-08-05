@@ -24,7 +24,7 @@ public class SearchPostController {
     private final SearchPostUseCase searchPostUseCase;
     private final SearchPostWebMapper webMapper;
 
-    private static final List<String> ALLOWED_SORT_BY = List.of("updatedAt");
+    private static final List<String> ALLOWED_SORT_BY = List.of("createdAt");
     private static final List<String> ALLOWED_SORT_DIRECTION = List.of("ASC", "DESC");
 
     @GetMapping("/search/results")

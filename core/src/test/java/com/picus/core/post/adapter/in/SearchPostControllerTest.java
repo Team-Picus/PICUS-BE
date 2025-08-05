@@ -52,7 +52,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
-                "updatedAt",
+                "createdAt",
                 "DESC",
                 "post-123",
                 10
@@ -79,7 +79,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
-                null,      // sortBy = "updatedAt"
+                null,      // sortBy = "createdAt"
                 null,      // sortDirection = "DESC"
                 "post-123",
                 null       // size = 10
@@ -133,7 +133,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
-                "updatedAt",
+                "createdAt",
                 "wrongValue",
                 "post-123",
                 null
@@ -182,7 +182,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
         request.getMoodTypes().forEach(mood -> params.add("moodTypes", mood.name()));
         if (request.getSortBy() != null) params.add("sortBy", request.getSortBy());
         if (request.getSortDirection() != null) params.add("sortDirection", request.getSortDirection());
-        if (request.getLastPostNo() != null) params.add("lastPostNo", request.getLastPostNo());
+        if (request.getCursor() != null) params.add("cursor", request.getCursor());
         params.add("size", String.valueOf(request.getSize()));
 
         return params;

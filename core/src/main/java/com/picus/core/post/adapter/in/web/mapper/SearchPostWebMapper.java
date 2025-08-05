@@ -20,7 +20,7 @@ public class SearchPostWebMapper {
                 .moodTypes(request.getMoodTypes())
                 .sortBy(request.getSortBy())
                 .sortDirection(request.getSortDirection())
-                .lastPostNo(request.getLastPostNo())
+                .cursor(request.getCursor())
                 .size(request.getSize())
                 .build();
     }

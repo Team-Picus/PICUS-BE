@@ -17,6 +17,6 @@ public record SearchPostCommand(
         List<PostMoodType> moodTypes,
         String sortBy,
         String sortDirection,
-        String lastPostNo,
+        String cursor,
         int size
 ) {}

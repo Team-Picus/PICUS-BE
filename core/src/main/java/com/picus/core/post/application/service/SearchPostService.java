@@ -33,7 +33,7 @@ public class SearchPostService implements SearchPostUseCase {
 
         List<Post> searchResults = postReadPort.findBySearchCond(
                 searchPostCond,
-                command.lastPostNo(),
+                command.cursor(),
                 command.sortBy(),
                 command.sortDirection(),
                 command.size() + 1 // 마지막 페이지인지 확인을 위해 1개 더 조회

@@ -23,7 +23,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -59,7 +58,7 @@ class SearchPostServiceTest {
                 .title("title")
                 .build();
         given(postReadPort.findBySearchCond(
-                mockCond, command.lastPostNo(), command.sortBy(), command.sortDirection(), command.size() + 1))
+                mockCond, command.cursor(), command.sortBy(), command.sortDirection(), command.size() + 1))
                 .willReturn(List.of(mockPost));
 
         User mockUser = User.builder().nickname("user").build();
@@ -72,7 +71,7 @@ class SearchPostServiceTest {
         // then - 메서드 호출 검증
         then(commandMapper).should().toCond(command);
         then(postReadPort).should().findBySearchCond(
-                mockCond, command.lastPostNo(), command.sortBy(), command.sortDirection(), command.size() + 1);
+                mockCond, command.cursor(), command.sortBy(), command.sortDirection(), command.size() + 1);
         then(userReadPort).should().findByExpertNo(mockPost.getAuthorNo());
 
         // then - 리턴값 검증

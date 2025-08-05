@@ -19,7 +19,7 @@ public class SearchPostRequest {
     private final List<PostMoodType> moodTypes;
     private final String sortBy;
     private final String sortDirection;
-    private final String lastPostNo;
+    private final String cursor;
     private final int size;
 
     public SearchPostRequest(
@@ -30,7 +30,7 @@ public class SearchPostRequest {
             List<PostMoodType> moodTypes,
             String sortBy,
             String sortDirection,
-            String lastPostNo,
+            String cursor,
             Integer size
     ) {
         this.themeTypes = themeTypes != null ? themeTypes : new ArrayList<>();
@@ -38,9 +38,9 @@ public class SearchPostRequest {
         this.spaceType = spaceType;
         this.address = address;
         this.moodTypes = moodTypes != null ? moodTypes : new ArrayList<>();
-        this.sortBy = sortBy != null ? sortBy : "updatedAt";
+        this.sortBy = sortBy != null ? sortBy : "createdAt";
         this.sortDirection = sortDirection != null ? sortDirection : "DESC";
-        this.lastPostNo = lastPostNo;
+        this.cursor = cursor;
         this.size = size != null && size > 0 ? size : 10;
     }
 

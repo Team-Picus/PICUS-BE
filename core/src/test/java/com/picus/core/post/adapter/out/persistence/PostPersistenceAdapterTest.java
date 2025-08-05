@@ -1,5 +1,6 @@
 package com.picus.core.post.adapter.out.persistence;
 
+import com.picus.core.post.adapter.out.persistence.dto.SearchPostCond;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.mapper.PostImagePersistenceMapper;
@@ -12,7 +13,7 @@ import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
-import com.picus.core.shared.config.JpaAuditingConfiguration;
+import com.picus.core.shared.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import static com.picus.core.post.domain.vo.PostMoodType.*;
 import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
 import static com.picus.core.post.domain.vo.PostThemeType.SNAP;
 import static com.picus.core.post.domain.vo.SnapSubTheme.ADMISSION;
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -37,7 +39,8 @@ import static org.assertj.core.api.Assertions.*;
         PostPersistenceAdapter.class,
         PostPersistenceMapper.class,
         PostImagePersistenceMapper.class,
-        JpaAuditingConfiguration.class
+//        JpaAuditingConfiguration.class,
+        QueryDslConfig.class
 })
 @DataJpaTest
 @ActiveProfiles("test")
@@ -277,16 +280,9 @@ class PostPersistenceAdapterTest {
     public void findTopUpdatedAtByExpertNo() throws Exception {
         // given
         String expertNo = "expert-456";
-        PostEntity postEntity1 = createPostEntity(
-                "package-123", expertNo, "old_title", "old_one", "old_detail",
-                List.of(BEAUTY), List.of(), List.of(COZY),
-                SpaceType.INDOOR, "old_address", false
-        );
-        PostEntity postEntity2 = createPostEntity(
-                "package-123", expertNo, "old_title", "old_one", "old_detail",
-                List.of(BEAUTY), List.of(), List.of(COZY),
-                SpaceType.INDOOR, "old_address", false
-        );
+        LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0);
+        PostEntity postEntity1 = createPostEntity(expertNo, "t1",  baseTime.minusDays(1), now().minusDays(1));
+        PostEntity postEntity2 = createPostEntity(expertNo, "t2", baseTime.minusDays(2), now().minusDays(2));
         clearPersistenceContext();
 
         // when
@@ -294,7 +290,7 @@ class PostPersistenceAdapterTest {
 
         // then
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(postEntity2.getUpdatedAt());
+        assertThat(result.get()).isEqualTo(postEntity1.getUpdatedAt());
     }
 
     @Test
@@ -451,6 +447,65 @@ class PostPersistenceAdapterTest {
         }
     }
 
+    @Test
+    @DisplayName("조건 없이 기본값으로 게시물 조회 - 최신순, size만큼 조회")
+    void findBySearchCond_defaultOnly_success() throws Exception {
+        // given
+        LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0);
+        PostEntity p1 = createPostEntity("t1", baseTime.minusDays(1), now().minusDays(1));
+        PostEntity p2 = createPostEntity("t2", baseTime.minusDays(2), now().minusDays(2));
+        PostEntity p3 = createPostEntity("t3", baseTime.minusDays(3), now().minusDays(3));
+
+        clearPersistenceContext();
+
+        SearchPostCond cond = new SearchPostCond(
+                List.of(), List.of(), null, null, List.of()
+        );
+        String cursor = null;
+        String sortBy = "createdAt";
+        String sortDirection = "DESC";
+        int size = 2;
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, cursor, sortBy, sortDirection, size);
+
+        // then
+        assertThat(results).hasSize(2);
+        assertThat(results).extracting(Post::getTitle)
+                .containsExactly("t1", "t2"); // 최신순
+    }
+
+//    @Test
+//    @DisplayName("themeTypes+snapSubThemes 조건으로 게시물 필터링")
+//    void findBySearchCond_themeTypesOnly_success() throws Exception {
+//        // given
+//        PostEntity snapPost = createPostEntity("snap-post", List.of(PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY));
+//        PostEntity dailyPost = createPostEntity("Beauty-post", List.of(BEAUTY), List.of());
+//        PostEntity mixedPost = createPostEntity("mixed-post", List.of(PostThemeType.SNAP, BEAUTY), List.of(SnapSubTheme.FAMILY));
+//
+//        clearPersistenceContext();
+//
+//        SearchPostCond cond = new SearchPostCond(
+//                List.of(PostThemeType.SNAP),
+//                List.of(),
+//                null,
+//                null,
+//                List.of()
+//        );
+//        String cursor = null;
+//        String sortBy = "createdAt";
+//        String sortDirection = "DESC";
+//        int size = 10;
+//
+//        // when
+//        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, cursor, sortBy, sortDirection, size);
+//
+//        // then
+//        assertThat(results).extracting(Post::getTitle)
+//                .contains("snap-post", "mixed-post")
+//                .doesNotContain("daily-post");
+//    }
+
     /**
      * private 메서드
      */
@@ -534,6 +589,62 @@ class PostPersistenceAdapterTest {
                 .isPinned(isPinned)
                 .build();
         return postJpaRepository.save(postEntity);
+    }
+
+    private PostEntity createPostEntity(String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        PostEntity entity = PostEntity.builder()
+                .packageNo("package")
+                .expertNo("expert")
+                .title(title)
+                .oneLineDescription("desc")
+                .detailedDescription("detail")
+                .postThemeTypes(List.of())
+                .snapSubThemes(List.of())
+                .postMoodTypes(List.of())
+                .spaceType(SpaceType.INDOOR)
+                .spaceAddress("서울시")
+                .isPinned(false)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+        return postJpaRepository.save(entity);
+    }
+
+    private PostEntity createPostEntity(String expertNo, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        PostEntity entity = PostEntity.builder()
+                .packageNo("package")
+                .expertNo(expertNo)
+                .title(title)
+                .oneLineDescription("desc")
+                .detailedDescription("detail")
+                .postThemeTypes(List.of())
+                .snapSubThemes(List.of())
+                .postMoodTypes(List.of())
+                .spaceType(SpaceType.INDOOR)
+                .spaceAddress("서울시")
+                .isPinned(false)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+        return postJpaRepository.save(entity);
+    }
+
+    private PostEntity createPostEntity(String title, List<PostThemeType> themeTypes, List<SnapSubTheme> snapSubThemes) {
+        PostEntity entity = PostEntity.builder()
+                .packageNo("package")
+                .expertNo("expert")
+                .title(title)
+                .oneLineDescription("desc")
+                .detailedDescription("detail")
+                .postThemeTypes(themeTypes)
+                .snapSubThemes(snapSubThemes)
+                .postMoodTypes(List.of())
+                .spaceType(SpaceType.INDOOR)
+                .spaceAddress("서울시")
+                .isPinned(false)
+                .createdAt(LocalDateTime.now())
+                .build();
+        return postJpaRepository.save(entity);
     }
 
     private PostImageEntity createPostImageEntity(String fileKey, int imageOrder, PostEntity postEntity) {
