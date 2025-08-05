@@ -13,6 +13,7 @@ import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
@@ -46,6 +47,11 @@ public class CommentPersistenceAdapter implements CommentCreatePort, CommentRead
     public Optional<Comment> findById(String commentNo) {
         return commentJpaRepository.findById(commentNo)
                 .map(persistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<Comment> findByPostNo(String postNo) {
+        return List.of();
     }
 
     @Override
