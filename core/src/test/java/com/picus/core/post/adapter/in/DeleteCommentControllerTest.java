@@ -1,10 +1,9 @@
 package com.picus.core.post.adapter.in;
 
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
-import com.picus.core.post.application.port.in.DeletePostUseCase;
+import com.picus.core.post.application.port.in.DeleteCommentUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
@@ -26,7 +24,7 @@ class DeleteCommentControllerTest extends AbstractSecurityMockSetup {
     MockMvc mockMvc;
     
     @MockitoBean
-    DeletePostUseCase deletePostUseCase;
+    DeleteCommentUseCase deleteCommentUseCase;
     
     @Test
     @DisplayName("댓글을 삭제한다.")
@@ -44,7 +42,7 @@ class DeleteCommentControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("요청에 성공하였습니다."));
 
         // then - usecase 호출 검증
-        then(deletePostUseCase).should().delete(commentNo, TEST_USER_ID);
+        then(deleteCommentUseCase).should().delete(commentNo, TEST_USER_ID);
     }
     
 

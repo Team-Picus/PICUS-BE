@@ -1,6 +1,6 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.post.application.port.in.DeletePostUseCase;
+import com.picus.core.post.application.port.in.DeleteCommentUseCase;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/comments")
 public class DeleteCommentController {
 
-    private final DeletePostUseCase deletePostUseCase;
+    private final DeleteCommentUseCase deleteCommentUseCase;
 
     @DeleteMapping("/{comment_no}")
     public BaseResponse<Void> delete(@PathVariable("comment_no") String commentNo, @CurrentUser String userNo) {
-        deletePostUseCase.delete(commentNo, userNo);
+        deleteCommentUseCase.delete(commentNo, userNo);
         return BaseResponse.onSuccess();
     }
 }
