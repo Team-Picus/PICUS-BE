@@ -50,6 +50,6 @@ public class CommentPersistenceAdapter implements CommentCreatePort, CommentRead
 
     @Override
     public void delete(String commentNo) {
-
+        commentJpaRepository.deleteById(commentNo);
     }
 }

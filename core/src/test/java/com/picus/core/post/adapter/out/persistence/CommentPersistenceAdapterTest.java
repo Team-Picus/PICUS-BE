@@ -86,6 +86,22 @@ class CommentPersistenceAdapterTest {
         assertThat(comment.getAuthorNo()).isEqualTo(commentEntity.getUserNo());
         assertThat(comment.getContent()).isEqualTo(commentEntity.getContent());
     }
+    
+    @Test
+    @DisplayName("특정 commentNo의 Comment를 삭제한다.")
+    public void delete() throws Exception {
+        // given - 데이터베이스 데이터 셋팅
+        PostEntity postEntity = createPostEntity();
+        CommentEntity commentEntity = createCommentEntity(postEntity);
+        clearPersistenceContext();
+        
+        // when
+        commentPersistenceAdapter.delete(commentEntity.getCommentNo());
+        
+        // then
+        assertThat(commentJpaRepository.findById(commentEntity.getCommentNo()))
+                .isNotPresent();
+    }
 
     private PostEntity createPostEntity() {
         PostEntity postEntity = PostEntity.builder()
@@ -109,6 +125,14 @@ class CommentPersistenceAdapterTest {
                 .postEntity(postEntity)
                 .userNo(userNo)
                 .content(content)
+                .build();
+        return commentJpaRepository.save(commentEntity);
+    }
+    private CommentEntity createCommentEntity(PostEntity postEntity) {
+        CommentEntity commentEntity = CommentEntity.builder()
+                .postEntity(postEntity)
+                .userNo("userNo")
+                .content("content")
                 .build();
         return commentJpaRepository.save(commentEntity);
     }
