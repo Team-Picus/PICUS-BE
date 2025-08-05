@@ -425,6 +425,9 @@ public class LoadExpertIntegrationTest {
                 .lastActivityAt(lastActivityAt)
                 .portfolioLinks(portfolioLinks)
                 .approvalStatus(ApprovalStatus.PENDING)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .deletedAt(LocalDateTime.now())
                 .build();
     }
 

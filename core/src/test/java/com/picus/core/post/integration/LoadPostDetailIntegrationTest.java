@@ -26,6 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -130,6 +131,9 @@ public class LoadPostDetailIntegrationTest {
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
                 .isPinned(isPinned)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .deletedAt(LocalDateTime.now())
                 .build();
         return postJpaRepository.save(postEntity);
     }

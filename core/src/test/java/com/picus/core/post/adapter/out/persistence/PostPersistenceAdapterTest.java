@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -43,7 +44,6 @@ import static org.assertj.core.api.Assertions.*;
         PostPersistenceMapper.class,
         PostImagePersistenceMapper.class,
 //        JpaAuditingConfiguration.class,
-        PostPersistenceAdapterTest.NoAuditing.class, // 현재 테스트 클래스에서 Auditing이 적용되지 않도록
         QueryDslConfig.class
 })
 @DataJpaTest
@@ -61,14 +61,6 @@ class PostPersistenceAdapterTest {
 
     @Autowired
     EntityManager em;
-
-    @TestConfiguration
-    static class NoAuditing {
-        @Bean
-        public AuditorAware<String> auditorAware() {
-            return Optional::empty;
-        }
-    }
 
     @Test
     @DisplayName("Post를 데이터베이스에 저장한다.")
