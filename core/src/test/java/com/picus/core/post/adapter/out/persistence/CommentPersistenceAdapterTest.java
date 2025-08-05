@@ -1,0 +1,108 @@
+package com.picus.core.post.adapter.out.persistence;
+
+import com.picus.core.post.adapter.out.persistence.entity.CommentEntity;
+import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
+import com.picus.core.post.adapter.out.persistence.mapper.CommentPersistenceMapper;
+import com.picus.core.post.adapter.out.persistence.repository.CommentJpaRepository;
+import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
+import com.picus.core.post.domain.Comment;
+import com.picus.core.post.domain.vo.SpaceType;
+import jakarta.persistence.EntityManager;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
+import java.util.Optional;
+
+import static com.picus.core.post.domain.vo.PostMoodType.VINTAGE;
+import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Import({
+        CommentPersistenceAdapter.class,
+        CommentPersistenceMapper.class
+})
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class CommentPersistenceAdapterTest {
+
+
+    @Autowired
+    private PostJpaRepository postJpaRepository;
+    @Autowired
+    private EntityManager em;
+    @Autowired
+    private CommentPersistenceAdapter commentPersistenceAdapter;
+    @Autowired
+    private CommentJpaRepository commentJpaRepository;
+
+    @Test
+    @DisplayName("CommentEntity를 저장한다.")
+    public void save() throws Exception {
+        // given - 데이터베이스 데이터 셋팅
+        PostEntity postEntity = createPostEntity();
+        clearPersistenceContext();
+
+        // given - 저장할 도메인 객체 셋팅
+        Comment comment = createCommentDomain(postEntity);
+
+        // when - 저장
+        Comment saved = commentPersistenceAdapter.save(comment);
+        clearPersistenceContext();
+
+        // then
+        Optional<CommentEntity> optionalCommentEntity = commentJpaRepository.findById(saved.getCommentNo());
+
+        assertThat(optionalCommentEntity).isPresent();
+        CommentEntity commentEntity = optionalCommentEntity.get();
+        assertThat(commentEntity.getCommentNo()).isEqualTo(saved.getCommentNo());
+        assertThat(commentEntity.getUserNo()).isEqualTo(saved.getAuthorNo());
+        assertThat(commentEntity.getContent()).isEqualTo(saved.getContent());
+    }
+
+    private PostEntity createPostEntity() {
+        PostEntity postEntity = PostEntity.builder()
+                .packageNo("packageNo")
+                .expertNo("expertNo")
+                .title("title")
+                .oneLineDescription("oneLineDescription")
+                .detailedDescription("detailedDescription")
+                .postThemeTypes(List.of(BEAUTY))
+                .snapSubThemes(List.of())
+                .postMoodTypes(List.of(VINTAGE))
+                .spaceType(SpaceType.OUTDOOR)
+                .spaceAddress("spaceAddress")
+                .isPinned(false)
+                .build();
+        return postJpaRepository.save(postEntity);
+    }
+
+    private CommentEntity createCommentEntity(PostEntity postEntity) {
+        return CommentEntity.builder()
+                .postEntity(postEntity)
+                .userNo("user-123")
+                .content("content")
+                .build();
+    }
+
+    private Comment createCommentDomain(PostEntity postEntity) {
+        return Comment.builder()
+                .postNo(postEntity.getPostNo())
+                .authorNo("user-123")
+                .content("content")
+                .build();
+    }
+
+
+    private void clearPersistenceContext() {
+        em.flush();
+        em.clear();
+    }
+}
