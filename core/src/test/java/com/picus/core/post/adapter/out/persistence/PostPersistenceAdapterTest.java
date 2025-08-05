@@ -281,8 +281,8 @@ class PostPersistenceAdapterTest {
         // given
         String expertNo = "expert-456";
         LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0);
-        PostEntity postEntity1 = createPostEntity(expertNo, "t1",  baseTime.minusDays(1), now().minusDays(1));
-        PostEntity postEntity2 = createPostEntity(expertNo, "t2", baseTime.minusDays(2), now().minusDays(2));
+        PostEntity postEntity1 = createPostEntity(expertNo, "t1",  baseTime.minusDays(1),baseTime.minusDays(1));
+        PostEntity postEntity2 = createPostEntity(expertNo, "t2", baseTime.minusDays(2), baseTime.minusDays(2));
         clearPersistenceContext();
 
         // when
@@ -452,9 +452,9 @@ class PostPersistenceAdapterTest {
     void findBySearchCond_defaultOnly_success() throws Exception {
         // given
         LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0);
-        PostEntity p1 = createPostEntity("t1", baseTime.minusDays(1), now().minusDays(1));
-        PostEntity p2 = createPostEntity("t2", baseTime.minusDays(2), now().minusDays(2));
-        PostEntity p3 = createPostEntity("t3", baseTime.minusDays(3), now().minusDays(3));
+        PostEntity p1 = createPostEntity("t1", baseTime.minusDays(1), baseTime.minusDays(1));
+        PostEntity p2 = createPostEntity("t2", baseTime.minusDays(2), baseTime.minusDays(2));
+        PostEntity p3 = createPostEntity("t3", baseTime.minusDays(3), baseTime.minusDays(3));
 
         clearPersistenceContext();
 

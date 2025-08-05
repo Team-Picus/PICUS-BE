@@ -48,12 +48,12 @@ class CreatePostServiceTest {
     public void create_success() throws Exception {
         // given
         CreatePostCommand req = CreatePostCommand.builder()
-                .currentUserNo("user-456")
+                .authorNo("user-456")
                 .build();
 
         // Stubbing
         User user = mock(User.class);
-        given(userReadPort.findById(req.currentUserNo())).willReturn(user);
+        given(userReadPort.findById(req.authorNo())).willReturn(user);
         String expertNo = "expert_no";
         given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
@@ -69,7 +69,7 @@ class CreatePostServiceTest {
                 userReadPort, user, createPostCommandMapper, postCreatePort,
                 expertReadPort, expert, expert, expertUpdatePort
         );
-        then(userReadPort).should(inOrder).findById(req.currentUserNo());
+        then(userReadPort).should(inOrder).findById(req.authorNo());
         then(user).should(inOrder).getExpertNo();
         then(createPostCommandMapper).should(inOrder).toDomain(req, expertNo);
         then(postCreatePort).should(inOrder).save(post);

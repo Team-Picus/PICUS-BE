@@ -43,7 +43,7 @@ class CreatePostCommandMapperTest {
                 .spaceType(SpaceType.INDOOR)
                 .spaceAddress("서울특별시 강남구")
                 .packageNo("package-123")
-                .currentUserNo("user-456")
+                .authorNo("user-456")
                 .build();
 
         String expertNo = "expert-789";

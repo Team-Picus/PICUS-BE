@@ -21,6 +21,6 @@ public record CreatePostCommand(
         SpaceType spaceType,
         String spaceAddress,
         String packageNo,
-        String currentUserNo
+        String authorNo
 ) {
 }

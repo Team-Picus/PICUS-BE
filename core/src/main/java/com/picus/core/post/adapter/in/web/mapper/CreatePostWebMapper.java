@@ -22,7 +22,7 @@ public class CreatePostWebMapper {
                 .spaceType(webReq.spaceType())
                 .spaceAddress(webReq.spaceAddress())
                 .packageNo(webReq.packageNo())
-                .currentUserNo(currentUserNo)
+                .authorNo(currentUserNo)
                 .build();
     }
 

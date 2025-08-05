@@ -38,7 +38,7 @@ public class CreatePostService implements CreatePostUseCase {
     public void create(CreatePostCommand createPostCommand) {
 
         // 글 작성한 사용자의 expertNo 조회
-        String expertNo = getCurrentExpertNo(createPostCommand.currentUserNo());
+        String expertNo = getCurrentExpertNo(createPostCommand.authorNo());
 
         // Post 도메인 조립
         Post post = appMapper.toDomain(createPostCommand, expertNo);

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Getter
-public class Post {
+public class  Post {
 
     private String postNo;
 

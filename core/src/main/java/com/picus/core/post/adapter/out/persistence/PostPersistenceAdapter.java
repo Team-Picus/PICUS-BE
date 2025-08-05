@@ -3,15 +3,12 @@ package com.picus.core.post.adapter.out.persistence;
 import com.picus.core.post.adapter.out.persistence.dto.SearchPostCond;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
-import com.picus.core.post.adapter.out.persistence.entity.QPostEntity;
 import com.picus.core.post.adapter.out.persistence.mapper.PostImagePersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.mapper.PostPersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
-import com.picus.core.post.application.port.out.PostCreatePort;
-import com.picus.core.post.application.port.out.PostDeletePort;
-import com.picus.core.post.application.port.out.PostReadPort;
-import com.picus.core.post.application.port.out.PostUpdatePort;
+import com.picus.core.post.application.port.out.*;
+import com.picus.core.post.domain.Comment;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
@@ -21,17 +18,13 @@ import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static com.picus.core.post.adapter.out.persistence.entity.QPostEntity.postEntity;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
@@ -308,6 +301,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
             return new BooleanBuilder();
         }
     }
+
     private OrderSpecifier<?> sortOrder(String sortBy, String sortDirection) {
         boolean isDESC = "DESC".equalsIgnoreCase(sortDirection);
         // 현재는 sortBy가 "createdAt"뿐이므로 바로 createdAt 리턴

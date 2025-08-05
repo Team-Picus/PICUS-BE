@@ -62,7 +62,7 @@ class CreatePostWebMapperTest {
         assertThat(appReq.spaceType()).isEqualTo(SpaceType.INDOOR);
         assertThat(appReq.spaceAddress()).isEqualTo("서울시 강남구");
         assertThat(appReq.packageNo()).isEqualTo("pkg-001");
-        assertThat(appReq.currentUserNo()).isEqualTo("user-123");
+        assertThat(appReq.authorNo()).isEqualTo("user-123");
     }
 
 }
