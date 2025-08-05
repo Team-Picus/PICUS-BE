@@ -6,17 +6,20 @@ import com.picus.core.post.adapter.out.persistence.mapper.CommentPersistenceMapp
 import com.picus.core.post.adapter.out.persistence.repository.CommentJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.application.port.out.CommentCreatePort;
+import com.picus.core.post.application.port.out.CommentDeletePort;
+import com.picus.core.post.application.port.out.CommentReadPort;
 import com.picus.core.post.domain.Comment;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class CommentPersistenceAdapter implements CommentCreatePort {
+public class CommentPersistenceAdapter implements CommentCreatePort, CommentReadPort, CommentDeletePort {
 
     private final CommentJpaRepository commentJpaRepository;
     private final PostJpaRepository postJpaRepository;
@@ -37,5 +40,15 @@ public class CommentPersistenceAdapter implements CommentCreatePort {
         CommentEntity saved = commentJpaRepository.save(commentEntity);
 
         return persistenceMapper.toDomain(saved);
+    }
+
+    @Override
+    public Optional<Comment> findById(String commentNo) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void delete(String commentNo) {
+
     }
 }
