@@ -8,7 +8,6 @@ import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.domain.Comment;
 import com.picus.core.post.domain.vo.SpaceType;
 import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

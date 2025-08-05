@@ -20,7 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -40,6 +43,7 @@ import static org.assertj.core.api.Assertions.*;
         PostPersistenceMapper.class,
         PostImagePersistenceMapper.class,
 //        JpaAuditingConfiguration.class,
+        PostPersistenceAdapterTest.NoAuditing.class, // 현재 테스트 클래스에서 Auditing이 적용되지 않도록
         QueryDslConfig.class
 })
 @DataJpaTest
@@ -57,6 +61,14 @@ class PostPersistenceAdapterTest {
 
     @Autowired
     EntityManager em;
+
+    @TestConfiguration
+    static class NoAuditing {
+        @Bean
+        public AuditorAware<String> auditorAware() {
+            return Optional::empty;
+        }
+    }
 
     @Test
     @DisplayName("Post를 데이터베이스에 저장한다.")
@@ -280,8 +292,8 @@ class PostPersistenceAdapterTest {
     public void findTopUpdatedAtByExpertNo() throws Exception {
         // given
         String expertNo = "expert-456";
-        LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0);
-        PostEntity postEntity1 = createPostEntity(expertNo, "t1",  baseTime.minusDays(1),baseTime.minusDays(1));
+        LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0).withNano(0);
+        PostEntity postEntity1 = createPostEntity(expertNo, "t1",  baseTime.minusDays(1), baseTime.minusDays(1));
         PostEntity postEntity2 = createPostEntity(expertNo, "t2", baseTime.minusDays(2), baseTime.minusDays(2));
         clearPersistenceContext();
 
