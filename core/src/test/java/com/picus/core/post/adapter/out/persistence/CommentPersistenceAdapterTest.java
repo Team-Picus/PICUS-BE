@@ -66,6 +66,27 @@ class CommentPersistenceAdapterTest {
         assertThat(commentEntity.getContent()).isEqualTo(saved.getContent());
     }
 
+    @Test
+    @DisplayName("commentNo로 Comment를 조회한다.")
+    public void findById() throws Exception {
+        // given - 데이터베이스 데이터 셋팅
+        PostEntity postEntity = createPostEntity();
+        CommentEntity commentEntity = createCommentEntity(postEntity, "user-123", "content");
+        clearPersistenceContext();
+
+        // when
+        Optional<Comment> optionalComment = commentPersistenceAdapter.findById(commentEntity.getCommentNo());
+
+        // then
+        assertThat(optionalComment).isPresent();
+
+        Comment comment = optionalComment.get();
+        assertThat(comment.getCommentNo()).isEqualTo(commentEntity.getCommentNo());
+        assertThat(comment.getPostNo()).isEqualTo(postEntity.getPostNo());
+        assertThat(comment.getAuthorNo()).isEqualTo(commentEntity.getUserNo());
+        assertThat(comment.getContent()).isEqualTo(commentEntity.getContent());
+    }
+
     private PostEntity createPostEntity() {
         PostEntity postEntity = PostEntity.builder()
                 .packageNo("packageNo")
@@ -83,12 +104,13 @@ class CommentPersistenceAdapterTest {
         return postJpaRepository.save(postEntity);
     }
 
-    private CommentEntity createCommentEntity(PostEntity postEntity) {
-        return CommentEntity.builder()
+    private CommentEntity createCommentEntity(PostEntity postEntity, String userNo, String content) {
+        CommentEntity commentEntity = CommentEntity.builder()
                 .postEntity(postEntity)
-                .userNo("user-123")
-                .content("content")
+                .userNo(userNo)
+                .content(content)
                 .build();
+        return commentJpaRepository.save(commentEntity);
     }
 
     private Comment createCommentDomain(PostEntity postEntity) {

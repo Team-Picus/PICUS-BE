@@ -44,7 +44,8 @@ public class CommentPersistenceAdapter implements CommentCreatePort, CommentRead
 
     @Override
     public Optional<Comment> findById(String commentNo) {
-        return Optional.empty();
+        return commentJpaRepository.findById(commentNo)
+                .map(persistenceMapper::toDomain);
     }
 
     @Override
