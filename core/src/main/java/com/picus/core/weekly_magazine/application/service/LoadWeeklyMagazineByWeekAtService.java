@@ -2,8 +2,8 @@ package com.picus.core.weekly_magazine.application.service;
 
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import com.picus.core.weekly_magazine.application.port.in.LoadWeeklyMagazineByWeekAtUseCase;
+import com.picus.core.weekly_magazine.application.port.in.result.LoadWeeklyMagazineByWeekAtResult;
 import com.picus.core.weekly_magazine.application.port.out.WeeklyMagazineReadPort;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazine;
 import com.picus.core.weekly_magazine.domain.model.vo.WeekAt;
@@ -17,8 +17,15 @@ public class LoadWeeklyMagazineByWeekAtService implements LoadWeeklyMagazineByWe
 
     private final WeeklyMagazineReadPort weeklyMagazineReadPort;
     @Override
-    public WeeklyMagazine load(WeekAt weekAt) {
-        return weeklyMagazineReadPort.findByWeekAt(weekAt.getYear(), weekAt.getMonth(), weekAt.getWeek())
+    public LoadWeeklyMagazineByWeekAtResult load(WeekAt weekAt) {
+        WeeklyMagazine weeklyMagazine = weeklyMagazineReadPort.findByWeekAt(weekAt.getYear(), weekAt.getMonth(), weekAt.getWeek())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        return LoadWeeklyMagazineByWeekAtResult.builder()
+                .topic(weeklyMagazine.getTopic())
+                .topicDescription(weeklyMagazine.getTopicDescription())
+                .weekAt(weeklyMagazine.getWeekAt())
+                .thumbnailUrl("") // TODO: file key -> url 변환 로직
+                .build();
     }
 }

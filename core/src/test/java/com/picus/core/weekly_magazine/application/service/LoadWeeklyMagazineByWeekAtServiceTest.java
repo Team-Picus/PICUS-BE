@@ -1,13 +1,12 @@
 package com.picus.core.weekly_magazine.application.service;
 
+import com.picus.core.weekly_magazine.application.port.in.result.LoadWeeklyMagazineByWeekAtResult;
 import com.picus.core.weekly_magazine.application.port.out.WeeklyMagazineReadPort;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazine;
 import com.picus.core.weekly_magazine.domain.model.vo.WeekAt;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,20 +38,31 @@ class LoadWeeklyMagazineByWeekAtServiceTest {
                 .week(2)
                 .build();
 
-        WeeklyMagazine mockWeeklyMagazine = mock(WeeklyMagazine.class);
+        WeeklyMagazine mockWeeklyMagazine = createWeeklyMagazine("topic", "topic_desc", weekAt);
         given(weeklyMagazineReadPort.findByWeekAt(
                 weekAt.getYear(), weekAt.getMonth(), weekAt.getWeek()
-        )).willReturn(Optional.ofNullable(mockWeeklyMagazine));
+        )).willReturn(Optional.of(mockWeeklyMagazine));
 
         // when
-        WeeklyMagazine weeklyMagazine = service.load(weekAt);
+        LoadWeeklyMagazineByWeekAtResult result = service.load(weekAt);
 
         // then
-        assertThat(weeklyMagazine).isEqualTo(mockWeeklyMagazine);
+        assertThat(result.topic()).isEqualTo(mockWeeklyMagazine.getTopic());
+        assertThat(result.topicDescription()).isEqualTo(mockWeeklyMagazine.getTopicDescription());
+        assertThat(result.weekAt()).isEqualTo(mockWeeklyMagazine.getWeekAt());
+        assertThat(result.thumbnailUrl()).isEqualTo(""); // TODO: file key -> url 변환 로직 필요
 
         then(weeklyMagazineReadPort).should().findByWeekAt(
                 weekAt.getYear(), weekAt.getMonth(), weekAt.getWeek()
         );
+    }
+
+    private WeeklyMagazine createWeeklyMagazine(String topic, String topicDesc, WeekAt weekAt) {
+        return WeeklyMagazine.builder()
+                .topic(topic)
+                .topicDescription(topicDesc)
+                .weekAt(weekAt)
+                .build();
     }
 
 }
