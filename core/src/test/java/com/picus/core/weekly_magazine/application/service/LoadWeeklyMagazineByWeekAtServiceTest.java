@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -40,7 +42,7 @@ class LoadWeeklyMagazineByWeekAtServiceTest {
         WeeklyMagazine mockWeeklyMagazine = mock(WeeklyMagazine.class);
         given(weeklyMagazineReadPort.findByWeekAt(
                 weekAt.getYear(), weekAt.getMonth(), weekAt.getWeek()
-        )).willReturn(mockWeeklyMagazine);
+        )).willReturn(Optional.ofNullable(mockWeeklyMagazine));
 
         // when
         WeeklyMagazine weeklyMagazine = service.load(weekAt);

@@ -43,7 +43,6 @@ import static org.assertj.core.api.Assertions.*;
         PostPersistenceAdapter.class,
         PostPersistenceMapper.class,
         PostImagePersistenceMapper.class,
-//        JpaAuditingConfiguration.class,
         QueryDslConfig.class
 })
 @DataJpaTest

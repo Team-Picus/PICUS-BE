@@ -1,12 +1,12 @@
 package com.picus.core.weekly_magazine.domain.model;
 
-
 import com.picus.core.weekly_magazine.domain.model.vo.WeekAt;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -19,5 +19,6 @@ public class WeeklyMagazine {
     private String topicDescription;
     private WeekAt weekAt;
     private String thumbnailKey;
-    private List<WeeklyMagazinePost> posts;
+    @Builder.Default
+    private List<WeeklyMagazinePost> posts = new ArrayList<>();
 }
