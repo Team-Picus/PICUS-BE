@@ -11,6 +11,7 @@ import com.picus.core.weekly_magazine.adapter.in.web.data.response.LoadWeeklyMag
 import com.picus.core.weekly_magazine.adapter.out.persistence.entity.WeeklyMagazineEntity;
 import com.picus.core.weekly_magazine.adapter.out.persistence.entity.vo.WeekAt;
 import com.picus.core.weekly_magazine.adapter.out.persistence.repository.WeeklyMagazineJpaRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,12 @@ public class LoadWeeklyMagazineByWeekAtIntegrationTest {
     private UserJpaRepository userJpaRepository;
     @Autowired
     private WeeklyMagazineJpaRepository weeklyMagazineJpaRepository;
+
+    @AfterEach
+    void tearDown() {
+        weeklyMagazineJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("사용자는 특정 주차의 주간 매거진을 조회할 수 있다.")

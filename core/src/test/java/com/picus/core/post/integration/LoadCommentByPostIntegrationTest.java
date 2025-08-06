@@ -12,6 +12,7 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,13 @@ public class LoadCommentByPostIntegrationTest {
     private PostJpaRepository postJpaRepository;
     @Autowired
     private CommentJpaRepository commentJpaRepository;
+
+    @AfterEach
+    void tearDown() {
+        commentJpaRepository.deleteAllInBatch();
+        postJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("사용자는 특정 게시물의 댓글들을 조회할 수 있다.")
