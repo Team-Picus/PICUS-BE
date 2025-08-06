@@ -6,7 +6,15 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "weekly_magazines")
+@Table(
+        name = "weekly_magazines",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_weekly_magazines_week_at",
+                columnNames = {
+                        "year", "month", "week"
+                }
+        )
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter

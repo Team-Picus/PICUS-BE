@@ -9,7 +9,6 @@ import com.picus.core.weekly_magazine.adapter.out.persistence.mapper.WeeklyMagaz
 import com.picus.core.weekly_magazine.adapter.out.persistence.repository.WeeklyMagazineJpaRepository;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazine;
 import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
