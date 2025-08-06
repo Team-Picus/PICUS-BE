@@ -29,7 +29,7 @@ public class LoadWeeklyMagazinePostByWeekAtService implements LoadWeeklyMagazine
     public List<LoadWeeklyMagazinePostByWeekAtResult> load(WeekAt weekAt) {
 
         // 특정 주차의 주간 매거진 게시물 조회
-        List<WeeklyMagazinePost> weeklyMagazinePosts = // TODO: 구현 필요
+        List<WeeklyMagazinePost> weeklyMagazinePosts =
                 weeklyMagazineReadPort.findWeeklyMagazinePostByWeekAt(weekAt.getYear(), weekAt.getMonth(), weekAt.getWeek());
 
         // 주간 매거진 게시물의 상세정보 조회(title 등)

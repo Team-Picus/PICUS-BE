@@ -31,4 +31,6 @@ public interface PostJpaRepository extends JpaRepository<PostEntity, String> {
 
     @Query(value = "select * from posts WHERE posts.is_pinned = true ORDER BY RAND() LIMIT :size", nativeQuery = true)
     List<PostEntity> findRandomTopNByIsPinnedTrue(int size);
+
+    List<PostEntity> findByPostNoIn(List<String> postNos);
 }

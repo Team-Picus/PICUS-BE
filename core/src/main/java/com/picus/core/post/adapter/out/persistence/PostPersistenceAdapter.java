@@ -160,7 +160,24 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
 
     @Override
     public List<Post> findByIdList(List<String> postNoList) {
-        return List.of();
+
+        // PostEntity 조회
+        List<PostEntity> postEntities = postJpaRepository.findByPostNoIn(postNoList);
+
+        return postEntities.stream()
+                .map(postEntity -> {
+                    // 해당 PostEntity의 PostImageEntity 조회
+                    List<PostImageEntity> imageEntities = postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo());
+
+                    // PostImage 도메인으로 매핑
+                    List<PostImage> postImages = imageEntities.stream()
+                            .map(postImagePersistenceMapper::toDomain)
+                            .toList();
+
+                    // Post 도메인으로 매핑
+                    return postPersistenceMapper.toDomain(postEntity, postImages);
+                })
+                .toList();
     }
 
     // PostEntity만 수정

@@ -20,11 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -35,7 +31,6 @@ import static com.picus.core.post.domain.vo.PostMoodType.*;
 import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
 import static com.picus.core.post.domain.vo.PostThemeType.SNAP;
 import static com.picus.core.post.domain.vo.SnapSubTheme.ADMISSION;
-import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -149,6 +144,41 @@ class PostPersistenceAdapterTest {
         assertThat(post.getPostImages()).hasSize(1)
                 .extracting(PostImage::getFileKey, PostImage::getImageOrder)
                 .containsExactly(tuple("file.jpg", 1));
+    }
+
+    @Test
+    @DisplayName("특정 Id 리스트로 Post 목록 조회")
+    public void findByIdList() throws Exception {
+        // given
+        PostEntity p1 = createPostEntity("p1");
+        PostEntity p2 = createPostEntity("p2");
+        PostImageEntity p1_img1 = createPostImageEntity("i1.jpg", 1, p1);
+        PostImageEntity p1_img2 = createPostImageEntity("i2.jpg", 2, p1);
+        PostImageEntity p2_img1 = createPostImageEntity("i1.jpg", 1, p2);
+        PostImageEntity p2_img2 = createPostImageEntity("i2.jpg", 2, p2);
+        clearPersistenceContext();
+
+        // when
+        List<Post> posts = postPersistenceAdapter.findByIdList(List.of(p1.getPostNo(), p2.getPostNo()));
+
+        // then
+        assertThat(posts).hasSize(2)
+                .extracting(Post::getTitle)
+                .containsExactlyInAnyOrder("p1", "p2");
+        assertThat(posts.get(0).getPostImages()).hasSize(2)
+                .extracting(
+                        PostImage::getFileKey, PostImage::getImageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple(p1_img1.getFileKey(), p1_img1.getImageOrder()),
+                        tuple(p1_img2.getFileKey(), p1_img2.getImageOrder())
+                );
+        assertThat(posts.get(1).getPostImages()).hasSize(2)
+                .extracting(
+                        PostImage::getFileKey, PostImage::getImageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple(p2_img1.getFileKey(), p2_img1.getImageOrder()),
+                        tuple(p2_img2.getFileKey(), p2_img2.getImageOrder())
+                );
     }
 
     @Test
@@ -284,7 +314,7 @@ class PostPersistenceAdapterTest {
         // given
         String expertNo = "expert-456";
         LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0).withNano(0);
-        PostEntity postEntity1 = createPostEntity(expertNo, "t1",  baseTime.minusDays(1), baseTime.minusDays(1));
+        PostEntity postEntity1 = createPostEntity(expertNo, "t1", baseTime.minusDays(1), baseTime.minusDays(1));
         PostEntity postEntity2 = createPostEntity(expertNo, "t2", baseTime.minusDays(2), baseTime.minusDays(2));
         clearPersistenceContext();
 
