@@ -1,6 +1,8 @@
 package com.picus.core.weekly_magazine.adapter.out.persistence.entity.vo;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.*;
 
 @Embeddable
@@ -23,6 +25,8 @@ public class WeekAt {
         validate();
     }
 
+    @PrePersist
+    @PreUpdate
     private void validate() {
         if (year < 2000 || year > 2100) {
             throw new IllegalStateException("year는 2000~2100 사이여야 합니다.");
