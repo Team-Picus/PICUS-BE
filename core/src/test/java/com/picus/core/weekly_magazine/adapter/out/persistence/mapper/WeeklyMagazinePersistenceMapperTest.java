@@ -4,7 +4,6 @@ import com.picus.core.weekly_magazine.adapter.out.persistence.entity.WeeklyMagaz
 import com.picus.core.weekly_magazine.adapter.out.persistence.entity.vo.WeekAt;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazine;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazinePost;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +11,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 
 class WeeklyMagazinePersistenceMapperTest {
 
@@ -50,7 +48,7 @@ class WeeklyMagazinePersistenceMapperTest {
         assertThat(domain.getWeekAt().getMonth()).isEqualTo(10);
         assertThat(domain.getWeekAt().getWeek()).isEqualTo(2);
         assertThat(domain.getThumbnailKey()).isEqualTo("a.jpg");
-        assertThat(domain.getPosts())
+        assertThat(domain.getWeeklyMagazinePosts())
                 .extracting(
                         WeeklyMagazinePost::getWeeklyMagazinePostNo,
                         WeeklyMagazinePost::getPostNo

@@ -6,6 +6,7 @@ import com.picus.core.weekly_magazine.adapter.out.persistence.mapper.WeeklyMagaz
 import com.picus.core.weekly_magazine.adapter.out.persistence.repository.WeeklyMagazineJpaRepository;
 import com.picus.core.weekly_magazine.application.port.out.WeeklyMagazineReadPort;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazine;
+import com.picus.core.weekly_magazine.domain.model.WeeklyMagazinePost;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -29,5 +30,10 @@ public class WeeklyMagazinePersistenceAdapter implements WeeklyMagazineReadPort 
 
         return weeklyMagazineJpaRepository.findByWeekAt(weekAt)
                 .map(entity -> mapper.toDomain(entity, List.of()));
+    }
+
+    @Override
+    public List<WeeklyMagazinePost> findWeeklyMagazinePostByWeekAt(int year, int month, int week) {
+        return List.of();
     }
 }

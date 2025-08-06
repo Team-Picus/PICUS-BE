@@ -158,6 +158,11 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
                 .toList();
     }
 
+    @Override
+    public List<Post> findByIdList(List<String> postNoList) {
+        return List.of();
+    }
+
     // PostEntity만 수정
     @Override
     public void update(Post post) {

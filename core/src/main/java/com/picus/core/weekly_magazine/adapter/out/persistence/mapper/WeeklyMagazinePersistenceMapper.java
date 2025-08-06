@@ -18,7 +18,7 @@ public class WeeklyMagazinePersistenceMapper {
                 .topicDescription(weeklyMagazineEntity.getTopicDescription())
                 .weekAt(toDomainWeekAt(weeklyMagazineEntity))
                 .thumbnailKey(weeklyMagazineEntity.getThumbnailKey())
-                .posts(weeklyMagazinePosts)
+                .weeklyMagazinePosts(weeklyMagazinePosts)
                 .build();
     }
 

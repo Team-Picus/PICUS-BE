@@ -20,5 +20,5 @@ public class WeeklyMagazine {
     private WeekAt weekAt;
     private String thumbnailKey;
     @Builder.Default
-    private List<WeeklyMagazinePost> posts = new ArrayList<>();
+    private List<WeeklyMagazinePost> weeklyMagazinePosts = new ArrayList<>();
 }

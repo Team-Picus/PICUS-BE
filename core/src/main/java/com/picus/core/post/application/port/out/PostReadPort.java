@@ -37,4 +37,6 @@ public interface PostReadPort {
      * @return: 검색 결과
      */
     List<Post> findBySearchCond(SearchPostCond cond, String cursor, String sortBy, String sortDirection, int size);
+
+    List<Post> findByIdList(List<String> postNoList);
 }
