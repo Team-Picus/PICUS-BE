@@ -1,10 +1,8 @@
 package com.picus.core.weekly_magazine.adapter.out.persistence.entity;
 
+import com.picus.core.weekly_magazine.adapter.out.persistence.entity.vo.WeekAt;
 import io.hypersistence.utils.hibernate.id.Tsid;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -22,8 +20,8 @@ public class WeeklyMagazineEntity {
     @Column(nullable = false)
     private String topicDescription;
 
-    @Column(nullable = false)
-    private String weekAt;
+    @Embedded
+    private WeekAt weekAt;
 
     @Column(nullable = false)
     private String thumbnailKey;
