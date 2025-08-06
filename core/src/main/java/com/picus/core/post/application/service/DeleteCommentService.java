@@ -27,7 +27,7 @@ public class DeleteCommentService implements DeleteCommentUseCase {
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 삭제하려는 댓글의 작성자와 현재 사용자가 일치하는지 검증
-//        throwIfNotOwner(comment.getAuthorNo(), currentUserNo);
+        throwIfNotOwner(comment.getAuthorNo(), currentUserNo);
 
         // 삭제
         commentDeletePort.delete(commentNo);
