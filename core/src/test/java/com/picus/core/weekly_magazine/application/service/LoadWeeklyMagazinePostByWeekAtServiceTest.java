@@ -57,7 +57,7 @@ class LoadWeeklyMagazinePostByWeekAtServiceTest {
         given(postReadPort.findByIdList(List.of(postNo))).willReturn(List.of(mockPost));
 
         User mockUser = createMockUser();
-        given(userReadPort.findById(mockPost.getAuthorNo())).willReturn(mockUser);
+        given(userReadPort.findByExpertNo(mockPost.getAuthorNo())).willReturn(mockUser);
 
 
         // when
@@ -78,7 +78,7 @@ class LoadWeeklyMagazinePostByWeekAtServiceTest {
         then(weeklyMagazineReadPort).should().findWeeklyMagazinePostByWeekAt(
                 weekAt.getYear(), weekAt.getMonth(), weekAt.getWeek());
         then(postReadPort).should().findByIdList(List.of(postNo));
-        then(userReadPort).should().findById(mockPost.getAuthorNo());
+        then(userReadPort).should().findByExpertNo(mockPost.getAuthorNo());
     }
 
     private WeeklyMagazinePost createMockWeeklyMagazinePost(String postNo) {

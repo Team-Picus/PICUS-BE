@@ -43,7 +43,7 @@ public class LoadWeeklyMagazinePostByWeekAtService implements LoadWeeklyMagazine
         List<LoadWeeklyMagazinePostByWeekAtResult> results = new ArrayList<>();
         for (Post post : posts) {
             // 각 게시물의 작성자 정보 조회(닉네임)
-            User user = userReadPort.findById(post.getAuthorNo());
+            User user = userReadPort.findByExpertNo(post.getAuthorNo());
             results.add(
                     LoadWeeklyMagazinePostByWeekAtResult.builder()
                     .postNo(post.getPostNo())
