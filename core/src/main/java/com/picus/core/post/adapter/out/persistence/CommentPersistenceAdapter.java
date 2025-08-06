@@ -51,7 +51,11 @@ public class CommentPersistenceAdapter implements CommentCreatePort, CommentRead
 
     @Override
     public List<Comment> findByPostNo(String postNo) {
-        return List.of();
+        List<CommentEntity> commentEntities = commentJpaRepository.findByPostEntity_postNo(postNo);
+
+        return commentEntities.stream()
+                .map(persistenceMapper::toDomain)
+                .toList();
     }
 
     @Override

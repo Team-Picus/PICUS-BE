@@ -22,6 +22,7 @@ import java.util.Optional;
 import static com.picus.core.post.domain.vo.PostMoodType.VINTAGE;
 import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @Import({
         CommentPersistenceAdapter.class,
@@ -86,7 +87,30 @@ class CommentPersistenceAdapterTest {
         assertThat(comment.getAuthorNo()).isEqualTo(commentEntity.getUserNo());
         assertThat(comment.getContent()).isEqualTo(commentEntity.getContent());
     }
-    
+
+    @Test
+    @DisplayName("특정 postNo로 Comment들을 조회한다.")
+    public void findByPostNo() throws Exception {
+        // given
+        PostEntity postEntity = createPostEntity();
+        CommentEntity cmt1 = createCommentEntity(postEntity, "user-123", "cmt1");
+        CommentEntity cmt2 = createCommentEntity(postEntity, "user-456", "cmt2");
+
+        // when
+        List<Comment> comments = commentPersistenceAdapter.findByPostNo(postEntity.getPostNo());
+
+        // then
+        assertThat(comments).hasSize(2)
+                .extracting(
+                        Comment::getCommentNo,
+                        Comment::getAuthorNo,
+                        Comment::getContent
+                ).containsExactlyInAnyOrder(
+                        tuple(cmt1.getCommentNo(), cmt1.getUserNo(), cmt1.getContent()),
+                        tuple(cmt2.getCommentNo(), cmt2.getUserNo(), cmt2.getContent())
+                );
+    }
+
     @Test
     @DisplayName("특정 commentNo의 Comment를 삭제한다.")
     public void delete() throws Exception {
@@ -94,10 +118,10 @@ class CommentPersistenceAdapterTest {
         PostEntity postEntity = createPostEntity();
         CommentEntity commentEntity = createCommentEntity(postEntity);
         clearPersistenceContext();
-        
+
         // when
         commentPersistenceAdapter.delete(commentEntity.getCommentNo());
-        
+
         // then
         assertThat(commentJpaRepository.findById(commentEntity.getCommentNo()))
                 .isNotPresent();
