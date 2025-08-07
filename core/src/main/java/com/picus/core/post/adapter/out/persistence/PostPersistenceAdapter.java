@@ -137,11 +137,12 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         return queryFactory
                 .selectFrom(postEntity)
                 .where(
-                        themeTypesEq(cond.themeTypes()),
-                        snapSubThemesEq(cond.snapSubThemes()),
-                        moodTypesEq(cond.moodTypes()),
+                        themeTypesIn(cond.themeTypes()),
+                        snapSubThemesIn(cond.snapSubThemes()),
+                        moodTypesIn(cond.moodTypes()),
                         spaceTypeEq(cond.spaceType()),
                         addressEq(cond.address()),
+                        titleKeywordLike(cond.keyword()),
                         cursorCond(cursor, sortBy, sortDirection)
                 )
                 .orderBy(sortOrder(sortBy, sortDirection))
@@ -280,7 +281,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
                 .toList();
     }
 
-    private BooleanBuilder themeTypesEq(List<PostThemeType> themeTypes) {
+    private BooleanBuilder themeTypesIn(List<PostThemeType> themeTypes) {
         BooleanBuilder builder = new BooleanBuilder();
         if (themeTypes != null && !themeTypes.isEmpty()) {
             for (PostThemeType t : themeTypes) {
@@ -294,7 +295,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         return builder;
     }
 
-    private BooleanBuilder snapSubThemesEq(List<SnapSubTheme> snapSubThemes) {
+    private BooleanBuilder snapSubThemesIn(List<SnapSubTheme> snapSubThemes) {
         BooleanBuilder builder = new BooleanBuilder();
         if (snapSubThemes != null && !snapSubThemes.isEmpty()) {
             for (SnapSubTheme s : snapSubThemes) {
@@ -307,7 +308,7 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
         return builder;
     }
 
-    private BooleanBuilder moodTypesEq(List<PostMoodType> moodTypes) {
+    private BooleanBuilder moodTypesIn(List<PostMoodType> moodTypes) {
         BooleanBuilder builder = new BooleanBuilder();
         if (moodTypes != null && !moodTypes.isEmpty()) {
             for (PostMoodType m : moodTypes) {
@@ -329,6 +330,12 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
     private BooleanBuilder addressEq(String address) {
         return (hasText(address))
                 ? new BooleanBuilder(postEntity.spaceAddress.eq(address))
+                : new BooleanBuilder();
+    }
+
+    private BooleanBuilder titleKeywordLike(String titleKeyword) {
+        return (hasText(titleKeyword))
+                ? new BooleanBuilder(postEntity.title.like("%" + titleKeyword + "%"))
                 : new BooleanBuilder();
     }
 

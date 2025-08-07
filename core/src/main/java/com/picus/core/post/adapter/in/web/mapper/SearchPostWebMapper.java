@@ -18,6 +18,7 @@ public class SearchPostWebMapper {
                 .spaceType(request.getSpaceType())
                 .address(request.getAddress())
                 .moodTypes(request.getMoodTypes())
+                .keyword(request.getKeyword())
                 .sortBy(request.getSortBy())
                 .sortDirection(request.getSortDirection())
                 .cursor(request.getCursor())

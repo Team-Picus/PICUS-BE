@@ -53,6 +53,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
+                "keyword",
                 "createdAt",
                 "DESC",
                 LocalDateTime.of(2020, 1, 1, 1, 1),
@@ -80,6 +81,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
+                "keyword",
                 null,      // sortBy = "createdAt"
                 null,      // sortDirection = "DESC"
                 LocalDateTime.of(2020, 1, 1, 1, 1),
@@ -107,6 +109,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
+                "keyword",
                 "wrongValue",
                 null,
                 LocalDateTime.of(2020, 1, 1, 1, 1),
@@ -134,6 +137,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
+                "keyword",
                 "createdAt",
                 "wrongValue",
                 LocalDateTime.of(2020, 1, 1, 1, 1),

@@ -29,6 +29,7 @@ class SearchPostCommandMapperTest {
                 SpaceType.OUTDOOR,
                 "서울 강남구",
                 List.of(PostMoodType.COZY),
+                "keyword",
                 "updatedAt",
                 "DESC",
                 "post-123",
@@ -44,6 +45,7 @@ class SearchPostCommandMapperTest {
         assertThat(cond.spaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(cond.address()).isEqualTo("서울 강남구");
         assertThat(cond.moodTypes()).containsExactly(PostMoodType.COZY);
+        assertThat(cond.keyword()).isEqualTo("keyword");
     }
 
 }

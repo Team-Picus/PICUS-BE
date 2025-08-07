@@ -4,6 +4,7 @@ import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -17,17 +18,20 @@ public class SearchPostRequest {
     private final SpaceType spaceType;
     private final String address;
     private final List<PostMoodType> moodTypes;
+    private final String keyword;
     private final String sortBy;
     private final String sortDirection;
     private final Object cursor;
     private final int size;
 
+    @Builder
     public SearchPostRequest(
             List<PostThemeType> themeTypes,
             List<SnapSubTheme> snapSubThemes,
             SpaceType spaceType,
             String address,
             List<PostMoodType> moodTypes,
+            String keyword,
             String sortBy,
             String sortDirection,
             Object cursor,
@@ -38,6 +42,7 @@ public class SearchPostRequest {
         this.spaceType = spaceType;
         this.address = address;
         this.moodTypes = moodTypes != null ? moodTypes : new ArrayList<>();
+        this.keyword = keyword;
         this.sortBy = sortBy != null ? sortBy : "createdAt";
         this.sortDirection = sortDirection != null ? sortDirection : "DESC";
         this.cursor = cursor;

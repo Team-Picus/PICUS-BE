@@ -46,8 +46,8 @@ class SearchPostServiceTest {
     public void search() throws Exception {
         // given
         SearchPostCommand command = new SearchPostCommand(List.of(PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY),
-                SpaceType.OUTDOOR, "서울 강남구", List.of(PostMoodType.COZY), "updatedAt",
-                "DESC", "post-123", 20);
+                SpaceType.OUTDOOR, "서울 강남구", List.of(PostMoodType.COZY), "keyword",
+                "updatedAt", "DESC", "post-123", 20);
 
         SearchPostCond mockCond = mock(SearchPostCond.class);
         given(commandMapper.toCond(command)).willReturn(mockCond);

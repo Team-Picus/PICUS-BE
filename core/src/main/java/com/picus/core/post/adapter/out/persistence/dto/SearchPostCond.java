@@ -14,6 +14,7 @@ public record SearchPostCond(
         List<SnapSubTheme> snapSubThemes,
         SpaceType spaceType,
         String address,
-        List<PostMoodType> moodTypes
+        List<PostMoodType> moodTypes,
+        String keyword
 ) {
 }

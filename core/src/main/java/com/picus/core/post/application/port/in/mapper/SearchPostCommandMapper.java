@@ -14,6 +14,7 @@ public class SearchPostCommandMapper {
                 .spaceType(command.spaceType())
                 .address(command.address())
                 .moodTypes(command.moodTypes())
+                .keyword(command.keyword())
                 .build();
     }
 }

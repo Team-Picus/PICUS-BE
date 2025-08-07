@@ -15,6 +15,7 @@ public record SearchPostCommand(
         SpaceType spaceType,
         String address,
         List<PostMoodType> moodTypes,
+        String keyword,
         String sortBy,
         String sortDirection,
         Object cursor,
