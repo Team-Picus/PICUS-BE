@@ -47,15 +47,18 @@ public class PostEntity extends BaseEntity {
 
     @Column(nullable = false)
     @Convert(converter = PostThemeTypeConverter.class)
+    @QueryType(PropertyType.STRING)
     @Builder.Default
     private List<PostThemeType> postThemeTypes = new ArrayList<>();
 
     @Convert(converter = SnapSubThemeConverter.class)
+    @QueryType(PropertyType.STRING)
     @Builder.Default
     private List<SnapSubTheme> snapSubThemes = new ArrayList<>();
 
     @Column(nullable = false)
     @Convert(converter = PostMoodTypeConverter.class)
+    @QueryType(PropertyType.STRING)
     @Builder.Default
     private List<PostMoodType> postMoodTypes = new ArrayList<>();
 

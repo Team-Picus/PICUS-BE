@@ -36,7 +36,7 @@ public interface PostReadPort {
      * @param size: 조회 갯수
      * @return: 검색 결과
      */
-    List<Post> findBySearchCond(SearchPostCond cond, String cursor, String sortBy, String sortDirection, int size);
+    List<Post> findBySearchCond(SearchPostCond cond, Object cursor, String sortBy, String sortDirection, int size);
 
     List<Post> findByIdList(List<String> postNoList);
 }

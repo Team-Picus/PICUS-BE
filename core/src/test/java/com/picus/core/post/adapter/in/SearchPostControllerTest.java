@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
@@ -54,7 +55,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 List.of(PostMoodType.COZY),
                 "createdAt",
                 "DESC",
-                "post-123",
+                LocalDateTime.of(2020, 1, 1, 1, 1),
                 10
         );
 
@@ -81,7 +82,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 List.of(PostMoodType.COZY),
                 null,      // sortBy = "createdAt"
                 null,      // sortDirection = "DESC"
-                "post-123",
+                LocalDateTime.of(2020, 1, 1, 1, 1),
                 null       // size = 10
         );
 
@@ -108,7 +109,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 List.of(PostMoodType.COZY),
                 "wrongValue",
                 null,
-                "post-123",
+                LocalDateTime.of(2020, 1, 1, 1, 1),
                 null
         );
 
@@ -135,7 +136,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
                 List.of(PostMoodType.COZY),
                 "createdAt",
                 "wrongValue",
-                "post-123",
+                LocalDateTime.of(2020, 1, 1, 1, 1),
                 null
         );
 
@@ -182,7 +183,7 @@ class SearchPostControllerTest extends AbstractSecurityMockSetup {
         request.getMoodTypes().forEach(mood -> params.add("moodTypes", mood.name()));
         if (request.getSortBy() != null) params.add("sortBy", request.getSortBy());
         if (request.getSortDirection() != null) params.add("sortDirection", request.getSortDirection());
-        if (request.getCursor() != null) params.add("cursor", request.getCursor());
+        if (request.getCursor() != null) params.add("cursor", request.getCursor().toString());
         params.add("size", String.valueOf(request.getSize()));
 
         return params;

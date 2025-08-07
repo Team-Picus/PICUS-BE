@@ -8,7 +8,6 @@ import com.picus.core.post.adapter.out.persistence.mapper.PostPersistenceMapper;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.application.port.out.*;
-import com.picus.core.post.domain.Comment;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
@@ -19,6 +18,7 @@ import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -132,14 +132,14 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
 
     // Post 특정 검색 조건으로 조회
     @Override
-    public List<Post> findBySearchCond(SearchPostCond cond, String cursor, String sortBy, String sortDirection, int size) {
+    public List<Post> findBySearchCond(SearchPostCond cond, Object cursor, String sortBy, String sortDirection, int size) {
 
         return queryFactory
                 .selectFrom(postEntity)
                 .where(
-                        themeTypesIn(cond.themeTypes()),
-                        snapSubThemesIn(cond.snapSubThemes()),
-                        moodTypesIn(cond.moodTypes()),
+                        themeTypesEq(cond.themeTypes()),
+                        snapSubThemesEq(cond.snapSubThemes()),
+                        moodTypesEq(cond.moodTypes()),
                         spaceTypeEq(cond.spaceType()),
                         addressEq(cond.address()),
                         cursorCond(cursor, sortBy, sortDirection)
@@ -280,22 +280,44 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
                 .toList();
     }
 
-    private BooleanBuilder themeTypesIn(List<PostThemeType> types) {
-        return (types != null && !types.isEmpty())
-                ? new BooleanBuilder(postEntity.postThemeTypes.any().in(types))
-                : new BooleanBuilder();
+    private BooleanBuilder themeTypesEq(List<PostThemeType> themeTypes) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (themeTypes != null && !themeTypes.isEmpty()) {
+            for (PostThemeType t : themeTypes) {
+                // 두 번째 인자 없이, SQL 리터럴 '%SNAP%' 등을 템플릿에 직접 넣음
+                builder.or(Expressions.booleanTemplate(
+                        "{0} like '%" + t.name() + "%'",
+                        postEntity.postThemeTypes
+                ));
+            }
+        }
+        return builder;
     }
 
-    private BooleanBuilder snapSubThemesIn(List<SnapSubTheme> subs) {
-        return (subs != null && !subs.isEmpty())
-                ? new BooleanBuilder(postEntity.snapSubThemes.any().in(subs))
-                : new BooleanBuilder();
+    private BooleanBuilder snapSubThemesEq(List<SnapSubTheme> snapSubThemes) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (snapSubThemes != null && !snapSubThemes.isEmpty()) {
+            for (SnapSubTheme s : snapSubThemes) {
+                builder.or(Expressions.booleanTemplate(
+                        "{0} like '%" + s.name() + "%'",
+                        postEntity.snapSubThemes
+                ));
+            }
+        }
+        return builder;
     }
 
-    private BooleanBuilder moodTypesIn(List<PostMoodType> moods) {
-        return (moods != null && !moods.isEmpty())
-                ? new BooleanBuilder(postEntity.postMoodTypes.any().in(moods))
-                : new BooleanBuilder();
+    private BooleanBuilder moodTypesEq(List<PostMoodType> moodTypes) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (moodTypes != null && !moodTypes.isEmpty()) {
+            for (PostMoodType m : moodTypes) {
+                builder.or(Expressions.booleanTemplate(
+                        "{0} like '%" + m.name() + "%'",
+                        postEntity.postMoodTypes
+                ));
+            }
+        }
+        return builder;
     }
 
     private BooleanBuilder spaceTypeEq(SpaceType type) {
@@ -310,15 +332,15 @@ public class PostPersistenceAdapter implements PostCreatePort, PostReadPort, Pos
                 : new BooleanBuilder();
     }
 
-    private BooleanBuilder cursorCond(String cursor, String sortBy, String sortDirection) {
-        if (!hasText(cursor)) return new BooleanBuilder();
+    private BooleanBuilder cursorCond(Object cursor, String sortBy, String sortDirection) {
+        if (cursor == null) return new BooleanBuilder();
 
         boolean isDESC = "DESC".equalsIgnoreCase(sortDirection);
 
         try {
             // 현재는 sortBy가 "createdAt"뿐이므로 바로 createdAt 리턴
             return new BooleanBuilder(
-                    isDESC ? postEntity.createdAt.lt(LocalDateTime.parse(cursor)) : postEntity.createdAt.gt(LocalDateTime.parse(cursor)));
+                    isDESC ? postEntity.createdAt.lt((LocalDateTime) cursor) : postEntity.createdAt.gt((LocalDateTime) cursor));
         } catch (Exception e) {
             return new BooleanBuilder();
         }

@@ -19,7 +19,7 @@ public class SearchPostRequest {
     private final List<PostMoodType> moodTypes;
     private final String sortBy;
     private final String sortDirection;
-    private final String cursor;
+    private final Object cursor;
     private final int size;
 
     public SearchPostRequest(
@@ -30,7 +30,7 @@ public class SearchPostRequest {
             List<PostMoodType> moodTypes,
             String sortBy,
             String sortDirection,
-            String cursor,
+            Object cursor,
             Integer size
     ) {
         this.themeTypes = themeTypes != null ? themeTypes : new ArrayList<>();

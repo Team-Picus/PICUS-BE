@@ -30,6 +30,7 @@ import java.util.Optional;
 import static com.picus.core.post.domain.vo.PostMoodType.*;
 import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
 import static com.picus.core.post.domain.vo.PostThemeType.SNAP;
+import static com.picus.core.post.domain.vo.SnapSubTheme.*;
 import static com.picus.core.post.domain.vo.SnapSubTheme.ADMISSION;
 import static org.assertj.core.api.Assertions.*;
 
@@ -62,7 +63,7 @@ class PostPersistenceAdapterTest {
         // given
         Post post = createPost(null, "package-123", "expert-456",
                 "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
-                List.of(BEAUTY, SNAP), List.of(SnapSubTheme.FAMILY),
+                List.of(BEAUTY, SNAP), List.of(FAMILY),
                 List.of(COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
                 List.of(
                         PostImage.builder()
@@ -90,7 +91,7 @@ class PostPersistenceAdapterTest {
         assertThat(postEntity.getOneLineDescription()).isEqualTo("한 줄 설명");
         assertThat(postEntity.getDetailedDescription()).isEqualTo("자세한 설명입니다.");
         assertThat(postEntity.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
-        assertThat(postEntity.getSnapSubThemes()).isEqualTo(List.of(SnapSubTheme.FAMILY));
+        assertThat(postEntity.getSnapSubThemes()).isEqualTo(List.of(FAMILY));
         assertThat(postEntity.getPostMoodTypes()).isEqualTo(List.of(COZY));
         assertThat(postEntity.getSpaceType()).isEqualTo(SpaceType.INDOOR);
         assertThat(postEntity.getSpaceAddress()).isEqualTo("서울특별시 강남구");
@@ -114,7 +115,7 @@ class PostPersistenceAdapterTest {
         // 데이터베이스에 데이터 셋팅
         PostEntity postEntity = createPostEntity(
                 "package-123", "expert-456", "제목", "설명", "상세 설명",
-                List.of(SNAP), List.of(SnapSubTheme.FAMILY), List.of(COZY),
+                List.of(SNAP), List.of(FAMILY), List.of(COZY),
                 SpaceType.INDOOR, "서울시 강남구", false
         );
         createPostImageEntity("file.jpg", 1, postEntity);
@@ -197,7 +198,7 @@ class PostPersistenceAdapterTest {
         // 수정할 Post 객체
         Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
                 "new_title", "new_one", "new_detail",
-                List.of(BEAUTY, SNAP), List.of(SnapSubTheme.FAMILY), List.of(VINTAGE),
+                List.of(BEAUTY, SNAP), List.of(FAMILY), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", true, List.of()
         );
 
@@ -216,7 +217,7 @@ class PostPersistenceAdapterTest {
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
         assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
         assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
-        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(SnapSubTheme.FAMILY));
+        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(FAMILY));
         assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(VINTAGE));
         assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
@@ -243,7 +244,7 @@ class PostPersistenceAdapterTest {
         // 수정할 Post 객체
         Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
                 "new_title", "new_one", "new_detail",
-                List.of(BEAUTY, SNAP), List.of(SnapSubTheme.FAMILY), List.of(VINTAGE),
+                List.of(BEAUTY, SNAP), List.of(FAMILY), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", true,
                 List.of(
                         createPostImage(null, "new_file_key", 1), // 추가된 이미지
@@ -267,7 +268,7 @@ class PostPersistenceAdapterTest {
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
         assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
         assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
-        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(SnapSubTheme.FAMILY));
+        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(FAMILY));
         assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(VINTAGE));
         assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
@@ -482,7 +483,7 @@ class PostPersistenceAdapterTest {
 
     @Test
     @DisplayName("조건 없이 기본값으로 게시물 조회 - 최신순, size만큼 조회")
-    void findBySearchCond_defaultOnly_success() throws Exception {
+    void Cond_defaultOnly_success() throws Exception {
         // given
         LocalDateTime baseTime = LocalDateTime.of(2020, 10, 10, 10, 0);
         PostEntity p1 = createPostEntity("t1", baseTime.minusDays(1), baseTime.minusDays(1));
@@ -494,7 +495,7 @@ class PostPersistenceAdapterTest {
         SearchPostCond cond = new SearchPostCond(
                 List.of(), List.of(), null, null, List.of()
         );
-        String cursor = null;
+        Object cursor = null;
         String sortBy = "createdAt";
         String sortDirection = "DESC";
         int size = 2;
@@ -508,36 +509,204 @@ class PostPersistenceAdapterTest {
                 .containsExactly("t1", "t2"); // 최신순
     }
 
-//    @Test
-//    @DisplayName("themeTypes+snapSubThemes 조건으로 게시물 필터링")
-//    void findBySearchCond_themeTypesOnly_success() throws Exception {
-//        // given
-//        PostEntity snapPost = createPostEntity("snap-post", List.of(PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY));
-//        PostEntity dailyPost = createPostEntity("Beauty-post", List.of(BEAUTY), List.of());
-//        PostEntity mixedPost = createPostEntity("mixed-post", List.of(PostThemeType.SNAP, BEAUTY), List.of(SnapSubTheme.FAMILY));
-//
-//        clearPersistenceContext();
-//
-//        SearchPostCond cond = new SearchPostCond(
-//                List.of(PostThemeType.SNAP),
-//                List.of(),
-//                null,
-//                null,
-//                List.of()
-//        );
-//        String cursor = null;
-//        String sortBy = "createdAt";
-//        String sortDirection = "DESC";
-//        int size = 10;
-//
-//        // when
-//        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, cursor, sortBy, sortDirection, size);
-//
-//        // then
-//        assertThat(results).extracting(Post::getTitle)
-//                .contains("snap-post", "mixed-post")
-//                .doesNotContain("daily-post");
-//    }
+    @DisplayName("themeTypes 조건으로 필터링 - 포함 관계")
+    void findBySearchCond_themeTypes_filtering_success() {
+        // given
+        createPostEntity("SNAP only", List.of(SNAP), List.of());
+        createPostEntity("SNAP+BEAUTY", List.of(SNAP, BEAUTY), List.of());
+        createPostEntity("BEAUTY only", List.of(BEAUTY), List.of());
+
+        SearchPostCond cond = new SearchPostCond(List.of(SNAP), List.of(), null, null, List.of());
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, null, "createdAt", "DESC", 10);
+
+        // then
+        assertThat(results).extracting(Post::getTitle)
+                .contains("SNAP only", "SNAP+BEAUTY")
+                .doesNotContain("BEAUTY only");
+    }
+
+    @Test
+    @DisplayName("themeTypes+snapSubThemes 조건으로 게시물 필터링")
+    void findBySearchCond_themeTypesOnly_success() throws Exception {
+        // given
+        PostEntity snapPost = createPostEntity("snap-post", List.of(SNAP), List.of(FAMILY));
+        PostEntity dailyPost = createPostEntity("Beauty-post", List.of(BEAUTY), List.of());
+        PostEntity mixedPost = createPostEntity("mixed-post", List.of(SNAP, BEAUTY), List.of(PROFILE));
+
+        clearPersistenceContext();
+
+        SearchPostCond cond = new SearchPostCond(
+                List.of(SNAP),
+                List.of(FAMILY),
+                null,
+                null,
+                List.of()
+        );
+        Object cursor = null;
+        String sortBy = "createdAt";
+        String sortDirection = "DESC";
+        int size = 10;
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, cursor, sortBy, sortDirection, size);
+
+        // then
+        assertThat(results).extracting(Post::getTitle)
+                .contains("snap-post")
+                .doesNotContain("daily-post", "mixed-post");
+    }
+    @Test
+    @DisplayName("moodTypes 조건으로 필터링 - COZY 또는 VINTAGE 포함 시 조회됨")
+    void findBySearchCond_moodTypes_filtering_success() throws Exception {
+        // given
+        // 각각 하나의 mood만 가진 게시글
+        createPostEntity("cozy-post", List.of(), List.of(), List.of(COZY));
+        createPostEntity("vintage-post", List.of(), List.of(), List.of(PostMoodType.VINTAGE));
+
+        // 둘 다 가진 게시글
+        createPostEntity("both-post", List.of(), List.of(), List.of(COZY, PostMoodType.VINTAGE));
+
+        // 전혀 관련 없는 게시글
+        createPostEntity("irrelevant", List.of(), List.of(), List.of(INTENSE));
+
+        clearPersistenceContext();
+
+        SearchPostCond cond = new SearchPostCond(
+                List.of(), // themeTypes
+                List.of(), // snapSubThemes
+                null,
+                null,
+                List.of(COZY, PostMoodType.VINTAGE) // moodTypes
+        );
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, null, "createdAt", "DESC", 10);
+
+        // then
+        assertThat(results).extracting(Post::getTitle)
+                .contains("cozy-post", "vintage-post", "both-post")
+                .doesNotContain("irrelevant");
+    }
+    @Test
+    @DisplayName("spaceType 조건으로 필터링 - INDOOR인 게시글만 조회")
+    void findBySearchCond_spaceType_filtering_success() throws Exception {
+        // given
+        // INDOOR 공간 게시물
+        createPostEntity("indoor-1", SpaceType.INDOOR);
+        createPostEntity("indoor-2", SpaceType.INDOOR);
+
+        // OUTDOOR 공간 게시물
+        createPostEntity("outdoor-1", SpaceType.OUTDOOR);
+
+        clearPersistenceContext();
+
+        SearchPostCond cond = new SearchPostCond(
+                List.of(),            // themeTypes
+                List.of(),            // snapSubThemes
+                SpaceType.INDOOR,     // spaceType
+                null,                 // address
+                List.of()                  // moodTypes
+        );
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, null, "createdAt", "DESC", 10);
+
+        // then
+        assertThat(results).extracting(Post::getTitle)
+                .contains("indoor-1", "indoor-2")
+                .doesNotContain("outdoor-1");
+    }
+    @Test
+    @DisplayName("address 조건으로 필터링 - 정확히 일치하는 주소만 조회")
+    void findBySearchCond_address_filtering_success() throws Exception {
+        // given
+        // 주소가 일치하는 게시글
+        createPostEntity("강남-1", SpaceType.INDOOR, "서울특별시 강남구");
+        createPostEntity("강남-2", SpaceType.OUTDOOR, "서울특별시 강남구");
+
+        // 주소가 다른 게시글
+        createPostEntity("마포", SpaceType.INDOOR, "서울특별시 마포구");
+        createPostEntity("부산", SpaceType.OUTDOOR, "부산광역시 해운대구");
+
+        clearPersistenceContext();
+
+        SearchPostCond cond = new SearchPostCond(
+                List.of(),                   // themeTypes
+                List.of(),                   // snapSubThemes
+                SpaceType.INDOOR,            // spaceType
+                "서울특별시 강남구",          // address
+                List.of()                    // moodTypes
+        );
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, null, "createdAt", "DESC", 10);
+
+        // then
+        assertThat(results).extracting(Post::getTitle)
+                .contains("강남-1")
+                .doesNotContain("마포", "부산");
+    }
+    @Test
+    @DisplayName("커서 기반 페이지네이션 - cursor 이후(createdAt 이전) 게시물만 조회되고 size 제한 적용")
+    void findBySearchCond_cursorPagination_filtering_success() throws Exception {
+        // given
+        LocalDateTime baseTime = LocalDateTime.of(2025, 8, 8, 12, 0);
+        // 3개의 게시물 생성: t1 (가장 최신), t2, t3 (가장 오래됨)
+        PostEntity p1 = createPostEntity("t1", baseTime, baseTime);
+        PostEntity p2 = createPostEntity("t2", baseTime.minusMinutes(10), baseTime.minusMinutes(10));
+        PostEntity p3 = createPostEntity("t3", baseTime.minusMinutes(20), baseTime.minusMinutes(20));
+
+        clearPersistenceContext();
+
+        SearchPostCond cond = new SearchPostCond(
+                List.of(),       // themeTypes
+                List.of(),       // snapSubThemes
+                null,            // spaceType
+                null,            // address
+                List.of()        // moodTypes
+        );
+        Object cursor = baseTime.minusMinutes(5);  // t1 > cursor > t2,t3
+        String sortBy = "createdAt";
+        String sortDirection = "DESC";
+        int size = 1;
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, cursor, sortBy, sortDirection, size);
+
+        // then
+        assertThat(results).hasSize(1);
+        assertThat(results.getFirst().getTitle()).isEqualTo("t2"); // t1은 cursor보다 이후(새 것이므로) 제외됨, t2가 제일 최신
+    }
+    @Test
+    @DisplayName("복합 조건 + size 제한 - 조건 중 하나 이상 만족하고, size 수만큼만 조회됨")
+    void findBySearchCond_multipleConditions_withSizeLimit_success() throws Exception {
+        // given
+        // themeTypes: SNAP / moodTypes: COZY
+        createPostEntity("snap-post", List.of(SNAP), List.of(FAMILY), List.of());
+        createPostEntity("cozy-post", List.of(), List.of(), List.of(COZY));
+        createPostEntity("both-post", List.of(SNAP), List.of(PROFILE), List.of(COZY));
+        createPostEntity("irrelevant", List.of(PostThemeType.BEAUTY), List.of(), List.of(VINTAGE));
+
+        clearPersistenceContext();
+
+        SearchPostCond cond = new SearchPostCond(
+                List.of(SNAP),      // themeTypes
+                List.of(),                        // snapSubThemes
+                null,                             // spaceType
+                null,                             // address
+                List.of(COZY)        // moodTypes
+        );
+
+        // when
+        List<Post> results = postPersistenceAdapter.findBySearchCond(cond, null, "createdAt", "DESC", 2);
+
+        // then
+        assertThat(results).hasSize(1)
+                .extracting(Post::getTitle)
+                .containsExactlyInAnyOrder("both-post");
+    }
 
     /**
      * private 메서드
@@ -674,6 +843,57 @@ class PostPersistenceAdapterTest {
                 .postMoodTypes(List.of())
                 .spaceType(SpaceType.INDOOR)
                 .spaceAddress("서울시")
+                .isPinned(false)
+                .createdAt(LocalDateTime.now())
+                .build();
+        return postJpaRepository.save(entity);
+    }
+    private PostEntity createPostEntity(String title, List<PostThemeType> themeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes) {
+        PostEntity entity = PostEntity.builder()
+                .packageNo("package")
+                .expertNo("expert")
+                .title(title)
+                .oneLineDescription("desc")
+                .detailedDescription("detail")
+                .postThemeTypes(themeTypes)
+                .snapSubThemes(snapSubThemes)
+                .postMoodTypes(postMoodTypes)
+                .spaceType(SpaceType.INDOOR)
+                .spaceAddress("서울시")
+                .isPinned(false)
+                .createdAt(LocalDateTime.now())
+                .build();
+        return postJpaRepository.save(entity);
+    }
+    private PostEntity createPostEntity(String title, SpaceType spaceType) {
+        PostEntity entity = PostEntity.builder()
+                .packageNo("package")
+                .expertNo("expert")
+                .title(title)
+                .oneLineDescription("desc")
+                .detailedDescription("detail")
+                .postThemeTypes(List.of())
+                .snapSubThemes(List.of())
+                .postMoodTypes(List.of())
+                .spaceType(spaceType)
+                .spaceAddress("서울시")
+                .isPinned(false)
+                .createdAt(LocalDateTime.now())
+                .build();
+        return postJpaRepository.save(entity);
+    }
+    private PostEntity createPostEntity(String title, SpaceType spaceType, String spaceAddress) {
+        PostEntity entity = PostEntity.builder()
+                .packageNo("package")
+                .expertNo("expert")
+                .title(title)
+                .oneLineDescription("desc")
+                .detailedDescription("detail")
+                .postThemeTypes(List.of())
+                .snapSubThemes(List.of())
+                .postMoodTypes(List.of())
+                .spaceType(spaceType)
+                .spaceAddress(spaceAddress)
                 .isPinned(false)
                 .createdAt(LocalDateTime.now())
                 .build();
