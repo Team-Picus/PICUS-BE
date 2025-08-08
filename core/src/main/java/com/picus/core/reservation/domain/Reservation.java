@@ -29,7 +29,7 @@ public class Reservation {
     private String userNo;
     private String expertNo;
 
-    public boolean isOwnerOf(String expertNo) {
+    public boolean isExpert(String expertNo) {
         return this.expertNo.equals(expertNo);
     }
 
@@ -39,5 +39,9 @@ public class Reservation {
 
     public void updateStatus(ReservationStatus reservationStatus) {
         this.reservationStatus = reservationStatus;
+    }
+
+    public boolean isClient(String userNo) {
+        return this.userNo.equals(userNo);
     }
 }

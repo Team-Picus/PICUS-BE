@@ -35,7 +35,7 @@ public class DecideReservationRequestService implements DecideReservationRequest
     private void validateReservation(String expertNo, String reservationNo) {
         Reservation reservation = reservationReadPort.findById(reservationNo);
 
-        if(!reservation.isOwnerOf(expertNo))
+        if(!reservation.isExpert(expertNo))
             throw new RestApiException(RESERVATION_OWNER_MISMATCH);
         if(!reservation.isPending())
             throw new RestApiException(ALREADY_DECIDE_RESERVATION);
