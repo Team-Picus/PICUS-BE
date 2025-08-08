@@ -1,11 +1,12 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
 import com.picus.core.post.adapter.in.web.mapper.UpdatePostWebMapper;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,8 @@ public class UpdatePostController {
 
     @PatchMapping("/{post_no}")
     public BaseResponse<Void> updatePost(
-            @RequestBody UpdatePostWebReq webReq, @PathVariable("post_no") String postNo, @CurrentUser String userNo) {
-        UpdatePostCommand appReq = updatePostWebMapper.toAppReq(webReq, postNo, userNo);
+            @RequestBody @Valid UpdatePostRequest webReq, @PathVariable("post_no") String postNo, @CurrentUser String userNo) {
+        UpdatePostCommand appReq = updatePostWebMapper.toCommand(webReq, postNo, userNo);
         updatePostUseCase.update(appReq);
         return BaseResponse.onSuccess();
     }

@@ -1,10 +1,10 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.post.adapter.in.web.data.response.LoadGalleryWebResp;
+import com.picus.core.post.adapter.in.web.data.response.LoadGalleryResponse;
 import com.picus.core.post.adapter.in.web.mapper.LoadGalleryWebMapper;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
@@ -43,13 +44,20 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
 
         LoadGalleryResult appResp = mock(LoadGalleryResult.class);
         given(loadGalleryUseCase.load(expertNo)).willReturn(Optional.of(appResp));
-        LoadGalleryWebResp webResp = LoadGalleryWebResp.builder()
+        LoadGalleryResponse webResp = LoadGalleryResponse.builder()
                 .postNo("")
-                .thumbnailUrl("")
+                .images(List.of(
+                        LoadGalleryResponse.PostImageResponse.builder()
+                                .imageNo("")
+                                .fileKey("")
+                                .imageUrl("")
+                                .imageOrder(0)
+                                .build()
+                ))
                 .title("")
                 .oneLineDescription("")
                 .build();
-        given(webMapper.toWebResp(appResp)).willReturn(webResp);
+        given(webMapper.toResponse(appResp)).willReturn(webResp);
 
         // when
         mockMvc.perform(
@@ -64,11 +72,14 @@ class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
                 .andExpect(jsonPath("$.result.postNo").exists())
                 .andExpect(jsonPath("$.result.title").exists())
                 .andExpect(jsonPath("$.result.oneLineDescription").exists())
-                .andExpect(jsonPath("$.result.thumbnailUrl").exists());
+                .andExpect(jsonPath("$.result.images").isArray())
+                .andExpect(jsonPath("$.result.images[0].imageNo").exists())
+                .andExpect(jsonPath("$.result.images[0].fileKey").exists())
+                .andExpect(jsonPath("$.result.images[0].imageUrl").exists())
+                .andExpect(jsonPath("$.result.images[0].imageOrder").exists());
         // then
-
         then(loadGalleryUseCase).should().load(expertNo);
-        then(webMapper).should().toWebResp(appResp);
+        then(webMapper).should().toResponse(appResp);
     }
 
     @Test

@@ -4,14 +4,15 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq;
-import com.picus.core.post.adapter.in.web.data.request.CreatePostWebReq.PostImageWebReq;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest.PostImageWebReq;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -77,15 +78,15 @@ public class CreatePostIntegrationTest {
         commitTestTransaction();
 
         // 입력값 셋팅
-        CreatePostWebReq webReq = createWebReq(
+        CreatePostRequest webReq = createWebReq(
                 List.of(
-                        CreatePostWebReq.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
-                        CreatePostWebReq.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()
+                        CreatePostRequest.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
+                        CreatePostRequest.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()
                 ),
                 "테스트 제목",
                 "한 줄 설명",
                 "자세한 설명",
-                List.of(PostThemeType.BEAUTY),
+                List.of(PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY),
                 List.of(PostMoodType.COZY),
                 SpaceType.INDOOR,
                 "서울시 강남구",
@@ -93,7 +94,7 @@ public class CreatePostIntegrationTest {
         );
 
         // 요청 셋팅
-        HttpEntity<CreatePostWebReq> httpEntity = settingWebRequest(userEntity, webReq);
+        HttpEntity<CreatePostRequest> httpEntity = settingWebRequest(userEntity, webReq);
 
         // when - API 요청
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -112,7 +113,7 @@ public class CreatePostIntegrationTest {
         assertThat(postEntities).hasSize(1)
                 .extracting(
                         "packageNo", "title", "oneLineDescription", "detailedDescription",
-                        "postThemeTypes", "postMoodTypes", "spaceType", "spaceAddress", "isPinned"
+                        "postThemeTypes", "snapSubThemes", "postMoodTypes", "spaceType", "spaceAddress", "isPinned"
                 )
                 .containsExactly(
                         tuple(
@@ -120,7 +121,8 @@ public class CreatePostIntegrationTest {
                                 "테스트 제목",
                                 "한 줄 설명",
                                 "자세한 설명",
-                                List.of(PostThemeType.BEAUTY),
+                                List.of(PostThemeType.SNAP),
+                                List.of(SnapSubTheme.FAMILY),
                                 List.of(PostMoodType.COZY),
                                 SpaceType.INDOOR,
                                 "서울시 강남구",
@@ -174,23 +176,24 @@ public class CreatePostIntegrationTest {
         return expertJpaRepository.save(expertEntity);
     }
 
-    private CreatePostWebReq createWebReq(
+    private CreatePostRequest createWebReq(
             List<PostImageWebReq> postImages,
             String title,
             String oneLineDescription,
             String detailedDescription,
-            List<PostThemeType> postThemeTypes,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
             List<PostMoodType> postMoodTypes,
             SpaceType spaceType,
             String spaceAddress,
             String packageNo
     ) {
-        return CreatePostWebReq.builder()
+        return CreatePostRequest.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)

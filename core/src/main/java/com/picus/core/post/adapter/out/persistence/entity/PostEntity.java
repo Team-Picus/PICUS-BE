@@ -2,10 +2,14 @@ package com.picus.core.post.adapter.out.persistence.entity;
 
 import com.picus.core.post.adapter.out.persistence.converter.PostMoodTypeConverter;
 import com.picus.core.post.adapter.out.persistence.converter.PostThemeTypeConverter;
+import com.picus.core.post.adapter.out.persistence.converter.SnapSubThemeConverter;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.common.BaseEntity;
+import com.querydsl.core.annotations.PropertyType;
+import com.querydsl.core.annotations.QueryType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,11 +45,20 @@ public class PostEntity extends BaseEntity {
 
     private String detailedDescription;
 
+    @Column(nullable = false)
     @Convert(converter = PostThemeTypeConverter.class)
+    @QueryType(PropertyType.STRING)
     @Builder.Default
     private List<PostThemeType> postThemeTypes = new ArrayList<>();
 
+    @Convert(converter = SnapSubThemeConverter.class)
+    @QueryType(PropertyType.STRING)
+    @Builder.Default
+    private List<SnapSubTheme> snapSubThemes = new ArrayList<>();
+
+    @Column(nullable = false)
     @Convert(converter = PostMoodTypeConverter.class)
+    @QueryType(PropertyType.STRING)
     @Builder.Default
     private List<PostMoodType> postMoodTypes = new ArrayList<>();
 
@@ -60,18 +73,33 @@ public class PostEntity extends BaseEntity {
 
     public void updatePostEntity(
             String packageNo, String title, String oneLineDescription, String detailedDescription,
-            List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, Boolean isPinned
     ) {
         this.title = title;
         this.oneLineDescription = oneLineDescription;
         this.detailedDescription = detailedDescription;
         this.postThemeTypes = postThemeTypes;
+        this.snapSubThemes = snapSubThemes;
         this.postMoodTypes = postMoodTypes;
         this.spaceType = spaceType;
         this.spaceAddress = spaceAddress;
         this.packageNo = packageNo;
         this.isPinned = isPinned;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void validateSnapSubThemes() {
+        boolean containsSnap = postThemeTypes.contains(PostThemeType.SNAP);
+
+        if (containsSnap && (snapSubThemes == null || snapSubThemes.isEmpty())) {
+            throw new IllegalStateException("SNAP 테마일 경우 snapSubThemes를 반드시 입력해야 합니다.");
+        }
+
+        if (!containsSnap && snapSubThemes != null && !snapSubThemes.isEmpty()) {
+            throw new IllegalStateException("SNAP이 아닌데 snapSubThemes가 들어있을 수 없습니다.");
+        }
     }
 
 }

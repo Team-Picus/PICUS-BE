@@ -1,14 +1,15 @@
 package com.picus.core.price.domain;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-@Builder
 @Getter
 @EqualsAndHashCode
 public class Price {
@@ -18,13 +19,31 @@ public class Price {
     private String expertNo;
 
     private PriceThemeType priceThemeType;
+    private SnapSubTheme snapSubTheme;
     private List<PriceReferenceImage> priceReferenceImages;
     private List<Package> packages;
     private List<Option> options;
 
-    public void changePriceTheme(String priceThemeType) {
-        if (priceThemeType != null)
-            this.priceThemeType = PriceThemeType.valueOf(priceThemeType);
+    @Builder
+    public Price(String priceNo, String expertNo, PriceThemeType priceThemeType, SnapSubTheme snapSubTheme,
+                 List<PriceReferenceImage> priceReferenceImages, List<Package> packages, List<Option> options) {
+        this.priceNo = priceNo;
+        this.expertNo = expertNo;
+        this.priceThemeType = priceThemeType;
+        this.snapSubTheme = snapSubTheme;
+        this.priceReferenceImages = priceReferenceImages == null ? Collections.emptyList() : priceReferenceImages;
+        this.packages = packages == null ? Collections.emptyList() : packages;
+        this.options = options == null ? Collections.emptyList() : options;
+
+        validateSnapSubTheme(); // Theme 유효성 검증
+    }
+
+    public void changePriceTheme(PriceThemeType priceThemeType, SnapSubTheme snapSubTheme) {
+        if (priceThemeType != null) {
+            this.priceThemeType = priceThemeType;
+            this.snapSubTheme = snapSubTheme;
+            validateSnapSubTheme(); // Theme 유효성 검증
+        }
     }
 
     public void addReferenceImage(PriceReferenceImage newImage) {
@@ -118,8 +137,8 @@ public class Price {
             for (Option opt : this.options) {
                 if (changedOption.getOptionNo().equals(opt.getOptionNo())) {
                     // Option 엔티티 쪽에 정의된 updateOption(...) 호출
-                    opt.updateOption(changedOption.getName(), changedOption.getCount(),
-                            changedOption.getPrice(), changedOption.getContents());
+                    opt.updateOption(changedOption.getName(), changedOption.getUnitSize(),
+                            changedOption.getPricePerUnit(), changedOption.getContents());
                     break;
                 }
             }
@@ -135,6 +154,19 @@ public class Price {
             this.options.removeIf(opt ->
                     optionNo.equals(opt.getOptionNo())
             );
+        }
+    }
+
+    private void validateSnapSubTheme() {
+        boolean isSnap = PriceThemeType.SNAP.equals(this.priceThemeType);
+        boolean hasSubThemes = this.snapSubTheme != null;
+
+        if (isSnap && !hasSubThemes) {
+            throw new IllegalStateException("SNAP 테마로 설정되어 있으나 세부 테마(snapSubTheme)가 비어 있습니다.");
+        }
+
+        if (!isSnap && hasSubThemes) {
+            throw new IllegalStateException("SNAP 테마가 아닌데 세부 테마(snapSubTheme)가 존재합니다.");
         }
     }
 }

@@ -11,8 +11,7 @@ import java.util.List;
 public class PostPersistenceMapper {
 
     public Post toDomain(PostEntity postEntity, List<PostImage> postImages) {
-        return Post
-                .builder()
+        return Post.builder()
                 .postNo(postEntity.getPostNo())
                 .authorNo(postEntity.getExpertNo())
                 .packageNo(postEntity.getPackageNo())
@@ -20,6 +19,7 @@ public class PostPersistenceMapper {
                 .oneLineDescription(postEntity.getOneLineDescription())
                 .detailedDescription(postEntity.getDetailedDescription())
                 .postThemeTypes(postEntity.getPostThemeTypes())
+                .snapSubThemes(postEntity.getSnapSubThemes())
                 .postMoodTypes(postEntity.getPostMoodTypes())
                 .spaceType(postEntity.getSpaceType())
                 .spaceAddress(postEntity.getSpaceAddress())
@@ -39,6 +39,7 @@ public class PostPersistenceMapper {
                 .oneLineDescription(post.getOneLineDescription())
                 .detailedDescription(post.getDetailedDescription())
                 .postThemeTypes(post.getPostThemeTypes())
+                .snapSubThemes(post.getSnapSubThemes())
                 .postMoodTypes(post.getPostMoodTypes())
                 .spaceType(post.getSpaceType())
                 .spaceAddress(post.getSpaceAddress())

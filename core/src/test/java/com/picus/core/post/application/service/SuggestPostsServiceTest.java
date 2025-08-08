@@ -1,7 +1,6 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.post.application.port.in.mapper.SuggestPostsAppMapper;
-import com.picus.core.post.application.port.in.response.SuggestPostsResult;
+import com.picus.core.post.application.port.in.result.SuggestPostResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +20,11 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class SuggestPostsServiceTest {
 
-    @Mock private PostReadPort postReadPort;
-    @Mock private SuggestPostsAppMapper appMapper;
+    @Mock
+    private PostReadPort postReadPort;
 
-    @InjectMocks SuggestPostsService suggestPostsService;
+    @InjectMocks
+    SuggestPostService suggestPostsService;
 
     @Test
     @DisplayName("게시물 검색어 추천")
@@ -33,20 +33,21 @@ class SuggestPostsServiceTest {
         String keyword = "k";
         int size = 5;
 
-        Post post = mock(Post.class);
+        Post post = Post.builder()
+                .postNo("post-123")
+                .title("title")
+                .build();
         given(postReadPort.findTopNByTitleContainingOrderByTitle(keyword, size))
                 .willReturn(List.of(post));
 
-        SuggestPostsResult appResp = mock(SuggestPostsResult.class);
-       given(appMapper.toAppResp(post)).willReturn(appResp);
-
         // when
-        List<SuggestPostsResult> results = suggestPostsService.suggest(keyword, size);
+        List<SuggestPostResult> results = suggestPostsService.suggest(keyword, size);
 
         // then
-        assertThat(results).hasSize(1);
+        assertThat(results).hasSize(1)
+                .extracting(SuggestPostResult::postNo, SuggestPostResult::title)
+                .containsExactly(tuple("post-123", "title"));
         then(postReadPort).should().findTopNByTitleContainingOrderByTitle(keyword, size);
-        then(appMapper).should().toAppResp(post);
     }
 
 

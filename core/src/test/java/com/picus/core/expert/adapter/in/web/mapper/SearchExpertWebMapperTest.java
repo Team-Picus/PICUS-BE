@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
-import com.picus.core.expert.application.port.in.response.SearchExpertResult;
+import com.picus.core.expert.adapter.in.web.data.response.SearchExpertResponse;
+import com.picus.core.expert.application.port.in.result.SearchExpertResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ class SearchExpertWebMapperTest {
 
     @Test
     @DisplayName("SearchExpertAppResponse를 SearchExpertWebResponse로 변환한다")
-    void toWebResponse_shouldMapCorrectly() {
+    void toResponse_shouldMapCorrectly() {
         // given
         SearchExpertResult appResponse = SearchExpertResult.builder()
                 .expertNo("ex-001")
@@ -23,7 +23,7 @@ class SearchExpertWebMapperTest {
                 .build();
 
         // when
-        SearchExpertWebResponse webResponse = mapper.toWebResponse(appResponse);
+        SearchExpertResponse webResponse = mapper.toResponse(appResponse);
 
         // then
         assertThat(webResponse.expertNo()).isEqualTo("ex-001");

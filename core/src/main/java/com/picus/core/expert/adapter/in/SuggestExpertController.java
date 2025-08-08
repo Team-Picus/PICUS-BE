@@ -1,9 +1,9 @@
 package com.picus.core.expert.adapter.in;
 
-import com.picus.core.expert.adapter.in.web.data.response.SuggestExpertWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.SuggestExpertResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SuggestExpertWebMapper;
 import com.picus.core.expert.application.port.in.SuggestExpertsUseCase;
-import com.picus.core.expert.application.port.in.response.SuggestExpertResult;
+import com.picus.core.expert.application.port.in.result.SuggestExpertResult;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +25,13 @@ public class SuggestExpertController {
      * 전문가 검색어 추천 API
      */
     @GetMapping("/search/suggestions")
-    public BaseResponse<List<SuggestExpertWebResponse>> searchExpert(
+    public BaseResponse<List<SuggestExpertResponse>> searchExpert(
             @RequestParam String keyword, @RequestParam(required = false, defaultValue = "3") int size) {
         List<SuggestExpertResult> suggestExpertAppResponse = suggestExpertsUseCase.suggestExperts(keyword, size);
 
         return BaseResponse.onSuccess(
                 suggestExpertAppResponse.stream()
-                        .map(suggestExpertWebMapper::toWebResponse)
+                        .map(suggestExpertWebMapper::toResponse)
                         .toList()
         );
     }

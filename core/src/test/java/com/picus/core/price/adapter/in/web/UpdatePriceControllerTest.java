@@ -6,8 +6,9 @@ import com.picus.core.price.adapter.in.UpdatePriceController;
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.adapter.in.web.mapper.UpdatePriceWebMapper;
 import com.picus.core.price.application.port.in.UpdatePriceUseCase;
-import com.picus.core.price.application.port.in.request.UpdatePriceListCommand;
-import com.picus.core.price.application.port.in.request.ChangeStatus;
+import com.picus.core.price.application.port.in.command.UpdatePriceListCommand;
+import com.picus.core.price.application.port.in.command.ChangeStatus;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -45,23 +46,23 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("가격정보 변경 Controller는 입력을 받아 매핑 후 Usecase에 값을 넘겨준다.")
     public void applyPriceChanges_success() throws Exception {
         // given
-        UpdatePriceReferenceImageWebReq imageWebRequest =
+        UpdatePriceReferenceImageRequest imageWebRequest =
                 createPriceRefImageWebRequest("img-001",
                         "file-key-001", 1, ChangeStatus.NEW);
 
-        UpdatePackageWebReq updatePackageWebReq =
+        UpdatePackageRequest updatePackageRequest =
                 createPackageWebRequest("pkg-001", "패키지A", 10000,
                         List.of("내용1", "내용2"), "주의사항", ChangeStatus.NEW);
 
-        UpdateOptionWebReq updateOptionWebReq =
+        UpdateOptionRequest updateOptionRequest =
                 createOptionWebRequest("opt-001", "옵션A", 2,
                         3000, List.of("옵션내용"), ChangeStatus.NEW);
 
-        UpdatePriceWebReq updatePriceWebRequest =
-                createPriceWebRequest("price-001", "THEME", ChangeStatus.NEW,
-                        imageWebRequest, updatePackageWebReq, updateOptionWebReq);
+        UpdatePriceRequest updatePriceWebRequest =
+                createPriceWebRequest("price-001", PriceThemeType.FASHION, ChangeStatus.NEW,
+                        imageWebRequest, updatePackageRequest, updateOptionRequest);
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
         given(webMapper.toCommand(webRequest))
                 .willReturn(Mockito.mock(UpdatePriceListCommand.class));
@@ -101,10 +102,33 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
     public void applyPriceChanges_PriceWebRequest_change_status_null() throws Exception {
         // given
 
-        UpdatePriceWebReq updatePriceWebRequest =
-                createPriceWebRequest("price-001", "THEME", null);
+        UpdatePriceRequest updatePriceWebRequest =
+                createPriceWebRequest("price-001", PriceThemeType.FASHION, null);
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
+
+        given(webMapper.toCommand(webRequest))
+                .willReturn(Mockito.mock(UpdatePriceListCommand.class));
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/experts/prices")
+                                .content(objectMapper.writeValueAsString(webRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("가격정보 변경 Controller 입력값 PriceWebRequest의 priceThemeType이 빠지면 에러가 발생한다.")
+    public void applyPriceChanges_PriceWebRequest_priceThemeType_null() throws Exception {
+        // given
+
+        UpdatePriceRequest updatePriceWebRequest =
+                createPriceWebRequest("price-001", null, ChangeStatus.UPDATE);
+
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
         given(webMapper.toCommand(webRequest))
                 .willReturn(Mockito.mock(UpdatePriceListCommand.class));
@@ -124,23 +148,23 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
             " ChangeStatus가 빠지면 에러가 발생한다.")
     public void applyPriceChanges_PriceReferenceImageWebRequest_change_status_null() throws Exception {
         // given
-        UpdatePriceReferenceImageWebReq imageWebRequest =
+        UpdatePriceReferenceImageRequest imageWebRequest =
                 createPriceRefImageWebRequest("img-001",
                         "file-key-001", 1, null);
 
-        UpdatePackageWebReq updatePackageWebReq =
+        UpdatePackageRequest updatePackageRequest =
                 createPackageWebRequest("pkg-001", "패키지A", 10000,
                         List.of("내용1", "내용2"), "주의사항", ChangeStatus.NEW);
 
-        UpdateOptionWebReq updateOptionWebReq =
+        UpdateOptionRequest updateOptionRequest =
                 createOptionWebRequest("opt-001", "옵션A", 2,
                         3000, List.of("옵션내용"), ChangeStatus.NEW);
 
-        UpdatePriceWebReq updatePriceWebRequest =
-                createPriceWebRequest("price-001", "THEME", ChangeStatus.NEW,
-                        imageWebRequest, updatePackageWebReq, updateOptionWebReq);
+        UpdatePriceRequest updatePriceWebRequest =
+                createPriceWebRequest("price-001", PriceThemeType.FASHION, ChangeStatus.NEW,
+                        imageWebRequest, updatePackageRequest, updateOptionRequest);
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
         given(webMapper.toCommand(webRequest))
                 .willReturn(Mockito.mock(UpdatePriceListCommand.class));
@@ -156,9 +180,9 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
     }
 
 
-    private UpdatePriceReferenceImageWebReq createPriceRefImageWebRequest(String priceRefImageNo, String fileKey,
-                                                                          int imageOrder, ChangeStatus changeStatus) {
-        return UpdatePriceReferenceImageWebReq.builder()
+    private UpdatePriceReferenceImageRequest createPriceRefImageWebRequest(String priceRefImageNo, String fileKey,
+                                                                           int imageOrder, ChangeStatus changeStatus) {
+        return UpdatePriceReferenceImageRequest.builder()
                 .priceRefImageNo(priceRefImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)
@@ -166,9 +190,9 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                 .build();
     }
 
-    private UpdatePackageWebReq createPackageWebRequest(String packageNo, String name, int price, List<String> contents,
-                                                        String notice, ChangeStatus changeStatus) {
-        return UpdatePackageWebReq.builder()
+    private UpdatePackageRequest createPackageWebRequest(String packageNo, String name, int price, List<String> contents,
+                                                         String notice, ChangeStatus changeStatus) {
+        return UpdatePackageRequest.builder()
                 .packageNo(packageNo)
                 .name(name)
                 .price(price)
@@ -178,9 +202,9 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                 .build();
     }
 
-    private UpdateOptionWebReq createOptionWebRequest(String optionNo, String name, int count, int price,
-                                                      List<String> contents, ChangeStatus changeStatus) {
-        UpdateOptionWebReq updateOptionWebReq = UpdateOptionWebReq.builder()
+    private UpdateOptionRequest createOptionWebRequest(String optionNo, String name, int count, int price,
+                                                       List<String> contents, ChangeStatus changeStatus) {
+        UpdateOptionRequest updateOptionRequest = UpdateOptionRequest.builder()
                 .optionNo(optionNo)
                 .name(name)
                 .count(count)
@@ -188,26 +212,26 @@ class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
                 .contents(contents)
                 .status(changeStatus)
                 .build();
-        return updateOptionWebReq;
+        return updateOptionRequest;
     }
 
-    private UpdatePriceWebReq createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus,
-                                                    UpdatePriceReferenceImageWebReq imageWebRequest,
-                                                    UpdatePackageWebReq updatePackageWebReq, UpdateOptionWebReq updateOptionWebReq) {
-        return UpdatePriceWebReq.builder()
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, PriceThemeType priceThemeType, ChangeStatus changeStatus,
+                                                     UpdatePriceReferenceImageRequest imageWebRequest,
+                                                     UpdatePackageRequest updatePackageRequest, UpdateOptionRequest updateOptionRequest) {
+        return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
-                .priceThemeType(theme)
+                .priceThemeType(priceThemeType)
                 .priceReferenceImages(List.of(imageWebRequest))
-                .packages(List.of(updatePackageWebReq))
-                .options(List.of(updateOptionWebReq))
+                .packages(List.of(updatePackageRequest))
+                .options(List.of(updateOptionRequest))
                 .status(changeStatus)
                 .build();
     }
 
-    private UpdatePriceWebReq createPriceWebRequest(String priceNo, String theme, ChangeStatus changeStatus) {
-        return UpdatePriceWebReq.builder()
+    private UpdatePriceRequest createPriceWebRequest(String priceNo, PriceThemeType priceThemeType, ChangeStatus changeStatus) {
+        return UpdatePriceRequest.builder()
                 .priceNo(priceNo)
-                .priceThemeType(theme)
+                .priceThemeType(priceThemeType)
                 .status(changeStatus)
                 .build();
     }

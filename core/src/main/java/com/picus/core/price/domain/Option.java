@@ -13,17 +13,17 @@ public class Option {
     private String optionNo;
 
     private String name;
-    private Integer count;
-    private Integer price;
+    private Integer unitSize;
+    private Integer pricePerUnit;
     private List<String> contents;
 
-    public void updateOption(String name, Integer count, Integer price, List<String> contents) {
+    public void updateOption(String name, Integer unitSize, Integer pricePerUnit, List<String> contents) {
         if(name != null)
             this.name = name;
-        if(count != null)
-            this.count = count;
-        if(price != null)
-            this.price = price;
+        if(unitSize != null)
+            this.unitSize = unitSize;
+        if(pricePerUnit != null)
+            this.pricePerUnit = pricePerUnit;
         if(contents != null)
             this.contents = contents;
     }

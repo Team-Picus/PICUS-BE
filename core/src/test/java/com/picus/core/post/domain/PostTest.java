@@ -2,6 +2,7 @@ package com.picus.core.post.domain;
 
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
 class PostTest {
@@ -21,7 +23,8 @@ class PostTest {
                 .title("Old Title")
                 .oneLineDescription("Old One Line")
                 .detailedDescription("Old Description")
-                .postThemeTypes(List.of(PostThemeType.BEAUTY))
+                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.SNAP))
+                .snapSubThemes(List.of(SnapSubTheme.ADMISSION))
                 .postMoodTypes(List.of(PostMoodType.COZY))
                 .spaceType(SpaceType.INDOOR)
                 .spaceAddress("Old Address")
@@ -32,10 +35,11 @@ class PostTest {
         String newOneLine = "New One Line";
         String newDetail = "New Detailed Description";
         List<PostThemeType> newThemes = List.of(PostThemeType.EVENT, PostThemeType.BEAUTY);
+        List<SnapSubTheme> newSubThemes = List.of();
         List<PostMoodType> newMoods = List.of(PostMoodType.COZY, PostMoodType.MODERN);
         SpaceType newSpaceType = SpaceType.OUTDOOR;
         String newAddress = "New Address";
-        String newPackageNo = null; // null 허용
+        String newPackageNo = "PKG002";
 
         // when
         originalPost.updatePost(
@@ -43,6 +47,7 @@ class PostTest {
                 newOneLine,
                 newDetail,
                 newThemes,
+                newSubThemes,
                 newMoods,
                 newSpaceType,
                 newAddress,
@@ -54,10 +59,11 @@ class PostTest {
         assertThat(originalPost.getOneLineDescription()).isEqualTo(newOneLine);
         assertThat(originalPost.getDetailedDescription()).isEqualTo(newDetail);
         assertThat(originalPost.getPostThemeTypes()).containsExactlyElementsOf(newThemes);
+        assertThat(originalPost.getSnapSubThemes()).containsExactlyElementsOf(newSubThemes);
         assertThat(originalPost.getPostMoodTypes()).containsExactlyElementsOf(newMoods);
         assertThat(originalPost.getSpaceType()).isEqualTo(newSpaceType);
         assertThat(originalPost.getSpaceAddress()).isEqualTo(newAddress);
-        assertThat(originalPost.getPackageNo()).isNull(); // null로 잘 변경되었는지 확인
+        assertThat(originalPost.getPackageNo()).isEqualTo(newPackageNo);
     }
 
     @Test
@@ -84,10 +90,11 @@ class PostTest {
                 null,
                 null,
                 null,
-                "UPDATED-PACKAGE" // packageNo는 null 가능하므로 변경 허용
+                null,
+                null
         );
 
-        // then - 나머지는 유지, packageNo만 변경
+        // then
         assertThat(originalPost.getTitle()).isEqualTo("Original Title");
         assertThat(originalPost.getOneLineDescription()).isEqualTo("Original One Line");
         assertThat(originalPost.getDetailedDescription()).isEqualTo("Original Detail");
@@ -95,7 +102,89 @@ class PostTest {
         assertThat(originalPost.getPostMoodTypes()).containsExactly(PostMoodType.COZY);
         assertThat(originalPost.getSpaceType()).isEqualTo(SpaceType.INDOOR);
         assertThat(originalPost.getSpaceAddress()).isEqualTo("Original Address");
-        assertThat(originalPost.getPackageNo()).isEqualTo("UPDATED-PACKAGE");
+        assertThat(originalPost.getPackageNo()).isEqualTo("PKG001");
+    }
+
+    @Test
+    @DisplayName("Post를 수정할 때 SNAP 테마가 설정되어 있으나 세부 테마(snapSubThemes)가 비어 있으면 오류 발생.")
+    public void updatePost_ifSNAP_Exist_And_SnapSubThemeEmpty_Error() throws Exception {
+        // given
+        Post originalPost = Post.builder()
+                .title("Old Title")
+                .oneLineDescription("Old One Line")
+                .detailedDescription("Old Description")
+                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.SNAP))
+                .snapSubThemes(List.of(SnapSubTheme.ADMISSION))
+                .postMoodTypes(List.of(PostMoodType.COZY))
+                .spaceType(SpaceType.INDOOR)
+                .spaceAddress("Old Address")
+                .packageNo("PKG001")
+                .build();
+
+        String newTitle = "New Title";
+        String newOneLine = "New One Line";
+        String newDetail = "New Detailed Description";
+        List<PostThemeType> newThemes = List.of(PostThemeType.EVENT, PostThemeType.SNAP);
+        List<SnapSubTheme> newSubThemes = List.of(); // SNAP 테마가 있지만 세부테마가 비어있음
+        List<PostMoodType> newMoods = List.of(PostMoodType.COZY, PostMoodType.MODERN);
+        SpaceType newSpaceType = SpaceType.OUTDOOR;
+        String newAddress = "New Address";
+        String newPackageNo = "PKG002";
+
+        // when // then
+        assertThatThrownBy(() -> originalPost.updatePost(
+                newTitle,
+                newOneLine,
+                newDetail,
+                newThemes,
+                newSubThemes,
+                newMoods,
+                newSpaceType,
+                newAddress,
+                newPackageNo
+        )).isInstanceOf(IllegalStateException.class)
+                .hasMessage("SNAP 테마가 설정되어 있으나 세부 테마(snapSubThemes)가 비어 있습니다.");
+    }
+
+    @Test
+    @DisplayName("Post를 수정할 때 SNAP 테마가 없는데 세부 테마(snapSubThemes)가 존재하면 오류 발생.")
+    public void updatePost_ifSNAP_NotExist_And_SnapSubThemeExist_Error() throws Exception {
+        // given
+        Post originalPost = Post.builder()
+                .title("Old Title")
+                .oneLineDescription("Old One Line")
+                .detailedDescription("Old Description")
+                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.SNAP))
+                .snapSubThemes(List.of(SnapSubTheme.ADMISSION))
+                .postMoodTypes(List.of(PostMoodType.COZY))
+                .spaceType(SpaceType.INDOOR)
+                .spaceAddress("Old Address")
+                .packageNo("PKG001")
+                .build();
+
+        String newTitle = "New Title";
+        String newOneLine = "New One Line";
+        String newDetail = "New Detailed Description";
+        List<PostThemeType> newThemes = List.of(PostThemeType.EVENT, PostThemeType.BEAUTY);
+        List<SnapSubTheme> newSubThemes = List.of(SnapSubTheme.ADMISSION); // SNAP 테마가 없지만 세부테마가 있음
+        List<PostMoodType> newMoods = List.of(PostMoodType.COZY, PostMoodType.MODERN);
+        SpaceType newSpaceType = SpaceType.OUTDOOR;
+        String newAddress = "New Address";
+        String newPackageNo = "PKG002";
+
+        // when // then
+        assertThatThrownBy(() -> originalPost.updatePost(
+                newTitle,
+                newOneLine,
+                newDetail,
+                newThemes,
+                newSubThemes,
+                newMoods,
+                newSpaceType,
+                newAddress,
+                newPackageNo
+        )).isInstanceOf(IllegalStateException.class)
+                .hasMessage("SNAP 테마가 없는데 세부 테마(snapSubThemes)가 존재합니다.");
     }
 
     @Test
@@ -220,6 +309,7 @@ class PostTest {
         // then
         assertThat(post.getIsPinned()).isTrue();
     }
+
     @Test
     @DisplayName("Post를 고정해제한다.")
     public void unpin() throws Exception {

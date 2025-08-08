@@ -26,7 +26,7 @@ class PostEntityTest {
         postEntity.updatePostEntity(
                 "package-999", "새 제목", "새 설명",
                 "새 상세 설명",
-                List.of(PostThemeType.EVENT), List.of(PostMoodType.INTENSE),
+                List.of(PostThemeType.EVENT), List.of(), List.of(PostMoodType.INTENSE),
                 SpaceType.OUTDOOR, "부산시 해운대구", true
         );
 

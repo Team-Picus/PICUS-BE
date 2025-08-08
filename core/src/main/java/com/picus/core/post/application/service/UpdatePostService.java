@@ -4,7 +4,8 @@ import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.application.port.in.command.ChangeStatus;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
@@ -19,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.picus.core.post.application.port.in.request.UpdatePostCommand.*;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.DELETE;
+import static com.picus.core.post.application.port.in.command.UpdatePostCommand.*;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
 @UseCase
@@ -83,34 +85,34 @@ public class UpdatePostService implements UpdatePostUseCase {
             throw new RestApiException(_FORBIDDEN);
     }
 
-    private void checkPostImageOrder(List<UpdatePostImageAppReq> updatePostImageAppReqs) {
+    private void checkPostImageOrder(List<UpdatePostImageCommand> updatePostImageCommands) {
         Set<Integer> imageOrderSet = new HashSet<>();
-        for (UpdatePostImageAppReq imageAppReq : updatePostImageAppReqs) {
-            if (!imageOrderSet.add(imageAppReq.imageOrder())) {
+        for (UpdatePostImageCommand command : updatePostImageCommands) {
+            if (!command.changeStatus().equals(DELETE) && !imageOrderSet.add(command.imageOrder())) {
                 throw new RestApiException(_BAD_REQUEST);
             }
         }
     }
 
-    private void updatePostImage(Post post, List<UpdatePostImageAppReq> imageAppReqs, List<String> deletedPostImageNos) {
-        for (UpdatePostImageAppReq imageAppReq : imageAppReqs) {
-            switch (imageAppReq.changeStatus()) {
+    private void updatePostImage(Post post, List<UpdatePostImageCommand> imageCommands, List<String> deletedPostImageNos) {
+        for (UpdatePostImageCommand imageCommand : imageCommands) {
+            switch (imageCommand.changeStatus()) {
                 case NEW:
                     post.addPostImage(PostImage.builder()
-                            .fileKey(imageAppReq.fileKey())
-                            .imageOrder(imageAppReq.imageOrder())
+                            .fileKey(imageCommand.fileKey())
+                            .imageOrder(imageCommand.imageOrder())
                             .build());
                     break;
                 case UPDATE:
                     post.updatePostImage(PostImage.builder()
-                            .postImageNo(imageAppReq.postImageNo())
-                            .fileKey(imageAppReq.fileKey())
-                            .imageOrder(imageAppReq.imageOrder())
+                            .postImageNo(imageCommand.postImageNo())
+                            .fileKey(imageCommand.fileKey())
+                            .imageOrder(imageCommand.imageOrder())
                             .build());
                     break;
                 case DELETE:
-                    post.deletePostImage(imageAppReq.postImageNo());
-                    deletedPostImageNos.add(imageAppReq.postImageNo());
+                    post.deletePostImage(imageCommand.postImageNo());
+                    deletedPostImageNos.add(imageCommand.postImageNo());
                     break;
             }
         }
@@ -122,6 +124,7 @@ public class UpdatePostService implements UpdatePostUseCase {
                 updatePostCommand.oneLineDescription(),
                 updatePostCommand.detailedDescription(),
                 updatePostCommand.postThemeTypes(),
+                updatePostCommand.snapSubThemes(),
                 updatePostCommand.postMoodTypes(),
                 updatePostCommand.spaceType(),
                 updatePostCommand.spaceAddress(),

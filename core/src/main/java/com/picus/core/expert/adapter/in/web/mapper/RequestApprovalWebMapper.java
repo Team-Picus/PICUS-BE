@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
+import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalRequest;
+import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
 import com.picus.core.expert.domain.Project;
 import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.Studio;
@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class RequestApprovalWebMapper {
 
-    public RequestApprovalCommand toCommand(RequestApprovalWebRequest webRequest, String userNo) {
+    public RequestApprovalCommand toCommand(RequestApprovalRequest webRequest, String userNo) {
         return RequestApprovalCommand.builder()
                 .activityCareer(webRequest.activityCareer())
                 .activityAreas(webRequest.activityAreas())
@@ -24,7 +24,7 @@ public class RequestApprovalWebMapper {
                 .build();
     }
 
-    private List<Project> toProjects(List<RequestApprovalWebRequest.ProjectWebRequest> projectWebRequests) {
+    private List<Project> toProjects(List<RequestApprovalRequest.ProjectWebRequest> projectWebRequests) {
         return projectWebRequests.stream()
                 .map(webRequest -> Project.builder()
                         .projectName(webRequest.projectName())
@@ -34,7 +34,7 @@ public class RequestApprovalWebMapper {
                 ).toList();
     }
 
-    private List<Skill> toSkills(List<RequestApprovalWebRequest.SkillWebRequest> skillWebRequests) {
+    private List<Skill> toSkills(List<RequestApprovalRequest.SkillWebRequest> skillWebRequests) {
         return skillWebRequests.stream()
                 .map(webRequest -> Skill.builder()
                         .skillType(webRequest.skillType())
@@ -43,7 +43,7 @@ public class RequestApprovalWebMapper {
                 ).toList();
     }
 
-    private Studio toStudio(RequestApprovalWebRequest.StudioWebRequest studioWebRequest) {
+    private Studio toStudio(RequestApprovalRequest.StudioWebRequest studioWebRequest) {
         return Studio.builder()
                 .studioName(studioWebRequest.studioName())
                 .employeesCount(studioWebRequest.employeesCount())

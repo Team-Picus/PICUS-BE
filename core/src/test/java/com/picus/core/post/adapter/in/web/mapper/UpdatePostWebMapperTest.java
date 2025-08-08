@@ -1,18 +1,19 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq.PostImageWebReq;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest.PostImageRequest;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.picus.core.post.application.port.in.request.ChangeStatus.*;
-import static com.picus.core.post.application.port.in.request.ChangeStatus.NEW;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.*;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.NEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -21,18 +22,19 @@ class UpdatePostWebMapperTest {
     private UpdatePostWebMapper webMapper = new UpdatePostWebMapper();
 
     @Test
-    @DisplayName("UpdatePostWebReq -> UpdatePostCommand 매핑")
-    public void toAppReq_success() throws Exception {
+    @DisplayName("UpdatePostRequest -> UpdatePostCommand 매핑")
+    public void toCommand_success() throws Exception {
         // given
-        UpdatePostWebReq webReq = UpdatePostWebReq.builder()
+        UpdatePostRequest webReq = UpdatePostRequest.builder()
                 .postImages(List.of(
-                        PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
-                        PostImageWebReq.builder().postImageNo("img-123").fileKey("img2.jpg").imageOrder(2).changeStatus(UPDATE).build()
+                        PostImageRequest.builder().fileKey("img1.jpg").imageOrder(1).changeStatus(NEW).build(),
+                        PostImageRequest.builder().postImageNo("img-123").fileKey("img2.jpg").imageOrder(2).changeStatus(UPDATE).build()
                 ))
                 .title("테스트 제목")
                 .oneLineDescription("한 줄 설명")
                 .detailedDescription("자세한 설명입니다.")
-                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT))
+                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.SNAP))
+                .snapSubThemes(List.of(SnapSubTheme.ADMISSION))
                 .postMoodTypes(List.of(PostMoodType.COZY))
                 .spaceType(SpaceType.INDOOR)
                 .spaceAddress("서울시 강남구")
@@ -43,14 +45,15 @@ class UpdatePostWebMapperTest {
         String currentUserNo = "user-123";
 
         // when
-        UpdatePostCommand appReq = webMapper.toAppReq(webReq, postNo, currentUserNo);
+        UpdatePostCommand appReq = webMapper.toCommand(webReq, postNo, currentUserNo);
 
         // then
         assertThat(appReq.postNo()).isEqualTo("post-123");
         assertThat(appReq.title()).isEqualTo("테스트 제목");
         assertThat(appReq.oneLineDescription()).isEqualTo("한 줄 설명");
         assertThat(appReq.detailedDescription()).isEqualTo("자세한 설명입니다.");
-        assertThat(appReq.postThemeTypes()).containsExactly(PostThemeType.BEAUTY, PostThemeType.EVENT);
+        assertThat(appReq.postThemeTypes()).containsExactly(PostThemeType.BEAUTY, PostThemeType.SNAP);
+        assertThat(appReq.snapSubThemes()).containsExactly(SnapSubTheme.ADMISSION);
         assertThat(appReq.postMoodTypes()).containsExactly(PostMoodType.COZY);
         assertThat(appReq.spaceType()).isEqualTo(SpaceType.INDOOR);
         assertThat(appReq.spaceAddress()).isEqualTo("서울시 강남구");
@@ -61,9 +64,9 @@ class UpdatePostWebMapperTest {
         assertThat(appReq.postImages()).hasSize(2);
 
         assertThat(appReq.postImages()).extracting(
-                UpdatePostCommand.UpdatePostImageAppReq::fileKey,
-                UpdatePostCommand.UpdatePostImageAppReq::imageOrder,
-                UpdatePostCommand.UpdatePostImageAppReq::changeStatus
+                UpdatePostCommand.UpdatePostImageCommand::fileKey,
+                UpdatePostCommand.UpdatePostImageCommand::imageOrder,
+                UpdatePostCommand.UpdatePostImageCommand::changeStatus
         ).containsExactly(
                 tuple("img1.jpg", 1, NEW),
                 tuple("img2.jpg", 2, UPDATE)

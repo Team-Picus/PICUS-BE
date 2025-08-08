@@ -1,10 +1,10 @@
 package com.picus.core.price.application.service;
 
-import com.picus.core.price.application.port.in.request.*;
-import com.picus.core.price.application.port.in.mapper.UpdateOptionAppMapper;
-import com.picus.core.price.application.port.in.mapper.UpdatePackageAppMapper;
-import com.picus.core.price.application.port.in.mapper.UpdatePriceAppMapper;
-import com.picus.core.price.application.port.in.mapper.UpdatePriceRefImageAppMapper;
+import com.picus.core.price.application.port.in.command.*;
+import com.picus.core.price.application.port.in.mapper.UpdateOptionCommandMapper;
+import com.picus.core.price.application.port.in.mapper.UpdatePackageCommandMapper;
+import com.picus.core.price.application.port.in.mapper.UpdatePriceCommandMapper;
+import com.picus.core.price.application.port.in.mapper.UpdatePriceRefImageCommandMapper;
 import com.picus.core.price.application.port.out.PriceCreatePort;
 import com.picus.core.price.application.port.out.PriceDeletePort;
 import com.picus.core.price.application.port.out.PriceReadPort;
@@ -13,6 +13,8 @@ import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
@@ -27,6 +29,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
+import static com.picus.core.price.domain.vo.PriceThemeType.SNAP;
+import static com.picus.core.price.domain.vo.SnapSubTheme.FRIENDSHIP;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.*;
 
@@ -40,10 +44,10 @@ class UpdatePriceServiceTest {
     @Mock private PriceUpdatePort priceUpdatePort;
     @Mock private PriceDeletePort priceDeletePort;
 
-    @Mock private UpdatePriceAppMapper updatePriceAppMapper;
-    @Mock private UpdatePriceRefImageAppMapper updatePriceRefImageAppMapper;
-    @Mock private UpdatePackageAppMapper updatePackageAppMapper;
-    @Mock private UpdateOptionAppMapper updateOptionAppMapper;
+    @Mock private UpdatePriceCommandMapper updatePriceCommandMapper;
+    @Mock private UpdatePriceRefImageCommandMapper updatePriceRefImageCommandMapper;
+    @Mock private UpdatePackageCommandMapper updatePackageCommandMapper;
+    @Mock private UpdateOptionCommandMapper updateOptionCommandMapper;
 
     private UpdatePriceService service;
 
@@ -55,10 +59,10 @@ class UpdatePriceServiceTest {
                 priceCreatePort,
                 priceUpdatePort,
                 priceDeletePort,
-                updatePriceAppMapper,
-                updatePriceRefImageAppMapper,
-                updatePackageAppMapper,
-                updateOptionAppMapper
+                updatePriceCommandMapper,
+                updatePriceRefImageCommandMapper,
+                updatePackageCommandMapper,
+                updateOptionCommandMapper
         );
     }
 
@@ -71,9 +75,10 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn("expert-1");
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-1",
-                "FASHION",
+                SNAP,
+                FRIENDSHIP,
                 Collections.emptyList(),  // no images
                 Collections.emptyList(),  // no packages
                 Collections.emptyList(),  // no options
@@ -84,17 +89,17 @@ class UpdatePriceServiceTest {
         );
 
         Price priceDomain = mock(Price.class);
-        when(updatePriceAppMapper.toPriceDomain(cmd)).thenReturn(priceDomain);
+        when(updatePriceCommandMapper.toPriceDomain(cmd)).thenReturn(priceDomain);
 
         // when
         service.update(command, currentUserNo);
 
         // then: 순서대로 호출되었는지 검증
-        InOrder inOrder = inOrder(userReadPort, user, updatePriceAppMapper, priceCreatePort);
+        InOrder inOrder = inOrder(userReadPort, user, updatePriceCommandMapper, priceCreatePort);
 
         then(userReadPort).should(inOrder).findById(currentUserNo);
         then(user).should(inOrder).getExpertNo();
-        then(updatePriceAppMapper).should(inOrder).toPriceDomain(cmd);
+        then(updatePriceCommandMapper).should(inOrder).toPriceDomain(cmd);
         then(priceCreatePort).should(inOrder).create(priceDomain, "expert-1");
         then(priceCreatePort).shouldHaveNoMoreInteractions();
 
@@ -110,9 +115,10 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
-                "FASHION",
+                SNAP,
+                FRIENDSHIP,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -136,7 +142,7 @@ class UpdatePriceServiceTest {
         then(userReadPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
         then(priceReadPort).should(order).findById("price-2");
-        then(price).should(order).changePriceTheme("FASHION");
+        then(price).should(order).changePriceTheme(SNAP, FRIENDSHIP);
         then(priceUpdatePort).should(order).update(price, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         then(priceCreatePort).shouldHaveNoMoreInteractions();
     }
@@ -172,9 +178,10 @@ class UpdatePriceServiceTest {
         List<UpdateOptionCommand> optCmds =
                 List.of(newOptCmd, updOptCmd, delOptCmd);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-4",
-                "FASHION",
+                PriceThemeType.FASHION,
+                null,
                 imgCmds,
                 pkgCmds,
                 optCmds,
@@ -190,18 +197,18 @@ class UpdatePriceServiceTest {
 
         PriceReferenceImage imgNew = mock(PriceReferenceImage.class);
         PriceReferenceImage imgUpd = mock(PriceReferenceImage.class);
-        given(updatePriceRefImageAppMapper.toDomain(newImgCmd)).willReturn(imgNew);
-        given(updatePriceRefImageAppMapper.toDomain(updImgCmd)).willReturn(imgUpd);
+        given(updatePriceRefImageCommandMapper.toDomain(newImgCmd)).willReturn(imgNew);
+        given(updatePriceRefImageCommandMapper.toDomain(updImgCmd)).willReturn(imgUpd);
 
         Package pkgNew = mock(Package.class);
         Package pkgUpd = mock(Package.class);
-        given(updatePackageAppMapper.toDomain(newPkgCmd)).willReturn(pkgNew);
-        given(updatePackageAppMapper.toDomain(updPkgCmd)).willReturn(pkgUpd);
+        given(updatePackageCommandMapper.toDomain(newPkgCmd)).willReturn(pkgNew);
+        given(updatePackageCommandMapper.toDomain(updPkgCmd)).willReturn(pkgUpd);
 
         Option optNew = mock(Option.class);
         Option optUpd = mock(Option.class);
-        given(updateOptionAppMapper.toDomain(newOptCmd)).willReturn(optNew);
-        given(updateOptionAppMapper.toDomain(updOptCmd)).willReturn(optUpd);
+        given(updateOptionCommandMapper.toDomain(newOptCmd)).willReturn(optNew);
+        given(updateOptionCommandMapper.toDomain(updOptCmd)).willReturn(optUpd);
 
         // when
         service.update(command, currentUserNo);
@@ -210,32 +217,32 @@ class UpdatePriceServiceTest {
         InOrder order = inOrder(
                 userReadPort, user,
                 priceReadPort, price,
-                updatePriceRefImageAppMapper, price,
-                updatePackageAppMapper, price,
-                updateOptionAppMapper, price,
+                updatePriceRefImageCommandMapper, price,
+                updatePackageCommandMapper, price,
+                updateOptionCommandMapper, price,
                 priceUpdatePort, priceCreatePort
         );
 
         then(userReadPort).should(order).findById(currentUserNo);
         then(user).should(order).getExpertNo();
         then(priceReadPort).should(order).findById("price-4");
-        then(price).should(order).changePriceTheme("FASHION");
+        then(price).should(order).changePriceTheme(PriceThemeType.FASHION, null);
 
-        then(updatePriceRefImageAppMapper).should(order).toDomain(newImgCmd);
+        then(updatePriceRefImageCommandMapper).should(order).toDomain(newImgCmd);
         then(price).should(order).addReferenceImage(imgNew);
-        then(updatePriceRefImageAppMapper).should(order).toDomain(updImgCmd);
+        then(updatePriceRefImageCommandMapper).should(order).toDomain(updImgCmd);
         then(price).should(order).updateReferenceImage(imgUpd);
         then(price).should(order).deleteReferenceImage("img-3");
 
-        then(updatePackageAppMapper).should(order).toDomain(newPkgCmd);
+        then(updatePackageCommandMapper).should(order).toDomain(newPkgCmd);
         then(price).should(order).addPackage(pkgNew);
-        then(updatePackageAppMapper).should(order).toDomain(updPkgCmd);
+        then(updatePackageCommandMapper).should(order).toDomain(updPkgCmd);
         then(price).should(order).updatePackage(pkgUpd);
         then(price).should(order).deletePackage("pkg-3");
 
-        then(updateOptionAppMapper).should(order).toDomain(newOptCmd);
+        then(updateOptionCommandMapper).should(order).toDomain(newOptCmd);
         then(price).should(order).addOption(optNew);
-        then(updateOptionAppMapper).should(order).toDomain(updOptCmd);
+        then(updateOptionCommandMapper).should(order).toDomain(updOptCmd);
         then(price).should(order).updateOption(optUpd);
         then(price).should(order).deleteOption("opt-3");
 
@@ -253,9 +260,10 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
-                "FASHION",
+                PriceThemeType.FASHION,
+                null,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -290,9 +298,10 @@ class UpdatePriceServiceTest {
                 List.of(newImgCmd1, newImgCmd2);
 
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-4",
-                "FASHION",
+                PriceThemeType.FASHION,
+                null,
                 imgCmds,
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -317,9 +326,10 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",
-                "THEME_C",
+                PriceThemeType.FASHION,
+                null,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -351,9 +361,10 @@ class UpdatePriceServiceTest {
         given(userReadPort.findById(currentUserNo)).willReturn(user);
         given(user.getExpertNo()).willReturn(currentExpertNo);
 
-        UpdatePriceAppReq cmd = new UpdatePriceAppReq(
+        UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",
-                "THEME_C",
+                PriceThemeType.FASHION,
+                null,
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),

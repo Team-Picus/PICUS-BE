@@ -1,11 +1,11 @@
 package com.picus.core.price.application.service;
 
 import com.picus.core.price.application.port.in.UpdatePriceUseCase;
-import com.picus.core.price.application.port.in.request.*;
-import com.picus.core.price.application.port.in.mapper.UpdateOptionAppMapper;
-import com.picus.core.price.application.port.in.mapper.UpdatePackageAppMapper;
-import com.picus.core.price.application.port.in.mapper.UpdatePriceAppMapper;
-import com.picus.core.price.application.port.in.mapper.UpdatePriceRefImageAppMapper;
+import com.picus.core.price.application.port.in.command.*;
+import com.picus.core.price.application.port.in.mapper.UpdateOptionCommandMapper;
+import com.picus.core.price.application.port.in.mapper.UpdatePackageCommandMapper;
+import com.picus.core.price.application.port.in.mapper.UpdatePriceCommandMapper;
+import com.picus.core.price.application.port.in.mapper.UpdatePriceRefImageCommandMapper;
 import com.picus.core.price.application.port.out.PriceCreatePort;
 import com.picus.core.price.application.port.out.PriceDeletePort;
 import com.picus.core.price.application.port.out.PriceReadPort;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.picus.core.price.application.port.in.command.ChangeStatus.DELETE;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
 @UseCase
@@ -34,10 +35,10 @@ public class UpdatePriceService implements UpdatePriceUseCase {
     private final PriceUpdatePort priceUpdatePort;
     private final PriceDeletePort priceDeletePort;
 
-    private final UpdatePriceAppMapper updatePriceAppMapper;
-    private final UpdatePriceRefImageAppMapper updatePriceRefImageAppMapper;
-    private final UpdatePackageAppMapper updatePackageAppMapper;
-    private final UpdateOptionAppMapper updateOptionAppMapper;
+    private final UpdatePriceCommandMapper updatePriceCommandMapper;
+    private final UpdatePriceRefImageCommandMapper updatePriceRefImageCommandMapper;
+    private final UpdatePackageCommandMapper updatePackageCommandMapper;
+    private final UpdateOptionCommandMapper updateOptionCommandMapper;
 
     @Override
     public void update(UpdatePriceListCommand command, String currentUserNo) {
@@ -46,22 +47,22 @@ public class UpdatePriceService implements UpdatePriceUseCase {
         String expertNo = Optional.ofNullable(user.getExpertNo())
                 .orElseThrow(() -> new RestApiException(_FORBIDDEN));
 
-        List<UpdatePriceAppReq> updatePriceAppReqs = command.prices();
+        List<UpdatePriceCommand> updatePriceCommands = command.prices();
 
         // 이미지 순서 체크
-        checkPriceRefImageOrder(updatePriceAppReqs);
+        checkPriceRefImageOrder(updatePriceCommands);
 
         // 추가/수정/삭제 진행
-        for (UpdatePriceAppReq updatePriceAppReq : updatePriceAppReqs) {
-            switch (updatePriceAppReq.status()) {
+        for (UpdatePriceCommand updatePriceCommand : updatePriceCommands) {
+            switch (updatePriceCommand.status()) {
                 case ChangeStatus.NEW:
-                    createPrice(updatePriceAppReq, expertNo);
+                    createPrice(updatePriceCommand, expertNo);
                     break;
                 case ChangeStatus.UPDATE:
-                    updatePrice(updatePriceAppReq, expertNo);
+                    updatePrice(updatePriceCommand, expertNo);
                     break;
-                case ChangeStatus.DELETE:
-                    deletePrice(updatePriceAppReq.priceNo(), expertNo);
+                case DELETE:
+                    deletePrice(updatePriceCommand.priceNo(), expertNo);
                     break;
             }
         }
@@ -72,12 +73,12 @@ public class UpdatePriceService implements UpdatePriceUseCase {
      * private 메서드
      */
 
-    private void checkPriceRefImageOrder(List<UpdatePriceAppReq> updatePriceAppReqs) {
-        for (UpdatePriceAppReq updatePriceAppReq : updatePriceAppReqs) {
-            List<UpdatePriceReferenceImageCommand> priceRefImageCommands = updatePriceAppReq.priceReferenceImages();
+    private void checkPriceRefImageOrder(List<UpdatePriceCommand> updatePriceCommands) {
+        for (UpdatePriceCommand updatePriceCommand : updatePriceCommands) {
+            List<UpdatePriceReferenceImageCommand> priceRefImageCommands = updatePriceCommand.priceReferenceImages();
             Set<Integer> imageOrderSet = new HashSet<>();
             for (UpdatePriceReferenceImageCommand command : priceRefImageCommands) {
-                if (!imageOrderSet.add(command.imageOrder())) {
+                if (!command.status().equals(DELETE) && !imageOrderSet.add(command.imageOrder())) {
                     throw new RestApiException(_BAD_REQUEST);
                 }
             }
@@ -85,14 +86,14 @@ public class UpdatePriceService implements UpdatePriceUseCase {
     }
 
     // Price 저장
-    private void createPrice(UpdatePriceAppReq updatePriceAppReq, String expertNo) {
-        Price price = updatePriceAppMapper.toPriceDomain(updatePriceAppReq);
+    private void createPrice(UpdatePriceCommand updatePriceCommand, String expertNo) {
+        Price price = updatePriceCommandMapper.toPriceDomain(updatePriceCommand);
         priceCreatePort.create(price, expertNo);
     }
 
     // Price 수정
-    private void updatePrice(UpdatePriceAppReq updatePriceAppReq, String expertNo) {
-        Price price = priceReadPort.findById(updatePriceAppReq.priceNo());
+    private void updatePrice(UpdatePriceCommand updatePriceCommand, String expertNo) {
+        Price price = priceReadPort.findById(updatePriceCommand.priceNo());
         // 현재 사용자와 수정하는 Price의 사용자가 다른 경우 예외
         throwIfNotOwner(expertNo, price.getExpertNo());
 
@@ -101,32 +102,32 @@ public class UpdatePriceService implements UpdatePriceUseCase {
         List<String> deletedOptionNos = new ArrayList<>();
 
         // Price 정보 업데이트
-        price.changePriceTheme(updatePriceAppReq.priceThemeType());
+        price.changePriceTheme(updatePriceCommand.priceThemeType(), updatePriceCommand.snapSubTheme());
 
         // PriceReferenceImage 정보 업데이트
-        updatePriceReferenceImage(updatePriceAppReq, price, deletedPriceRefImageNos);
+        updatePriceReferenceImage(updatePriceCommand, price, deletedPriceRefImageNos);
 
         // Package 업데이트
-        updatePackage(updatePriceAppReq, price, deletedPackageNos);
+        updatePackage(updatePriceCommand, price, deletedPackageNos);
 
         // Option 업데이트
-        updateOption(updatePriceAppReq, price, deletedOptionNos);
+        updateOption(updatePriceCommand, price, deletedOptionNos);
 
         priceUpdatePort.update(price, deletedPriceRefImageNos, deletedPackageNos, deletedOptionNos);
     }
 
     // PriceReferenceImage 수정
-    private void updatePriceReferenceImage(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedPriceRefImageNos) {
-        List<UpdatePriceReferenceImageCommand> refImagesCommands = updatePriceAppReq.priceReferenceImages();
+    private void updatePriceReferenceImage(UpdatePriceCommand updatePriceCommand, Price price, List<String> deletedPriceRefImageNos) {
+        List<UpdatePriceReferenceImageCommand> refImagesCommands = updatePriceCommand.priceReferenceImages();
         for (UpdatePriceReferenceImageCommand refImagesCommand : refImagesCommands) {
             switch (refImagesCommand.status()) {
                 case ChangeStatus.NEW:
-                    price.addReferenceImage(updatePriceRefImageAppMapper.toDomain(refImagesCommand));
+                    price.addReferenceImage(updatePriceRefImageCommandMapper.toDomain(refImagesCommand));
                     break;
                 case ChangeStatus.UPDATE:
-                    price.updateReferenceImage(updatePriceRefImageAppMapper.toDomain(refImagesCommand));
+                    price.updateReferenceImage(updatePriceRefImageCommandMapper.toDomain(refImagesCommand));
                     break;
-                case ChangeStatus.DELETE:
+                case DELETE:
                     price.deleteReferenceImage(refImagesCommand.priceRefImageNo());
                     deletedPriceRefImageNos.add(refImagesCommand.priceRefImageNo());
                     break;
@@ -135,17 +136,17 @@ public class UpdatePriceService implements UpdatePriceUseCase {
     }
 
     // Package 수정
-    private void updatePackage(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedPackageNos) {
-        List<UpdatePackageCommand> updatePackageCommands = updatePriceAppReq.packages();
+    private void updatePackage(UpdatePriceCommand updatePriceCommand, Price price, List<String> deletedPackageNos) {
+        List<UpdatePackageCommand> updatePackageCommands = updatePriceCommand.packages();
         for (UpdatePackageCommand pkgCmd : updatePackageCommands) {
             switch (pkgCmd.status()) {
                 case ChangeStatus.NEW:
-                    price.addPackage(updatePackageAppMapper.toDomain(pkgCmd));
+                    price.addPackage(updatePackageCommandMapper.toDomain(pkgCmd));
                     break;
                 case ChangeStatus.UPDATE:
-                    price.updatePackage(updatePackageAppMapper.toDomain(pkgCmd));
+                    price.updatePackage(updatePackageCommandMapper.toDomain(pkgCmd));
                     break;
-                case ChangeStatus.DELETE:
+                case DELETE:
                     price.deletePackage(pkgCmd.packageNo());
                     deletedPackageNos.add(pkgCmd.packageNo());
                     break;
@@ -154,17 +155,17 @@ public class UpdatePriceService implements UpdatePriceUseCase {
     }
 
     // Option 수정
-    private void updateOption(UpdatePriceAppReq updatePriceAppReq, Price price, List<String> deletedOptionNos) {
-        List<UpdateOptionCommand> updateOptionCommands = updatePriceAppReq.options();
+    private void updateOption(UpdatePriceCommand updatePriceCommand, Price price, List<String> deletedOptionNos) {
+        List<UpdateOptionCommand> updateOptionCommands = updatePriceCommand.options();
         for (UpdateOptionCommand optCmd : updateOptionCommands) {
             switch (optCmd.status()) {
                 case ChangeStatus.NEW:
-                    price.addOption(updateOptionAppMapper.toDomain(optCmd));
+                    price.addOption(updateOptionCommandMapper.toDomain(optCmd));
                     break;
                 case ChangeStatus.UPDATE:
-                    price.updateOption(updateOptionAppMapper.toDomain(optCmd));
+                    price.updateOption(updateOptionCommandMapper.toDomain(optCmd));
                     break;
-                case ChangeStatus.DELETE:
+                case DELETE:
                     price.deleteOption(optCmd.optionNo());
                     deletedOptionNos.add(optCmd.optionNo());
                     break;

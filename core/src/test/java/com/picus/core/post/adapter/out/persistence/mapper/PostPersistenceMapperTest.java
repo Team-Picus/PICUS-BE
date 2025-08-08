@@ -5,6 +5,7 @@ import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,8 @@ class PostPersistenceMapperTest {
         // given
         Post post = createPost(
                 "package-123", "expert-456",
-                "테스트 제목", "한 줄 설명",
-                "자세한 설명입니다.", List.of(PostThemeType.BEAUTY, PostThemeType.EVENT),
+                "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
+                List.of(PostThemeType.BEAUTY, PostThemeType.SNAP), List.of(SnapSubTheme.ADMISSION),
                 List.of(PostMoodType.COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
                 List.of(
                         PostImage.builder()
@@ -48,6 +49,7 @@ class PostPersistenceMapperTest {
         assertThat(entity.getOneLineDescription()).isEqualTo(post.getOneLineDescription());
         assertThat(entity.getDetailedDescription()).isEqualTo(post.getDetailedDescription());
         assertThat(entity.getPostThemeTypes()).isEqualTo(post.getPostThemeTypes());
+        assertThat(entity.getSnapSubThemes()).isEqualTo(post.getSnapSubThemes());
         assertThat(entity.getPostMoodTypes()).isEqualTo(post.getPostMoodTypes());
         assertThat(entity.getSpaceType()).isEqualTo(post.getSpaceType());
         assertThat(entity.getSpaceAddress()).isEqualTo(post.getSpaceAddress());
@@ -60,8 +62,8 @@ class PostPersistenceMapperTest {
         // given
         PostEntity postEntity = createPostEntity(
                 "post-123", "package-123", "expert-456",
-                "테스트 제목", "한 줄 설명",
-                "자세한 설명입니다.", List.of(PostThemeType.BEAUTY, PostThemeType.EVENT),
+                "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
+                List.of(PostThemeType.BEAUTY, PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY),
                 List.of(PostMoodType.COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
                 LocalDateTime.of(2025, 1, 1, 1, 1),
                 LocalDateTime.of(2025, 1, 1, 1, 2),
@@ -84,6 +86,7 @@ class PostPersistenceMapperTest {
         assertThat(post.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
         assertThat(post.getDetailedDescription()).isEqualTo(postEntity.getDetailedDescription());
         assertThat(post.getPostThemeTypes()).isEqualTo(postEntity.getPostThemeTypes());
+        assertThat(post.getSnapSubThemes()).isEqualTo(postEntity.getSnapSubThemes());
         assertThat(post.getPostMoodTypes()).isEqualTo(postEntity.getPostMoodTypes());
         assertThat(post.getSpaceType()).isEqualTo(postEntity.getSpaceType());
         assertThat(post.getSpaceAddress()).isEqualTo(postEntity.getSpaceAddress());
@@ -95,7 +98,7 @@ class PostPersistenceMapperTest {
     }
 
     private Post createPost(String packageNo, String authorNo, String title, String oneLineDescription,
-                            String detailedDescription, List<PostThemeType> postThemeTypes,
+                            String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                             boolean isPinned, List<PostImage> postImages) {
         return Post.builder()
@@ -105,6 +108,7 @@ class PostPersistenceMapperTest {
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
@@ -114,7 +118,7 @@ class PostPersistenceMapperTest {
     }
 
     private PostEntity createPostEntity(String postNo, String packageNo, String authorNo, String title, String oneLineDescription,
-                                        String detailedDescription, List<PostThemeType> postThemeTypes,
+                                        String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         return PostEntity.builder()
@@ -125,6 +129,7 @@ class PostPersistenceMapperTest {
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)

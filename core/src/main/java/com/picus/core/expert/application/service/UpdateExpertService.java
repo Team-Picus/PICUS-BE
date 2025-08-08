@@ -1,10 +1,10 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.UpdateExpertUseCase;
-import com.picus.core.expert.application.port.in.request.*;
-import com.picus.core.expert.application.port.in.mapper.UpdateProjectAppMapper;
-import com.picus.core.expert.application.port.in.mapper.UpdateSkillAppMapper;
-import com.picus.core.expert.application.port.in.mapper.UpdateStudioAppMapper;
+import com.picus.core.expert.application.port.in.command.*;
+import com.picus.core.expert.application.port.in.mapper.UpdateProjectCommandMapper;
+import com.picus.core.expert.application.port.in.mapper.UpdateSkillCommandMapper;
+import com.picus.core.expert.application.port.in.mapper.UpdateStudioCommandMapper;
 import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
@@ -32,9 +32,9 @@ public class UpdateExpertService implements UpdateExpertUseCase {
     private final ExpertReadPort expertReadPort;
     private final ExpertUpdatePort expertUpdatePort;
 
-    private final UpdateProjectAppMapper updateProjectAppMapper;
-    private final UpdateSkillAppMapper updateSkillAppMapper;
-    private final UpdateStudioAppMapper updateStudioAppMapper;
+    private final UpdateProjectCommandMapper updateProjectCommandMapper;
+    private final UpdateSkillCommandMapper updateSkillCommandMapper;
+    private final UpdateStudioCommandMapper updateStudioCommandMapper;
 
     @Override
     public void updateExpertBasicInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
@@ -144,10 +144,10 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         for (UpdateProjectCommand command : updateProjectCommands) {
             switch (command.changeStatus()) {
                 case ChangeStatus.NEW:
-                    expert.addProject(updateProjectAppMapper.toDomain(command));
+                    expert.addProject(updateProjectCommandMapper.toDomain(command));
                     break;
                 case ChangeStatus.UPDATE:
-                    expert.updateProject(updateProjectAppMapper.toDomain(command));
+                    expert.updateProject(updateProjectCommandMapper.toDomain(command));
                     break;
                 case ChangeStatus.DELETE:
                     expert.deleteProject(command.projectNo());
@@ -162,10 +162,10 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         for (UpdateSkillCommand command : updateSkillCommands) {
             switch (command.changeStatus()) {
                 case ChangeStatus.NEW:
-                    expert.addSkill(updateSkillAppMapper.toDomain(command));
+                    expert.addSkill(updateSkillCommandMapper.toDomain(command));
                     break;
                 case ChangeStatus.UPDATE:
-                    expert.updateSkill(updateSkillAppMapper.toDomain(command));
+                    expert.updateSkill(updateSkillCommandMapper.toDomain(command));
                     break;
                 case ChangeStatus.DELETE:
                     expert.deleteSkill(command.skillNo());
@@ -178,8 +178,8 @@ public class UpdateExpertService implements UpdateExpertUseCase {
     private String updateStudio(UpdateExpertDetailInfoCommand request, Expert expert) {
         UpdateStudioCommand command = request.studio();
         switch (command.changeStatus()) {
-            case ChangeStatus.NEW -> expert.addStudio(updateStudioAppMapper.toDomain(command));
-            case ChangeStatus.UPDATE -> expert.updateStudio(updateStudioAppMapper.toDomain(command));
+            case ChangeStatus.NEW -> expert.addStudio(updateStudioCommandMapper.toDomain(command));
+            case ChangeStatus.UPDATE -> expert.updateStudio(updateStudioCommandMapper.toDomain(command));
             case ChangeStatus.DELETE -> {
                 expert.deleteStudio();
                 return command.studioNo(); // 삭제된 번호 리턴

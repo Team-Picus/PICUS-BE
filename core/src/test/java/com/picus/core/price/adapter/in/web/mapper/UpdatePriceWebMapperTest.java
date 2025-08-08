@@ -1,7 +1,9 @@
 package com.picus.core.price.adapter.in.web.mapper;
 
 import com.picus.core.price.adapter.in.web.data.request.*;
-import com.picus.core.price.application.port.in.request.*;
+import com.picus.core.price.application.port.in.command.*;
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,17 +16,17 @@ public class UpdatePriceWebMapperTest {
     private final UpdatePriceWebMapper mapper = new UpdatePriceWebMapper();
 
     @Test
-    @DisplayName("UpdatePriceListWebReq -> UpdatePriceListCommand 매핑")
+    @DisplayName("UpdatePriceListRequest -> UpdatePriceListCommand 매핑")
     void toCommand() {
         // given
-        UpdatePriceReferenceImageWebReq imageWebRequest = UpdatePriceReferenceImageWebReq.builder()
+        UpdatePriceReferenceImageRequest imageWebRequest = UpdatePriceReferenceImageRequest.builder()
                 .priceRefImageNo("img-001")
                 .fileKey("file-key-001")
                 .imageOrder(1)
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdatePackageWebReq updatePackageWebReq = UpdatePackageWebReq.builder()
+        UpdatePackageRequest updatePackageRequest = UpdatePackageRequest.builder()
                 .packageNo("pkg-001")
                 .name("패키지A")
                 .price(10000)
@@ -33,7 +35,7 @@ public class UpdatePriceWebMapperTest {
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdateOptionWebReq updateOptionWebReq = UpdateOptionWebReq.builder()
+        UpdateOptionRequest updateOptionRequest = UpdateOptionRequest.builder()
                 .optionNo("opt-001")
                 .name("옵션A")
                 .count(2)
@@ -42,16 +44,17 @@ public class UpdatePriceWebMapperTest {
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdatePriceWebReq updatePriceWebRequest = UpdatePriceWebReq.builder()
+        UpdatePriceRequest updatePriceWebRequest = UpdatePriceRequest.builder()
                 .priceNo("price-001")
-                .priceThemeType("THEME")
+                .priceThemeType(PriceThemeType.SNAP)
+                .snapSubTheme(SnapSubTheme.ADMISSION)
                 .priceReferenceImages(List.of(imageWebRequest))
-                .packages(List.of(updatePackageWebReq))
-                .options(List.of(updateOptionWebReq))
+                .packages(List.of(updatePackageRequest))
+                .options(List.of(updateOptionRequest))
                 .status(ChangeStatus.NEW)
                 .build();
 
-        UpdatePriceListWebReq webRequest = new UpdatePriceListWebReq(List.of(updatePriceWebRequest));
+        UpdatePriceListRequest webRequest = new UpdatePriceListRequest(List.of(updatePriceWebRequest));
 
         // when
         UpdatePriceListCommand command = mapper.toCommand(webRequest);
@@ -61,22 +64,23 @@ public class UpdatePriceWebMapperTest {
 
         // PriceCommand의 모든 필드 검증
         assertThat(command.prices()).hasSize(1);
-        UpdatePriceAppReq updatePriceAppReq = command.prices().getFirst();
-        assertThat(updatePriceAppReq.priceNo()).isEqualTo("price-001");
-        assertThat(updatePriceAppReq.priceThemeType()).isEqualTo("THEME");
-        assertThat(updatePriceAppReq.status()).isEqualTo(ChangeStatus.NEW);
+        UpdatePriceCommand updatePriceCommand = command.prices().getFirst();
+        assertThat(updatePriceCommand.priceNo()).isEqualTo("price-001");
+        assertThat(updatePriceCommand.priceThemeType()).isEqualTo(PriceThemeType.SNAP);
+        assertThat(updatePriceCommand.snapSubTheme()).isEqualTo(SnapSubTheme.ADMISSION);
+        assertThat(updatePriceCommand.status()).isEqualTo(ChangeStatus.NEW);
 
         // UpdatePriceReferenceImageCommand 모든 필드 검증
-        assertThat(updatePriceAppReq.priceReferenceImages()).hasSize(1);
-        UpdatePriceReferenceImageCommand imageCommand = updatePriceAppReq.priceReferenceImages().getFirst();
+        assertThat(updatePriceCommand.priceReferenceImages()).hasSize(1);
+        UpdatePriceReferenceImageCommand imageCommand = updatePriceCommand.priceReferenceImages().getFirst();
         assertThat(imageCommand.priceRefImageNo()).isEqualTo("img-001");
         assertThat(imageCommand.fileKey()).isEqualTo("file-key-001");
         assertThat(imageCommand.imageOrder()).isEqualTo(1);
         assertThat(imageCommand.status()).isEqualTo(ChangeStatus.NEW);
 
         // UpdatePackageCommand 모든 필드 검증
-        assertThat(updatePriceAppReq.packages()).hasSize(1);
-        UpdatePackageCommand updatePackageCommand = updatePriceAppReq.packages().getFirst();
+        assertThat(updatePriceCommand.packages()).hasSize(1);
+        UpdatePackageCommand updatePackageCommand = updatePriceCommand.packages().getFirst();
         assertThat(updatePackageCommand.packageNo()).isEqualTo("pkg-001");
         assertThat(updatePackageCommand.name()).isEqualTo("패키지A");
         assertThat(updatePackageCommand.price()).isEqualTo(10000);
@@ -85,8 +89,8 @@ public class UpdatePriceWebMapperTest {
         assertThat(updatePackageCommand.status()).isEqualTo(ChangeStatus.NEW);
 
         // UpdateOptionCommand 모든 필드 검증
-        assertThat(updatePriceAppReq.options()).hasSize(1);
-        UpdateOptionCommand updateOptionCommand = updatePriceAppReq.options().getFirst();
+        assertThat(updatePriceCommand.options()).hasSize(1);
+        UpdateOptionCommand updateOptionCommand = updatePriceCommand.options().getFirst();
         assertThat(updateOptionCommand.optionNo()).isEqualTo("opt-001");
         assertThat(updateOptionCommand.name()).isEqualTo("옵션A");
         assertThat(updateOptionCommand.count()).isEqualTo(2);

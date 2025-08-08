@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in;
 
-import com.picus.core.expert.application.port.in.request.UpdateExpertBasicInfoCommand;
-import com.picus.core.expert.application.port.in.request.UpdateExpertDetailInfoCommand;
+import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoCommand;
+import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoCommand;
 
 /**
  * 전문가의 정보를 수정한다.

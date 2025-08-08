@@ -1,8 +1,9 @@
 package com.picus.core.expert.adapter.in;
 
+import com.picus.core.expert.adapter.in.web.data.response.SuggestExpertResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SuggestExpertWebMapper;
 import com.picus.core.expert.application.port.in.SuggestExpertsUseCase;
-import com.picus.core.expert.application.port.in.response.SuggestExpertResult;
+import com.picus.core.expert.application.port.in.result.SuggestExpertResult;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,8 +97,8 @@ class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
     private void stubMethodInController(String keyword, List<SuggestExpertResult> mockResult, int size) {
         given(suggestExpertsUseCase.suggestExperts(keyword, size)).willReturn(mockResult);
         for (SuggestExpertResult app : mockResult) {
-            given(suggestExpertWebMapper.toWebResponse(app)).willReturn(
-                    new com.picus.core.expert.adapter.in.web.data.response.SuggestExpertWebResponse(
+            given(suggestExpertWebMapper.toResponse(app)).willReturn(
+                    new SuggestExpertResponse(
                             app.expertNo(), app.nickname(), app.profileImageUrl()
                     )
             );

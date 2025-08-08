@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.port.in.mapper;
 
-import com.picus.core.expert.application.port.in.request.ChangeStatus;
-import com.picus.core.expert.application.port.in.request.UpdateStudioCommand;
+import com.picus.core.expert.application.port.in.command.ChangeStatus;
+import com.picus.core.expert.application.port.in.command.UpdateStudioCommand;
 import com.picus.core.expert.domain.Studio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UpdateStudioAppRequestAppMapperTest {
 
-    private final UpdateStudioAppMapper mapper = new UpdateStudioAppMapper();
+    private final UpdateStudioCommandMapper mapper = new UpdateStudioCommandMapper();
 
     @Test
     @DisplayName("StudioCommand를 Studio 도메인으로 매핑한다.")
