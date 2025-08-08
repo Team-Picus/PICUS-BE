@@ -1,5 +1,7 @@
 package com.picus.core.reservation.application.port.in.mapper;
 
+import com.picus.core.price.domain.Option;
+import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.reservation.application.port.in.request.SaveReservationCommand;
 import com.picus.core.reservation.domain.Reservation;
@@ -25,11 +27,32 @@ public class SaveReservationCommandMapper {
                 .requestDetail(command.getRequestDetail())
                 .selectedPackage(toSelectedPackage(price, command))
                 .selectedOptions(toSelectedOptions(price, command))
+                .totalPrice(toTotalPrice(price, command))
                 .userNo(userNo)
                 .expertNo(price.getExpertNo())
                 .build();
 
     }
+
+    private Integer toTotalPrice(Price price, SaveReservationCommand command) {
+        int packagePrice = price.getPackages().stream()
+                .filter(p -> p.getPackageNo().equals(command.getPackageNo()))
+                .findFirst()
+                .map(Package::getPrice)
+                .orElseThrow(() -> new RestApiException(PACKAGE_NOT_FOUND));
+
+        int optionsTotal = 0;
+        for (SaveReservationCommand.OptionSelection sel : command.getOptionSelection()) {
+            for (Option option : price.getOptions()) {
+                if (option.getOptionNo().equals(sel.optionNo())) {
+                    optionsTotal += option.getPrice() * sel.count();
+                }
+            }
+        }
+
+        return packagePrice + optionsTotal;
+    }
+
 
     private SelectedPackage toSelectedPackage(Price price, SaveReservationCommand command) {
         return price.getPackages().stream()
