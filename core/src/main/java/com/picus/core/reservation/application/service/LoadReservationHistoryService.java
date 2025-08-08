@@ -8,11 +8,13 @@ import com.picus.core.reservation.domain.Reservation;
 import com.picus.core.reservation.domain.ReservationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LoadReservationHistoryService implements LoadReservationHistoryUseCase {
 

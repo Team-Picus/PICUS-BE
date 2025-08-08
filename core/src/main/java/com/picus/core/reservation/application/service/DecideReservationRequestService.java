@@ -7,6 +7,7 @@ import com.picus.core.reservation.domain.Reservation;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.picus.core.reservation.domain.ReservationStatus.APPROVAL;
 import static com.picus.core.reservation.domain.ReservationStatus.REJECTED;
@@ -14,6 +15,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.ALRE
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.RESERVATION_OWNER_MISMATCH;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DecideReservationRequestService implements DecideReservationRequestUseCase {
 
