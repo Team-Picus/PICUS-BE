@@ -1,5 +1,6 @@
 package com.picus.core.reservation.adapter.out.persistence.entity;
 
+import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.reservation.adapter.out.persistence.entity.vo.OptionSnapshot;
 import com.picus.core.reservation.adapter.out.persistence.entity.vo.PackageSnapshot;
 import com.picus.core.reservation.domain.ReservationStatus;
@@ -33,6 +34,12 @@ public class ReservationEntity {
     private LocalDateTime startTime;
 
     private String requestDetail;
+
+    @Column(nullable = false)
+    private PriceThemeType themeType;
+
+    @Column(nullable = false)
+    private Integer totalPrice;
 
     @Column(nullable = false)
     private String userNo;

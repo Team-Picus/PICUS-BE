@@ -1,7 +1,5 @@
 package com.picus.core.reservation.application.port.in.mapper;
 
-import com.picus.core.price.domain.Option;
-import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.reservation.application.port.in.request.SaveReservationCommand;
 import com.picus.core.reservation.domain.Reservation;
@@ -23,7 +21,7 @@ public class SaveReservationCommandMapper {
                 .reservationStatus(ReservationStatus.REQUESTED)
                 .place(command.getPlace())
                 .startTime(command.getStartTime())
-                .priceThemeType(price.getPriceThemeType())
+                .themeType(price.getPriceThemeType())
                 .requestDetail(command.getRequestDetail())
                 .selectedPackage(toSelectedPackage(price, command))
                 .selectedOptions(toSelectedOptions(price, command))

@@ -19,7 +19,7 @@ public class Reservation {
     private LocalDateTime startTime;
 
     // 가격 및 디테일
-    private PriceThemeType priceThemeType;
+    private PriceThemeType themeType;
     private String requestDetail;
     private SelectedPackage selectedPackage;
     private List<SelectedOption> selectedOptions;
@@ -28,4 +28,16 @@ public class Reservation {
     // FK
     private String userNo;
     private String expertNo;
+
+    public boolean isOwnerOf(String expertNo) {
+        return this.expertNo.equals(expertNo);
+    }
+
+    public boolean isPending() {
+        return this.reservationStatus.equals(ReservationStatus.REQUESTED);
+    }
+
+    public void updateStatus(ReservationStatus reservationStatus) {
+        this.reservationStatus = reservationStatus;
+    }
 }

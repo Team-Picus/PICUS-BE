@@ -46,4 +46,41 @@ public class ReservationPersistenceMapper {
                 .notice(selectedPackage.getNotice())
                 .build();
     }
+
+    public Reservation toDomain(ReservationEntity entity) {
+        return Reservation.builder()
+                .reservationNo(entity.getReservationNo())
+                .reservationStatus(entity.getReservationStatus())
+                .place(entity.getPlace())
+                .startTime(entity.getStartTime())
+                .themeType(entity.getThemeType())
+                .requestDetail(entity.getRequestDetail())
+                .selectedPackage(toSelectedPackage(entity.getPackageSnapshot()))
+                .selectedOptions(toSelectedOptions(entity.getOptionSnapshots()))
+                .totalPrice(entity.getTotalPrice())
+                .userNo(entity.getUserNo())
+                .expertNo(entity.getExpertNo())
+                .build();
+    }
+
+    private List<SelectedOption> toSelectedOptions(List<OptionSnapshot> optionSnapshots) {
+        return optionSnapshots.stream()
+                .map(snapshot -> SelectedOption.builder()
+                        .name(snapshot.getName())
+                        .pricePerUnit(snapshot.getPricePerUnit())
+                        .unitSize(snapshot.getUnitSize())
+                        .orderCount(snapshot.getOrderCount())
+                        .contents(snapshot.getContents())
+                        .build())
+                .toList();
+    }
+
+    private SelectedPackage toSelectedPackage(PackageSnapshot packageSnapshot) {
+        return SelectedPackage.builder()
+                .name(packageSnapshot.getName())
+                .price(packageSnapshot.getPrice())
+                .contents(packageSnapshot.getContents())
+                .notice(packageSnapshot.getNotice())
+                .build();
+    }
 }
