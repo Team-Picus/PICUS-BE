@@ -1,11 +1,15 @@
 package com.picus.core.reservation.adapter.out.persistence.entity;
 
+import com.picus.core.reservation.adapter.out.persistence.entity.vo.OptionSnapshot;
+import com.picus.core.reservation.adapter.out.persistence.entity.vo.PackageSnapshot;
 import com.picus.core.reservation.domain.ReservationStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -18,6 +22,7 @@ public class ReservationEntity {
     @Id @Tsid
     private String reservationNo;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReservationStatus reservationStatus;
 
@@ -29,8 +34,18 @@ public class ReservationEntity {
 
     private String requestDetail;
 
-    // 주문 도메인
+    @Column(nullable = false)
+    private String userNo;
 
+    @Column(nullable = false)
+    private String expertNo;
+
+    @ElementCollection
+    @CollectionTable(name = "optionSnapshots", joinColumns = @JoinColumn(name = "reservation_no"))
+    private List<OptionSnapshot> optionSnapshots = new ArrayList<>();
+
+    @Embedded
+    private PackageSnapshot packageSnapshot;
 
     @PrePersist
     protected void init() {

@@ -1,8 +1,13 @@
 package com.picus.core.reservation.domain;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import java.util.List;
 
-public class SelectedOptions {
+@Getter
+@Builder
+public class SelectedOption {
 
     private String name;
     private Integer pricePerUnit;   // 유닛 당 가격

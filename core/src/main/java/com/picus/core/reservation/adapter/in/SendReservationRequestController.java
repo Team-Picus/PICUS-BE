@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/reservation")
 public class SendReservationRequestController {
 
     private final SendReservationRequestUseCase sendReservationRequestUseCase;
     private final SendReservationWebMapper webMapper;
 
-    @PostMapping("/request")
+    @PostMapping("/api/v1/reservation/request")
     public BaseResponse<Void> sendRequest(@CurrentUser String userNo, @RequestBody @Valid SendReservationRequest request) {
         SaveReservationCommand command = webMapper.toCommand(request);
         sendReservationRequestUseCase.send(userNo, command);

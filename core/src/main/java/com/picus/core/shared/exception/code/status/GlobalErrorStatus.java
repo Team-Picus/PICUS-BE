@@ -29,7 +29,10 @@ public enum GlobalErrorStatus implements BaseCodeInterface {
     _FALIED_READ_FILE(HttpStatus.BAD_REQUEST, "FILE002","파일을 읽는 중 문제가 발생하였습니다."),
 
     // Term
-    REQUIRED_TERM_NOT_AGREED(HttpStatus.BAD_REQUEST, "TERM_001", "필수 약관에 동의하지 않았습니다."),
+    REQUIRED_TERM_NOT_AGREED(HttpStatus.BAD_REQUEST, "TERM001", "필수 약관에 동의하지 않았습니다."),
+
+    // Package
+    PACKAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "PACKAGE001", "패키지를 찾을 수 없습니다.")
     ;
 
     private final HttpStatus httpStatus;

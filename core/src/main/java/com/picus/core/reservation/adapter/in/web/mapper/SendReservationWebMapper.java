@@ -20,7 +20,7 @@ public class SendReservationWebMapper {
         return builder()
                 .priceNo(request.priceNo())
                 .packageNo(request.packageNo())
-                .selectedOptions(selections)
+                .optionSelection(selections)
                 .place(request.place())
                 .startTime(request.startTime())
                 .requestDetail(request.requestDetail())
