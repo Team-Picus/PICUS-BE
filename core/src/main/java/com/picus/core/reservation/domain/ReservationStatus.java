@@ -1,8 +1,16 @@
 package com.picus.core.reservation.domain;
 
-public enum ReservationStatus {
-    REQUESTED,    // 예약 요청 응답 대기중
-    APPROVAL,   // 예약 요청 수락
-    REJECTED,   // 예약 요청 거절
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@Getter
+@RequiredArgsConstructor
+public enum ReservationStatus {
+    REQUESTED("대기 중"),
+    APPROVAL("요청 수락"),
+    REJECTED("요청 거절"),
+    IN_PROGRESS("활동 중"),
+    ;
+
+    private final String desc;
 }

@@ -12,6 +12,9 @@ import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.RESERVATION_NOT_FOUND;
 
 @PersistenceAdapter
@@ -33,6 +36,13 @@ public class ReservationPersistenceAdapter
         return reservationJpaRepository.findById(reservationNo)
                 .map(reservationPersistenceMapper::toDomain)
                 .orElseThrow(() -> new RestApiException(RESERVATION_NOT_FOUND));
+    }
+
+    @Override
+    public List<Reservation> findByUserNoWithFilter(String userNo, LocalDateTime start, ReservationStatus status) {
+        return reservationJpaRepository.findByUserNoAndStatusAndPeriod(userNo, start, LocalDateTime.now(), status).stream()
+                .map(reservationPersistenceMapper::toDomain)
+                .toList();
     }
 
     @Override
