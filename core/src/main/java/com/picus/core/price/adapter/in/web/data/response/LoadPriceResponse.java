@@ -8,37 +8,45 @@ import java.util.List;
 
 @Builder
 public record LoadPriceResponse(
-        String priceNo,
-        PriceThemeType priceThemeType,
-        SnapSubTheme snapSubTheme,
-        List<PriceReferenceImageResponse> priceReferenceImages,
-        List<PackageResponse> packages,
-        List<OptionResponse> options
+    List<PriceResponse> prices
 ) {
-
     @Builder
-    public record PriceReferenceImageResponse(
-        String priceRefImageNo,
-        String fileKey,
-        String imageUrl,
-        Integer imageOrder
-    ) {}
+    public record PriceResponse(
+            String priceNo,
+            PriceThemeType priceThemeType,
+            SnapSubTheme snapSubTheme,
+            List<PriceReferenceImageResponse> priceReferenceImages,
+            List<PackageResponse> packages,
+            List<OptionResponse> options
+    ) {
 
-    @Builder
-    public record PackageResponse(
-        String packageNo,
-        String name,
-        Integer price,
-        List<String> contents,
-        String notice
-    ) {}
+        @Builder
+        public record PriceReferenceImageResponse(
+                String priceRefImageNo,
+                String fileKey,
+                String imageUrl,
+                Integer imageOrder
+        ) {
+        }
 
-    @Builder
-    public record OptionResponse(
-            String optionNo,
-            String name,
-            Integer count,
-            Integer price,
-            List<String> contents
-    ) {}
+        @Builder
+        public record PackageResponse(
+                String packageNo,
+                String name,
+                Integer price,
+                List<String> contents,
+                String notice
+        ) {
+        }
+
+        @Builder
+        public record OptionResponse(
+                String optionNo,
+                String name,
+                Integer count,
+                Integer price,
+                List<String> contents
+        ) {
+        }
+    }
 }

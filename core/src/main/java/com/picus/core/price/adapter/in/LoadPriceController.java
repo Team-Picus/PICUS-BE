@@ -19,16 +19,15 @@ import java.util.List;
 public class LoadPriceController {
 
     private final LoadPriceUseCase loadPriceUseCase;
-    private final LoadPriceWebMapper loadPriceWebMapper;
+    private final LoadPriceWebMapper webMapper;
 
     @GetMapping("/{expert_no}/prices")
-    public BaseResponse<List<LoadPriceResponse>> getPricesByExpert(@PathVariable("expert_no") String expertNo) {
+    public BaseResponse<LoadPriceResponse> getPricesByExpert(@PathVariable("expert_no") String expertNo) {
 
-        List<Price> pricesByExpert = loadPriceUseCase.loadByExpertNo(expertNo); // 유스케이스 호출
+        List<Price> prices = loadPriceUseCase.loadByExpertNo(expertNo); // 유스케이스 호출
 
-        List<LoadPriceResponse> webResponses = pricesByExpert.stream() // 매퍼로 변환
-                .map(loadPriceWebMapper::toResponse)
-                .toList();
-        return BaseResponse.onSuccess(webResponses);
+        LoadPriceResponse response = webMapper.toResponse(prices); // 매핑
+
+        return BaseResponse.onSuccess(response);
     }
 }

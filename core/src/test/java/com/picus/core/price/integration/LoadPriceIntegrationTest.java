@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -81,7 +80,7 @@ public class LoadPriceIntegrationTest {
         HttpEntity<Object> request = settingWebRequest(createUserEntity(), null);
 
         // when
-        ResponseEntity<BaseResponse<List<LoadPriceResponse>>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<LoadPriceResponse>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/prices",
                 HttpMethod.GET,
                 request,
@@ -92,26 +91,28 @@ public class LoadPriceIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<List<LoadPriceResponse>> body = response.getBody();
+        BaseResponse<LoadPriceResponse> body = response.getBody();
         assertThat(body).isNotNull();
 
-        List<LoadPriceResponse> result = body.getResult();
+        LoadPriceResponse root = body.getResult();
+        assertThat(root).isNotNull();
 
-        assertThat(result).hasSize(1);
+        List<LoadPriceResponse.PriceResponse> prices = root.prices();
+        assertThat(prices).hasSize(1);
 
-        LoadPriceResponse first = result.getFirst();
+        LoadPriceResponse.PriceResponse first = prices.getFirst();
         assertThat(first.priceNo()).isEqualTo(priceEntity.getPriceNo());
         assertThat(first.priceThemeType()).isEqualTo(PriceThemeType.BEAUTY);
 
         // package
-        List<PackageResponse> packageResult = first.packages();
+        List<LoadPriceResponse.PriceResponse.PackageResponse> packageResult = first.packages();
         assertThat(packageResult).hasSize(1)
                 .extracting(
-                        PackageResponse::packageNo,
-                        PackageResponse::name,
-                        PackageResponse::price,
-                        PackageResponse::contents,
-                        PackageResponse::notice)
+                        LoadPriceResponse.PriceResponse.PackageResponse::packageNo,
+                        LoadPriceResponse.PriceResponse.PackageResponse::name,
+                        LoadPriceResponse.PriceResponse.PackageResponse::price,
+                        LoadPriceResponse.PriceResponse.PackageResponse::contents,
+                        LoadPriceResponse.PriceResponse.PackageResponse::notice)
                 .contains(tuple(
                         packageEntity.getPackageNo(),
                         "기본 패키지",
@@ -119,13 +120,14 @@ public class LoadPriceIntegrationTest {
                         List.of("헤어컷", "드라이"),
                         "사전 예약 필수"));
         // option
-        List<OptionResponse> optionResult = first.options();
+        List<LoadPriceResponse.PriceResponse.OptionResponse> optionResult = first.options();
         assertThat(optionResult).hasSize(1)
-                .extracting(OptionResponse::optionNo,
-                        OptionResponse::name,
-                        OptionResponse::count,
-                        OptionResponse::price,
-                        OptionResponse::contents)
+                .extracting(
+                        LoadPriceResponse.PriceResponse.OptionResponse::optionNo,
+                        LoadPriceResponse.PriceResponse.OptionResponse::name,
+                        LoadPriceResponse.PriceResponse.OptionResponse::count,
+                        LoadPriceResponse.PriceResponse.OptionResponse::price,
+                        LoadPriceResponse.PriceResponse.OptionResponse::contents)
                 .contains(tuple(
                         optionEntity.getOptionNo(),
                         "옵션 A",
@@ -134,13 +136,13 @@ public class LoadPriceIntegrationTest {
                         List.of("마사지 추가")));
 
         // PriceReferenceImage TODO: key -> url 후 재검증 필요
-        List<PriceReferenceImageResponse> imageResults = first.priceReferenceImages();
+        List<LoadPriceResponse.PriceResponse.PriceReferenceImageResponse> imageResults = first.priceReferenceImages();
         assertThat(imageResults).hasSize(1)
                 .extracting(
-                        PriceReferenceImageResponse::priceRefImageNo,
-                        PriceReferenceImageResponse::fileKey,
-                        PriceReferenceImageResponse::imageUrl,
-                        PriceReferenceImageResponse::imageOrder)
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::priceRefImageNo,
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::fileKey,
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::imageUrl,
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::imageOrder)
                 .contains(tuple(referenceImageEntity.getPriceReferenceImageNo(), "file-key-123", null, 1));
     }
 
@@ -199,12 +201,14 @@ public class LoadPriceIntegrationTest {
                 .build();
         return userJpaRepository.save(userEntity);
     }
+
     private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
         String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, "Bearer " + accessToken);
         return new HttpEntity<>(webRequest, headers);
     }
+
     private void commitTestTransaction() {
         TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
         TestTransaction.end(); // 실제 커밋 수행

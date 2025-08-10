@@ -2,7 +2,6 @@ package com.picus.core.price.adapter.in.web.mapper;
 
 import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse;
-import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse.PriceReferenceImageResponse;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -57,44 +55,48 @@ class LoadPriceWebMapperTest {
                 .build();
 
         // when
-        LoadPriceResponse response = mapper.toResponse(price);
+        LoadPriceResponse response = mapper.toResponse(List.of(price)); // 리스트로 전달
 
         // then
-        assertThat(response.priceNo()).isEqualTo("P123");
-        assertThat(response.priceThemeType()).isEqualTo(PriceThemeType.SNAP);
-        assertThat(response.snapSubTheme()).isEqualTo(SnapSubTheme.ADMISSION);
+        List<LoadPriceResponse.PriceResponse> prices = response.prices();
+        assertThat(prices).hasSize(1);
 
-        List<PriceReferenceImageResponse> imageResponses = response.priceReferenceImages();
+        LoadPriceResponse.PriceResponse first = prices.getFirst();
+        assertThat(first.priceNo()).isEqualTo("P123");
+        assertThat(first.priceThemeType()).isEqualTo(PriceThemeType.SNAP);
+        assertThat(first.snapSubTheme()).isEqualTo(SnapSubTheme.ADMISSION);
+
+        List<LoadPriceResponse.PriceResponse.PriceReferenceImageResponse> imageResponses = first.priceReferenceImages();
         assertThat(imageResponses).hasSize(1)
                 .extracting(
-                        PriceReferenceImageResponse::priceRefImageNo,
-                        PriceReferenceImageResponse::fileKey,
-                        PriceReferenceImageResponse::imageUrl,
-                        PriceReferenceImageResponse::imageOrder
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::priceRefImageNo,
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::fileKey,
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::imageUrl,
+                        LoadPriceResponse.PriceResponse.PriceReferenceImageResponse::imageOrder
                 ).containsExactlyInAnyOrder(
                         tuple("img_no", "file-key", "https://cdn.picus.com/image.jpg", 1)
                 );
 
-        List<PackageResponse> packageResponses = response.packages();
+        List<LoadPriceResponse.PriceResponse.PackageResponse> packageResponses = first.packages();
         assertThat(packageResponses).hasSize(1)
                 .extracting(
-                        PackageResponse::packageNo,
-                        PackageResponse::name,
-                        PackageResponse::price,
-                        PackageResponse::contents,
-                        PackageResponse::notice
+                        LoadPriceResponse.PriceResponse.PackageResponse::packageNo,
+                        LoadPriceResponse.PriceResponse.PackageResponse::name,
+                        LoadPriceResponse.PriceResponse.PackageResponse::price,
+                        LoadPriceResponse.PriceResponse.PackageResponse::contents,
+                        LoadPriceResponse.PriceResponse.PackageResponse::notice
                 ).containsExactlyInAnyOrder(
                         tuple("pkg_no", "기본 패키지", 100000, List.of("내용1", "내용2"), "주의사항")
                 );
 
-        List<OptionResponse> optionResponses = response.options();
+        List<LoadPriceResponse.PriceResponse.OptionResponse> optionResponses = first.options();
         assertThat(optionResponses).hasSize(1)
                 .extracting(
-                        OptionResponse::optionNo,
-                        OptionResponse::name,
-                        OptionResponse::count,
-                        OptionResponse::price,
-                        OptionResponse::contents
+                        LoadPriceResponse.PriceResponse.OptionResponse::optionNo,
+                        LoadPriceResponse.PriceResponse.OptionResponse::name,
+                        LoadPriceResponse.PriceResponse.OptionResponse::count,
+                        LoadPriceResponse.PriceResponse.OptionResponse::price,
+                        LoadPriceResponse.PriceResponse.OptionResponse::contents
                 ).containsExactlyInAnyOrder(
                         tuple("opt_no", "옵션A", 2, 20000, List.of("옵션내용1", "옵션내용2"))
                 );
