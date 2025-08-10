@@ -1,5 +1,7 @@
 package com.picus.core.price.adapter.in.web.data.response;
 
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import lombok.Builder;
 
 import java.util.List;
@@ -7,7 +9,8 @@ import java.util.List;
 @Builder
 public record LoadPriceResponse(
         String priceNo,
-        String priceThemeType,
+        PriceThemeType priceThemeType,
+        SnapSubTheme snapSubTheme,
         List<PriceReferenceImageResponse> priceReferenceImages,
         List<PackageResponse> packages,
         List<OptionResponse> options

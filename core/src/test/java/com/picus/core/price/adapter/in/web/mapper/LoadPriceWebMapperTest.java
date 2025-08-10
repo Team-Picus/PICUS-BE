@@ -7,6 +7,7 @@ import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +49,8 @@ class LoadPriceWebMapperTest {
 
         Price price = Price.builder()
                 .priceNo("P123")
-                .priceThemeType(PriceThemeType.BEAUTY)
+                .priceThemeType(PriceThemeType.SNAP)
+                .snapSubTheme(SnapSubTheme.ADMISSION)
                 .priceReferenceImages(List.of(image))
                 .packages(List.of(pkg))
                 .options(List.of(option))
@@ -59,7 +61,8 @@ class LoadPriceWebMapperTest {
 
         // then
         assertThat(response.priceNo()).isEqualTo("P123");
-        assertThat(response.priceThemeType()).isEqualTo("BEAUTY");
+        assertThat(response.priceThemeType()).isEqualTo(PriceThemeType.SNAP);
+        assertThat(response.snapSubTheme()).isEqualTo(SnapSubTheme.ADMISSION);
 
         List<PriceReferenceImageResponse> imageResponses = response.priceReferenceImages();
         assertThat(imageResponses).hasSize(1)

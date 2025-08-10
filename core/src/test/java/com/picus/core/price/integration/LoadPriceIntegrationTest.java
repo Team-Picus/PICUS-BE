@@ -103,7 +103,7 @@ public class LoadPriceIntegrationTest {
 
         LoadPriceResponse first = result.getFirst();
         assertThat(first.priceNo()).isEqualTo(priceEntity.getPriceNo());
-        assertThat(first.priceThemeType()).isEqualTo("BEAUTY");
+        assertThat(first.priceThemeType()).isEqualTo(PriceThemeType.BEAUTY);
 
         // package
         List<PackageResponse> packageResult = first.packages();

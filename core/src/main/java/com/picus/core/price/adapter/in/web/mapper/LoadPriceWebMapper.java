@@ -18,7 +18,8 @@ public class LoadPriceWebMapper {
     public LoadPriceResponse toResponse(Price price) {
         return LoadPriceResponse.builder()
                 .priceNo(price.getPriceNo())
-                .priceThemeType(price.getPriceThemeType().toString())
+                .priceThemeType(price.getPriceThemeType())
+                .snapSubTheme(price.getSnapSubTheme())
                 .priceReferenceImages(toPriceReferenceImageResponse(price.getPriceReferenceImages()))
                 .packages(toPackageResponse(price.getPackages()))
                 .options(toOptionResponse(price.getOptions()))
