@@ -33,6 +33,7 @@ import java.util.List;
 import static com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
@@ -67,7 +68,7 @@ public class LoadPriceIntegrationTest {
     @Test
     @DisplayName("사용자는 특정 전문가의 가격정보를 조회할 수 있다.")
     public void getPricesByExpert_success() throws Exception {
-        // given
+        // given - 데이터베이스 셋팅
         String expertNo = "expert001";
         PriceEntity priceEntity = createPriceEntity(expertNo, PriceThemeType.BEAUTY);
         PackageEntity packageEntity = createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
@@ -76,13 +77,10 @@ public class LoadPriceIntegrationTest {
 
         commitTestTransaction();
 
-        // when
-        UserEntity userEntity = createUserEntity(); // 인증을 위한 가상의 사용자 생성
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        HttpEntity<Void> request = new HttpEntity<>(null, headers);
+        // given - 요청 셋팅
+        HttpEntity<Object> request = settingWebRequest(createUserEntity(), null);
 
+        // when
         ResponseEntity<BaseResponse<List<LoadPriceResponse>>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/prices",
                 HttpMethod.GET,
@@ -201,7 +199,12 @@ public class LoadPriceIntegrationTest {
                 .build();
         return userJpaRepository.save(userEntity);
     }
-
+    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
+        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(AUTHORIZATION, "Bearer " + accessToken);
+        return new HttpEntity<>(webRequest, headers);
+    }
     private void commitTestTransaction() {
         TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
         TestTransaction.end(); // 실제 커밋 수행
