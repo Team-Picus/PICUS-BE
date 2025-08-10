@@ -4,6 +4,7 @@ import com.picus.core.reservation.adapter.out.persistence.entity.ReservationEnti
 import com.picus.core.reservation.adapter.out.persistence.mapper.ReservationPersistenceMapper;
 import com.picus.core.reservation.adapter.out.persistence.repository.ReservationJpaRepository;
 import com.picus.core.reservation.application.port.out.ReservationCreatePort;
+import com.picus.core.reservation.application.port.out.ReservationDeletePort;
 import com.picus.core.reservation.application.port.out.ReservationReadPort;
 import com.picus.core.reservation.application.port.out.ReservationUpdatePort;
 import com.picus.core.reservation.domain.Reservation;
@@ -20,7 +21,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.RESE
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class ReservationPersistenceAdapter
-        implements ReservationCreatePort, ReservationReadPort, ReservationUpdatePort {
+        implements ReservationCreatePort, ReservationReadPort, ReservationUpdatePort, ReservationDeletePort {
 
     private final ReservationPersistenceMapper reservationPersistenceMapper;
     private final ReservationJpaRepository reservationJpaRepository;
@@ -49,5 +50,10 @@ public class ReservationPersistenceAdapter
     public void update(String reservationNo, ReservationStatus status) {
         Reservation reservation = findById(reservationNo);
         reservation.updateStatus(status);
+    }
+
+    @Override
+    public void delete(String reservationNo) {
+        reservationJpaRepository.deleteById(reservationNo);
     }
 }

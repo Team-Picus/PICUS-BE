@@ -34,7 +34,11 @@ public class Reservation {
     }
 
     public boolean isPending() {
-        return this.reservationStatus.equals(ReservationStatus.REQUESTED);
+        return ReservationStatus.REQUESTED.equals(this.reservationStatus);
+    }
+
+    public boolean isApproval() {
+        return ReservationStatus.APPROVAL.equals(this.reservationStatus);
     }
 
     public void updateStatus(ReservationStatus reservationStatus) {
@@ -43,5 +47,14 @@ public class Reservation {
 
     public boolean isClient(String userNo) {
         return this.userNo.equals(userNo);
+    }
+
+    public boolean isPaid() {
+        return ReservationStatus.IN_PROGRESS.equals(this.reservationStatus);
+    }
+
+    public boolean isCompleted() {
+        return ReservationStatus.REJECTED.equals(this.reservationStatus)
+                || ReservationStatus.COMPLETED.equals(this.reservationStatus);
     }
 }

@@ -37,7 +37,8 @@ public enum GlobalErrorStatus implements BaseCodeInterface {
     // Reservation
     RESERVATION_OWNER_MISMATCH(HttpStatus.UNAUTHORIZED, "RESERVATION001", "해당 예약의 소유자가 아닙니다."),
     ALREADY_DECIDE_RESERVATION(HttpStatus.BAD_REQUEST, "RESERVATION002", "이미 처리된 예약입니다."),
-    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION003", "존재하지 않는 예약입니다.")
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION003", "존재하지 않는 예약입니다."),
+    ALREADY_COMPLETED_RESERVATION(HttpStatus.BAD_REQUEST, "RESERVATION004", "이미 완료된 예약입니다.")
     ;
 
     private final HttpStatus httpStatus;
