@@ -5,7 +5,6 @@ import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest.PostIma
 import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
-import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,12 +32,16 @@ class UpdatePostWebMapperTest {
                 .title("테스트 제목")
                 .oneLineDescription("한 줄 설명")
                 .detailedDescription("자세한 설명입니다.")
-                .postThemeTypes(List.of(PostThemeType.BEAUTY, PostThemeType.SNAP))
-                .snapSubThemes(List.of(SnapSubTheme.ADMISSION))
                 .postMoodTypes(List.of(PostMoodType.COZY))
                 .spaceType(SpaceType.INDOOR)
                 .spaceAddress("서울시 강남구")
-                .packageNo("pkg-001")
+                .packages(
+                        List.of(UpdatePostRequest.PackageRequest.builder()
+                                .packageNo("pkg-001")
+                                .packageThemeType("SNAP")
+                                .snapSubTheme("FAMILY")
+                                .build())
+                )
                 .build();
 
         String postNo = "post-123";
@@ -52,13 +55,18 @@ class UpdatePostWebMapperTest {
         assertThat(appReq.title()).isEqualTo("테스트 제목");
         assertThat(appReq.oneLineDescription()).isEqualTo("한 줄 설명");
         assertThat(appReq.detailedDescription()).isEqualTo("자세한 설명입니다.");
-        assertThat(appReq.postThemeTypes()).containsExactly(PostThemeType.BEAUTY, PostThemeType.SNAP);
-        assertThat(appReq.snapSubThemes()).containsExactly(SnapSubTheme.ADMISSION);
         assertThat(appReq.postMoodTypes()).containsExactly(PostMoodType.COZY);
         assertThat(appReq.spaceType()).isEqualTo(SpaceType.INDOOR);
         assertThat(appReq.spaceAddress()).isEqualTo("서울시 강남구");
-        assertThat(appReq.packageNo()).isEqualTo("pkg-001");
         assertThat(appReq.currentUserNo()).isEqualTo("user-123");
+        assertThat(appReq.packages()).hasSize(1)
+                .extracting(
+                        UpdatePostCommand.PackageCommand::packageNo,
+                        UpdatePostCommand.PackageCommand::packageThemeType,
+                        UpdatePostCommand.PackageCommand::snapSubTheme
+                ).containsExactlyInAnyOrder(
+                        tuple("pkg-001", "SNAP", "FAMILY")
+                );
 
         // 이미지 목록 검증
         assertThat(appReq.postImages()).hasSize(2);

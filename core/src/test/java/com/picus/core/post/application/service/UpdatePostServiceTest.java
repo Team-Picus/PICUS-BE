@@ -67,12 +67,19 @@ class UpdatePostServiceTest {
         UpdatePostImageCommand deleteImage =
                 createUpdatePostImageAppReq("img-456", null, null, ChangeStatus.DELETE);
 
+
         UpdatePostCommand updatePostCommand =
                 createUpdatePostAppReq(
                         postNo, newImage, updateImage, deleteImage,
-                        "title", "one", "detail",
-                        List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE), List.of(PostMoodType.VINTAGE),
-                        SpaceType.INDOOR, "space", "pkg-123", userNo);
+                        "title", "one", "detail", List.of(PostMoodType.VINTAGE),
+                        SpaceType.INDOOR, "space",
+                        List.of(UpdatePostCommand.PackageCommand.builder()
+                                .packageNo("pkg-123")
+                                .packageThemeType("SNAP")
+                                .snapSubTheme("PROFILE")
+                                .build()
+                        ),
+                        userNo);
 
         User mockUser = mock(User.class);
         given(userReadPort.findById(userNo)).willReturn(mockUser);
@@ -92,8 +99,8 @@ class UpdatePostServiceTest {
         then(mockUser).should().getExpertNo();
         then(postReadPort).should().findById(postNo);
         then(spyPost).should().updatePost("title", "one", "detail",
-                List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE), List.of(PostMoodType.VINTAGE),
-                SpaceType.INDOOR, "space", "pkg-123");
+                List.of("pkg-123"), List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE),
+                List.of(PostMoodType.VINTAGE), SpaceType.INDOOR, "space");
         then(spyPost).should().addPostImage(PostImage.builder()
                 .fileKey(newImage.fileKey())
                 .imageOrder(newImage.imageOrder())
@@ -132,20 +139,18 @@ class UpdatePostServiceTest {
     private UpdatePostCommand createUpdatePostAppReq(
             String postNo, UpdatePostImageCommand newImage, UpdatePostImageCommand updateImage,
             UpdatePostImageCommand deleteImage, String title, String oneLine, String detail,
-            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
-            SpaceType spaceType, String spaceAddress, String packageNo, String userNo) {
+            List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
+            List<UpdatePostCommand.PackageCommand> packages, String userNo) {
         return UpdatePostCommand.builder()
                 .postNo(postNo)
                 .postImages(List.of(newImage, updateImage, deleteImage))
                 .title(title)
                 .oneLineDescription(oneLine)
                 .detailedDescription(detail)
-                .postThemeTypes(postThemeTypes)
-                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
-                .packageNo(packageNo)
+                .packages(packages)
                 .currentUserNo(userNo)
                 .build();
     }

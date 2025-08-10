@@ -105,7 +105,7 @@ public class DeleteCommentIntegrationTest {
     }
     private PostEntity createPostEntity() {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo("packageNo")
+                .packageNos(List.of("packages"))
                 .expertNo("expertNo")
                 .title("title")
                 .oneLineDescription("oneLineDescription")

@@ -24,7 +24,7 @@ class PostPersistenceMapperTest {
     public void toEntity() throws Exception {
         // given
         Post post = createPost(
-                "package-123", "expert-456",
+                List.of("package-123"), "expert-456",
                 "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
                 List.of(PostThemeType.BEAUTY, PostThemeType.SNAP), List.of(SnapSubTheme.ADMISSION),
                 List.of(PostMoodType.COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
@@ -44,7 +44,7 @@ class PostPersistenceMapperTest {
 
         // then
         assertThat(entity.getTitle()).isEqualTo(post.getTitle());
-        assertThat(entity.getPackageNo()).isEqualTo(post.getPackageNo());
+        assertThat(entity.getPackageNos()).isEqualTo(post.getPackageNos());
         assertThat(entity.getExpertNo()).isEqualTo(post.getAuthorNo());
         assertThat(entity.getOneLineDescription()).isEqualTo(post.getOneLineDescription());
         assertThat(entity.getDetailedDescription()).isEqualTo(post.getDetailedDescription());
@@ -61,7 +61,7 @@ class PostPersistenceMapperTest {
     public void toDomain() throws Exception {
         // given
         PostEntity postEntity = createPostEntity(
-                "post-123", "package-123", "expert-456",
+                "post-123", List.of("package-123"), "expert-456",
                 "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
                 List.of(PostThemeType.BEAUTY, PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY),
                 List.of(PostMoodType.COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
@@ -80,7 +80,7 @@ class PostPersistenceMapperTest {
 
         // then
         assertThat(post.getPostNo()).isEqualTo(postEntity.getPostNo());
-        assertThat(post.getPackageNo()).isEqualTo(postEntity.getPackageNo());
+        assertThat(post.getPackageNos()).isEqualTo(postEntity.getPackageNos());
         assertThat(post.getAuthorNo()).isEqualTo(postEntity.getExpertNo());
         assertThat(post.getTitle()).isEqualTo(postEntity.getTitle());
         assertThat(post.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
@@ -97,12 +97,12 @@ class PostPersistenceMapperTest {
         assertThat(post.getPostImages()).containsExactly(postImage);
     }
 
-    private Post createPost(String packageNo, String authorNo, String title, String oneLineDescription,
+    private Post createPost(List<String> packageNos, String authorNo, String title, String oneLineDescription,
                             String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                             boolean isPinned, List<PostImage> postImages) {
         return Post.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .authorNo(authorNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
@@ -117,13 +117,13 @@ class PostPersistenceMapperTest {
                 .build();
     }
 
-    private PostEntity createPostEntity(String postNo, String packageNo, String authorNo, String title, String oneLineDescription,
+    private PostEntity createPostEntity(String postNo, List<String> packageNos, String authorNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         return PostEntity.builder()
                 .postNo(postNo)
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(authorNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

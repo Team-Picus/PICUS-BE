@@ -61,7 +61,7 @@ class PostPersistenceAdapterTest {
     @DisplayName("Post를 데이터베이스에 저장한다.")
     public void save_success() throws Exception {
         // given
-        Post post = createPost(null, "package-123", "expert-456",
+        Post post = createPost(null, List.of("package-123"), "expert-456",
                 "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
                 List.of(BEAUTY, SNAP), List.of(FAMILY),
                 List.of(COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
@@ -85,7 +85,7 @@ class PostPersistenceAdapterTest {
         assertThat(optionalPostEntity).isPresent();
         PostEntity postEntity = optionalPostEntity.get();
         assertThat(postEntity.getPostNo()).isEqualTo(saved.getPostNo());
-        assertThat(postEntity.getPackageNo()).isEqualTo("package-123");
+        assertThat(postEntity.getPackageNos()).containsExactly("package-123");
         assertThat(postEntity.getExpertNo()).isEqualTo("expert-456");
         assertThat(postEntity.getTitle()).isEqualTo("테스트 제목");
         assertThat(postEntity.getOneLineDescription()).isEqualTo("한 줄 설명");
@@ -114,7 +114,7 @@ class PostPersistenceAdapterTest {
         // given
         // 데이터베이스에 데이터 셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "제목", "설명", "상세 설명",
+                List.of("package-123"), "expert-456", "제목", "설명", "상세 설명",
                 List.of(SNAP), List.of(FAMILY), List.of(COZY),
                 SpaceType.INDOOR, "서울시 강남구", false
         );
@@ -130,7 +130,7 @@ class PostPersistenceAdapterTest {
 
         Post post = result.get();
         assertThat(post.getPostNo()).isEqualTo(postEntity.getPostNo());
-        assertThat(post.getPackageNo()).isEqualTo(postEntity.getPackageNo());
+        assertThat(post.getPackageNos()).isEqualTo(postEntity.getPackageNos());
         assertThat(post.getAuthorNo()).isEqualTo(postEntity.getExpertNo());
         assertThat(post.getTitle()).isEqualTo(postEntity.getTitle());
         assertThat(post.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
@@ -189,14 +189,14 @@ class PostPersistenceAdapterTest {
 
         // 데이터베이스에 데이터셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "old_title", "old_one", "old_detail",
+                List.of("package-123"), "expert-456", "old_title", "old_one", "old_detail",
                 List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         clearPersistenceContext();
 
         // 수정할 Post 객체
-        Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
+        Post updatedPost = createPost(postEntity.getPostNo(), List.of("package-456"), "expert-456",
                 "new_title", "new_one", "new_detail",
                 List.of(BEAUTY, SNAP), List.of(FAMILY), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", true, List.of()
@@ -211,7 +211,7 @@ class PostPersistenceAdapterTest {
         PostEntity postResult = postJpaRepository.findById(postEntity.getPostNo())
                 .orElseThrow();
         assertThat(postResult.getPostNo()).isEqualTo(postEntity.getPostNo());
-        assertThat(postResult.getPackageNo()).isEqualTo("package-456");
+        assertThat(postResult.getPackageNos()).containsExactly("package-456");
         assertThat(postResult.getExpertNo()).isEqualTo("expert-456");
         assertThat(postResult.getTitle()).isEqualTo("new_title");
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
@@ -232,7 +232,7 @@ class PostPersistenceAdapterTest {
 
         // 데이터베이스에 데이터셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "old_title", "old_one", "old_detail",
+                List.of("package-123"), "expert-456", "old_title", "old_one", "old_detail",
                 List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
@@ -242,7 +242,7 @@ class PostPersistenceAdapterTest {
         clearPersistenceContext();
 
         // 수정할 Post 객체
-        Post updatedPost = createPost(postEntity.getPostNo(), "package-456", "expert-456",
+        Post updatedPost = createPost(postEntity.getPostNo(), List.of("package-456"), "expert-456",
                 "new_title", "new_one", "new_detail",
                 List.of(BEAUTY, SNAP), List.of(FAMILY), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", true,
@@ -262,7 +262,7 @@ class PostPersistenceAdapterTest {
         PostEntity postResult = postJpaRepository.findById(postEntity.getPostNo())
                 .orElseThrow();
         assertThat(postResult.getPostNo()).isEqualTo(postEntity.getPostNo());
-        assertThat(postResult.getPackageNo()).isEqualTo("package-456");
+        assertThat(postResult.getPackageNos()).containsExactly("package-456");
         assertThat(postResult.getExpertNo()).isEqualTo("expert-456");
         assertThat(postResult.getTitle()).isEqualTo("new_title");
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
@@ -292,7 +292,7 @@ class PostPersistenceAdapterTest {
         // given
         // 데이터베이스에 데이터셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "old_title", "old_one", "old_detail",
+                List.of("package-123"), "expert-456", "old_title", "old_one", "old_detail",
                 List.of(BEAUTY), List.of(), List.of(COZY),
                 SpaceType.INDOOR, "old_address", false
         );
@@ -333,7 +333,7 @@ class PostPersistenceAdapterTest {
         // given
         // 데이터베이스에 데이터 셋팅
         PostEntity postEntity = createPostEntity(
-                "package-123", "expert-456", "제목", "설명", "상세 설명",
+                List.of("package-123"), "expert-456", "제목", "설명", "상세 설명",
                 List.of(SNAP), List.of(ADMISSION), List.of(COZY),
                 SpaceType.INDOOR, "서울시 강남구", true
         );
@@ -348,7 +348,7 @@ class PostPersistenceAdapterTest {
 
         Post result = optionalResult.get();
         assertThat(result.getPostNo()).isEqualTo(postEntity.getPostNo());
-        assertThat(result.getPackageNo()).isEqualTo(postEntity.getPackageNo());
+        assertThat(result.getPackageNos()).isEqualTo(postEntity.getPackageNos());
         assertThat(result.getAuthorNo()).isEqualTo(postEntity.getExpertNo());
         assertThat(result.getTitle()).isEqualTo(postEntity.getTitle());
         assertThat(result.getOneLineDescription()).isEqualTo(postEntity.getOneLineDescription());
@@ -751,13 +751,13 @@ class PostPersistenceAdapterTest {
     /**
      * private 메서드
      */
-    private Post createPost(String postNo, String packageNo, String authorNo, String title, String oneLineDescription,
+    private Post createPost(String postNo, List<String> packageNos, String authorNo, String title, String oneLineDescription,
                             String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                             boolean isPinned, List<PostImage> postImages) {
         return Post.builder()
                 .postNo(postNo)
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .authorNo(authorNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
@@ -780,12 +780,12 @@ class PostPersistenceAdapterTest {
                 .build();
     }
 
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription, String detailedDescription,
+    private PostEntity createPostEntity(List<String> packageNos, String expertNo, String title, String oneLineDescription, String detailedDescription,
                                         List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
@@ -802,7 +802,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String title) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo("packageNo")
+                .packageNos(List.of("packages"))
                 .expertNo("expertNo")
                 .title(title)
                 .oneLineDescription("oneLineDescription")
@@ -819,7 +819,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String title, boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo("packageNo")
+                .packageNos(List.of("packages"))
                 .expertNo("expertNo")
                 .title(title)
                 .oneLineDescription("oneLineDescription")
@@ -835,7 +835,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
         PostEntity entity = PostEntity.builder()
-                .packageNo("package")
+                .packageNos(List.of("package"))
                 .expertNo("expert")
                 .title(title)
                 .oneLineDescription("desc")
@@ -854,7 +854,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String expertNo, String title, LocalDateTime createdAt, LocalDateTime updatedAt) {
         PostEntity entity = PostEntity.builder()
-                .packageNo("package")
+                .packageNos(List.of("package"))
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription("desc")
@@ -873,7 +873,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String title, List<PostThemeType> themeTypes, List<SnapSubTheme> snapSubThemes) {
         PostEntity entity = PostEntity.builder()
-                .packageNo("package")
+                .packageNos(List.of("package"))
                 .expertNo("expert")
                 .title(title)
                 .oneLineDescription("desc")
@@ -891,7 +891,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String title, List<PostThemeType> themeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes) {
         PostEntity entity = PostEntity.builder()
-                .packageNo("package")
+                .packageNos(List.of("package"))
                 .expertNo("expert")
                 .title(title)
                 .oneLineDescription("desc")
@@ -909,7 +909,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String title, SpaceType spaceType) {
         PostEntity entity = PostEntity.builder()
-                .packageNo("package")
+                .packageNos(List.of("package"))
                 .expertNo("expert")
                 .title(title)
                 .oneLineDescription("desc")
@@ -927,7 +927,7 @@ class PostPersistenceAdapterTest {
 
     private PostEntity createPostEntity(String title, SpaceType spaceType, String spaceAddress) {
         PostEntity entity = PostEntity.builder()
-                .packageNo("package")
+                .packageNos(List.of("package"))
                 .expertNo("expert")
                 .title(title)
                 .oneLineDescription("desc")

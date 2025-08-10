@@ -1,7 +1,9 @@
 package com.picus.core.post.adapter.in.web.mapper;
 
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest.PostImageRequest;
+import com.picus.core.post.application.port.in.command.CreatePostCommand;
 import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.application.port.in.command.UpdatePostCommand.UpdatePostImageCommand;
 import org.springframework.stereotype.Component;
@@ -18,12 +20,10 @@ public class UpdatePostWebMapper {
                 .title(webReq.title())
                 .oneLineDescription(webReq.oneLineDescription())
                 .detailedDescription(webReq.detailedDescription())
-                .postThemeTypes(webReq.postThemeTypes())
-                .snapSubThemes(webReq.snapSubThemes())
                 .postMoodTypes(webReq.postMoodTypes())
                 .spaceType(webReq.spaceType())
                 .spaceAddress(webReq.spaceAddress())
-                .packageNo(webReq.packageNo())
+                .packages(toPackageCommend(webReq.packages()))
                 .currentUserNo(currentUserNo)
                 .build();
     }
@@ -36,6 +36,16 @@ public class UpdatePostWebMapper {
                                 .fileKey(webReq.fileKey())
                                 .imageOrder(webReq.imageOrder())
                                 .changeStatus(webReq.changeStatus())
+                                .build()
+                ).toList();
+    }
+    private List<UpdatePostCommand.PackageCommand> toPackageCommend(List<UpdatePostRequest.PackageRequest> packageRequests) {
+        return packageRequests.stream()
+                .map(packageRequest ->
+                        UpdatePostCommand.PackageCommand.builder()
+                                .packageNo(packageRequest.packageNo())
+                                .packageThemeType(packageRequest.packageThemeType())
+                                .snapSubTheme(packageRequest.snapSubTheme())
                                 .build()
                 ).toList();
     }

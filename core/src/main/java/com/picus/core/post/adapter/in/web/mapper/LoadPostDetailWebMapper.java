@@ -21,7 +21,7 @@ public class LoadPostDetailWebMapper {
                 .moodTypes(result.moodTypes())
                 .spaceType(result.spaceType())
                 .spaceAddress(result.spaceAddress())
-                .packageNo(result.packageNo())
+                .packageNos(result.packageNos())
                 .updatedAt(result.updatedAt())
                 .authorInfo(toAuthorInfo(result.authorInfo()))
                 .images(toPostImageResponse(result.images()))

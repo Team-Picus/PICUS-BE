@@ -5,7 +5,7 @@ import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaReposit
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest;
-import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest.PostImageWebReq;
+import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest.PostImageRequest;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
@@ -80,8 +80,8 @@ public class CreatePostIntegrationTest {
         // 입력값 셋팅
         CreatePostRequest webReq = createWebReq(
                 List.of(
-                        CreatePostRequest.PostImageWebReq.builder().fileKey("img1.jpg").imageOrder(1).build(),
-                        CreatePostRequest.PostImageWebReq.builder().fileKey("img2.jpg").imageOrder(2).build()
+                        PostImageRequest.builder().fileKey("img1.jpg").imageOrder(1).build(),
+                        PostImageRequest.builder().fileKey("img2.jpg").imageOrder(2).build()
                 ),
                 "테스트 제목",
                 "한 줄 설명",
@@ -90,7 +90,11 @@ public class CreatePostIntegrationTest {
                 List.of(PostMoodType.COZY),
                 SpaceType.INDOOR,
                 "서울시 강남구",
-                "pkg-001"
+                List.of(CreatePostRequest.PackageRequest.builder()
+                        .packageNo("pkg-001")
+                        .packageThemeType("SNAP")
+                        .snapSubTheme("FAMILY")
+                        .build())
         );
 
         // 요청 셋팅
@@ -112,12 +116,12 @@ public class CreatePostIntegrationTest {
         List<PostEntity> postEntities = postJpaRepository.findAll();
         assertThat(postEntities).hasSize(1)
                 .extracting(
-                        "packageNo", "title", "oneLineDescription", "detailedDescription",
+                        "packageNos", "title", "oneLineDescription", "detailedDescription",
                         "postThemeTypes", "snapSubThemes", "postMoodTypes", "spaceType", "spaceAddress", "isPinned"
                 )
                 .containsExactly(
                         tuple(
-                                "pkg-001",
+                                List.of("pkg-001"),
                                 "테스트 제목",
                                 "한 줄 설명",
                                 "자세한 설명",
@@ -177,7 +181,7 @@ public class CreatePostIntegrationTest {
     }
 
     private CreatePostRequest createWebReq(
-            List<PostImageWebReq> postImages,
+            List<PostImageRequest> postImages,
             String title,
             String oneLineDescription,
             String detailedDescription,
@@ -185,19 +189,17 @@ public class CreatePostIntegrationTest {
             List<PostMoodType> postMoodTypes,
             SpaceType spaceType,
             String spaceAddress,
-            String packageNo
+            List<CreatePostRequest.PackageRequest> packages
     ) {
         return CreatePostRequest.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
-                .postThemeTypes(postThemeTypes)
-                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
-                .packageNo(packageNo)
+                .packages(packages)
                 .build();
     }
 

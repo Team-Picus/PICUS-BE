@@ -82,7 +82,7 @@ public class UpdatePostIntegrationTest {
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
         PostEntity postEntity = createPostEntity(
-                "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
+                List.of("package-123"), expertEntity.getExpertNo(), "old_title", "old_one",
                 "old_detail", List.of(BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "old_address", false
         );
@@ -92,16 +92,23 @@ public class UpdatePostIntegrationTest {
         commitTestTransaction();
 
         // 입력 값 셋팅
-        UpdatePostRequest webReq = createWebReq(List.of(
+        UpdatePostRequest webReq = createWebReq(
+                List.of(
                         createPostImageWebReq(null,
                                 "new_file_key", 1, NEW), // 새로 추가된 이미지
                         createPostImageWebReq(postImageEntity1.getPostImageNo(),
                                 "chg_file_key", 2, UPDATE), // 수정된 이미지
                         createPostImageWebReq(postImageEntity2.getPostImageNo(),
                                 postImageEntity2.getFileKey(), postImageEntity2.getImageOrder(), DELETE) // 삭제된 이미지
-                ), "new_title", "new_one", "new_detail",
-                List.of(BEAUTY, SNAP), List.of(ADMISSION), List.of(VINTAGE),
-                SpaceType.OUTDOOR, "new_address", "package-456");
+                ),
+                "new_title", "new_one", "new_detail",
+                List.of(VINTAGE), SpaceType.OUTDOOR, "new_address",
+                List.of(UpdatePostRequest.PackageRequest.builder()
+                        .packageNo("package-456")
+                        .packageThemeType("SNAP")
+                        .snapSubTheme("FAMILY")
+                        .build())
+        );
 
         HttpEntity<UpdatePostRequest> httpEntity = settingWebRequest(userEntity, webReq);
 
@@ -122,16 +129,17 @@ public class UpdatePostIntegrationTest {
         PostEntity postResult = postJpaRepository.findById(postEntity.getPostNo())
                 .orElseThrow();
         assertThat(postResult.getPostNo()).isEqualTo(postEntity.getPostNo());
-        assertThat(postResult.getPackageNo()).isEqualTo("package-456");
         assertThat(postResult.getExpertNo()).isEqualTo(expertEntity.getExpertNo());
         assertThat(postResult.getTitle()).isEqualTo("new_title");
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
         assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
-        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
-        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(ADMISSION));
         assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(VINTAGE));
         assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
+
+        assertThat(postResult.getPackageNos()).containsExactly("package-456");
+        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(SNAP));
+        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(FAMILY));
 
         // PostImageEntity 검증
         List<PostImageEntity> imageResults = postImageJpaRepository.findByPostEntity_PostNo(postEntity.getPostNo());
@@ -183,12 +191,12 @@ public class UpdatePostIntegrationTest {
         return expertJpaRepository.save(expertEntity);
     }
 
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
+    private PostEntity createPostEntity(List<String> packageNos, String expertNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
@@ -213,19 +221,16 @@ public class UpdatePostIntegrationTest {
 
     private UpdatePostRequest createWebReq(
             List<UpdatePostRequest.PostImageRequest> postImages, String title, String oneLineDescription, String detailedDescription,
-            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
-            SpaceType spaceType, String spaceAddress, String packageNo) {
+            List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress, List<UpdatePostRequest.PackageRequest> packages) {
         return UpdatePostRequest.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
-                .postThemeTypes(postThemeTypes)
-                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
-                .packageNo(packageNo)
+                .packages(packages)
                 .build();
     }
 

@@ -4,14 +4,16 @@ import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
-import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
+import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
+import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -119,16 +121,33 @@ public class UpdatePostService implements UpdatePostUseCase {
     }
 
     private void updatePost(Post post, UpdatePostCommand updatePostCommand) {
+        List<String> packageNos = new ArrayList<>();
+        Set<PostThemeType> postThemeTypes = new HashSet<>(); // 중복된 테마가 넘어올 수 있으므로 Set
+        Set<SnapSubTheme> snapSubThemes = new HashSet<>();
+        setPackageInfo(updatePostCommand.packages(), packageNos, postThemeTypes, snapSubThemes);
         post.updatePost(
                 updatePostCommand.title(),
                 updatePostCommand.oneLineDescription(),
                 updatePostCommand.detailedDescription(),
-                updatePostCommand.postThemeTypes(),
-                updatePostCommand.snapSubThemes(),
+                packageNos,
+                postThemeTypes.stream().toList(),
+                snapSubThemes.stream().toList(),
                 updatePostCommand.postMoodTypes(),
                 updatePostCommand.spaceType(),
-                updatePostCommand.spaceAddress(),
-                updatePostCommand.packageNo()
+                updatePostCommand.spaceAddress()
         );
+    }
+
+    private void setPackageInfo(List<UpdatePostCommand.PackageCommand> packages, List<String> packageNos,
+                                Set<PostThemeType> postThemeTypes, Set<SnapSubTheme> snapSubThemes) {
+        for (UpdatePostCommand.PackageCommand packageCommand : packages) {
+            packageNos.add(packageCommand.packageNo());
+            try {
+                postThemeTypes.add(PostThemeType.valueOf(packageCommand.packageThemeType()));
+                snapSubThemes.add(SnapSubTheme.valueOf(packageCommand.snapSubTheme()));
+            } catch (IllegalArgumentException e) {
+                throw new RestApiException(GlobalErrorStatus._BAD_REQUEST);
+            }
+        }
     }
 }

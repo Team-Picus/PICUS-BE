@@ -65,17 +65,17 @@ public class SearchPostIntegrationTest {
         // given - 데이터베이스 데이터 셋팅
         UserEntity userEntity = createUserEntity();
 
-        PostEntity p1 = createPostEntity("pkg-1", userEntity.getExpertNo(), "가을 스냅 촬영",
+        PostEntity p1 = createPostEntity(List.of("pkg-1"), userEntity.getExpertNo(), "가을 스냅 촬영",
                 "가을 분위기의 한 줄 소개", "가을 배경의 실내 스냅 촬영 포스트입니다.",
                 List.of(SNAP), List.of(FAMILY), List.of(COZY), SpaceType.INDOOR,
                 "서울특별시 강남구", false
         );
-        PostEntity p2 = createPostEntity("pkg-2", userEntity.getExpertNo(), "여름 데일리샷",
+        PostEntity p2 = createPostEntity(List.of("pkg-2"), userEntity.getExpertNo(), "여름 데일리샷",
                 "시원한 여름 데일리샷", "강남 거리에서 찍은 데일리 사진",
                 List.of(BEAUTY), List.of(), List.of(INTENSE), SpaceType.OUTDOOR,
                 "서울특별시 강남구", false
         );
-        PostEntity p3 = createPostEntity("pkg-3", userEntity.getExpertNo(), "스냅 없는 글",
+        PostEntity p3 = createPostEntity(List.of("pkg-3"), userEntity.getExpertNo(), "스냅 없는 글",
                 "그냥 스냅은 없음", "이 게시글에는 스냅이 없습니다.",
                 List.of(BEAUTY), List.of(), List.of(COZY), SpaceType.INDOOR,
                 "서울특별시 강남구", false
@@ -136,12 +136,12 @@ public class SearchPostIntegrationTest {
         return userJpaRepository.save(userEntity);
     }
 
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
+    private PostEntity createPostEntity(List<String> packageNos, String expertNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

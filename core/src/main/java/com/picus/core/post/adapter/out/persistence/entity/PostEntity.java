@@ -1,5 +1,6 @@
 package com.picus.core.post.adapter.out.persistence.entity;
 
+import com.picus.core.expert.adapter.out.persistence.converter.StringConverter;
 import com.picus.core.post.adapter.out.persistence.converter.PostMoodTypeConverter;
 import com.picus.core.post.adapter.out.persistence.converter.PostThemeTypeConverter;
 import com.picus.core.post.adapter.out.persistence.converter.SnapSubThemeConverter;
@@ -34,8 +35,11 @@ public class PostEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String expertNo;
+
     @Column(nullable = false)
-    private String packageNo;
+    @Convert(converter = StringConverter.class)
+    @Builder.Default
+    private List<String> packageNos = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;
@@ -72,7 +76,7 @@ public class PostEntity extends BaseEntity {
     private Boolean isPinned;
 
     public void updatePostEntity(
-            String packageNo, String title, String oneLineDescription, String detailedDescription,
+            List<String> packageNos, String title, String oneLineDescription, String detailedDescription,
             List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, Boolean isPinned
     ) {
@@ -84,7 +88,7 @@ public class PostEntity extends BaseEntity {
         this.postMoodTypes = postMoodTypes;
         this.spaceType = spaceType;
         this.spaceAddress = spaceAddress;
-        this.packageNo = packageNo;
+        this.packageNos = packageNos;
         this.isPinned = isPinned;
     }
 

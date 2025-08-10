@@ -58,12 +58,12 @@ public class UpdateGalleryIntegrationTest {
         String expertNo = "expert-123";
         UserEntity userEntity = createUserEntity(expertNo);
         PostEntity postEntity1 = createPostEntity(
-                "package-123", expertNo, "title1", "one1",
+                List.of("package-123"), expertNo, "title1", "one1",
                 "detail1", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "address1", true
         );
         PostEntity postEntity2 = createPostEntity(
-                "package-123", expertNo, "title2", "one2",
+                List.of("package-123"), expertNo, "title2", "one2",
                 "detail2", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "address2", false
         );
@@ -115,12 +115,12 @@ public class UpdateGalleryIntegrationTest {
                 .build();
         return userJpaRepository.save(userEntity);
     }
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
+    private PostEntity createPostEntity(List<String> packageNos, String expertNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

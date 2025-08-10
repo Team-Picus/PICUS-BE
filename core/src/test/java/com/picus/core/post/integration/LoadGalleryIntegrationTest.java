@@ -62,7 +62,7 @@ public class LoadGalleryIntegrationTest {
         // 데이터베이스에 데이터 셋팅
         String expertNo = "expert-456";
         PostEntity postEntity = createPostEntity(
-                "package-123", expertNo, "제목", "설명",
+                List.of("package-123"), expertNo, "제목", "설명",
                 "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "서울시 강남구", true
         );
@@ -133,12 +133,12 @@ public class LoadGalleryIntegrationTest {
     /**
      * private 메서드
      */
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
+    private PostEntity createPostEntity(List<String> packageNos, String expertNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

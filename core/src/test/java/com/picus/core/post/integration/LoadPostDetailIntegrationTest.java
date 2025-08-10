@@ -64,7 +64,7 @@ public class LoadPostDetailIntegrationTest {
         String nickname = "nickname";
         String expertNo = "expert-456";
         PostEntity postEntity = createPostEntity(
-                "package-123", expertNo, "제목", "설명",
+                List.of("package-123"), expertNo, "제목", "설명",
                 "상세 설명", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "서울시 강남구", true
         );
@@ -98,7 +98,7 @@ public class LoadPostDetailIntegrationTest {
         assertThat(result.moodTypes()).containsExactlyElementsOf(postEntity.getPostMoodTypes());
         assertThat(result.spaceType()).isEqualTo(postEntity.getSpaceType());
         assertThat(result.spaceAddress()).isEqualTo(postEntity.getSpaceAddress());
-        assertThat(result.packageNo()).isEqualTo(postEntity.getPackageNo());
+        assertThat(result.packageNos()).isEqualTo(postEntity.getPackageNos());
         assertThat(result.updatedAt()).isNotNull();
 
         assertThat(result.authorInfo()).isNotNull();
@@ -116,12 +116,12 @@ public class LoadPostDetailIntegrationTest {
     /**
      * private 메서드
      */
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
+    private PostEntity createPostEntity(List<String> packageNos, String expertNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

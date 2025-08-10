@@ -134,7 +134,7 @@ public class LoadWeeklyMagazinePostByWeekAtIntegrationTest {
     }
     private PostEntity createPostEntity(String title, String expertNo) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo("packageNo")
+                .packageNos(List.of("packages"))
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription("oneLineDescription")

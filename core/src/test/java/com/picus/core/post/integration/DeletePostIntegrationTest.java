@@ -76,7 +76,7 @@ public class DeletePostIntegrationTest {
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
         PostEntity postEntity = createPostEntity(
-                "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
+                List.of("package-123"), expertEntity.getExpertNo(), "old_title", "old_one",
                 "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "old_address", false
         );
@@ -130,12 +130,12 @@ public class DeletePostIntegrationTest {
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
         PostEntity postEntity1 = createPostEntity(
-                "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
+                List.of("package-123"), expertEntity.getExpertNo(), "old_title", "old_one",
                 "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         PostEntity postEntity2 = createPostEntity(
-                "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
+                List.of("package-123"), expertEntity.getExpertNo(), "old_title", "old_one",
                 "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "old_address", false
         );
@@ -198,12 +198,12 @@ public class DeletePostIntegrationTest {
         return expertJpaRepository.save(expertEntity);
     }
 
-    private PostEntity createPostEntity(String packageNo, String expertNo, String title, String oneLineDescription,
+    private PostEntity createPostEntity(List<String> packageNos, String expertNo, String title, String oneLineDescription,
                                         String detailedDescription, List<PostThemeType> postThemeTypes,
                                         List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                                         boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

@@ -14,7 +14,7 @@ public class PostPersistenceMapper {
         return Post.builder()
                 .postNo(postEntity.getPostNo())
                 .authorNo(postEntity.getExpertNo())
-                .packageNo(postEntity.getPackageNo())
+                .packageNos(postEntity.getPackageNos())
                 .title(postEntity.getTitle())
                 .oneLineDescription(postEntity.getOneLineDescription())
                 .detailedDescription(postEntity.getDetailedDescription())
@@ -34,7 +34,7 @@ public class PostPersistenceMapper {
     public PostEntity toEntity(Post post) {
         return PostEntity.builder()
                 .title(post.getTitle())
-                .packageNo(post.getPackageNo())
+                .packageNos(post.getPackageNos())
                 .expertNo(post.getAuthorNo())
                 .oneLineDescription(post.getOneLineDescription())
                 .detailedDescription(post.getDetailedDescription())

@@ -33,7 +33,7 @@ class LoadPostDetailWebMapperTest {
                 .moodTypes(List.of(PostMoodType.COZY))
                 .spaceType(SpaceType.INDOOR)
                 .spaceAddress("서울시 강남구")
-                .packageNo("pkg-1001")
+                .packageNos(List.of("pkg-1001"))
                 .updatedAt(LocalDateTime.of(2023, 8, 2, 12, 0))
                 .authorInfo(LoadPostDetailResult.AuthorInfo.builder()
                         .expertNo("exp-101")
@@ -59,7 +59,7 @@ class LoadPostDetailWebMapperTest {
         assertThat(response.detailedDescription()).isEqualTo(result.detailedDescription());
         assertThat(response.spaceType()).isEqualTo(result.spaceType());
         assertThat(response.spaceAddress()).isEqualTo(result.spaceAddress());
-        assertThat(response.packageNo()).isEqualTo(result.packageNo());
+        assertThat(response.packageNos()).isEqualTo(result.packageNos());
         assertThat(response.updatedAt()).isEqualTo(result.updatedAt());
 
         assertThat(response.authorInfo().expertNo()).isEqualTo(result.authorInfo().expertNo());

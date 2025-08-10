@@ -10,8 +10,6 @@ import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.domain.model.User;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +39,7 @@ class LoadPostDetailServiceTest {
         // given
         String postNo = "post-123";
         String authorNo = "expert-123";
-        Post post = createPost(postNo, "package-123", authorNo,
+        Post post = createPost(postNo, List.of("package-123"), authorNo,
                 "테스트 제목", "한 줄 설명", "자세한 설명입니다.",
                 List.of(BEAUTY, SNAP), List.of(SnapSubTheme.FAMILY),
                 List.of(COZY), SpaceType.INDOOR, "서울특별시 강남구", false,
@@ -79,7 +77,7 @@ class LoadPostDetailServiceTest {
         assertThat(result.moodTypes()).isEqualTo(post.getPostMoodTypes());
         assertThat(result.spaceType()).isEqualTo(post.getSpaceType());
         assertThat(result.spaceAddress()).isEqualTo(post.getSpaceAddress());
-        assertThat(result.packageNo()).isEqualTo(post.getPackageNo());
+        assertThat(result.packageNos()).isEqualTo(post.getPackageNos());
         assertThat(result.updatedAt()).isEqualTo(post.getUpdatedAt());
         assertThat(result.images()).hasSize(post.getPostImages().size())
                 .extracting(
@@ -102,13 +100,13 @@ class LoadPostDetailServiceTest {
                 .willReturn(user);
     }
 
-    private Post createPost(String postNo, String packageNo, String authorNo, String title, String oneLineDescription,
+    private Post createPost(String postNo, List<String> packageNos, String authorNo, String title, String oneLineDescription,
                             String detailedDescription, List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
                             List<PostMoodType> postMoodTypes, SpaceType spaceType, String spaceAddress,
                             boolean isPinned, List<PostImage> postImages) {
         return Post.builder()
                 .postNo(postNo)
-                .packageNo(packageNo)
+                .packageNos(packageNos)
                 .authorNo(authorNo)
                 .title(title)
                 .oneLineDescription(oneLineDescription)

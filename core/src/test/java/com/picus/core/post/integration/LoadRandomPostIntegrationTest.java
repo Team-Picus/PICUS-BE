@@ -122,7 +122,7 @@ public class LoadRandomPostIntegrationTest {
 
     private PostEntity createPostEntity(String title, String expertNo, boolean isPinned) {
         PostEntity postEntity = PostEntity.builder()
-                .packageNo("packageNo")
+                .packageNos(List.of("packages"))
                 .expertNo(expertNo)
                 .title(title)
                 .oneLineDescription("oneLineDescription")

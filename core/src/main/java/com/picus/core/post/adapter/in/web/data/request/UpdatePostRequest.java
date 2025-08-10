@@ -2,8 +2,6 @@ package com.picus.core.post.adapter.in.web.data.request;
 
 import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.domain.vo.PostMoodType;
-import com.picus.core.post.domain.vo.PostThemeType;
-import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -19,12 +17,10 @@ public record UpdatePostRequest(
         @NotBlank String title,
         @NotBlank String oneLineDescription,
         String detailedDescription,
-        @NotNull @Size(min = 1) List<PostThemeType> postThemeTypes,
-        List<SnapSubTheme> snapSubThemes,
         @NotNull @Size(min = 1) List<PostMoodType> postMoodTypes,
         @NotNull SpaceType spaceType,
         @NotBlank String spaceAddress,
-        @NotBlank String packageNo
+        @Valid @NotNull @Size(min = 1) List<PackageRequest> packages
 ) {
 
     @Builder
@@ -33,5 +29,12 @@ public record UpdatePostRequest(
             @NotBlank String fileKey,
             @NotNull Integer imageOrder,
             @NotNull ChangeStatus changeStatus
+    ){}
+
+    @Builder
+    public record PackageRequest(
+            @NotNull String packageNo,
+            @NotNull String packageThemeType,
+            String snapSubTheme
     ){}
 }

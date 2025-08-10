@@ -22,7 +22,7 @@ public record LoadPostDetailResponse(
         List<PostMoodType> moodTypes,
         SpaceType spaceType,
         String spaceAddress,
-        String packageNo,
+        List<String> packageNos,
         LocalDateTime updatedAt
 ) {
 

@@ -1,9 +1,8 @@
 package com.picus.core.post.application.port.in.command;
 
 import com.picus.core.post.domain.vo.PostMoodType;
-import com.picus.core.post.domain.vo.PostThemeType;
-import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.util.List;
@@ -15,12 +14,10 @@ public record UpdatePostCommand(
         String title,
         String oneLineDescription,
         String detailedDescription,
-        List<PostThemeType> postThemeTypes,
-        List<SnapSubTheme> snapSubThemes,
         List<PostMoodType> postMoodTypes,
         SpaceType spaceType,
         String spaceAddress,
-        String packageNo,
+        List<PackageCommand> packages,
         String currentUserNo
 ) {
 
@@ -31,4 +28,11 @@ public record UpdatePostCommand(
             Integer imageOrder,
             ChangeStatus changeStatus
     ) {}
+
+    @Builder
+    public record PackageCommand(
+            @NotNull String packageNo,
+            @NotNull String packageThemeType,
+            String snapSubTheme
+    ){}
 }

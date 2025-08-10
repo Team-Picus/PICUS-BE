@@ -12,26 +12,35 @@ public class CreatePostWebMapper {
 
     public CreatePostCommand toCommand(CreatePostRequest webReq, String currentUserNo) {
         return CreatePostCommand.builder()
-                .postImages(toPostImages(webReq))
+                .postImages(toPostImages(webReq.postImages()))
                 .title(webReq.title())
                 .oneLineDescription(webReq.oneLineDescription())
                 .detailedDescription(webReq.detailedDescription())
-                .postThemeTypes(webReq.postThemeTypes())
-                .snapSubThemes(webReq.snapSubThemes())
                 .postMoodTypes(webReq.postMoodTypes())
                 .spaceType(webReq.spaceType())
                 .spaceAddress(webReq.spaceAddress())
-                .packageNo(webReq.packageNo())
+                .packages(toPackageCommend(webReq.packages()))
                 .authorNo(currentUserNo)
                 .build();
     }
 
-    private List<PostImage> toPostImages(CreatePostRequest webReq) {
-        return webReq.postImages().stream()
-                .map(postImageWebReq ->
+    private List<PostImage> toPostImages(List<CreatePostRequest.PostImageRequest> postImageRequests) {
+        return postImageRequests.stream()
+                .map(postImageRequest ->
                         PostImage.builder()
-                                .fileKey(postImageWebReq.fileKey())
-                                .imageOrder(postImageWebReq.imageOrder())
+                                .fileKey(postImageRequest.fileKey())
+                                .imageOrder(postImageRequest.imageOrder())
+                                .build()
+                ).toList();
+    }
+
+    private List<CreatePostCommand.PackageCommand> toPackageCommend(List<CreatePostRequest.PackageRequest> packageRequests) {
+        return packageRequests.stream()
+                .map(packageRequest ->
+                        CreatePostCommand.PackageCommand.builder()
+                                .packageNo(packageRequest.packageNo())
+                                .packageThemeType(packageRequest.packageThemeType())
+                                .snapSubTheme(packageRequest.snapSubTheme())
                                 .build()
                 ).toList();
     }

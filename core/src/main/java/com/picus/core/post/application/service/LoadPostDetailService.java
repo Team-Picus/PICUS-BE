@@ -51,7 +51,7 @@ public class LoadPostDetailService implements LoadPostDetailUseCase {
                 .moodTypes(post.getPostMoodTypes())
                 .spaceType(post.getSpaceType())
                 .spaceAddress(post.getSpaceAddress())
-                .packageNo(post.getPackageNo())
+                .packageNos(post.getPackageNos())
                 .updatedAt(post.getUpdatedAt())
                 .authorInfo(createAuthorInfo(post.getAuthorNo(), nickname))
                 .build();
