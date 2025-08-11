@@ -105,7 +105,7 @@ class ExpertPersistenceAdapterTest {
         // given
         UserEntity userEntity = givenUserEntity();
         ExpertEntity savedExpertEntity = settingTestExpertEntityData(userEntity);
-        java.lang.String savedExpertNo = savedExpertEntity.getExpertNo();
+        String savedExpertNo = savedExpertEntity.getExpertNo();
 
         // when
         Optional<Expert> optionalResult = expertPersistenceAdapter.findById(savedExpertNo);
@@ -157,7 +157,7 @@ class ExpertPersistenceAdapterTest {
         // given
         UserEntity userEntity = givenUserEntity();
         ExpertEntity expertEntity = settingTestExpertEntityData(userEntity);
-        java.lang.String expertNo = expertEntity.getExpertNo();
+        String expertNo = expertEntity.getExpertNo();
 
         clearPersistenceContext();
 
@@ -208,14 +208,14 @@ class ExpertPersistenceAdapterTest {
         StudioEntity studioEntity = givenStudioEntity(expertEntity);
         studioJpaRepository.save(studioEntity);
 
-        java.lang.String expertNo = expertEntity.getExpertNo();
-        java.lang.String updatedProjectNo = projectEntities.get(0).getProjectNo();
-        java.lang.String deletedProjectNo = projectEntities.get(1).getProjectNo();
+        String expertNo = expertEntity.getExpertNo();
+        String updatedProjectNo = projectEntities.get(0).getProjectNo();
+        String deletedProjectNo = projectEntities.get(1).getProjectNo();
 
-        java.lang.String updatedSkillNo = skillEntities.get(0).getSkillNo();
-        java.lang.String deletedSkillNo = skillEntities.get(1).getSkillNo();
+        String updatedSkillNo = skillEntities.get(0).getSkillNo();
+        String deletedSkillNo = skillEntities.get(1).getSkillNo();
 
-        java.lang.String updatedStudioNo = studioEntity.getStudioNo();
+        String updatedStudioNo = studioEntity.getStudioNo();
 
         clearPersistenceContext();
 
@@ -315,9 +315,9 @@ class ExpertPersistenceAdapterTest {
         StudioEntity studioEntity = givenStudioEntity(expertEntity);
         studioJpaRepository.save(studioEntity);
 
-        java.lang.String expertNo = expertEntity.getExpertNo();
+        String expertNo = expertEntity.getExpertNo();
 
-        java.lang.String deletedStudioNo = studioEntity.getStudioNo();
+        String deletedStudioNo = studioEntity.getStudioNo();
 
         clearPersistenceContext();
 
@@ -354,7 +354,7 @@ class ExpertPersistenceAdapterTest {
                 .build();
     }
 
-    private UserEntity givenUserEntityWithParam(java.lang.String nickname, java.lang.String name, java.lang.String email, java.lang.String providerId) {
+    private UserEntity givenUserEntityWithParam(String nickname, String name, String email, String providerId) {
         return UserEntity.builder()
                 .name(name)
                 .nickname(nickname)

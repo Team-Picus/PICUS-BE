@@ -9,12 +9,12 @@ import java.util.List;
 
 @Builder
 public record RequestApprovalCommand(
-        java.lang.String activityCareer,
-        List<java.lang.String> activityAreas,
+        String activityCareer,
+        List<String> activityAreas,
         List<Project> projects,
         List<Skill> skills,
         Studio studio,
         List<String> portfolioLinks,
-        java.lang.String userNo
+        String userNo
 ) {
 }

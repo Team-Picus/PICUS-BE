@@ -42,7 +42,7 @@ class RequestApprovalWebMapperTest {
                         .build(),
                 List.of("https://portfolio.site")
         );
-        java.lang.String userNo = "user-001";
+        String userNo = "user-001";
 
         // when
         RequestApprovalCommand command = mapper.toCommand(request, userNo);

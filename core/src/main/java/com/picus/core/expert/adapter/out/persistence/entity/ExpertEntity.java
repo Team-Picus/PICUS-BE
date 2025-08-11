@@ -24,24 +24,24 @@ import static lombok.AccessLevel.PROTECTED;
 public class ExpertEntity extends BaseEntity {
 
     @Id
-    @Tsid
-    private java.lang.String expertNo;
+//    @Tsid
+    private String expertNo;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "expert_no")  // User와 PK 공유
     private UserEntity userEntity;
 
-    private java.lang.String backgroundImageKey;
+    private String backgroundImageKey;
 
-    private java.lang.String intro;
+    private String intro;
 
     @Column(nullable = false)
-    private java.lang.String activityCareer;
+    private String activityCareer;
 
     @Convert(converter = StringConverter.class)
     @Column(nullable = false)
-    private List<java.lang.String> activityAreas;
+    private List<String> activityAreas;
 
     @Column(nullable = false)
     private Integer activityCount;
@@ -49,7 +49,7 @@ public class ExpertEntity extends BaseEntity {
     private LocalDateTime lastActivityAt;
 
     @Convert(converter = StringConverter.class)
-    private List<java.lang.String> portfolioLinks;
+    private List<String> portfolioLinks;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -71,16 +71,15 @@ public class ExpertEntity extends BaseEntity {
         if (newExpert.getActivityCount() != null) {
             this.activityCount = newExpert.getActivityCount();
         }
-        if (newExpert.getLastActivityAt() != null) {
-            this.lastActivityAt = newExpert.getLastActivityAt();
-        }
+
+        this.lastActivityAt = newExpert.getLastActivityAt(); // lastActivityAt은 다시 null이 들어가야할 상황이 있음
+
         if (newExpert.getPortfolioLinks() != null) {
             this.portfolioLinks = newExpert.getPortfolioLinks();
         }
         if (newExpert.getApprovalStatus() != null) {
             this.approvalStatus = newExpert.getApprovalStatus();
         }
-        this.lastActivityAt = newExpert.getLastActivityAt();
     }
 
     public void bindUserEntity(UserEntity userEntity) {
