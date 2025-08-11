@@ -94,23 +94,13 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
     }
 
     @Override
-    public void delete(String priceNo) {
-        // 자식 먼저 삭제
-        priceReferenceImageJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
-        packageJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
-        optionJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
-        // 부모 삭제
-        priceJpaRepository.deleteById(priceNo);
-    }
-
-    @Override
     public void update(Price price,
                        List<String> deletedPriceRefImageNos, List<String> deletedPackageNos, List<String> deletedOptionNos
     ) {
         PriceEntity priceEntity = priceJpaRepository.findById(price.getPriceNo())
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
-        priceEntity.updateEntity(price.getPriceThemeType());
+        priceEntity.updateEntity(price.getPriceThemeType(), price.getSnapSubTheme());
 
         // PricePreference 추가/수정/삭제
         updatePriceReferenceImageEntities(price, deletedPriceRefImageNos, priceEntity);
@@ -120,6 +110,16 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
 
         // Option 추가/수정/삭제
         updateOptionEntities(price, deletedOptionNos, priceEntity);
+    }
+
+    @Override
+    public void delete(String priceNo) {
+        // 자식 먼저 삭제
+        priceReferenceImageJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
+        packageJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
+        optionJpaRepository.deleteByPriceEntity_PriceNo(priceNo);
+        // 부모 삭제
+        priceJpaRepository.deleteById(priceNo);
     }
 
     /**
@@ -138,7 +138,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
     }
 
     private List<PriceReferenceImage> findPriceRefImagesByPriceNo(PriceEntity priceEntity) {
-        return priceReferenceImageJpaRepository.findByPriceEntity_PriceNo(priceEntity.getPriceNo()).stream()
+        return priceReferenceImageJpaRepository.findAllByPriceEntity_PriceNoOrderByImageOrder(priceEntity.getPriceNo()).stream()
                 .map(priceReferenceImagePersistenceMapper::toDomain)
                 .toList();
     }
@@ -260,7 +260,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
                 // PK가 있다 = 수정
                 OptionEntity entity = optionJpaRepository.findById(optionNo)
                         .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-                entity.updateEntity(domain.getName(), domain.getCount(), domain.getPrice(), domain.getContents());
+                entity.updateEntity(domain.getName(), domain.getUnitSize(), domain.getPricePerUnit(), domain.getContents());
             } else {
                 // PK가 없다 = 저장
                 OptionEntity entity = optionPersistenceMapper.toEntity(domain);

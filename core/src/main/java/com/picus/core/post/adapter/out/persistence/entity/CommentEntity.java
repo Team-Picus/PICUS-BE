@@ -4,11 +4,15 @@ import com.picus.core.shared.common.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
+@Getter
 public class CommentEntity extends BaseEntity {
 
     @Id @Tsid
@@ -23,4 +27,8 @@ public class CommentEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String content;
+
+    public void bindPostEntity(PostEntity postEntity) {
+        this.postEntity = postEntity;
+    }
 }

@@ -1,10 +1,10 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest.ProjectWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest.SkillWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest.StudioWebRequest;
-import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
+import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalRequest;
+import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalRequest.ProjectWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalRequest.SkillWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalRequest.StudioWebRequest;
+import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class RequestApprovalWebMapperTest {
     @DisplayName("RequestApprovalWebRequest와 userNo를 RequestApprovalCommand로 변환한다")
     void toCommand_shouldMapCorrectly() {
         // given
-        RequestApprovalWebRequest request = new RequestApprovalWebRequest(
+        RequestApprovalRequest request = new RequestApprovalRequest(
                 "백엔드 5년차",
                 List.of("서울", "대구"),
                 List.of(ProjectWebRequest.builder()

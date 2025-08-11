@@ -19,8 +19,8 @@ class OptionPersistenceMapperTest {
         OptionEntity entity = OptionEntity.builder()
                 .optionNo("opt_no")
                 .name("옵션A")
-                .count(2)
-                .price(5000)
+                .unitSize(2)
+                .pricePerUnit(5000)
                 .contents(List.of("기본 제공 1", "기본 제공 2"))
                 .build();
 
@@ -30,8 +30,8 @@ class OptionPersistenceMapperTest {
         // then
         assertThat(result.getOptionNo()).isEqualTo("opt_no");
         assertThat(result.getName()).isEqualTo("옵션A");
-        assertThat(result.getCount()).isEqualTo(2);
-        assertThat(result.getPrice()).isEqualTo(5000);
+        assertThat(result.getUnitSize()).isEqualTo(2);
+        assertThat(result.getPricePerUnit()).isEqualTo(5000);
         assertThat(result.getContents()).isEqualTo(List.of("기본 제공 1", "기본 제공 2"));
     }
 
@@ -41,8 +41,8 @@ class OptionPersistenceMapperTest {
         // given
         Option option = Option.builder()
                 .name("옵션A")
-                .count(2)
-                .price(5000)
+                .unitSize(2)
+                .pricePerUnit(5000)
                 .contents(List.of("기본 제공 1", "기본 제공 2"))
                 .build();
 
@@ -51,8 +51,8 @@ class OptionPersistenceMapperTest {
 
         // then
         assertThat(entity.getName()).isEqualTo("옵션A");
-        assertThat(entity.getCount()).isEqualTo(2);
-        assertThat(entity.getPrice()).isEqualTo(5000);
+        assertThat(entity.getUnitSize()).isEqualTo(2);
+        assertThat(entity.getPricePerUnit()).isEqualTo(5000);
         assertThat(entity.getContents()).isEqualTo(List.of("기본 제공 1", "기본 제공 2"));
     }
 }

@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.response.SearchExpertResult;
+import com.picus.core.expert.application.port.in.result.SearchExpertResult;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
 import org.junit.jupiter.api.DisplayName;

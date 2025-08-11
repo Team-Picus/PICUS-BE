@@ -1,6 +1,6 @@
 package com.picus.core.expert.integration;
 
-import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.SearchExpertResponse;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
@@ -93,7 +93,7 @@ public class SuggestExpertIntegrationTest {
         HttpEntity<Void> request = setUpRequest();
 
         // when
-        ResponseEntity<BaseResponse<List<SearchExpertWebResponse>>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<List<SearchExpertResponse>>> response = restTemplate.exchange(
                 "/api/v1/experts/search/suggestions?keyword={keyword}&size={size}",
                 HttpMethod.GET,
                 request,
@@ -104,14 +104,14 @@ public class SuggestExpertIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<List<SearchExpertWebResponse>> body = response.getBody();
+        BaseResponse<List<SearchExpertResponse>> body = response.getBody();
         assertThat(body).isNotNull();
 
-        List<SearchExpertWebResponse> result = body.getResult();
+        List<SearchExpertResponse> result = body.getResult();
 
         assertThat(result).hasSize(2)
-                .extracting(SearchExpertWebResponse::expertNo,
-                        SearchExpertWebResponse::nickname)
+                .extracting(SearchExpertResponse::expertNo,
+                        SearchExpertResponse::nickname)
                 .containsExactly(
                         Tuple.tuple(testExpertNo3, testNickname3),
                         Tuple.tuple(testExpertNo2, testNickname2)

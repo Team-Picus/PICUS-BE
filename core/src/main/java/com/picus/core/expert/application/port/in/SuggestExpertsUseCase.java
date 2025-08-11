@@ -1,6 +1,6 @@
 package com.picus.core.expert.application.port.in;
 
-import com.picus.core.expert.application.port.in.response.SuggestExpertResult;
+import com.picus.core.expert.application.port.in.result.SuggestExpertResult;
 
 import java.util.List;
 

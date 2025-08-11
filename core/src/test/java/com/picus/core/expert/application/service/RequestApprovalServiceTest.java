@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
-import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
-import com.picus.core.expert.application.port.in.mapper.RequestApprovalAppMapper;
+import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
+import com.picus.core.expert.application.port.in.mapper.RequestApprovalCommandMapper;
 import com.picus.core.expert.application.port.out.ExpertCreatePort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.expert.domain.Project;
@@ -24,7 +24,7 @@ class RequestApprovalServiceTest {
 
     final ExpertCreatePort expertCreatePort = Mockito.mock(ExpertCreatePort.class);
     final UserUpdatePort userUpdatePort = Mockito.mock(UserUpdatePort.class);
-    final RequestApprovalAppMapper appMapper = new RequestApprovalAppMapper();
+    final RequestApprovalCommandMapper appMapper = new RequestApprovalCommandMapper();
 
     private final RequestApprovalService requestApprovalService
             = new RequestApprovalService(expertCreatePort, userUpdatePort, appMapper);

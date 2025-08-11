@@ -1,11 +1,11 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.SkillWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
-import com.picus.core.expert.application.port.in.request.*;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.ProjectWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.SkillWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.StudioWebRequest;
+import com.picus.core.expert.application.port.in.command.*;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class UpdateExpertWebMapper {
 
-    public UpdateExpertBasicInfoCommand toBasicInfoAppRequest(UpdateExpertBasicInfoWebRequest webRequest, String currentUserNo) {
+    public UpdateExpertBasicInfoCommand toBasicInfoCommand(UpdateExpertBasicInfoRequest webRequest, String currentUserNo) {
         return UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(currentUserNo)
                 .profileImageFileKey(webRequest.profileImageFileKey())
@@ -25,7 +25,7 @@ public class UpdateExpertWebMapper {
                 .build();
     }
 
-    public UpdateExpertDetailInfoCommand toDetailInfoAppRequest(UpdateExpertDetailInfoWebRequest webRequest, String currentUserNo) {
+    public UpdateExpertDetailInfoCommand toDetailInfoCommand(UpdateExpertDetailInfoRequest webRequest, String currentUserNo) {
 
         return UpdateExpertDetailInfoCommand.builder()
                 .currentUserNo(currentUserNo)

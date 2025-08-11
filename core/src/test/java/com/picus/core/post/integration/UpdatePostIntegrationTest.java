@@ -4,14 +4,15 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.post.adapter.in.web.data.request.UpdatePostWebReq;
+import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.entity.PostImageEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostImageJpaRepository;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
-import com.picus.core.post.application.port.in.request.ChangeStatus;
+import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -33,7 +34,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picus.core.post.application.port.in.request.ChangeStatus.*;
+import static com.picus.core.post.application.port.in.command.ChangeStatus.*;
+import static com.picus.core.post.domain.vo.PostMoodType.VINTAGE;
+import static com.picus.core.post.domain.vo.PostThemeType.BEAUTY;
+import static com.picus.core.post.domain.vo.PostThemeType.SNAP;
+import static com.picus.core.post.domain.vo.SnapSubTheme.ADMISSION;
+import static com.picus.core.post.domain.vo.SnapSubTheme.FAMILY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -77,7 +83,7 @@ public class UpdatePostIntegrationTest {
 
         PostEntity postEntity = createPostEntity(
                 "package-123", expertEntity.getExpertNo(), "old_title", "old_one",
-                "old_detail", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
+                "old_detail", List.of(BEAUTY), List.of(PostMoodType.COZY),
                 SpaceType.INDOOR, "old_address", false
         );
         PostImageEntity postImageEntity1 = createPostImageEntity("file_key", 1, postEntity);
@@ -86,15 +92,18 @@ public class UpdatePostIntegrationTest {
         commitTestTransaction();
 
         // 입력 값 셋팅
-        UpdatePostWebReq webReq = createWebReq(List.of(
-                        createPostImageWebReq(null, "new_file_key", 1, NEW), // 새로 추가된 이미지
-                        createPostImageWebReq(postImageEntity1.getPostImageNo(), "file_key", 2, UPDATE), // 수정된 이미지
-                        createPostImageWebReq(postImageEntity2.getPostImageNo(), null, null, DELETE) // 삭제된 이미지
+        UpdatePostRequest webReq = createWebReq(List.of(
+                        createPostImageWebReq(null,
+                                "new_file_key", 1, NEW), // 새로 추가된 이미지
+                        createPostImageWebReq(postImageEntity1.getPostImageNo(),
+                                "chg_file_key", 2, UPDATE), // 수정된 이미지
+                        createPostImageWebReq(postImageEntity2.getPostImageNo(),
+                                postImageEntity2.getFileKey(), postImageEntity2.getImageOrder(), DELETE) // 삭제된 이미지
                 ), "new_title", "new_one", "new_detail",
-                List.of(PostThemeType.BEAUTY, PostThemeType.EVENT), List.of(PostMoodType.VINTAGE),
+                List.of(BEAUTY, SNAP), List.of(ADMISSION), List.of(VINTAGE),
                 SpaceType.OUTDOOR, "new_address", "package-456");
 
-        HttpEntity<UpdatePostWebReq> httpEntity = settingWebRequest(userEntity, webReq);
+        HttpEntity<UpdatePostRequest> httpEntity = settingWebRequest(userEntity, webReq);
 
         // when
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
@@ -118,8 +127,9 @@ public class UpdatePostIntegrationTest {
         assertThat(postResult.getTitle()).isEqualTo("new_title");
         assertThat(postResult.getOneLineDescription()).isEqualTo("new_one");
         assertThat(postResult.getDetailedDescription()).isEqualTo("new_detail");
-        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(PostThemeType.BEAUTY, PostThemeType.EVENT));
-        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(PostMoodType.VINTAGE));
+        assertThat(postResult.getPostThemeTypes()).isEqualTo(List.of(BEAUTY, SNAP));
+        assertThat(postResult.getSnapSubThemes()).isEqualTo(List.of(ADMISSION));
+        assertThat(postResult.getPostMoodTypes()).isEqualTo(List.of(VINTAGE));
         assertThat(postResult.getSpaceType()).isEqualTo(SpaceType.OUTDOOR);
         assertThat(postResult.getSpaceAddress()).isEqualTo("new_address");
 
@@ -131,7 +141,7 @@ public class UpdatePostIntegrationTest {
                         PostImageEntity::getImageOrder
                 ).containsExactlyInAnyOrder(
                         tuple("new_file_key", 1),
-                        tuple("file_key", 2)
+                        tuple("chg_file_key", 2)
                 );
 
         ExpertEntity updatedExpertEntity = expertJpaRepository.findById(expertEntity.getExpertNo())
@@ -158,6 +168,7 @@ public class UpdatePostIntegrationTest {
                 .build();
         return userJpaRepository.save(userEntity);
     }
+
     private ExpertEntity createExpertEntity(UserEntity userEntity, LocalDateTime lastActivityAt) {
         ExpertEntity expertEntity = ExpertEntity.builder()
                 .activityCareer("activityCareer")
@@ -200,16 +211,17 @@ public class UpdatePostIntegrationTest {
         return postImageJpaRepository.save(postImageEntity);
     }
 
-    private UpdatePostWebReq createWebReq(
-            List<UpdatePostWebReq.PostImageWebReq> postImages, String title, String oneLineDescription,
-            String detailedDescription, List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
+    private UpdatePostRequest createWebReq(
+            List<UpdatePostRequest.PostImageRequest> postImages, String title, String oneLineDescription, String detailedDescription,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, String packageNo) {
-        return UpdatePostWebReq.builder()
+        return UpdatePostRequest.builder()
                 .postImages(postImages)
                 .title(title)
                 .oneLineDescription(oneLineDescription)
                 .detailedDescription(detailedDescription)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
@@ -217,9 +229,9 @@ public class UpdatePostIntegrationTest {
                 .build();
     }
 
-    private UpdatePostWebReq.PostImageWebReq createPostImageWebReq(
+    private UpdatePostRequest.PostImageRequest createPostImageWebReq(
             String postImageNo, String fileKey, Integer imageOrder, ChangeStatus changeStatus) {
-        return UpdatePostWebReq.PostImageWebReq.builder()
+        return UpdatePostRequest.PostImageRequest.builder()
                 .postImageNo(postImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)

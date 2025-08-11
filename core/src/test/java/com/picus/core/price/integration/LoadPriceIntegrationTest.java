@@ -1,8 +1,8 @@
 package com.picus.core.price.integration;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
-import com.picus.core.price.adapter.in.web.data.response.LoadPriceWebResponse;
+import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.picus.core.price.adapter.in.web.data.response.LoadPriceWebResponse.*;
+import static com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -83,7 +83,7 @@ public class LoadPriceIntegrationTest {
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
 
-        ResponseEntity<BaseResponse<List<LoadPriceWebResponse>>> response = restTemplate.exchange(
+        ResponseEntity<BaseResponse<List<LoadPriceResponse>>> response = restTemplate.exchange(
                 "/api/v1/experts/{expert_no}/prices",
                 HttpMethod.GET,
                 request,
@@ -94,26 +94,26 @@ public class LoadPriceIntegrationTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        BaseResponse<List<LoadPriceWebResponse>> body = response.getBody();
+        BaseResponse<List<LoadPriceResponse>> body = response.getBody();
         assertThat(body).isNotNull();
 
-        List<LoadPriceWebResponse> result = body.getResult();
+        List<LoadPriceResponse> result = body.getResult();
 
         assertThat(result).hasSize(1);
 
-        LoadPriceWebResponse first = result.getFirst();
+        LoadPriceResponse first = result.getFirst();
         assertThat(first.priceNo()).isEqualTo(priceEntity.getPriceNo());
         assertThat(first.priceThemeType()).isEqualTo("BEAUTY");
 
         // package
-        List<PackageWebResponse> packageResult = first.packages();
+        List<PackageResponse> packageResult = first.packages();
         assertThat(packageResult).hasSize(1)
                 .extracting(
-                        PackageWebResponse::packageNo,
-                        PackageWebResponse::name,
-                        PackageWebResponse::price,
-                        PackageWebResponse::contents,
-                        PackageWebResponse::notice)
+                        PackageResponse::packageNo,
+                        PackageResponse::name,
+                        PackageResponse::price,
+                        PackageResponse::contents,
+                        PackageResponse::notice)
                 .contains(tuple(
                         packageEntity.getPackageNo(),
                         "기본 패키지",
@@ -121,13 +121,13 @@ public class LoadPriceIntegrationTest {
                         List.of("헤어컷", "드라이"),
                         "사전 예약 필수"));
         // option
-        List<OptionWebResponse> optionResult = first.options();
+        List<OptionResponse> optionResult = first.options();
         assertThat(optionResult).hasSize(1)
-                .extracting(OptionWebResponse::optionNo,
-                        OptionWebResponse::name,
-                        OptionWebResponse::count,
-                        OptionWebResponse::price,
-                        OptionWebResponse::contents)
+                .extracting(OptionResponse::optionNo,
+                        OptionResponse::name,
+                        OptionResponse::count,
+                        OptionResponse::price,
+                        OptionResponse::contents)
                 .contains(tuple(
                         optionEntity.getOptionNo(),
                         "옵션 A",
@@ -136,12 +136,14 @@ public class LoadPriceIntegrationTest {
                         List.of("마사지 추가")));
 
         // PriceReferenceImage TODO: key -> url 후 재검증 필요
-        List<PriceReferenceImageWebResponse> imageResults = first.priceReferenceImages();
+        List<PriceReferenceImageResponse> imageResults = first.priceReferenceImages();
         assertThat(imageResults).hasSize(1)
-                .extracting(PriceReferenceImageWebResponse::priceRefImageNo,
-                        PriceReferenceImageWebResponse::imageUrl,
-                        PriceReferenceImageWebResponse::imageOrder)
-                .contains(tuple(referenceImageEntity.getPriceReferenceImageNo(), null, 1));
+                .extracting(
+                        PriceReferenceImageResponse::priceRefImageNo,
+                        PriceReferenceImageResponse::fileKey,
+                        PriceReferenceImageResponse::imageUrl,
+                        PriceReferenceImageResponse::imageOrder)
+                .contains(tuple(referenceImageEntity.getPriceReferenceImageNo(), "file-key-123", null, 1));
     }
 
     private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
@@ -163,12 +165,12 @@ public class LoadPriceIntegrationTest {
         return packageJpaRepository.save(pkgEntity);
     }
 
-    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int count, int price, List<String> content) {
+    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int unitSize, int pricePerUnit, List<String> content) {
         OptionEntity optionEntity = OptionEntity.builder()
                 .priceEntity(priceEntity)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(unitSize)
+                .pricePerUnit(pricePerUnit)
                 .contents(content)
                 .build();
         return optionJpaRepository.save(optionEntity);

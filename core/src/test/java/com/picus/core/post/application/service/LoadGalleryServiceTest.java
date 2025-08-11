@@ -1,7 +1,6 @@
 package com.picus.core.post.application.service;
 
-import com.picus.core.post.application.port.in.mapper.LoadGalleryAppMapper;
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -24,7 +24,6 @@ import static org.mockito.Mockito.mock;
 class LoadGalleryServiceTest {
 
     @Mock private PostReadPort postReadPort;
-    @Mock private LoadGalleryAppMapper appMapper;
 
     @InjectMocks LoadGalleryService loadGalleryService;
 
@@ -35,14 +34,15 @@ class LoadGalleryServiceTest {
         String expertNo = "expert-123";
 
         Post post = Post.builder()
+                .postNo("post-123")
+                .title("title")
+                .oneLineDescription("one")
                 .postImages(List.of(
                         createPostImage("img-123", "file1.jpg", 1),
                         createPostImage("img-234", "file2.jpg", 2)
                 ))
                 .build();
         given(postReadPort.findByExpertNoAndIsPinnedTrue(expertNo)).willReturn(Optional.of(post));
-        LoadGalleryResult loadGalleryResult = mock(LoadGalleryResult.class);
-        given(appMapper.toAppResp(post, "")).willReturn(loadGalleryResult); // TODO: fileKey -> url 변환로직 추가 후 수정
 
 
         // when
@@ -50,9 +50,20 @@ class LoadGalleryServiceTest {
 
         // then
         assertThat(result).isPresent();
+        assertThat(result.get().postNo()).isEqualTo("post-123");
+        assertThat(result.get().title()).isEqualTo("title");
+        assertThat(result.get().oneLineDescription()).isEqualTo("one");
+        assertThat(result.get().images()).hasSize(2)
+                .extracting(
+                        LoadGalleryResult.PostImageResult::fileKey,
+                        LoadGalleryResult.PostImageResult::imageUrl,
+                        LoadGalleryResult.PostImageResult::imageOrder
+                ).containsExactlyInAnyOrder(
+                        tuple("file1.jpg", "", 1),
+                        tuple("file2.jpg", "", 2)
+                ); // TODO: filekey -> url 변환 로직 필요
 
         then(postReadPort).should().findByExpertNoAndIsPinnedTrue(expertNo);
-        then(appMapper).should().toAppResp(post, "");
     }
 
     @Test

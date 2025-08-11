@@ -21,7 +21,7 @@ public class LoadGalleryController {
     @GetMapping("/posts/{expert_no}/gallery")
     public BaseResponse<Object> loadGallery(@PathVariable("expert_no") String expertNo) {
         return loadGalleryUseCase.load(expertNo)
-                .map(resp -> (Object) webMapper.toWebResp(resp))
+                .map(resp -> (Object) webMapper.toResponse(resp))
                 .map(BaseResponse::onSuccess)
                 .orElseGet(() -> BaseResponse.onSuccess("아직 갤러리가 설정되지 않았습니다."));
     }

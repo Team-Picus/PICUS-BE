@@ -1,9 +1,9 @@
 package com.picus.core.expert.adapter.in;
 
-import com.picus.core.expert.adapter.in.web.data.response.SearchExpertWebResponse;
+import com.picus.core.expert.adapter.in.web.data.response.SearchExpertResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
 import com.picus.core.expert.application.port.in.SearchExpertsUseCase;
-import com.picus.core.expert.application.port.in.response.SearchExpertResult;
+import com.picus.core.expert.application.port.in.result.SearchExpertResult;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,13 +46,13 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
                 new SearchExpertResult("ex1", "nick1", "url1"),
                 new SearchExpertResult("ex2", "nick2", "url2")
         );
-        List<SearchExpertWebResponse> mockWebResponses = List.of(
-                SearchExpertWebResponse.builder()
+        List<SearchExpertResponse> mockWebResponses = List.of(
+                SearchExpertResponse.builder()
                         .expertNo("ex1")
                         .nickname("nick1")
                         .profileImageUrl("url1")
                         .build(),
-                SearchExpertWebResponse.builder()
+                SearchExpertResponse.builder()
                         .expertNo("ex2")
                         .nickname("nick2")
                         .profileImageUrl("url2")
@@ -76,7 +76,7 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
 
         then(searchExpertsUseCase).should().searchExperts(keyword);
         for (SearchExpertResult appResponse : mockAppResponses) {
-            then(searchExpertWebMapper).should().toWebResponse(appResponse);
+            then(searchExpertWebMapper).should().toResponse(appResponse);
         }
     }
 
@@ -89,11 +89,11 @@ class SearchExpertControllerTest extends AbstractSecurityMockSetup {
 
     private void stubMethodInController(String keyword,
                                         List<SearchExpertResult> appResponses,
-                                        List<SearchExpertWebResponse> webResponses) {
+                                        List<SearchExpertResponse> webResponses) {
         given(searchExpertsUseCase.searchExperts(keyword)).willReturn(appResponses);
 
         for (int i = 0; i < appResponses.size(); i++) {
-            given(searchExpertWebMapper.toWebResponse(appResponses.get(i))).willReturn(webResponses.get(i));
+            given(searchExpertWebMapper.toResponse(appResponses.get(i))).willReturn(webResponses.get(i));
         }
     }
 }

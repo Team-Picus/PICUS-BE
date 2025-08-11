@@ -3,15 +3,16 @@ package com.picus.core.post.application.service;
 import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.application.port.out.ExpertUpdatePort;
 import com.picus.core.expert.domain.Expert;
-import com.picus.core.post.application.port.in.request.ChangeStatus;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand;
-import com.picus.core.post.application.port.in.request.UpdatePostCommand.UpdatePostImageAppReq;
+import com.picus.core.post.application.port.in.command.ChangeStatus;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand;
+import com.picus.core.post.application.port.in.command.UpdatePostCommand.UpdatePostImageCommand;
 import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.application.port.out.PostUpdatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.post.domain.PostImage;
 import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
+import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserReadPort;
@@ -59,18 +60,18 @@ class UpdatePostServiceTest {
         String postNo = "post-123";
         String userNo = "mockUser-123";
         // PostImage
-        UpdatePostImageAppReq newImage =
+        UpdatePostImageCommand newImage =
                 createUpdatePostImageAppReq(null, "new.jpg", 1, ChangeStatus.NEW);
-        UpdatePostImageAppReq updateImage =
+        UpdatePostImageCommand updateImage =
                 createUpdatePostImageAppReq("img-123", "upt.jpg", 2, ChangeStatus.UPDATE);
-        UpdatePostImageAppReq deleteImage =
+        UpdatePostImageCommand deleteImage =
                 createUpdatePostImageAppReq("img-456", null, null, ChangeStatus.DELETE);
 
         UpdatePostCommand updatePostCommand =
                 createUpdatePostAppReq(
                         postNo, newImage, updateImage, deleteImage,
                         "title", "one", "detail",
-                        List.of(PostThemeType.BEAUTY), List.of(PostMoodType.VINTAGE),
+                        List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE), List.of(PostMoodType.VINTAGE),
                         SpaceType.INDOOR, "space", "pkg-123", userNo);
 
         User mockUser = mock(User.class);
@@ -91,7 +92,7 @@ class UpdatePostServiceTest {
         then(mockUser).should().getExpertNo();
         then(postReadPort).should().findById(postNo);
         then(spyPost).should().updatePost("title", "one", "detail",
-                List.of(PostThemeType.BEAUTY), List.of(PostMoodType.VINTAGE),
+                List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE), List.of(PostMoodType.VINTAGE),
                 SpaceType.INDOOR, "space", "pkg-123");
         then(spyPost).should().addPostImage(PostImage.builder()
                 .fileKey(newImage.fileKey())
@@ -113,8 +114,8 @@ class UpdatePostServiceTest {
     @Test
     void update_fail_dueToImageOrderDuplication() {
         // given
-        UpdatePostImageAppReq image1 = createUpdatePostImageAppReq(null, "a.jpg", 1, ChangeStatus.NEW);
-        UpdatePostImageAppReq image2 = createUpdatePostImageAppReq(null, "b.jpg", 1, ChangeStatus.NEW); // imageOrder 중복
+        UpdatePostImageCommand image1 = createUpdatePostImageAppReq(null, "a.jpg", 1, ChangeStatus.NEW);
+        UpdatePostImageCommand image2 = createUpdatePostImageAppReq(null, "b.jpg", 1, ChangeStatus.NEW); // imageOrder 중복
         UpdatePostCommand req = UpdatePostCommand.builder()
                 .postImages(List.of(image1, image2))
                 .build();
@@ -129,9 +130,9 @@ class UpdatePostServiceTest {
      * private 메서드
      */
     private UpdatePostCommand createUpdatePostAppReq(
-            String postNo, UpdatePostImageAppReq newImage, UpdatePostImageAppReq updateImage,
-            UpdatePostImageAppReq deleteImage, String title, String oneLine, String detail,
-            List<PostThemeType> postThemeTypes, List<PostMoodType> postMoodTypes,
+            String postNo, UpdatePostImageCommand newImage, UpdatePostImageCommand updateImage,
+            UpdatePostImageCommand deleteImage, String title, String oneLine, String detail,
+            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes, List<PostMoodType> postMoodTypes,
             SpaceType spaceType, String spaceAddress, String packageNo, String userNo) {
         return UpdatePostCommand.builder()
                 .postNo(postNo)
@@ -140,6 +141,7 @@ class UpdatePostServiceTest {
                 .oneLineDescription(oneLine)
                 .detailedDescription(detail)
                 .postThemeTypes(postThemeTypes)
+                .snapSubThemes(snapSubThemes)
                 .postMoodTypes(postMoodTypes)
                 .spaceType(spaceType)
                 .spaceAddress(spaceAddress)
@@ -148,9 +150,9 @@ class UpdatePostServiceTest {
                 .build();
     }
 
-    private UpdatePostImageAppReq createUpdatePostImageAppReq(
+    private UpdatePostImageCommand createUpdatePostImageAppReq(
             String postImageNo, String fileKey, Integer imageOrder, ChangeStatus changeStatus) {
-        return UpdatePostImageAppReq.builder()
+        return UpdatePostImageCommand.builder()
                 .postImageNo(postImageNo)
                 .fileKey(fileKey)
                 .imageOrder(imageOrder)

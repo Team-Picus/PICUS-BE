@@ -1,10 +1,10 @@
 package com.picus.core.expert.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.RequestApprovalRequest;
 import com.picus.core.expert.adapter.in.web.mapper.RequestApprovalWebMapper;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
-import com.picus.core.expert.application.port.in.request.RequestApprovalCommand;
+import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
 import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import jakarta.validation.constraints.NotBlank;
@@ -46,27 +46,27 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("전문가 승인 요청을 한다.")
     public void requestApproval() throws Exception {
         // given
-        RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of("서울 강북구", "서울 강동구"), List.of(
-                RequestApprovalWebRequest.ProjectWebRequest.builder()
+        RequestApprovalRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of("서울 강북구", "서울 강동구"), List.of(
+                RequestApprovalRequest.ProjectWebRequest.builder()
                         .projectName("단편영화 촬영 프로젝트")
                         .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                         .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                         .build(),
-                RequestApprovalWebRequest.ProjectWebRequest.builder()
+                RequestApprovalRequest.ProjectWebRequest.builder()
                         .projectName("뮤직비디오 조명 작업")
                         .startDate(LocalDateTime.of(2023, 1, 10, 0, 0))
                         .endDate(LocalDateTime.of(2023, 2, 20, 0, 0))
                         .build()
         ), List.of(
-                RequestApprovalWebRequest.SkillWebRequest.builder()
+                RequestApprovalRequest.SkillWebRequest.builder()
                         .skillType(SkillType.CAMERA)
                         .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
                         .build(),
-                RequestApprovalWebRequest.SkillWebRequest.builder()
+                RequestApprovalRequest.SkillWebRequest.builder()
                         .skillType(SkillType.EDIT)
                         .content("프리미어 프로 및 다빈치 리졸브 활용 편집 가능")
                         .build()
-        ), RequestApprovalWebRequest.StudioWebRequest.builder()
+        ), RequestApprovalRequest.StudioWebRequest.builder()
                 .studioName("크리에이티브 필름")
                 .employeesCount(5)
                 .businessHours("10:00 - 19:00")
@@ -104,19 +104,19 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("전문가 승인 요청을 할 때 activity Career가 누락되면 오류발생")
     public void requestApproval_activityCareer_null() throws Exception {
         // given
-        RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest(null, List.of("서울 강북구", "서울 강동구"),
+        RequestApprovalRequest webRequest = givenRequestApprovalWebRequest(null, List.of("서울 강북구", "서울 강동구"),
                 List.of(
-                        RequestApprovalWebRequest.ProjectWebRequest.builder()
+                        RequestApprovalRequest.ProjectWebRequest.builder()
                                 .projectName("단편영화 촬영 프로젝트")
                                 .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                                 .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                                 .build()
                 ), List.of(
-                        RequestApprovalWebRequest.SkillWebRequest.builder()
+                        RequestApprovalRequest.SkillWebRequest.builder()
                                 .skillType(SkillType.CAMERA)
                                 .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
                                 .build()
-                ), RequestApprovalWebRequest.StudioWebRequest.builder()
+                ), RequestApprovalRequest.StudioWebRequest.builder()
                         .studioName("크리에이티브 필름")
                         .employeesCount(5)
                         .businessHours("10:00 - 19:00")
@@ -143,19 +143,19 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("전문가 승인 요청을 할 때 activity area가 누락되면 오류발생")
     public void requestApproval_activityAreas_null() throws Exception {
         // given
-        RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest("3년차", null,
+        RequestApprovalRequest webRequest = givenRequestApprovalWebRequest("3년차", null,
                 List.of(
-                        RequestApprovalWebRequest.ProjectWebRequest.builder()
+                        RequestApprovalRequest.ProjectWebRequest.builder()
                                 .projectName("단편영화 촬영 프로젝트")
                                 .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                                 .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                                 .build()
                 ), List.of(
-                        RequestApprovalWebRequest.SkillWebRequest.builder()
+                        RequestApprovalRequest.SkillWebRequest.builder()
                                 .skillType(SkillType.CAMERA)
                                 .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
                                 .build()
-                ), RequestApprovalWebRequest.StudioWebRequest.builder()
+                ), RequestApprovalRequest.StudioWebRequest.builder()
                         .studioName("크리에이티브 필름")
                         .employeesCount(5)
                         .businessHours("10:00 - 19:00")
@@ -182,19 +182,19 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("전문가 승인 요청을 할 때 activity areas의 필드가 블랭크면 오류발생")
     public void requestApproval_activityAreas_field_isBlank() throws Exception {
         // given
-        RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of(" "),
+        RequestApprovalRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of(" "),
                 List.of(
-                        RequestApprovalWebRequest.ProjectWebRequest.builder()
+                        RequestApprovalRequest.ProjectWebRequest.builder()
                                 .projectName("단편영화 촬영 프로젝트")
                                 .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                                 .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                                 .build()
                 ), List.of(
-                        RequestApprovalWebRequest.SkillWebRequest.builder()
+                        RequestApprovalRequest.SkillWebRequest.builder()
                                 .skillType(SkillType.CAMERA)
                                 .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
                                 .build()
-                ), RequestApprovalWebRequest.StudioWebRequest.builder()
+                ), RequestApprovalRequest.StudioWebRequest.builder()
                         .studioName("크리에이티브 필름")
                         .employeesCount(5)
                         .businessHours("10:00 - 19:00")
@@ -221,16 +221,16 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("전문가 승인 요청을 할 때 skill이 null이면 오류 발생")
     public void requestApproval_projects_isNull() throws Exception {
         // given
-        RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of("서울 강북구", "서울 강동구"),
+        RequestApprovalRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of("서울 강북구", "서울 강동구"),
                 List.of(
-                        RequestApprovalWebRequest.ProjectWebRequest.builder()
+                        RequestApprovalRequest.ProjectWebRequest.builder()
                                 .projectName("단편영화 촬영 프로젝트")
                                 .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                                 .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                                 .build()
                 ),
                 null,
-                RequestApprovalWebRequest.StudioWebRequest.builder()
+                RequestApprovalRequest.StudioWebRequest.builder()
                         .studioName("크리에이티브 필름")
                         .employeesCount(5)
                         .businessHours("10:00 - 19:00")
@@ -257,21 +257,21 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
     @DisplayName("전문가 승인 요청을 할 때 skill의 특정 필드가 누락되면 오류 발생")
     public void requestApproval_projectsField_isNull() throws Exception {
         // given
-        RequestApprovalWebRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of("서울 강북구", "서울 강동구"),
+        RequestApprovalRequest webRequest = givenRequestApprovalWebRequest("3년차", List.of("서울 강북구", "서울 강동구"),
                 List.of(
-                        RequestApprovalWebRequest.ProjectWebRequest.builder()
+                        RequestApprovalRequest.ProjectWebRequest.builder()
                                 .projectName("단편영화 촬영 프로젝트")
                                 .startDate(LocalDateTime.of(2022, 5, 1, 0, 0))
                                 .endDate(LocalDateTime.of(2022, 8, 15, 0, 0))
                                 .build()
                 ),
                 List.of(
-                        RequestApprovalWebRequest.SkillWebRequest.builder()
+                        RequestApprovalRequest.SkillWebRequest.builder()
                                 .skillType(null)
                                 .content("시네마 카메라 운용 가능 (RED, Blackmagic)")
                                 .build()
                 ),
-                RequestApprovalWebRequest.StudioWebRequest.builder()
+                RequestApprovalRequest.StudioWebRequest.builder()
                         .studioName("크리에이티브 필름")
                         .employeesCount(5)
                         .businessHours("10:00 - 19:00")
@@ -296,19 +296,19 @@ class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
 
     private void stubMethodInController() {
         RequestApprovalCommand mockCommand = Mockito.mock(RequestApprovalCommand.class);
-        given(webMapper.toCommand(any(RequestApprovalWebRequest.class), eq(TEST_USER_ID)))
+        given(webMapper.toCommand(any(RequestApprovalRequest.class), eq(TEST_USER_ID)))
                 .willReturn(mockCommand);
     }
 
-    private RequestApprovalWebRequest givenRequestApprovalWebRequest(
+    private RequestApprovalRequest givenRequestApprovalWebRequest(
             String activityCareer,
             List<@NotBlank String> activityAreas,
-            List<RequestApprovalWebRequest.ProjectWebRequest> projectWebRequests,
-            List<RequestApprovalWebRequest.SkillWebRequest> skillWebRequests,
-            RequestApprovalWebRequest.StudioWebRequest studioWebRequest,
+            List<RequestApprovalRequest.ProjectWebRequest> projectWebRequests,
+            List<RequestApprovalRequest.SkillWebRequest> skillWebRequests,
+            RequestApprovalRequest.StudioWebRequest studioWebRequest,
             List<String> portfolioLinks
     ) {
-        return new RequestApprovalWebRequest(
+        return new RequestApprovalRequest(
                 activityCareer,
                 activityAreas,
                 projectWebRequests,

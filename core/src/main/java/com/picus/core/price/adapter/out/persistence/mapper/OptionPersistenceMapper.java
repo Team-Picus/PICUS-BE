@@ -11,8 +11,8 @@ public class OptionPersistenceMapper {
         return Option.builder()
                 .optionNo(optionEntity.getOptionNo())
                 .name(optionEntity.getName())
-                .count(optionEntity.getCount())
-                .price(optionEntity.getPrice())
+                .unitSize(optionEntity.getUnitSize())
+                .pricePerUnit(optionEntity.getPricePerUnit())
                 .contents(optionEntity.getContents())
                 .build();
     }
@@ -20,8 +20,8 @@ public class OptionPersistenceMapper {
     public OptionEntity toEntity(Option option) {
         return OptionEntity.builder()
                 .name(option.getName())
-                .count(option.getCount())
-                .price(option.getPrice())
+                .unitSize(option.getUnitSize())
+                .pricePerUnit(option.getPricePerUnit())
                 .contents(option.getContents())
                 .build();
     }

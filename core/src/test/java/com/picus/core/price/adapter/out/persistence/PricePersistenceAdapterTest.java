@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.out.persistence;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
@@ -17,6 +17,7 @@ import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.picus.core.expert.domain.vo.PriceThemeType.FASHION;
+import static com.picus.core.price.domain.vo.PriceThemeType.FASHION;
+import static com.picus.core.price.domain.vo.PriceThemeType.SNAP;
+import static com.picus.core.price.domain.vo.SnapSubTheme.ADMISSION;
 import static org.assertj.core.api.Assertions.*;
 
 @Import({
@@ -61,7 +64,7 @@ class PricePersistenceAdapterTest {
     @DisplayName("특정 expertNo을 가진 Price를 조회한다.")
     public void findByExpertNo_success() {
         // given
-        PriceEntity priceEntity = createPriceEntity("expert001", PriceThemeType.BEAUTY);
+        PriceEntity priceEntity = createPriceEntity("expert001", SNAP, ADMISSION);
         PackageEntity pkgEntity = createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
         OptionEntity optEntity = createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
         PriceReferenceImageEntity imgEntity = createReferenceImageEntity(priceEntity, "file-key-123", 1);
@@ -76,7 +79,8 @@ class PricePersistenceAdapterTest {
         Price result = results.getFirst();
 
         // Price 필드 검증
-        assertThat(result.getPriceThemeType()).isEqualTo(PriceThemeType.BEAUTY);
+        assertThat(result.getPriceThemeType()).isEqualTo(SNAP);
+        assertThat(result.getSnapSubTheme()).isEqualTo(ADMISSION);
 
         // Package 검증
         assertThat(result.getPackages()).hasSize(1);
@@ -90,8 +94,8 @@ class PricePersistenceAdapterTest {
         assertThat(result.getOptions()).hasSize(1);
         Option opt = result.getOptions().getFirst();
         assertThat(opt.getName()).isEqualTo("옵션 A");
-        assertThat(opt.getCount()).isEqualTo(1);
-        assertThat(opt.getPrice()).isEqualTo(5000);
+        assertThat(opt.getUnitSize()).isEqualTo(1);
+        assertThat(opt.getPricePerUnit()).isEqualTo(5000);
         assertThat(opt.getContents()).isEqualTo(List.of("마사지 추가"));
 
         // PriceReferenceImage 검증
@@ -105,10 +109,11 @@ class PricePersistenceAdapterTest {
     @DisplayName("특정 priceNo를 가진 Price를 조회한다.")
     public void findById_success() {
         // given
-        PriceEntity priceEntity = createPriceEntity("expert001", PriceThemeType.BEAUTY);
+        PriceEntity priceEntity = createPriceEntity("expert001", SNAP, ADMISSION);
         createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
         createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
         createReferenceImageEntity(priceEntity, "file-key-123", 1);
+        createReferenceImageEntity(priceEntity, "file-key-456", 2);
 
         clearPersistenceContext();
 
@@ -118,7 +123,8 @@ class PricePersistenceAdapterTest {
         // then
 
         // Price 필드 검증
-        assertThat(result.getPriceThemeType()).isEqualTo(PriceThemeType.BEAUTY);
+        assertThat(result.getPriceThemeType()).isEqualTo(SNAP);
+        assertThat(result.getSnapSubTheme()).isEqualTo(ADMISSION);
 
         // Package 검증
         assertThat(result.getPackages()).hasSize(1);
@@ -132,23 +138,22 @@ class PricePersistenceAdapterTest {
         assertThat(result.getOptions()).hasSize(1);
         Option opt = result.getOptions().getFirst();
         assertThat(opt.getName()).isEqualTo("옵션 A");
-        assertThat(opt.getCount()).isEqualTo(1);
-        assertThat(opt.getPrice()).isEqualTo(5000);
+        assertThat(opt.getUnitSize()).isEqualTo(1);
+        assertThat(opt.getPricePerUnit()).isEqualTo(5000);
         assertThat(opt.getContents()).isEqualTo(List.of("마사지 추가"));
 
         // PriceReferenceImage 검증
-        assertThat(result.getPriceReferenceImages()).hasSize(1);
-        PriceReferenceImage referenceImg = result.getPriceReferenceImages().getFirst();
-        assertThat(referenceImg.getFileKey()).isEqualTo("file-key-123");
-        assertThat(referenceImg.getImageOrder()).isEqualTo(1);
+        assertThat(result.getPriceReferenceImages()).hasSize(2)
+                .extracting(PriceReferenceImage::getFileKey, PriceReferenceImage::getImageOrder)
+                .containsExactly(tuple("file-key-123", 1), tuple("file-key-456", 2));
     }
 
     @Test
     @DisplayName("Price와 그 Price의 Package, Option, PriceRefImage들을 저장한다.")
-    public void save() throws Exception {
+    public void create() throws Exception {
         // given
         Price price = createPriceDomain(
-                FASHION,
+                SNAP, ADMISSION,
                 List.of(
                         createPriceReferenceImage(null, "fileKey1", 1),
                         createPriceReferenceImage(null, "fileKey2", 2)
@@ -170,7 +175,8 @@ class PricePersistenceAdapterTest {
         // then
         // Price
         assertThat(saved.getPriceNo()).isNotNull();
-        assertThat(saved.getPriceThemeType()).isEqualTo(FASHION);
+        assertThat(saved.getPriceThemeType()).isEqualTo(SNAP);
+        assertThat(saved.getSnapSubTheme()).isEqualTo(ADMISSION);
 
         // PriceRefImage
         assertThat(saved.getPriceReferenceImages())
@@ -215,40 +221,18 @@ class PricePersistenceAdapterTest {
                         o -> {
                             assertThat(o.getOptionNo()).isNotNull();
                             assertThat(o.getName()).isEqualTo("옵션1");
-                            assertThat(o.getCount()).isEqualTo(1);
-                            assertThat(o.getPrice()).isEqualTo(100);
+                            assertThat(o.getUnitSize()).isEqualTo(1);
+                            assertThat(o.getPricePerUnit()).isEqualTo(100);
                             assertThat(o.getContents()).isEqualTo(List.of("X"));
                         },
                         o -> {
                             assertThat(o.getOptionNo()).isNotNull();
                             assertThat(o.getName()).isEqualTo("옵션2");
-                            assertThat(o.getCount()).isEqualTo(2);
-                            assertThat(o.getPrice()).isEqualTo(200);
+                            assertThat(o.getUnitSize()).isEqualTo(2);
+                            assertThat(o.getPricePerUnit()).isEqualTo(200);
                             assertThat(o.getContents()).isEqualTo(List.of("Y"));
                         }
                 );
-    }
-
-    @Test
-    @DisplayName("Price, PriceRefImage, Package, Option을 삭제한다.")
-    public void delete() throws Exception {
-        // given
-        PriceEntity priceEntity = createPriceEntity("expert_no", PriceThemeType.BEAUTY);
-        PackageEntity packageEntity = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
-        OptionEntity optionEntity = createOptionEntity(priceEntity, "name", 0, 0, List.of("content"));
-        PriceReferenceImageEntity referenceImageEntity = createReferenceImageEntity(priceEntity, "file_key", 1);
-
-        clearPersistenceContext();
-
-        // when
-        pricePersistenceAdapter.delete(priceEntity.getPriceNo());
-
-        // then
-        assertThat(priceJpaRepository.findById(priceEntity.getPriceNo())).isNotPresent();
-        assertThat(packageJpaRepository.findById(packageEntity.getPackageNo())).isNotPresent();
-        assertThat(optionJpaRepository.findById(optionEntity.getOptionNo())).isNotPresent();
-        assertThat(priceReferenceImageJpaRepository.findById(referenceImageEntity.getPriceReferenceImageNo())).isNotPresent();
-
     }
 
     @Test
@@ -257,7 +241,7 @@ class PricePersistenceAdapterTest {
         // given
 
         // 데이터베이스에 데이터 셋팅
-        PriceEntity priceEntity = createPriceEntity("expert_no", PriceThemeType.BEAUTY);
+        PriceEntity priceEntity = createPriceEntity("expert_no", SNAP, ADMISSION);
         String priceNo = priceEntity.getPriceNo();
 
         PackageEntity packageEntity1 = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
@@ -275,6 +259,7 @@ class PricePersistenceAdapterTest {
         Price updatedPrice = Price.builder()
                 .priceNo(priceNo)
                 .priceThemeType(FASHION)
+                .snapSubTheme(null)
                 .priceReferenceImages(List.of(
                         createPriceReferenceImage(null, "new_file_key", 1), // 추가된 PriceReferenceImage
                         createPriceReferenceImage(referenceImageEntity1.getPriceReferenceImageNo(), "file_key", 2) // 수정된 PriceReferenceImage. file_key자체는 수정이 불가능함
@@ -304,6 +289,7 @@ class PricePersistenceAdapterTest {
         PriceEntity priceResult = priceJpaRepository.findById(priceNo)
                 .orElseThrow();
         assertThat(priceResult.getPriceThemeType()).isEqualTo(FASHION);
+        assertThat(priceResult.getSnapSubTheme()).isNull();
 
         // PriceReferenceImageEntity 검증
         List<PriceReferenceImageEntity> imageResults = priceReferenceImageJpaRepository.findByPriceEntity_PriceNo(priceNo);
@@ -334,8 +320,8 @@ class PricePersistenceAdapterTest {
         assertThat(optionResults).hasSize(2)
                 .extracting(
                         OptionEntity::getName,
-                        OptionEntity::getCount,
-                        OptionEntity::getPrice,
+                        OptionEntity::getUnitSize,
+                        OptionEntity::getPricePerUnit,
                         OptionEntity::getContents
                 ).containsExactlyInAnyOrder(
                         tuple("new_opt_name", 2, 10, List.of("new_cnt")),
@@ -343,14 +329,37 @@ class PricePersistenceAdapterTest {
                 );
     }
 
+    @Test
+    @DisplayName("Price, PriceRefImage, Package, Option을 삭제한다.")
+    public void delete() throws Exception {
+        // given
+        PriceEntity priceEntity = createPriceEntity("expert_no", SNAP, ADMISSION);
+        PackageEntity packageEntity = createPackageEntity(priceEntity, "name", 0, List.of("content"), "notice");
+        OptionEntity optionEntity = createOptionEntity(priceEntity, "name", 0, 0, List.of("content"));
+        PriceReferenceImageEntity referenceImageEntity = createReferenceImageEntity(priceEntity, "file_key", 1);
+
+        clearPersistenceContext();
+
+        // when
+        pricePersistenceAdapter.delete(priceEntity.getPriceNo());
+
+        // then
+        assertThat(priceJpaRepository.findById(priceEntity.getPriceNo())).isNotPresent();
+        assertThat(packageJpaRepository.findById(packageEntity.getPackageNo())).isNotPresent();
+        assertThat(optionJpaRepository.findById(optionEntity.getOptionNo())).isNotPresent();
+        assertThat(priceReferenceImageJpaRepository.findById(referenceImageEntity.getPriceReferenceImageNo())).isNotPresent();
+
+    }
+
 
     /**
      * private 메서드
      */
-    private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
+    private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType, SnapSubTheme snapSubTheme) {
         PriceEntity priceEntity = PriceEntity.builder()
                 .expertNo(expertNo)
                 .priceThemeType(priceThemeType)
+                .snapSubTheme(snapSubTheme)
                 .build();
         return priceJpaRepository.save(priceEntity);
     }
@@ -366,12 +375,12 @@ class PricePersistenceAdapterTest {
         return packageJpaRepository.save(pkgEntity);
     }
 
-    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int count, int price, List<String> content) {
+    private OptionEntity createOptionEntity(PriceEntity priceEntity, String name, int unitSize, int pricePerUnit, List<String> content) {
         OptionEntity optionEntity = OptionEntity.builder()
                 .priceEntity(priceEntity)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(unitSize)
+                .pricePerUnit(pricePerUnit)
                 .contents(content)
                 .build();
         return optionJpaRepository.save(optionEntity);
@@ -387,13 +396,14 @@ class PricePersistenceAdapterTest {
     }
 
 
-    private Price createPriceDomain(PriceThemeType priceThemeType,
+    private Price createPriceDomain(PriceThemeType priceThemeType, SnapSubTheme snapSubTheme,
                                     List<PriceReferenceImage> priceReferenceImages,
                                     List<Package> packages,
                                     List<Option> options) {
         return Price.builder()
                 .priceThemeType(priceThemeType)
                 .priceReferenceImages(priceReferenceImages)
+                .snapSubTheme(snapSubTheme)
                 .packages(packages)
                 .options(options)
                 .build();
@@ -421,8 +431,8 @@ class PricePersistenceAdapterTest {
         return Option.builder()
                 .optionNo(optionNo)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(count)
+                .pricePerUnit(price)
                 .contents(contents)
                 .build();
     }

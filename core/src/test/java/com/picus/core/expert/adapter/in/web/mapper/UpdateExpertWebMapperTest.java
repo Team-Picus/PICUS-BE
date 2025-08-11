@@ -1,11 +1,11 @@
 package com.picus.core.expert.adapter.in.web.mapper;
 
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.ProjectWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.SkillWebRequest;
-import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoWebRequest.StudioWebRequest;
-import com.picus.core.expert.application.port.in.request.*;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertBasicInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.ProjectWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.SkillWebRequest;
+import com.picus.core.expert.adapter.in.web.data.request.UpdateExpertDetailInfoRequest.StudioWebRequest;
+import com.picus.core.expert.application.port.in.command.*;
 import com.picus.core.expert.domain.vo.SkillType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.picus.core.expert.application.port.in.request.ChangeStatus.*;
+import static com.picus.core.expert.application.port.in.command.ChangeStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -23,10 +23,10 @@ class UpdateExpertWebMapperTest {
 
     @Test
     @DisplayName("ExpertBasicInfoCommandWebRequest를 ExpertBasicInfoCommandRequest로 변환한다.")
-    void toBasicInfoAppRequest_should_map_all_fields_correctly() {
+    void toBasicInfoCommand_should_map_all_fields_correctly() {
         // given
         String currentUserNo = "USER123";
-        UpdateExpertBasicInfoWebRequest webRequest = new UpdateExpertBasicInfoWebRequest(
+        UpdateExpertBasicInfoRequest webRequest = new UpdateExpertBasicInfoRequest(
                 "profile-img-key",
                 "background-img-key",
                 "test-nickname",
@@ -35,7 +35,7 @@ class UpdateExpertWebMapperTest {
         );
 
         // when
-        UpdateExpertBasicInfoCommand result = mapper.toBasicInfoAppRequest(webRequest, currentUserNo);
+        UpdateExpertBasicInfoCommand result = mapper.toBasicInfoCommand(webRequest, currentUserNo);
 
         // then
         assertThat(result.currentUserNo()).isEqualTo("USER123");
@@ -48,11 +48,11 @@ class UpdateExpertWebMapperTest {
 
     @Test
     @DisplayName("toDetailInfoAppRequest: 웹 요청 DTO가 도메인 요청 DTO로 정확히 변환된다.")
-    void toDetailInfoAppRequest_success() {
+    void toDetailInfoCommand_success() {
         // given
         String currentUserNo = "USER123";
 
-        UpdateExpertDetailInfoWebRequest webRequest = UpdateExpertDetailInfoWebRequest.builder()
+        UpdateExpertDetailInfoRequest webRequest = UpdateExpertDetailInfoRequest.builder()
                 .activityCareer("촬영 경력 3년")
                 .activityAreas(List.of("서울시 강남구", "경기도 성남시"))
                 .projects(List.of(
@@ -84,7 +84,7 @@ class UpdateExpertWebMapperTest {
 
 
         // when
-        UpdateExpertDetailInfoCommand result = mapper.toDetailInfoAppRequest(webRequest, currentUserNo);
+        UpdateExpertDetailInfoCommand result = mapper.toDetailInfoCommand(webRequest, currentUserNo);
 
         // then
         assertThat(result.currentUserNo()).isEqualTo(currentUserNo);

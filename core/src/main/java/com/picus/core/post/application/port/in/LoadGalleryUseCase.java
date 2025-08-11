@@ -1,6 +1,6 @@
 package com.picus.core.post.application.port.in;
 
-import com.picus.core.post.application.port.in.response.LoadGalleryResult;
+import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 
 import java.util.Optional;
 

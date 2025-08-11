@@ -22,8 +22,8 @@ class OptionTest {
         assertThat(option).extracting(
                 Option::getOptionNo,
                 Option::getName,
-                Option::getCount,
-                Option::getPrice,
+                Option::getUnitSize,
+                Option::getPricePerUnit,
                 Option::getContents
         ).containsExactly(
                 "opt_no1", "new_name", 5, 20000, List.of("new_content")
@@ -34,8 +34,8 @@ class OptionTest {
         return Option.builder()
                 .optionNo(optionNo)
                 .name(name)
-                .count(count)
-                .price(price)
+                .unitSize(count)
+                .pricePerUnit(price)
                 .contents(contents)
                 .build();
     }

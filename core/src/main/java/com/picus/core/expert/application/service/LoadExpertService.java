@@ -1,7 +1,7 @@
 package com.picus.core.expert.application.service;
 
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
-import com.picus.core.expert.application.port.in.response.ExpertBasicInfoResult;
+import com.picus.core.expert.application.port.in.result.ExpertBasicInfoResult;
 import com.picus.core.expert.application.port.out.ExpertReadPort;
 import com.picus.core.expert.domain.Expert;
 import com.picus.core.shared.annotation.UseCase;
