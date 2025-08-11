@@ -1,9 +1,6 @@
 package com.picus.core.price.adapter.out.persistence;
 
-import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
-import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
-import com.picus.core.price.adapter.out.persistence.entity.PriceEntity;
-import com.picus.core.price.adapter.out.persistence.entity.PriceReferenceImageEntity;
+import com.picus.core.price.adapter.out.persistence.entity.*;
 import com.picus.core.price.adapter.out.persistence.mapper.OptionPersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.mapper.PackagePersistenceMapper;
 import com.picus.core.price.adapter.out.persistence.mapper.PricePersistenceMapper;
@@ -20,13 +17,18 @@ import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import com.picus.core.shared.exception.RestApiException;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.picus.core.price.adapter.out.persistence.entity.QPriceEntity.priceEntity;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @PersistenceAdapter
@@ -38,6 +40,8 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
     private final OptionJpaRepository optionJpaRepository;
     private final PriceReferenceImageJpaRepository priceReferenceImageJpaRepository;
 
+    private final JPAQueryFactory queryFactory;
+
     private final PricePersistenceMapper pricePersistenceMapper;
     private final PackagePersistenceMapper packagePersistenceMapper;
     private final OptionPersistenceMapper optionPersistenceMapper;
@@ -45,20 +49,22 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
 
     @Override
     public List<Price> findByExpertNo(String expertNo) {
-        List<Price> result = new ArrayList<>();
+        // PriceEntity 리스트 조회
         List<PriceEntity> priceEntities = priceJpaRepository.findByExpertNo(expertNo);
 
-        for (PriceEntity priceEntity : priceEntities) {
-            List<Package> packages = findPackagesByPriceNo(priceEntity); // 해당 Price의 Package 불러오기
+        // Price 서브 도메인 조회 및 및 반환 (Package & Option & PriceRefImage)
+        return getPriceDomainList(priceEntities);
+    }
 
-            List<Option> options = findOptionsByPriceNo(priceEntity); // 해당 Price의 Option 불러오기
+    @Override
+    public List<Price> findByExpertNoAndThemes(String expertNo,
+                                               List<PriceThemeType> priceThemeTypes,
+                                               List<SnapSubTheme> snapSubThemes) {
+        // Querydsl로 조건에 맞는 PriceEntity 목록 조회
+        List<PriceEntity> priceEntities = findPriceEntitiesByCond(expertNo, priceThemeTypes, snapSubThemes);
 
-            List<PriceReferenceImage> referenceImages = findPriceRefImagesByPriceNo(priceEntity); // 해당 Price의 RefImage 불러오기
-
-            result.add(pricePersistenceMapper.toDomain(priceEntity, packages, options, referenceImages));
-        }
-
-        return result;
+        // Price 도메인 조립 및 반환 (Package & Option & PriceRefImage)
+        return getPriceDomainList(priceEntities);
     }
 
     @Override
@@ -67,9 +73,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         List<Package> packages = findPackagesByPriceNo(priceEntity); // 해당 Price의 Package 불러오기
-
         List<Option> options = findOptionsByPriceNo(priceEntity); // 해당 Price의 Option 불러오기
-
         List<PriceReferenceImage> referenceImages = findPriceRefImagesByPriceNo(priceEntity); // 해당 Price의 RefImage 불러오기
 
         return pricePersistenceMapper.toDomain(priceEntity, packages, options, referenceImages);
@@ -122,9 +126,72 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
         priceJpaRepository.deleteById(priceNo);
     }
 
+
     /**
      * private 메서드
      */
+
+    private List<PriceEntity> findPriceEntitiesByCond(String expertNo, List<PriceThemeType> priceThemeTypes, List<SnapSubTheme> snapSubThemes) {
+        BooleanBuilder where = new BooleanBuilder();
+        where.and(priceEntity.expertNo.eq(expertNo));
+
+        List<PriceEntity> priceEntities;
+
+        if (priceThemeTypes == null || priceThemeTypes.isEmpty()) {
+            // 타입 조건이 없으면 전문가 기준 전체
+            priceEntities = queryFactory
+                    .selectFrom(priceEntity)
+                    .where(where)
+                    .fetch();
+        } else {
+            // types에서 SNAP 분리
+            List<PriceThemeType> nonSnap = new ArrayList<>();
+            boolean hasSnap = false;
+            for (PriceThemeType t : priceThemeTypes) {
+                if (t == PriceThemeType.SNAP) hasSnap = true;
+                else nonSnap.add(t);
+            }
+
+            // OR 그룹: (nonSnap IN) OR (SNAP AND subTheme IN ...)
+            BooleanBuilder orGroup = new BooleanBuilder();
+
+            if (!nonSnap.isEmpty()) {
+                // 1) types=[BEAUTY], subThemes=빈 → BEAUTY만
+                orGroup.or(priceEntity.priceThemeType.in(nonSnap));
+            }
+
+            List<SnapSubTheme> subList = (snapSubThemes == null) ? List.of() : snapSubThemes;
+            if (hasSnap && !subList.isEmpty()) {
+                // 2) types=[SNAP], subThemes=[FAMILY] → SNAP + FAMILY만
+                // 3) types=[SNAP, BEAUTY], subThemes=[FAMILY] → BEAUTY 전체 OR (SNAP+FAMILY)
+                // 4)  types=[SNAP], subThemes=[FAMILY, PROFILE] → priceThemeType = SNAP AND snapSubTheme IN (FAMILY, PROFILE)
+                orGroup.or(
+                        priceEntity.priceThemeType.eq(PriceThemeType.SNAP)
+                                .and(priceEntity.snapSubTheme.in(subList))
+                );
+            }
+
+            priceEntities = queryFactory
+                    .selectFrom(priceEntity)
+                    .where(where.and(orGroup))
+                    .fetch();
+        }
+        return priceEntities;
+    }
+
+    private List<Price> getPriceDomainList(List<PriceEntity> priceEntities) {
+        List<Price> prices = new ArrayList<>();
+
+        for (PriceEntity priceEntity : priceEntities) {
+            List<Package> packages = findPackagesByPriceNo(priceEntity); // 해당 Price의 Package 불러오기
+            List<Option> options = findOptionsByPriceNo(priceEntity); // 해당 Price의 Option 불러오기
+            List<PriceReferenceImage> referenceImages = findPriceRefImagesByPriceNo(priceEntity); // 해당 Price의 RefImage 불러오기
+
+            prices.add(pricePersistenceMapper.toDomain(priceEntity, packages, options, referenceImages));
+        }
+        return prices;
+    }
+
     private List<Package> findPackagesByPriceNo(PriceEntity priceEntity) {
         return packageJpaRepository.findByPriceEntity_PriceNo(priceEntity.getPriceNo()).stream()
                 .map(packagePersistenceMapper::toDomain)
@@ -173,7 +240,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
     }
 
     private List<PriceReferenceImage> savePriceRefImageEntities(PriceEntity savedPriceEntity, List<PriceReferenceImage> referenceImages) {
-        List<PriceReferenceImageEntity> priceReferenceImageEntities  = referenceImages.stream()
+        List<PriceReferenceImageEntity> priceReferenceImageEntities = referenceImages.stream()
                 .map(refImage -> {
                     PriceReferenceImageEntity priceRefImageEntity = priceReferenceImagePersistenceMapper.toEntity(refImage);
                     priceRefImageEntity.assignPriceEntity(savedPriceEntity);
@@ -192,7 +259,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
         List<Package> packages = price.getPackages();
         for (Package domain : packages) {
             String packageNo = domain.getPackageNo();
-            if(packageNo != null) {
+            if (packageNo != null) {
                 // PK가 있다 = 수정
                 PackageEntity entity = packageJpaRepository.findById(packageNo)
                         .orElseThrow(() -> new RestApiException(_NOT_FOUND));
@@ -208,7 +275,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
 
     private void updatePriceReferenceImageEntities(Price price, List<String> deletedPriceRefImageNos, PriceEntity priceEntity) {
         // 삭제
-        if(!deletedPriceRefImageNos.isEmpty()) {
+        if (!deletedPriceRefImageNos.isEmpty()) {
             priceReferenceImageJpaRepository.deleteByPriceReferenceImageNoIn(deletedPriceRefImageNos);
 
             // 삭제 후 이미지 순서 재정렬
@@ -226,7 +293,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
         List<PriceReferenceImage> priceReferenceImages = price.getPriceReferenceImages();
         for (PriceReferenceImage domain : priceReferenceImages) {
             String priceRefImageNo = domain.getPriceRefImageNo();
-            if(priceRefImageNo != null) {
+            if (priceRefImageNo != null) {
                 // PK가 있다 = 수정
                 PriceReferenceImageEntity entity = priceReferenceImageJpaRepository.findById(priceRefImageNo)
                         .orElseThrow(() -> new RestApiException(_NOT_FOUND));
@@ -256,7 +323,7 @@ public class PricePersistenceAdapter implements PriceCreatePort, PriceReadPort, 
         List<Option> options = price.getOptions();
         for (Option domain : options) {
             String optionNo = domain.getOptionNo();
-            if(optionNo != null) {
+            if (optionNo != null) {
                 // PK가 있다 = 수정
                 OptionEntity entity = optionJpaRepository.findById(optionNo)
                         .orElseThrow(() -> new RestApiException(_NOT_FOUND));

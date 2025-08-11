@@ -18,6 +18,7 @@ import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
 import com.picus.core.price.domain.vo.SnapSubTheme;
+import com.picus.core.shared.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +30,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.picus.core.price.domain.vo.PriceThemeType.FASHION;
-import static com.picus.core.price.domain.vo.PriceThemeType.SNAP;
-import static com.picus.core.price.domain.vo.SnapSubTheme.ADMISSION;
+import static com.picus.core.price.domain.vo.PriceThemeType.*;
+import static com.picus.core.price.domain.vo.SnapSubTheme.*;
 import static org.assertj.core.api.Assertions.*;
 
 @Import({
@@ -39,7 +39,8 @@ import static org.assertj.core.api.Assertions.*;
         PricePersistenceMapper.class,
         PackagePersistenceMapper.class,
         OptionPersistenceMapper.class,
-        PriceReferenceImagePersistenceMapper.class
+        PriceReferenceImagePersistenceMapper.class,
+        QueryDslConfig.class
 })
 @DataJpaTest
 @ActiveProfiles("test")
@@ -61,7 +62,7 @@ class PricePersistenceAdapterTest {
     EntityManager em;
 
     @Test
-    @DisplayName("특정 expertNo을 가진 Price를 조회한다.")
+    @DisplayName("특정 expertNo을 가진 Price를 조회한다. 조건없이 조회")
     public void findByExpertNo_success() {
         // given
         PriceEntity priceEntity = createPriceEntity("expert001", SNAP, ADMISSION);
@@ -72,7 +73,8 @@ class PricePersistenceAdapterTest {
         clearPersistenceContext();
 
         // when
-        List<Price> results = pricePersistenceAdapter.findByExpertNo("expert001");
+        List<Price> results =
+                pricePersistenceAdapter.findByExpertNo("expert001");
 
         // then
         assertThat(results).hasSize(1);
@@ -103,6 +105,100 @@ class PricePersistenceAdapterTest {
         PriceReferenceImage referenceImg = result.getPriceReferenceImages().getFirst();
         assertThat(referenceImg.getFileKey()).isEqualTo("file-key-123");
         assertThat(referenceImg.getImageOrder()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("특정 expertNo을 가진 Price를 priceThemeType & snapSubTheme로 조회한다." +
+            "priceThemeType=[BEAUTY], snapSubTheme=null → BEAUTY")
+    public void findByExpertNoAndThemes_success1() {
+        // given
+        createPriceEntity("expert001", BEAUTY, null);            // ✅
+        createPriceEntity("expert001", FASHION, null);           // ❌
+        createPriceEntity("expert001", SNAP, FAMILY);            // ❌
+        createPriceEntity("expert001", SNAP, ADMISSION);         // ❌
+        clearPersistenceContext();
+
+        // when
+        List<Price> results = pricePersistenceAdapter
+                .findByExpertNoAndThemes("expert001", List.of(BEAUTY), null);
+
+        // then
+        assertThat(results).hasSize(1)
+                .extracting(Price::getPriceThemeType)
+                .containsOnly(BEAUTY);
+    }
+
+    @Test
+    @DisplayName("특정 expertNo을 가진 Price를 priceThemeType & snapSubTheme로 조회한다." +
+            "priceThemeType=[SNAP], snapSubTheme로=[FAMILY] → SNAP + FAMILY만")
+    public void findByExpertNoAndThemes_success2() {
+        // given
+        createPriceEntity("expert001", SNAP, FAMILY); // ✅
+        createPriceEntity("expert001", SNAP, PROFILE); // ❌
+        createPriceEntity("expert001", SNAP, ADMISSION); // ❌
+        createPriceEntity("expert001", BEAUTY, null); // ❌
+        clearPersistenceContext();
+
+        // when
+        List<Price> results = pricePersistenceAdapter
+                .findByExpertNoAndThemes("expert001", List.of(SNAP), List.of(SnapSubTheme.FAMILY));
+
+        // then
+        assertThat(results).hasSize(1)
+                .allSatisfy(p -> {
+                    assertThat(p.getPriceThemeType()).isEqualTo(SNAP);
+                    assertThat(p.getSnapSubTheme()).isEqualTo(SnapSubTheme.FAMILY);
+                });
+    }
+
+    @Test
+    @DisplayName("특정 expertNo을 가진 Price를 priceThemeType & snapSubTheme로 조회한다." +
+            "priceThemeType=[SNAP, BEAUTY], snapSubTheme로=[FAMILY] → BEAUTY OR (SNAP+FAMILY)")
+    public void findByExpertNoAndThemes_success3() {
+        // given
+        createPriceEntity("expert001", BEAUTY, null); // ✅
+        createPriceEntity("expert001", SNAP, FAMILY); // ✅
+        createPriceEntity("expert001", SNAP, PROFILE); // ❌
+        createPriceEntity("expert001", FASHION, null); // ❌
+        clearPersistenceContext();
+
+        // when
+        List<Price> results = pricePersistenceAdapter
+                .findByExpertNoAndThemes("expert001", List.of(SNAP, BEAUTY), List.of(SnapSubTheme.FAMILY));
+
+        // then
+        assertThat(results).hasSize(2);
+        assertThat(results)
+                .extracting(Price::getPriceThemeType, Price::getSnapSubTheme)
+                .containsExactlyInAnyOrder(
+                        tuple(BEAUTY, null),
+                        tuple(SNAP, SnapSubTheme.FAMILY)
+                );
+    }
+
+    @Test
+    @DisplayName("특정 expertNo을 가진 Price를 priceThemeType & snapSubTheme로 조회한다." +
+            "priceThemeType=[SNAP], snapSubTheme로=[FAMILY, PROFILE] → SNAP+FAMILY/PROFILE")
+    public void findByExpertNoAndThemes_success4() {
+        // given
+        createPriceEntity("expert001", SNAP, FAMILY); // ✅
+        createPriceEntity("expert001", SNAP, PROFILE); // ✅
+        createPriceEntity("expert001", SNAP, ADMISSION); // ❌
+        createPriceEntity("expert001", BEAUTY, null); // ❌
+        clearPersistenceContext();
+
+        // when
+        List<Price> results = pricePersistenceAdapter
+                .findByExpertNoAndThemes("expert001", List.of(SNAP),
+                        List.of(SnapSubTheme.FAMILY, SnapSubTheme.PROFILE));
+
+        // then
+        assertThat(results).hasSize(2)
+                .extracting(Price::getPriceThemeType, Price::getSnapSubTheme)
+                .containsExactlyInAnyOrder(
+                        tuple(SNAP, SnapSubTheme.FAMILY),
+                        tuple(SNAP, SnapSubTheme.PROFILE)
+                );
     }
 
     @Test

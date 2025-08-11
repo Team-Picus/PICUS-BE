@@ -11,6 +11,7 @@ import com.picus.core.price.adapter.out.persistence.repository.OptionJpaReposito
 import com.picus.core.price.adapter.out.persistence.repository.PackageJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepository;
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
@@ -69,7 +70,7 @@ public class LoadPriceIntegrationTest {
     public void getPricesByExpert_success() throws Exception {
         // given - 데이터베이스 셋팅
         String expertNo = "expert001";
-        PriceEntity priceEntity = createPriceEntity(expertNo, PriceThemeType.BEAUTY);
+        PriceEntity priceEntity = createPriceEntity(expertNo, PriceThemeType.BEAUTY, null);
         PackageEntity packageEntity = createPackageEntity(priceEntity, "기본 패키지", 20000, List.of("헤어컷", "드라이"), "사전 예약 필수");
         OptionEntity optionEntity = createOptionEntity(priceEntity, "옵션 A", 1, 5000, List.of("마사지 추가"));
         PriceReferenceImageEntity referenceImageEntity = createReferenceImageEntity(priceEntity, "file-key-123", 1);
@@ -146,10 +147,48 @@ public class LoadPriceIntegrationTest {
                 .contains(tuple(referenceImageEntity.getPriceReferenceImageNo(), "file-key-123", null, 1));
     }
 
-    private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType) {
+    @Test
+    @DisplayName("테마 필터(PRICE_THEME_TYPES=BEAUTY)로 특정 전문가의 가격만 조회한다")
+    public void getPricesByExpert_withThemeFilter_beautyOnly() throws Exception {
+        // given - 데이터베이스 셋팅 (패키지/옵션/이미지 저장 없음)
+        String expertNo = "expert001";
+        PriceEntity beauty1 = createPriceEntity(expertNo, PriceThemeType.BEAUTY, null); // ✅
+        PriceEntity snap1   = createPriceEntity(expertNo, PriceThemeType.SNAP, SnapSubTheme.ADMISSION);
+
+        commitTestTransaction();
+
+        // given - 요청 셋팅
+        HttpEntity<Object> request = settingWebRequest(createUserEntity(), null);
+
+        // when (테마 필터: BEAUTY)
+        ResponseEntity<BaseResponse<LoadPriceResponse>> response = restTemplate.exchange(
+                "/api/v1/experts/{expert_no}/prices?priceThemeTypes=BEAUTY",
+                HttpMethod.GET,
+                request,
+                new ParameterizedTypeReference<>() {},
+                expertNo
+        );
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        BaseResponse<LoadPriceResponse> body = response.getBody();
+        assertThat(body).isNotNull();
+
+        LoadPriceResponse root = body.getResult();
+        assertThat(root).isNotNull();
+
+        List<LoadPriceResponse.PriceResponse> prices = root.prices();
+
+        assertThat(prices).hasSize(1)
+                .extracting(LoadPriceResponse.PriceResponse::priceThemeType)
+                .containsOnly(PriceThemeType.BEAUTY);
+    }
+
+    private PriceEntity createPriceEntity(String expertNo, PriceThemeType priceThemeType, SnapSubTheme snapSubTheme) {
         PriceEntity priceEntity = PriceEntity.builder()
                 .expertNo(expertNo)
                 .priceThemeType(priceThemeType)
+                .snapSubTheme(snapSubTheme)
                 .build();
         return priceJpaRepository.save(priceEntity);
     }

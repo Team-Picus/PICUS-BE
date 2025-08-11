@@ -4,12 +4,11 @@ import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse;
 import com.picus.core.price.adapter.in.web.mapper.LoadPriceWebMapper;
 import com.picus.core.price.application.port.in.LoadPriceUseCase;
 import com.picus.core.price.domain.Price;
+import com.picus.core.price.domain.vo.PriceThemeType;
+import com.picus.core.price.domain.vo.SnapSubTheme;
 import com.picus.core.shared.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,9 +21,13 @@ public class LoadPriceController {
     private final LoadPriceWebMapper webMapper;
 
     @GetMapping("/{expert_no}/prices")
-    public BaseResponse<LoadPriceResponse> getPricesByExpert(@PathVariable("expert_no") String expertNo) {
+    public BaseResponse<LoadPriceResponse> getPricesByExpert(
+            @PathVariable("expert_no") String expertNo,
+            @RequestParam(required = false) List<PriceThemeType> priceThemeTypes,
+            @RequestParam(required = false) List<SnapSubTheme> snapSubThemes
+    ) {
 
-        List<Price> prices = loadPriceUseCase.loadByExpertNo(expertNo); // 유스케이스 호출
+        List<Price> prices = loadPriceUseCase.loadByExpertNo(expertNo, priceThemeTypes, snapSubThemes); // 유스케이스 호출
 
         LoadPriceResponse response = webMapper.toResponse(prices); // 매핑
 
