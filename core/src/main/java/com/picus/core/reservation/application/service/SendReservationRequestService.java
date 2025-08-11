@@ -1,10 +1,12 @@
 package com.picus.core.reservation.application.service;
 
+import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.price.application.port.out.PriceReadPort;
 import com.picus.core.price.domain.Price;
 import com.picus.core.reservation.application.port.in.SendReservationRequestUseCase;
 import com.picus.core.reservation.application.port.in.mapper.SaveReservationCommandMapper;
 import com.picus.core.reservation.application.port.in.request.SaveReservationCommand;
+import com.picus.core.reservation.application.port.out.ReservationBlacklistReadPort;
 import com.picus.core.reservation.application.port.out.ReservationCreatePort;
 import com.picus.core.reservation.domain.Reservation;
 import com.picus.core.shared.annotation.UseCase;
@@ -13,6 +15,7 @@ import com.picus.core.user.application.port.out.UserReadPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.RESERVATION_BLACKLIST_USER;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @UseCase
@@ -21,8 +24,10 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT
 public class SendReservationRequestService implements SendReservationRequestUseCase {
 
     private final UserReadPort userReadPort;
+    private final PostReadPort postReadPort;
     private final PriceReadPort priceReadPort;
     private final ReservationCreatePort reservationCreatePort;
+    private final ReservationBlacklistReadPort reservationBlacklistReadPort;
     private final SaveReservationCommandMapper saveReservationCommandMapper;
 
     @Override
@@ -30,7 +35,11 @@ public class SendReservationRequestService implements SendReservationRequestUseC
         if (userReadPort.existsById(userNo))
             throw new RestApiException(_NOT_FOUND);
 
+        if (reservationBlacklistReadPort.isBlacklist(userNo))
+            throw new RestApiException(RESERVATION_BLACKLIST_USER);
+
         Price price = priceReadPort.findById(command.getPriceNo());
+        postReadPort.findById(command.getPostNo());
         Reservation reservation = saveReservationCommandMapper.toDomain(userNo, command, price);
 
         reservationCreatePort.create(reservation);

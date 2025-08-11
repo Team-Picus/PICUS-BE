@@ -1,4 +1,4 @@
-package com.picus.core.reservation.adapter.in.web;
+package com.picus.core.reservation.adapter.in;
 
 import com.picus.core.reservation.application.port.in.CompleteReservationUseCase;
 import com.picus.core.shared.annotation.CurrentUser;
@@ -20,5 +20,6 @@ public class CompleteReservationController {
             @PathVariable String reservationNo
     ) {
         completeReservationUseCase.complete(userNo, reservationNo);
+        return BaseResponse.onSuccess();
     }
 }

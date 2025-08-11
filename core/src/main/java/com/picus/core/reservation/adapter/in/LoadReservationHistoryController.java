@@ -1,6 +1,7 @@
 package com.picus.core.reservation.adapter.in;
 
 import com.picus.core.reservation.adapter.in.web.data.response.LoadReservationHistoryResponse;
+import com.picus.core.reservation.adapter.in.web.mapper.LoadReservationHistoryWebMapper;
 import com.picus.core.reservation.application.port.in.LoadReservationHistoryUseCase;
 import com.picus.core.reservation.application.port.in.response.LoadReservationHistoryResult;
 import com.picus.core.reservation.domain.Reservation;
@@ -19,6 +20,7 @@ import java.util.List;
 public class LoadReservationHistoryController {
 
     private final LoadReservationHistoryUseCase loadReservationHistoryUseCase;
+    private final LoadReservationHistoryWebMapper webMapper;
 
     @GetMapping
     public BaseResponse<List<LoadReservationHistoryResponse>> loadAll(
@@ -26,14 +28,19 @@ public class LoadReservationHistoryController {
             @RequestParam(required = false) LocalDateTime start,
             @RequestParam(required = false) ReservationStatus status
     ) {
-        List<LoadReservationHistoryResult> reservations = loadReservationHistoryUseCase.loadAll(userNo, start, status);
-        return BaseResponse.onSuccess(null);
+        List<LoadReservationHistoryResponse> responses = loadReservationHistoryUseCase.loadAll(userNo, start, status).stream()
+                .map(webMapper::toResponse)
+                .toList();
+
+        return BaseResponse.onSuccess(responses);
     }
 
     @GetMapping("/{reservationNo}")
-    public BaseResponse<Void> load(
+    public BaseResponse<LoadReservationHistoryResponse> load(
+            @CurrentUser String userNo,
             @PathVariable String reservationNo
     ) {
+        loadReservationHistoryUseCase.load(userNo, reservationNo);
         return BaseResponse.onSuccess();
     }
 }

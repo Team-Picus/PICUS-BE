@@ -19,10 +19,11 @@ public class Reservation {
     private LocalDateTime startTime;
 
     // 가격 및 디테일
-    private PriceThemeType themeType;
+    private String themeType;
     private String requestDetail;
     private SelectedPackage selectedPackage;
     private List<SelectedOption> selectedOptions;
+    private SelectedPost selectedPost;
     private Integer totalPrice;
 
     // FK

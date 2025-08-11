@@ -1,15 +1,15 @@
 package com.picus.core.reservation.application.port.in.response;
 
-import java.time.LocalDate;
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 
+@Builder
 public record LoadReservationHistoryResult (
         String reservationNo,
         String thumbnailImage,
-//        LocalDate date,
         String reservationStatus,
         String expertName,
-//        LocalDateTime startTime,
-//        LocalDateTime endTime,
+        LocalDateTime dateTime,
         String place
 ) {}

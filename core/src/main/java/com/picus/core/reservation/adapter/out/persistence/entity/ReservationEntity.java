@@ -3,6 +3,7 @@ package com.picus.core.reservation.adapter.out.persistence.entity;
 import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.reservation.adapter.out.persistence.entity.vo.OptionSnapshot;
 import com.picus.core.reservation.adapter.out.persistence.entity.vo.PackageSnapshot;
+import com.picus.core.reservation.adapter.out.persistence.entity.vo.PostSnapshot;
 import com.picus.core.reservation.domain.ReservationStatus;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
@@ -36,7 +37,7 @@ public class ReservationEntity {
     private String requestDetail;
 
     @Column(nullable = false)
-    private PriceThemeType themeType;
+    private String themeType;
 
     @Column(nullable = false)
     private Integer totalPrice;
@@ -53,6 +54,9 @@ public class ReservationEntity {
 
     @Embedded
     private PackageSnapshot packageSnapshot;
+
+    @Embedded
+    private PostSnapshot postSnapshot;
 
     @PrePersist
     protected void init() {

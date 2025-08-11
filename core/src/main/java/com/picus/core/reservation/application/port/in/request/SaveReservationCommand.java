@@ -21,6 +21,9 @@ public class SaveReservationCommand extends SelfValidating<SaveReservationComman
     List<OptionSelection> optionSelection;
 
     @NotBlank
+    String postNo;
+
+    @NotBlank
     String place;
 
     @NotNull

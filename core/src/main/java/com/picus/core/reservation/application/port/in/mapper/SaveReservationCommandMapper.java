@@ -23,7 +23,7 @@ public class SaveReservationCommandMapper {
                 .reservationStatus(ReservationStatus.REQUESTED)
                 .place(command.getPlace())
                 .startTime(command.getStartTime())
-                .themeType(price.getPriceThemeType())
+                .themeType(price.getPriceThemeType().getText())
                 .requestDetail(command.getRequestDetail())
                 .selectedPackage(toSelectedPackage(price, command))
                 .selectedOptions(toSelectedOptions(price, command))
