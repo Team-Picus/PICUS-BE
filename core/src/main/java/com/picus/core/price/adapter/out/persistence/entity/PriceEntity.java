@@ -1,6 +1,5 @@
 package com.picus.core.price.adapter.out.persistence.entity;
 
-import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.price.domain.vo.PriceThemeType;
 import com.picus.core.price.domain.vo.SnapSubTheme;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -16,7 +15,15 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Builder
 @Getter
-@Table(name = "prices")
+@Table(
+        name = "prices",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_prices_expert_theme_sub",
+                        columnNames = {"expert_no", "price_theme_type", "snap_sub_theme"}
+                )
+        }
+)
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PRIVATE)
 public class PriceEntity {
