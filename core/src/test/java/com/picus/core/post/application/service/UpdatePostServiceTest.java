@@ -39,8 +39,6 @@ import static org.mockito.Mockito.spy;
 class UpdatePostServiceTest {
 
     @Mock
-    UserReadPort userReadPort;
-    @Mock
     ExpertReadPort expertReadPort;
     @Mock
     ExpertUpdatePort expertUpdatePort;
@@ -68,7 +66,7 @@ class UpdatePostServiceTest {
                 createUpdatePostImageAppReq("img-456", null, null, ChangeStatus.DELETE);
 
 
-        UpdatePostCommand updatePostCommand =
+        UpdatePostCommand cmd =
                 createUpdatePostAppReq(
                         postNo, newImage, updateImage, deleteImage,
                         "title", "one", "detail", List.of(PostMoodType.VINTAGE),
@@ -81,22 +79,16 @@ class UpdatePostServiceTest {
                         ),
                         userNo);
 
-        User mockUser = mock(User.class);
-        given(userReadPort.findById(userNo)).willReturn(mockUser);
-        String expertNo = "expert-123";
-        given(mockUser.getExpertNo()).willReturn(expertNo);
-        Post post = Post.builder().authorNo(expertNo).build();
+        Post post = Post.builder().authorNo(userNo).build();
         Post spyPost = spy(post);
         given(postReadPort.findById(postNo)).willReturn(Optional.of(spyPost));
         Expert mockExpert = mock(Expert.class);
-        given(expertReadPort.findById(expertNo)).willReturn(Optional.of(mockExpert));
+        given(expertReadPort.findById(userNo)).willReturn(Optional.of(mockExpert));
 
         // when
-        updatePostService.update(updatePostCommand);
+        updatePostService.update(cmd);
 
         // then
-        then(userReadPort).should().findById(userNo);
-        then(mockUser).should().getExpertNo();
         then(postReadPort).should().findById(postNo);
         then(spyPost).should().updatePost("title", "one", "detail",
                 List.of("pkg-123"), List.of(PostThemeType.SNAP), List.of(SnapSubTheme.PROFILE),
@@ -112,7 +104,7 @@ class UpdatePostServiceTest {
                 .build());
         then(spyPost).should().deletePostImage(deleteImage.postImageNo());
         then(postUpdatePort).should().updateWithPostImage(spyPost, List.of(deleteImage.postImageNo()));
-        then(expertReadPort).should().findById(expertNo);
+        then(expertReadPort).should().findById(cmd.currentUserNo());
         then(mockExpert).should().updateLastActivityAt(any(LocalDateTime.class));
         then(expertUpdatePort).should().update(mockExpert);
     }

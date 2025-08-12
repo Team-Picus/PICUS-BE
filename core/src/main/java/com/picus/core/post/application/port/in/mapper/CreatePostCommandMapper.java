@@ -16,26 +16,26 @@ import java.util.Set;
 @Component
 public class CreatePostCommandMapper {
 
-    public Post toDomain(CreatePostCommand appReq, String expertNo) {
+    public Post toDomain(CreatePostCommand command) {
         
         List<String> packageNos = new ArrayList<>();
         Set<PostThemeType> postThemeTypes = new HashSet<>(); // 중복된 테마가 넘어올 수 있으므로 Set
         Set<SnapSubTheme> snapSubThemes = new HashSet<>();
-        setPackageInfo(appReq.packages(), packageNos, postThemeTypes, snapSubThemes);
+        setPackageInfo(command.packages(), packageNos, postThemeTypes, snapSubThemes);
 
         return Post.builder()
                 .packageNos(packageNos)
-                .authorNo(expertNo)
-                .title(appReq.title())
+                .authorNo(command.currentUserNo())
+                .title(command.title())
                 .postThemeTypes(postThemeTypes.stream().toList())
                 .snapSubThemes(snapSubThemes.stream().toList())
-                .oneLineDescription(appReq.oneLineDescription())
-                .detailedDescription(appReq.detailedDescription())
-                .postMoodTypes(appReq.postMoodTypes())
-                .spaceType(appReq.spaceType())
-                .spaceAddress(appReq.spaceAddress())
+                .oneLineDescription(command.oneLineDescription())
+                .detailedDescription(command.detailedDescription())
+                .postMoodTypes(command.postMoodTypes())
+                .spaceType(command.spaceType())
+                .spaceAddress(command.spaceAddress())
                 .isPinned(false) // 고정여부 초기값은 false
-                .postImages(appReq.postImages())
+                .postImages(command.postImages())
                 .build();
     }
 

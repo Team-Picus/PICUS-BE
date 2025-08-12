@@ -59,9 +59,9 @@ public class LoadMyPackageIntegrationTest {
     @DisplayName("사용자는 자신의 패키지 정보를 조회할 수 있다.")
     public void loadMyPackage() throws Exception {
         // given - 데이터베이스에 데이터 셋팅
-        String expertNo = "expert-123";
-        UserEntity userEntity = createUserEntity(expertNo);
-        PriceEntity priceEntity = createPriceEntity(expertNo, SNAP, ADMISSION);
+        UserEntity userEntity = createUserEntity();
+        userEntity.assignExpertNo(userEntity.getUserNo());
+        PriceEntity priceEntity = createPriceEntity(userEntity.getUserNo(), SNAP, ADMISSION);
         createPackageEntity(priceEntity, "pkg1");
         createPackageEntity(priceEntity, "pkg2");
         commitTestTransaction();
@@ -100,7 +100,7 @@ public class LoadMyPackageIntegrationTest {
         assertThat(price.packages()).allSatisfy(p -> assertThat(p.packageNo()).isNotBlank());
     }
 
-    private UserEntity createUserEntity(String expertNo) {
+    private UserEntity createUserEntity() {
         UserEntity userEntity = UserEntity.builder()
                 .name("이름")
                 .nickname("nickname")
@@ -112,7 +112,6 @@ public class LoadMyPackageIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo(expertNo)
                 .build();
         return userJpaRepository.save(userEntity);
     }

@@ -28,7 +28,7 @@ class RequestApprovalCommandMapperTest {
                 .skills(List.of(Skill.builder().content("Java").build()))
                 .studio(Studio.builder().studioName("스튜디오A").build())
                 .portfolioLinks(List.of("https://portfolio.site"))
-                .userNo("user-001")
+                .currentUserNo("user-001")
                 .build();
 
         // when

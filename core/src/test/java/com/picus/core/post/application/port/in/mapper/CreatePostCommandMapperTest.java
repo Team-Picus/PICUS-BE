@@ -25,7 +25,7 @@ class CreatePostCommandMapperTest {
     @DisplayName("CreatePostCommand -> Post 도메인 모델로 매핑")
     void toDomain_success() {
         // given
-        CreatePostCommand req = CreatePostCommand.builder()
+        CreatePostCommand cmd = CreatePostCommand.builder()
                 .postImages(List.of(
                         PostImage.builder()
                                 .fileKey("img_1.jpg")
@@ -49,16 +49,14 @@ class CreatePostCommandMapperTest {
                                 .snapSubTheme("FAMILY")
                                 .build()
                 ))
-                .authorNo("user-456")
+                .currentUserNo("user-456")
                 .build();
 
-        String expertNo = "expert-789";
-
         // when
-        Post post = mapper.toDomain(req, expertNo);
+        Post post = mapper.toDomain(cmd);
 
         // then
-        assertThat(post.getAuthorNo()).isEqualTo("expert-789");
+        assertThat(post.getAuthorNo()).isEqualTo("user-456");
         assertThat(post.getPackageNos()).containsExactly("package-123");
         assertThat(post.getTitle()).isEqualTo("테스트 제목");
         assertThat(post.getOneLineDescription()).isEqualTo("한 줄 설명");
@@ -96,10 +94,8 @@ class CreatePostCommandMapperTest {
                 ))
                 .build();
 
-        String expertNo = "expert-789";
-
         // when
-        Post post = mapper.toDomain(req, expertNo);
+        Post post = mapper.toDomain(req);
 
         // then
         assertThat(post.getPostThemeTypes()).hasSize(1)
@@ -122,10 +118,8 @@ class CreatePostCommandMapperTest {
                 ))
                 .build();
 
-        String expertNo = "expert-789";
-
         // when // then
-        assertThatThrownBy(() -> mapper.toDomain(req, expertNo))
+        assertThatThrownBy(() -> mapper.toDomain(req))
                 .isInstanceOf(RestApiException.class);
     }
 
@@ -143,10 +137,9 @@ class CreatePostCommandMapperTest {
                 ))
                 .build();
 
-        String expertNo = "expert-789";
 
         // when // then
-        assertThatThrownBy(() -> mapper.toDomain(req, expertNo))
+        assertThatThrownBy(() -> mapper.toDomain(req))
                 .isInstanceOf(RestApiException.class);
     }
 }

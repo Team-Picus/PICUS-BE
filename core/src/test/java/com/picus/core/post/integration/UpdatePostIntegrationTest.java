@@ -73,9 +73,8 @@ public class UpdatePostIntegrationTest {
     @Test
     @DisplayName("사용자는 게시물을 수정할 수 있다. 게시물이 수정되면 Expert의 최근활동일이 최신화 된다.")
     public void write_success() throws Exception {
-        // given
 
-        // 데이터베이스에 데이터 셋팅
+        // given - 데이터베이스에 데이터 셋팅
         UserEntity userEntity = createUserEntity();
         LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
         ExpertEntity expertEntity = createExpertEntity(userEntity, initLastActivityAt);
@@ -91,7 +90,7 @@ public class UpdatePostIntegrationTest {
 
         commitTestTransaction();
 
-        // 입력 값 셋팅
+        // given - 입력 값 셋팅
         UpdatePostRequest webReq = createWebReq(
                 List.of(
                         createPostImageWebReq(null,
@@ -172,7 +171,6 @@ public class UpdatePostIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo("expert-123")
                 .build();
         return userJpaRepository.save(userEntity);
     }

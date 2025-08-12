@@ -31,7 +31,6 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 @Transactional
 public class UpdatePostService implements UpdatePostUseCase {
 
-    private final UserReadPort userReadPort;
     private final ExpertReadPort expertReadPort;
     private final ExpertUpdatePort expertUpdatePort;
     private final PostUpdatePort postUpdatePort;
@@ -44,7 +43,7 @@ public class UpdatePostService implements UpdatePostUseCase {
         checkPostImageOrder(updatePostCommand.postImages());
 
         // 글 작성한 사용자의 expertNo 조회
-        String expertNo = getCurrentExpertNo(updatePostCommand.currentUserNo());
+        String expertNo = updatePostCommand.currentUserNo(); // User와 Expert는 pk를 공유
 
         // Post 조회
         Post post = postReadPort.findById(updatePostCommand.postNo())
@@ -63,6 +62,7 @@ public class UpdatePostService implements UpdatePostUseCase {
         // 수정사항 데이터베이스 반영
         postUpdatePort.updateWithPostImage(post, deletedPostImageNos);
 
+        // TODO: 낙관적 락 처리 (재시도처리) 필요
         // Expert의 activityAt 최신화
         Expert expert = expertReadPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
@@ -76,11 +76,6 @@ public class UpdatePostService implements UpdatePostUseCase {
     /**
      * private 메서드
      */
-    private String getCurrentExpertNo(String userNo) {
-        User user = userReadPort.findById(userNo);
-        return Optional.ofNullable(user.getExpertNo())
-                .orElseThrow(() -> new RestApiException(_FORBIDDEN));
-    }
 
     private void throwIfNotOwner(String expertNo, String priceExpertNo) {
         if (!expertNo.equals(priceExpertNo))

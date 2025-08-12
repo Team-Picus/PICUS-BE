@@ -14,7 +14,7 @@ class CreateCommentWebMapperTest {
     private final CreateCommentWebMapper webMapper = new CreateCommentWebMapper();
 
     @Test
-    @DisplayName("postNo, authorNo, CreateCommentRequest -> CreateCommentCommand")
+    @DisplayName("postNo, currentUserNo, CreateCommentRequest -> CreateCommentCommand")
     public void toCommand() throws Exception {
         // given
         String postNo = "post-123";

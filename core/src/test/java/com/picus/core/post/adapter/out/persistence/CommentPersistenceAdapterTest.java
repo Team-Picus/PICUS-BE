@@ -155,7 +155,7 @@ class CommentPersistenceAdapterTest {
     private CommentEntity createCommentEntity(PostEntity postEntity) {
         CommentEntity commentEntity = CommentEntity.builder()
                 .postEntity(postEntity)
-                .userNo("userNo")
+                .userNo("currentUserNo")
                 .content("content")
                 .build();
         return commentJpaRepository.save(commentEntity);

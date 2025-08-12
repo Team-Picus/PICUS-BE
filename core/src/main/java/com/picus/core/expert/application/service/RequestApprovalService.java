@@ -27,9 +27,9 @@ public class RequestApprovalService implements RequestApprovalUseCase {
     public void requestApproval(RequestApprovalCommand command) {
         Expert expert = appMapper.toDomain(command); // command -> domain
 
-        Expert savedExpert = expertCreatePort.create(expert, command.userNo());// Expert 저장
+        Expert savedExpert = expertCreatePort.create(expert, command.currentUserNo()); // Expert 저장
 
-        userUpdatePort.assignExpertNo(command.userNo(), savedExpert.getExpertNo());// User expertNo 할당
+        userUpdatePort.assignExpertNo(command.currentUserNo(), savedExpert.getExpertNo()); // User expertNo 할당
     }
 
 

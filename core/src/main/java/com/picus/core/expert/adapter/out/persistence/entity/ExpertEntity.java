@@ -5,7 +5,6 @@ import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.expert.adapter.out.persistence.converter.StringConverter;
 import com.picus.core.shared.common.BaseEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
-import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,6 @@ import static lombok.AccessLevel.PROTECTED;
 public class ExpertEntity extends BaseEntity {
 
     @Id
-//    @Tsid
     private String expertNo;
 
     @OneToOne(fetch = FetchType.LAZY)

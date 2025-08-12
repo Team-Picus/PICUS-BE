@@ -27,9 +27,6 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 @RequiredArgsConstructor
 @Transactional
 public class UpdatePriceService implements UpdatePriceUseCase {
-
-    private final UserReadPort userReadPort;
-
     private final PriceReadPort priceReadPort;
     private final PriceCreatePort priceCreatePort;
     private final PriceUpdatePort priceUpdatePort;
@@ -42,10 +39,6 @@ public class UpdatePriceService implements UpdatePriceUseCase {
 
     @Override
     public void update(UpdatePriceListCommand command, String currentUserNo) {
-        // 현재 사용자의 ExpertNo을 받아옴
-        User user = userReadPort.findById(currentUserNo);
-        String expertNo = Optional.ofNullable(user.getExpertNo())
-                .orElseThrow(() -> new RestApiException(_FORBIDDEN));
 
         List<UpdatePriceCommand> updatePriceCommands = command.prices();
 
@@ -56,13 +49,13 @@ public class UpdatePriceService implements UpdatePriceUseCase {
         for (UpdatePriceCommand updatePriceCommand : updatePriceCommands) {
             switch (updatePriceCommand.status()) {
                 case ChangeStatus.NEW:
-                    createPrice(updatePriceCommand, expertNo);
+                    createPrice(updatePriceCommand, currentUserNo);
                     break;
                 case ChangeStatus.UPDATE:
-                    updatePrice(updatePriceCommand, expertNo);
+                    updatePrice(updatePriceCommand, currentUserNo);
                     break;
                 case DELETE:
-                    deletePrice(updatePriceCommand.priceNo(), expertNo);
+                    deletePrice(updatePriceCommand.priceNo(), currentUserNo);
                     break;
             }
         }

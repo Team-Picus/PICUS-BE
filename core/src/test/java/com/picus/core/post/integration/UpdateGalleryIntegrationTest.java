@@ -52,11 +52,12 @@ public class UpdateGalleryIntegrationTest {
     @Test
     @DisplayName("사용자는 자신(전문가)의 갤러리(고정처리 게시물)을 변경할 수 있다. 기존 고정처리된 게시물은 고정해제된다.")
     public void updateGallery() throws Exception {
-        // given
-
         // given - 데이터베이스에 데이터 셋팅
-        String expertNo = "expert-123";
-        UserEntity userEntity = createUserEntity(expertNo);
+        UserEntity userEntity = createUserEntity();
+        userEntity.assignExpertNo(userEntity.getUserNo());
+
+        String expertNo = userEntity.getExpertNo(); // User와 Expert는 PK를 공유
+
         PostEntity postEntity1 = createPostEntity(
                 List.of("package-123"), expertNo, "title1", "one1",
                 "detail1", List.of(PostThemeType.BEAUTY), List.of(PostMoodType.COZY),
@@ -97,9 +98,8 @@ public class UpdateGalleryIntegrationTest {
 
     /**
      * private 메서드
-     * @param expertNo
      */
-    private UserEntity createUserEntity(String expertNo) {
+    private UserEntity createUserEntity() {
         UserEntity userEntity = UserEntity.builder()
                 .name("이름")
                 .nickname("nickname")
@@ -111,7 +111,6 @@ public class UpdateGalleryIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo(expertNo)
                 .build();
         return userJpaRepository.save(userEntity);
     }

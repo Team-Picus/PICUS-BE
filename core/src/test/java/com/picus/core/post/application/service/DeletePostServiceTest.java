@@ -29,8 +29,6 @@ class DeletePostServiceTest {
 
 
     @Mock
-    UserReadPort userReadPort;
-    @Mock
     ExpertReadPort expertReadPort;
     @Mock
     ExpertUpdatePort expertUpdatePort;
@@ -51,32 +49,27 @@ class DeletePostServiceTest {
         String currentUserNo = "user-123";
 
         // stubbing
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        String expertNo = "expert-123";
-        given(user.getExpertNo()).willReturn(expertNo);
-        Post post = mock(Post.class);
-        given(postReadPort.findById(postNo)).willReturn(Optional.of(post));
-        given(post.getAuthorNo()).willReturn(expertNo);
-        Expert expert = mock(Expert.class);
-        given(expertReadPort.findById(expertNo)).willReturn(Optional.of(expert));
+        Post mockPost = mock(Post.class);
+        given(postReadPort.findById(postNo)).willReturn(Optional.of(mockPost));
+        given(mockPost.getAuthorNo()).willReturn(currentUserNo);
+
+        Expert mockExpert = mock(Expert.class);
+        given(expertReadPort.findById(currentUserNo)).willReturn(Optional.of(mockExpert));
         LocalDateTime lastPostAt = LocalDateTime.MAX;
-        given(postReadPort.findTopUpdatedAtByExpertNo(post.getAuthorNo())).willReturn(Optional.of(lastPostAt));
+        given(postReadPort.findTopUpdatedAtByExpertNo(mockPost.getAuthorNo())).willReturn(Optional.of(lastPostAt));
 
 
         // when
         deletePostService.delete(postNo, currentUserNo);
 
         // then
-        then(userReadPort).should().findById(currentUserNo);
-        then(user).should().getExpertNo();
         then(postReadPort).should().findById(postNo);
         then(postDeletePort).should().delete(postNo);
-        then(expertReadPort).should().findById(expertNo);
-        then(expert).should().decreaseActivityCount();
-        then(postReadPort).should().findTopUpdatedAtByExpertNo(post.getAuthorNo());
-        then(expert).should().updateLastActivityAt(lastPostAt);
-        then(expertUpdatePort).should().update(expert);
+        then(expertReadPort).should().findById(currentUserNo);
+        then(mockExpert).should().decreaseActivityCount();
+        then(postReadPort).should().findTopUpdatedAtByExpertNo(mockPost.getAuthorNo());
+        then(mockExpert).should().updateLastActivityAt(lastPostAt);
+        then(expertUpdatePort).should().update(mockExpert);
     }
 
     @Test
@@ -87,13 +80,9 @@ class DeletePostServiceTest {
         String currentUserNo = "user-123";
 
         // stubbing
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        String expertNo = "expert-123";
-        given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
         given(postReadPort.findById(postNo)).willReturn(Optional.of(post));
-        given(post.getAuthorNo()).willReturn("expert-345");
+        given(post.getAuthorNo()).willReturn("user-345");
 
         // when // then
         assertThatThrownBy(() -> deletePostService.delete(postNo, currentUserNo))

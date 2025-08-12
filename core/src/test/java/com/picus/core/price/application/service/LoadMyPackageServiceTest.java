@@ -2,8 +2,6 @@ package com.picus.core.price.application.service;
 
 import com.picus.core.price.application.port.out.PriceReadPort;
 import com.picus.core.price.domain.Price;
-import com.picus.core.user.application.port.out.UserReadPort;
-import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +18,6 @@ import static org.mockito.BDDMockito.*;
 class LoadMyPackageServiceTest {
 
     @Mock
-    private UserReadPort userReadPort;
-    @Mock
     private PriceReadPort priceReadPort;
 
     @InjectMocks
@@ -32,13 +28,9 @@ class LoadMyPackageServiceTest {
     public void load() throws Exception {
         // given
         String currentUserNo = "user-123";
-        String expertNo = "expert-123";
-
-        User mockUser = createMockUser(currentUserNo, expertNo);
-        given(userReadPort.findById(currentUserNo)).willReturn(mockUser);
 
         Price mockPrice = mock(Price.class);
-        given(priceReadPort.findByExpertNo(expertNo)).willReturn(List.of(mockPrice));
+        given(priceReadPort.findByExpertNo(currentUserNo)).willReturn(List.of(mockPrice));
 
         // when
         List<Price> results = service.load(currentUserNo);
@@ -47,15 +39,7 @@ class LoadMyPackageServiceTest {
         assertThat(results).hasSize(1)
                 .containsExactly(mockPrice);
 
-        then(userReadPort).should().findById(currentUserNo);
-        then(priceReadPort).should().findByExpertNo(expertNo);
-    }
-
-    private User createMockUser(String currentUserNo, String expertNo) {
-        return User.builder()
-                .userNo(currentUserNo)
-                .expertNo(expertNo)
-                .build();
+        then(priceReadPort).should().findByExpertNo(currentUserNo);
     }
 
 }

@@ -30,8 +30,6 @@ import static org.mockito.Mockito.mock;
 class CreatePostServiceTest {
 
     @Mock
-    UserReadPort userReadPort;
-    @Mock
     PostCreatePort postCreatePort;
     @Mock
     CreatePostCommandMapper createPostCommandMapper;
@@ -47,33 +45,28 @@ class CreatePostServiceTest {
     @DisplayName("게시물을 작성한다.")
     public void create_success() throws Exception {
         // given
-        CreatePostCommand req = CreatePostCommand.builder()
-                .authorNo("user-456")
+        String currentUserNo = "user-456";
+        CreatePostCommand cmd = CreatePostCommand.builder()
+                .currentUserNo(currentUserNo)
                 .build();
 
         // Stubbing
-        User user = mock(User.class);
-        given(userReadPort.findById(req.authorNo())).willReturn(user);
-        String expertNo = "expert_no";
-        given(user.getExpertNo()).willReturn(expertNo);
         Post post = mock(Post.class);
-        given(createPostCommandMapper.toDomain(req, expertNo)).willReturn(post);
+        given(createPostCommandMapper.toDomain(cmd)).willReturn(post);
         Expert expert = mock(Expert.class);
-        given(expertReadPort.findById(expertNo)).willReturn(Optional.ofNullable(expert));
+        given(expertReadPort.findById(cmd.currentUserNo())).willReturn(Optional.ofNullable(expert));
 
         // when
-        createPostService.create(req);
+        createPostService.create(cmd);
 
         // then
         InOrder inOrder = Mockito.inOrder(
-                userReadPort, user, createPostCommandMapper, postCreatePort,
+                createPostCommandMapper, postCreatePort,
                 expertReadPort, expert, expert, expertUpdatePort
         );
-        then(userReadPort).should(inOrder).findById(req.authorNo());
-        then(user).should(inOrder).getExpertNo();
-        then(createPostCommandMapper).should(inOrder).toDomain(req, expertNo);
+        then(createPostCommandMapper).should(inOrder).toDomain(cmd);
         then(postCreatePort).should(inOrder).save(post);
-        then(expertReadPort).should(inOrder).findById(expertNo);
+        then(expertReadPort).should(inOrder).findById(cmd.currentUserNo());
         then(expert).should(inOrder).increaseActivityCount();
         then(expert).should(inOrder).updateLastActivityAt(any(LocalDateTime.class));
         then(expertUpdatePort).should(inOrder).update(expert);

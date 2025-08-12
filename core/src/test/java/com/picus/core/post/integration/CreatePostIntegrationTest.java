@@ -68,11 +68,11 @@ public class CreatePostIntegrationTest {
     @DisplayName("사용자는 게시물을 작성할 수 있다.")
     public void write_success() throws Exception {
         // given
-
-        // 데이터베이스 데이터 셋팅
-        UserEntity userEntity = createUserEntity();
         int initActivityCount = 8;
         LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
+
+        // given - 데이터베이스 데이터 셋팅
+        UserEntity userEntity = createUserEntity();
         ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
         userEntity.assignExpertNo(expertEntity.getExpertNo());
         commitTestTransaction();
@@ -86,7 +86,6 @@ public class CreatePostIntegrationTest {
                 "테스트 제목",
                 "한 줄 설명",
                 "자세한 설명",
-                List.of(PostThemeType.SNAP), List.of(SnapSubTheme.FAMILY),
                 List.of(PostMoodType.COZY),
                 SpaceType.INDOOR,
                 "서울시 강남구",
@@ -162,7 +161,6 @@ public class CreatePostIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo(null)
                 .build();
         return userJpaRepository.save(userEntity);
     }
@@ -185,7 +183,6 @@ public class CreatePostIntegrationTest {
             String title,
             String oneLineDescription,
             String detailedDescription,
-            List<PostThemeType> postThemeTypes, List<SnapSubTheme> snapSubThemes,
             List<PostMoodType> postMoodTypes,
             SpaceType spaceType,
             String spaceAddress,

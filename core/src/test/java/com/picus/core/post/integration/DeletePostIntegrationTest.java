@@ -64,15 +64,14 @@ public class DeletePostIntegrationTest {
     @Test
     @DisplayName("사용자는 게시물을 삭제할 때, 기존 게시물이 1개이고 그외에 게시물과 예약이 없으면 최근 활동일은 null이 된다.")
     public void delete_ifPostIsOne() throws Exception {
+
         // given
-
-        // 데이터베이스에 데이터 셋팅
-        UserEntity userEntity = createUserEntity();
-
         int initActivityCount = 5;
         LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
-        ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
 
+        // given - 데이터베이스에 데이터 셋팅
+        UserEntity userEntity = createUserEntity();
+        ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
         PostEntity postEntity = createPostEntity(
@@ -119,14 +118,12 @@ public class DeletePostIntegrationTest {
     @DisplayName("사용자가 게시물을 삭제할 때 글이 2개 이상이면 최근활동일을 나머지 게시물, 예약 중 최신 활동으로 갱신함")
     public void delete_ifPostIsMoreThanTwo() throws Exception {
         // given
-
-        // 데이터베이스에 데이터 셋팅
-        UserEntity userEntity = createUserEntity();
-
         int initActivityCount = 5;
         LocalDateTime initLastActivityAt = LocalDateTime.now().minusDays(1);
-        ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
 
+        // given - 데이터베이스에 데이터 셋팅
+        UserEntity userEntity = createUserEntity();
+        ExpertEntity expertEntity = createExpertEntity(userEntity, initActivityCount, initLastActivityAt);
         userEntity.assignExpertNo(expertEntity.getExpertNo());
 
         PostEntity postEntity1 = createPostEntity(
@@ -180,7 +177,6 @@ public class DeletePostIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo(null)
                 .build();
         return userJpaRepository.save(userEntity);
     }

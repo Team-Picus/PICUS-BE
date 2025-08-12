@@ -84,7 +84,7 @@ class RequestApprovalServiceTest {
                         "https://myportfolio.com/project1",
                         "https://myportfolio.com/project2"
                 ))
-                .userNo("user_no1")
+                .currentUserNo("user_no1")
                 .build();
     }
     private void stubOutPortMethod() {

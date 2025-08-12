@@ -18,7 +18,7 @@ public record CreatePostCommand(
         SpaceType spaceType,
         String spaceAddress,
         List<PackageCommand> packages,
-        String authorNo
+        String currentUserNo
 ) {
 
     @Builder

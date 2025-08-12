@@ -10,13 +10,10 @@ import com.picus.core.post.application.port.out.PostCreatePort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserReadPort;
-import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
@@ -24,8 +21,6 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 @RequiredArgsConstructor
 @Transactional
 public class CreatePostService implements CreatePostUseCase {
-
-    private final UserReadPort userReadPort;
 
     private final PostCreatePort postCreatePort;
 
@@ -37,11 +32,10 @@ public class CreatePostService implements CreatePostUseCase {
     @Override
     public void create(CreatePostCommand createPostCommand) {
 
-        // 글 작성한 사용자의 expertNo 조회
-        String expertNo = getCurrentExpertNo(createPostCommand.authorNo());
+        String expertNo = createPostCommand.currentUserNo(); // User와 Expert는 pk가 같음
 
         // Post 도메인 조립
-        Post post = appMapper.toDomain(createPostCommand, expertNo);
+        Post post = appMapper.toDomain(createPostCommand);
 
         // 데이터베이스에 저장
         postCreatePort.save(post);
@@ -54,12 +48,8 @@ public class CreatePostService implements CreatePostUseCase {
     /**
      * private 메서드
      */
-    private String getCurrentExpertNo(String userNo) {
-        User user = userReadPort.findById(userNo);
-        return Optional.ofNullable(user.getExpertNo())
-                .orElseThrow(() -> new RestApiException(_FORBIDDEN));
-    }
 
+    // TODO: 낙관적 락 처리 (재시도처리) 필요
     private void updateExpertInfo(String expertNo) {
         Expert expert = expertReadPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));

@@ -15,6 +15,6 @@ public record RequestApprovalCommand(
         List<Skill> skills,
         Studio studio,
         List<String> portfolioLinks,
-        String userNo
+        String currentUserNo
 ) {
 }

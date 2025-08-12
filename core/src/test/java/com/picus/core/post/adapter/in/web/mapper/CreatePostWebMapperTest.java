@@ -69,7 +69,7 @@ class CreatePostWebMapperTest {
                 ).containsExactlyInAnyOrder(
                         tuple("pkg-001", "SNAP", "FAMILY")
                 );
-        assertThat(appReq.authorNo()).isEqualTo("user-123");
+        assertThat(appReq.currentUserNo()).isEqualTo("user-123");
     }
 
 }

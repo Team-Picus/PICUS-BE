@@ -23,6 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -37,7 +38,6 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 class UpdatePriceServiceTest {
 
-    @Mock private UserReadPort userReadPort;
 
     @Mock private PriceReadPort priceReadPort;
     @Mock private PriceCreatePort priceCreatePort;
@@ -49,31 +49,14 @@ class UpdatePriceServiceTest {
     @Mock private UpdatePackageCommandMapper updatePackageCommandMapper;
     @Mock private UpdateOptionCommandMapper updateOptionCommandMapper;
 
+    @InjectMocks
     private UpdatePriceService service;
-
-    @BeforeEach
-    void setUp() {
-        service = new UpdatePriceService(
-                userReadPort,
-                priceReadPort,
-                priceCreatePort,
-                priceUpdatePort,
-                priceDeletePort,
-                updatePriceCommandMapper,
-                updatePriceRefImageCommandMapper,
-                updatePackageCommandMapper,
-                updateOptionCommandMapper
-        );
-    }
 
     @Test
     @DisplayName("새로운 Price를 생성한다.")
     void updatePrice_shouldCreate_whenStatusIsNew() {
         // given
         String currentUserNo = "user-1";
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn("expert-1");
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-1",
@@ -95,14 +78,10 @@ class UpdatePriceServiceTest {
         service.update(command, currentUserNo);
 
         // then: 순서대로 호출되었는지 검증
-        InOrder inOrder = inOrder(userReadPort, user, updatePriceCommandMapper, priceCreatePort);
-
-        then(userReadPort).should(inOrder).findById(currentUserNo);
-        then(user).should(inOrder).getExpertNo();
+        InOrder inOrder = inOrder(updatePriceCommandMapper, priceCreatePort);
         then(updatePriceCommandMapper).should(inOrder).toPriceDomain(cmd);
-        then(priceCreatePort).should(inOrder).create(priceDomain, "expert-1");
+        then(priceCreatePort).should(inOrder).create(priceDomain, currentUserNo);
         then(priceCreatePort).shouldHaveNoMoreInteractions();
-
     }
 
     @Test
@@ -110,10 +89,6 @@ class UpdatePriceServiceTest {
     void updatePrice_shouldUpdatePrice_whenStatusIsUpdate() {
         // given
         String currentUserNo = "user-2";
-        String currentExpertNo = "expert-2";
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
@@ -130,17 +105,15 @@ class UpdatePriceServiceTest {
 
         Price price = mock(Price.class);
         given(priceReadPort.findById("price-2")).willReturn(price);
-        given(price.getExpertNo()).willReturn(currentExpertNo);
+        given(price.getExpertNo()).willReturn(currentUserNo);
 
         // when
         service.update(command, currentUserNo);
 
         // then: 도메인 메서드 실행 순서 검증
         // 순서 검증을 위한 InOrder 객체 준비
-        InOrder order = inOrder(userReadPort, user, priceReadPort, price, priceUpdatePort, priceCreatePort);
+        InOrder order = inOrder(priceReadPort, price, priceUpdatePort, priceCreatePort);
 
-        then(userReadPort).should(order).findById(currentUserNo);
-        then(user).should(order).getExpertNo();
         then(priceReadPort).should(order).findById("price-2");
         then(price).should(order).changePriceTheme(SNAP, FRIENDSHIP);
         then(priceUpdatePort).should(order).update(price, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -152,10 +125,6 @@ class UpdatePriceServiceTest {
     void updatePrice_updateWithAllChanges() {
         // given
         String currentUserNo = "user-4";
-        String currentExpertNo = "expert-4";
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         // 이미지 커맨드
         UpdatePriceReferenceImageCommand newImgCmd = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
@@ -192,8 +161,8 @@ class UpdatePriceServiceTest {
 
         // 도메인 객체 및 매핑 설정
         Price price = mock(Price.class);
-        given(priceReadPort.findById("price-4")).willReturn(price);
-        given(price.getExpertNo()).willReturn(currentExpertNo);
+        given(priceReadPort.findById(cmd.priceNo())).willReturn(price);
+        given(price.getExpertNo()).willReturn(currentUserNo);
 
         PriceReferenceImage imgNew = mock(PriceReferenceImage.class);
         PriceReferenceImage imgUpd = mock(PriceReferenceImage.class);
@@ -215,7 +184,6 @@ class UpdatePriceServiceTest {
 
         // then: 순서 검증
         InOrder order = inOrder(
-                userReadPort, user,
                 priceReadPort, price,
                 updatePriceRefImageCommandMapper, price,
                 updatePackageCommandMapper, price,
@@ -223,9 +191,7 @@ class UpdatePriceServiceTest {
                 priceUpdatePort, priceCreatePort
         );
 
-        then(userReadPort).should(order).findById(currentUserNo);
-        then(user).should(order).getExpertNo();
-        then(priceReadPort).should(order).findById("price-4");
+        then(priceReadPort).should(order).findById(cmd.priceNo());
         then(price).should(order).changePriceTheme(PriceThemeType.FASHION, null);
 
         then(updatePriceRefImageCommandMapper).should(order).toDomain(newImgCmd);
@@ -255,10 +221,6 @@ class UpdatePriceServiceTest {
     void updatePrice_fail_when_updatedPrice_isNotEqual_currentExpertNo() {
         // given
         String currentUserNo = "user-2";
-        String currentExpertNo = "expert-2";
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-2",
@@ -287,9 +249,6 @@ class UpdatePriceServiceTest {
     void update_image_order_wrong() {
         // given
         String currentUserNo = "user-4";
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn("expert-4");
 
         // 이미지 커맨드
         UpdatePriceReferenceImageCommand newImgCmd1 = createPriceRefImageCommand(null, "file-1", 1, ChangeStatus.NEW);
@@ -321,10 +280,6 @@ class UpdatePriceServiceTest {
     void updatePrice_shouldDelete_whenStatusIsDelete() {
         // given
         String currentUserNo = "user-3";
-        String currentExpertNo = "expert-3";
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",
@@ -341,7 +296,7 @@ class UpdatePriceServiceTest {
 
         Price price = mock(Price.class);
         given(priceReadPort.findById("price-3")).willReturn(price);
-        given(price.getExpertNo()).willReturn(currentExpertNo);
+        given(price.getExpertNo()).willReturn(currentUserNo);
 
         // when
         service.update(command, currentUserNo);
@@ -356,10 +311,6 @@ class UpdatePriceServiceTest {
     void updatePrice_fail_when_deletedPriceExpertNo_isNotEqual_currentExpertNo() {
         // given
         String currentUserNo = "user-3";
-        String currentExpertNo = "expert-3";
-        User user = mock(User.class);
-        given(userReadPort.findById(currentUserNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn(currentExpertNo);
 
         UpdatePriceCommand cmd = new UpdatePriceCommand(
                 "price-3",

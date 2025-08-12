@@ -20,7 +20,7 @@ public class RequestApprovalWebMapper {
                 .skills(toSkills(webRequest.skills()))
                 .studio(toStudio(webRequest.studio()))
                 .portfolioLinks(webRequest.portfolioLinks())
-                .userNo(userNo)
+                .currentUserNo(userNo)
                 .build();
     }
 

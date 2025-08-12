@@ -9,8 +9,6 @@ import com.picus.core.post.application.port.out.PostReadPort;
 import com.picus.core.post.domain.Post;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
-import com.picus.core.user.application.port.out.UserReadPort;
-import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +22,6 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 @Transactional
 public class DeletePostService implements DeletePostUseCase {
 
-    private final UserReadPort userReadPort;
-
     private final ExpertReadPort expertReadPort;
     private final ExpertUpdatePort expertUpdatePort;
 
@@ -34,15 +30,13 @@ public class DeletePostService implements DeletePostUseCase {
 
     @Override
     public void delete(String postNo, String currentUserNo) {
-        // 현재 사용자의 전문가 번호 조회
-        String expertNo = getCurrentExpertNo(currentUserNo);
 
         // 삭제할 Post 조회
         Post post = postReadPort.findById(postNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // 삭제할 Post의 작성자와 현재 사용자의 expertNo가 같은지 검증
-        throwIfNotOwner(expertNo, post.getAuthorNo());
+        throwIfNotOwner(currentUserNo, post.getAuthorNo());
 
         // 삭제
         postDeletePort.delete(postNo);
@@ -50,17 +44,12 @@ public class DeletePostService implements DeletePostUseCase {
         // TODO: S3에서 이미지들 삭제
 
         // Expert의 활동 수, 최근 활동 일 갱신
-        updateExpertInfo(expertNo);
+        updateExpertInfo(currentUserNo);
     }
 
     /**
      * private 메서드
      */
-    private String getCurrentExpertNo(String userNo) {
-        User user = userReadPort.findById(userNo);
-        return Optional.ofNullable(user.getExpertNo())
-                .orElseThrow(() -> new RestApiException(_FORBIDDEN));
-    }
 
     private void throwIfNotOwner(String expertNo, String priceExpertNo) {
         if (!expertNo.equals(priceExpertNo))
@@ -68,6 +57,7 @@ public class DeletePostService implements DeletePostUseCase {
     }
 
 
+    // TODO: 낙관적 락 처리 (재시도처리) 필요
     private void updateExpertInfo(String expertNo) {
         Expert expert = expertReadPort.findById(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));

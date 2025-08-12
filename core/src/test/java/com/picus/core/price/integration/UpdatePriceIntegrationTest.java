@@ -165,9 +165,8 @@ public class UpdatePriceIntegrationTest {
     @Test
     @DisplayName("사용자는 가격정보를 수정 할 수 있다.")
     public void applyChanges_edit() throws Exception {
-        // given
 
-        // 데이터베이스 데이터 셋팅
+        // given - 데이터베이스 데이터 셋팅
         UserEntity userEntity = createUserEntity();
 
         ExpertEntity expertEntity = createExpertEntity(userEntity);
@@ -186,7 +185,7 @@ public class UpdatePriceIntegrationTest {
 
         commitTestTransaction();
 
-        // 요청 값 셋팅
+        // given - 요청 값 셋팅
         UpdatePriceReferenceImageRequest newImgWebReq =
                 createPriceRefImageWebRequest(null, "new_file_key", 1, NEW); // 새로 추가
         UpdatePriceReferenceImageRequest uptImgWebReq =
@@ -286,9 +285,8 @@ public class UpdatePriceIntegrationTest {
     @Test
     @DisplayName("사용자는 가격정보를 삭제 할 수 있다.")
     public void applyChanges_delete() throws Exception {
-        // given
 
-        // 데이터베이스 데이터 셋팅
+        // given - 데이터베이스 데이터 셋팅
         UserEntity userEntity = createUserEntity();
 
         ExpertEntity expertEntity = createExpertEntity(userEntity);
@@ -304,7 +302,7 @@ public class UpdatePriceIntegrationTest {
 
         commitTestTransaction();
 
-        // 요청 값 셋팅
+        // given - 요청 값 셋팅
 
         UpdatePriceRequest updatePriceWebRequest =
                 createPriceWebRequest(priceEntity.getPriceNo(), BEAUTY, null, DELETE,
@@ -406,7 +404,6 @@ public class UpdatePriceIntegrationTest {
                 .reservationHistoryCount(5)
                 .followCount(10)
                 .myMoodboardCount(2)
-                .expertNo(null)
                 .build();
         return userJpaRepository.save(userEntity);
     }

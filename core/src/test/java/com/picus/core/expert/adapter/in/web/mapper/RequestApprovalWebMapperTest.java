@@ -48,7 +48,7 @@ class RequestApprovalWebMapperTest {
         RequestApprovalCommand command = mapper.toCommand(request, userNo);
 
         // then
-        assertThat(command.userNo()).isEqualTo("user-001");
+        assertThat(command.currentUserNo()).isEqualTo("user-001");
         assertThat(command.activityCareer()).isEqualTo("백엔드 5년차");
         assertThat(command.activityAreas()).containsExactly("서울", "대구");
 
