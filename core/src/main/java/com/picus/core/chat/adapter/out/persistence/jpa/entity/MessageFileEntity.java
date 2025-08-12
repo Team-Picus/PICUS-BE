@@ -1,4 +1,4 @@
-package com.picus.core.chat.adapter.out.persistence.entity;
+package com.picus.core.chat.adapter.out.persistence.jpa.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ public class MessageFileEntity {
     @Id @Tsid
     private String messageFileNo;
 
-    private String file_key ;
+    private String fileKey;
 
     private String extension;
 }
