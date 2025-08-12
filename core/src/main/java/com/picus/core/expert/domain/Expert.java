@@ -132,8 +132,7 @@ public class Expert {
         }
     }
 
-    public void updateDetailInfo(
-            String activityCareer, List<String> activityAreas) {
+    public void updateDetailInfo(String activityCareer, List<String> activityAreas) {
         // activityCareer 업데이트
         if (activityCareer != null)
             this.activityCareer = activityCareer;

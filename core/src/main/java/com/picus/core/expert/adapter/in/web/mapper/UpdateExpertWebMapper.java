@@ -59,7 +59,7 @@ public class UpdateExpertWebMapper {
         return skillWebRequests.stream()
                 .map(webRequest -> UpdateSkillCommand.builder()
                         .skillNo(webRequest.skillNo())
-                        .skillType(webRequest.skillType() != null ? SkillType.valueOf(webRequest.skillType()) : null) // 수정될 내용이 없어 Null이 넘어올 수도 있음
+                        .skillType(webRequest.skillType())
                         .content(webRequest.content())
                         .changeStatus(webRequest.changeStatus())
                         .build())

@@ -39,52 +39,41 @@ public class UpdateExpertService implements UpdateExpertUseCase {
     @Override
     public void updateExpertBasicInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
 
-        if (!shouldUpdate(basicInfoRequest))
-            return;
+        String expertNo = basicInfoRequest.currentUserNo(); // User와 Expert는 PK를 공유함
 
-        String expertNo = getExpertNo(basicInfoRequest.currentUserNo());
+        // Expert 로드
+        Expert expert = expertReadPort.findById(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        // Expert 수정
+        expert.updateBasicInfo(
+                basicInfoRequest.backgroundImageFileKey(),
+                basicInfoRequest.link(),
+                basicInfoRequest.intro());
 
-        // Expert쪽 수정될 필요가 있는지 확인
-        if (shouldUpdateExpertBasicInfo(basicInfoRequest)) {
-            // Expert 로드
-            Expert expert = expertReadPort.findById(expertNo)
-                    .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-            // Expert 수정
-            expert.updateBasicInfo(
-                    basicInfoRequest.backgroundImageFileKey(),
-                    basicInfoRequest.link(),
-                    basicInfoRequest.intro());
+        // 데이터베이스 반영
+        expertUpdatePort.update(expert);
 
-            expertUpdatePort.update(expert);
-        }
+        // User 정보 로드
+        UserWithProfileImageDto userWithProfileImageDto = userReadPort.findUserInfoByExpertNo(expertNo)
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
-        // User쪽 정보가 수정될 필요가 있는지 확인
-        if (shouldUpdateUserInfo(basicInfoRequest)) {
-            // User 정보 로드
-            UserWithProfileImageDto userWithProfileImageDto = userReadPort.findUserInfoByExpertNo(expertNo)
-                    .orElseThrow(() -> new RestApiException(_NOT_FOUND));
-
-            // User 수정
-            UserWithProfileImageDto updatedDto = UserWithProfileImageDto.builder()
-                    .nickname(basicInfoRequest.nickname() != null ?
-                            basicInfoRequest.nickname() : userWithProfileImageDto.nickname())
-                    .profileImageFileKey(basicInfoRequest.profileImageFileKey() != null
-                            ? basicInfoRequest.profileImageFileKey() : userWithProfileImageDto.profileImageFileKey())
-                    .expertNo(expertNo)
-                    .build();
-            userUpdatePort.updateNicknameAndImageByExpertNo(updatedDto);
-        }
+        // User 수정
+        UserWithProfileImageDto updatedDto = UserWithProfileImageDto.builder()
+                .nickname(basicInfoRequest.nickname() != null ?
+                        basicInfoRequest.nickname() : userWithProfileImageDto.nickname())
+                .profileImageFileKey(basicInfoRequest.profileImageFileKey() != null
+                        ? basicInfoRequest.profileImageFileKey() : userWithProfileImageDto.profileImageFileKey())
+                .expertNo(expertNo)
+                .build();
+        // 데이터베이스 반영
+        userUpdatePort.updateNicknameAndImageByExpertNo(updatedDto);
     }
 
     @Override
     public void updateExpertDetailInfo(UpdateExpertDetailInfoCommand detailInfoRequest) {
 
-        // 수정할 필요가 있는지 확인
-        if (!shouldUpdateExpertDetailInfo(detailInfoRequest))
-            return;
-
         // 전문가 인덱스 가져오기
-        String expertNo = getExpertNo(detailInfoRequest.currentUserNo());
+        String expertNo = detailInfoRequest.currentUserNo(); // User와 Expert는 PK를 공유함
 
         // 전문가 불러오기
         Expert expert = expertReadPort.findById(expertNo)
@@ -108,35 +97,39 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         expertUpdatePort.update(expert, deletedProjectNos, deletedSkillNos, deletedStudioNo);
     }
 
+    private void updateSkill(UpdateExpertDetailInfoCommand detailInfoRequest, Expert expert, List<String> deletedSkillNos) {
+        List<UpdateSkillCommand> updateSkillCommands = detailInfoRequest.skills();
+        for (UpdateSkillCommand command : updateSkillCommands) {
+            switch (command.changeStatus()) {
+                case ChangeStatus.NEW:
+                    expert.addSkill(updateSkillCommandMapper.toDomain(command));
+                    break;
+                case ChangeStatus.UPDATE:
+                    expert.updateSkill(updateSkillCommandMapper.toDomain(command));
+                    break;
+                case ChangeStatus.DELETE:
+                    expert.deleteSkill(command.skillNo());
+                    deletedSkillNos.add(command.skillNo());
+                    break;
+            }
+        }
+    }
+
+
     /**
      * private 메서드
      */
-    private String getExpertNo(String userNo) {
-        // ExpertNo를 알기 위해 현재 User 로드
-        User currentUser = userReadPort.findById(userNo);
-        return currentUser.getExpertNo();
-    }
-
-    private boolean shouldUpdate(UpdateExpertBasicInfoCommand basicInfoRequest) {
-        return shouldUpdateExpertBasicInfo(basicInfoRequest) || shouldUpdateUserInfo(basicInfoRequest);
-    }
-
-    private boolean shouldUpdateExpertBasicInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
-        return basicInfoRequest.backgroundImageFileKey() != null ||
-                basicInfoRequest.link() != null ||
-                basicInfoRequest.intro() != null;
-    }
-
-    private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
-        return basicInfoRequest.profileImageFileKey() != null || basicInfoRequest.nickname() != null;
-    }
-
-    private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoCommand detailInfoRequest) {
-        return detailInfoRequest.activityCareer() != null ||
-                !detailInfoRequest.activityAreas().isEmpty() ||
-                !detailInfoRequest.projects().isEmpty() ||
-                !detailInfoRequest.skills().isEmpty() ||
-                detailInfoRequest.studio() != null;
+    private String updateStudio(UpdateExpertDetailInfoCommand request, Expert expert) {
+        UpdateStudioCommand command = request.studio();
+        switch (command.changeStatus()) {
+            case ChangeStatus.NEW -> expert.addStudio(updateStudioCommandMapper.toDomain(command));
+            case ChangeStatus.UPDATE -> expert.updateStudio(updateStudioCommandMapper.toDomain(command));
+            case ChangeStatus.DELETE -> {
+                expert.deleteStudio();
+                return command.studioNo(); // 삭제된 번호 리턴
+            }
+        }
+        return null; // 삭제가 아닌 경우 null 리턴
     }
 
     private void updateProject(UpdateExpertDetailInfoCommand detailInfoRequest, Expert expert, List<String> deletedProjectNos) {
@@ -157,34 +150,25 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         }
     }
 
-    private void updateSkill(UpdateExpertDetailInfoCommand detailInfoRequest, Expert expert, List<String> deletedSkillNos) {
-        List<UpdateSkillCommand> updateSkillCommands = detailInfoRequest.skills();
-        for (UpdateSkillCommand command : updateSkillCommands) {
-            switch (command.changeStatus()) {
-                case ChangeStatus.NEW:
-                    expert.addSkill(updateSkillCommandMapper.toDomain(command));
-                    break;
-                case ChangeStatus.UPDATE:
-                    expert.updateSkill(updateSkillCommandMapper.toDomain(command));
-                    break;
-                case ChangeStatus.DELETE:
-                    expert.deleteSkill(command.skillNo());
-                    deletedSkillNos.add(command.skillNo());
-                    break;
-            }
-        }
-    }
-
-    private String updateStudio(UpdateExpertDetailInfoCommand request, Expert expert) {
-        UpdateStudioCommand command = request.studio();
-        switch (command.changeStatus()) {
-            case ChangeStatus.NEW -> expert.addStudio(updateStudioCommandMapper.toDomain(command));
-            case ChangeStatus.UPDATE -> expert.updateStudio(updateStudioCommandMapper.toDomain(command));
-            case ChangeStatus.DELETE -> {
-                expert.deleteStudio();
-                return command.studioNo(); // 삭제된 번호 리턴
-            }
-        }
-        return null; // 삭제가 아닌 경우 null 리턴
-    }
+//    private boolean shouldUpdate(UpdateExpertBasicInfoCommand basicInfoRequest) {
+//        return shouldUpdateExpertBasicInfo(basicInfoRequest) || shouldUpdateUserInfo(basicInfoRequest);
+//    }
+//
+//    private boolean shouldUpdateExpertBasicInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
+//        return basicInfoRequest.backgroundImageFileKey() != null ||
+//                basicInfoRequest.link() != null ||
+//                basicInfoRequest.intro() != null;
+//    }
+//
+//    private boolean shouldUpdateUserInfo(UpdateExpertBasicInfoCommand basicInfoRequest) {
+//        return basicInfoRequest.profileImageFileKey() != null || basicInfoRequest.nickname() != null;
+//    }
+//
+//    private boolean shouldUpdateExpertDetailInfo(UpdateExpertDetailInfoCommand detailInfoRequest) {
+//        return detailInfoRequest.activityCareer() != null ||
+//                !detailInfoRequest.activityAreas().isEmpty() ||
+//                !detailInfoRequest.projects().isEmpty() ||
+//                !detailInfoRequest.skills().isEmpty() ||
+//                detailInfoRequest.studio() != null;
+//    }
 }

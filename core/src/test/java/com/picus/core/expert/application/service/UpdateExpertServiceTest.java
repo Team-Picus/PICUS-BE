@@ -17,7 +17,11 @@ import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto
 import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,29 +34,34 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
 
+@ExtendWith(MockitoExtension.class)
 class UpdateExpertServiceTest {
 
+    @Mock
+    UserReadPort userReadPort;
+    @Mock
+    UserUpdatePort userUpdatePort;
+    @Mock
+    ExpertReadPort expertReadPort;
+    @Mock
+    ExpertUpdatePort expertUpdatePort;
 
-    UserReadPort userReadPort = mock(UserReadPort.class);
-    UserUpdatePort userUpdatePort = mock(UserUpdatePort.class);
-    ExpertReadPort expertReadPort = mock(ExpertReadPort.class);
-    ExpertUpdatePort expertUpdatePort = mock(ExpertUpdatePort.class);
+    @Mock
+    UpdateProjectCommandMapper updateProjectCommandMapper;
+    @Mock
+    UpdateSkillCommandMapper updateSkillCommandMapper;
+    @Mock
+    UpdateStudioCommandMapper updateStudioCommandMapper;
 
-
-    UpdateProjectCommandMapper updateProjectCommandMapper = mock(UpdateProjectCommandMapper.class);
-    UpdateSkillCommandMapper updateSkillCommandMapper = mock(UpdateSkillCommandMapper.class);
-    UpdateStudioCommandMapper updateStudioCommandMapper = mock(UpdateStudioCommandMapper.class);
-
-    UpdateExpertService expertInfoCommandService =
-            new UpdateExpertService(userReadPort, userUpdatePort, expertReadPort, expertUpdatePort,
-                    updateProjectCommandMapper, updateSkillCommandMapper, updateStudioCommandMapper);
+    @InjectMocks
+    UpdateExpertService expertInfoCommandService;
 
     @Test
     @DisplayName("Expert와 User 기본 정보가 모두 수정되는 경우 update 호출이 수행된다.")
     void updateExpertBasicInfo_success() {
         // given
         String userNo = "USER001";
-        String expertNo = "EXP001";
+        String expertNo = userNo; // pk를 서로 공유
 
         UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
                 .currentUserNo(userNo)
@@ -71,10 +80,6 @@ class UpdateExpertServiceTest {
                 .profileImageFileKey("old-profile-img")
                 .build();
 
-        User user = mock(User.class);
-        when(user.getExpertNo()).thenReturn(expertNo);
-
-        given(userReadPort.findById(userNo)).willReturn(user);
         given(expertReadPort.findById(expertNo)).willReturn(Optional.of(expert));
         given(userReadPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
 
@@ -82,7 +87,6 @@ class UpdateExpertServiceTest {
         expertInfoCommandService.updateExpertBasicInfo(request);
 
         // then
-        then(userReadPort).should().findById(userNo);
         then(expertReadPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("new-background", List.of("https://new.link"), "New intro");
         then(expertUpdatePort).should().update(expert);
@@ -95,103 +99,11 @@ class UpdateExpertServiceTest {
     }
 
     @Test
-    @DisplayName("Expert 정보만 수정되는 경우, Expert만 update 된다.")
-    void updateExpertBasicInfo_onlyExpertChanged() {
-        // given
-        String userNo = "USER001";
-        String expertNo = "EXP001";
-
-        UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
-                .currentUserNo(userNo)
-                .backgroundImageFileKey("bg-key") // expert 관련 필드만 있음
-                .link(List.of("https://new.link"))
-                .intro("new intro")
-                .build();
-
-        Expert expert = mock(Expert.class);
-        User user = mock(User.class);
-
-        given(userReadPort.findById(userNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn(expertNo);
-        given(expertReadPort.findById(expertNo)).willReturn(Optional.of(expert));
-
-        // when
-        expertInfoCommandService.updateExpertBasicInfo(request);
-
-        // then
-        then(userReadPort).should().findById(userNo);
-        then(expertReadPort).should().findById(expertNo);
-        then(expert).should().updateBasicInfo("bg-key", List.of("https://new.link"), "new intro");
-        then(expertUpdatePort).should().update(expert);
-        then(userUpdatePort).shouldHaveNoInteractions();
-    }
-
-    @Test
-    @DisplayName("User 정보만 수정되는 경우, User만 update 된다.")
-    void updateExpertBasicInfo_onlyUserChanged() {
-        // given
-        String userNo = "USER002";
-        String expertNo = "EXP002";
-
-        UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
-                .currentUserNo(userNo)
-                .nickname("UpdatedNickname")
-                .profileImageFileKey("updated-profile-img")
-                .build();
-
-        User user = mock(User.class);
-        when(user.getExpertNo()).thenReturn(expertNo);
-
-        UserWithProfileImageDto userWithProfile = UserWithProfileImageDto.builder()
-                .expertNo(expertNo)
-                .nickname("OldNickname")
-                .profileImageFileKey("old-img")
-                .build();
-
-        given(userReadPort.findById(userNo)).willReturn(user);
-        given(userReadPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
-
-        // when
-        expertInfoCommandService.updateExpertBasicInfo(request);
-
-        // then
-        then(userReadPort).should().findById(userNo);
-        then(userReadPort).should().findUserInfoByExpertNo(expertNo);
-        then(userUpdatePort).should().updateNicknameAndImageByExpertNo(argThat(dto ->
-                dto.nickname().equals("UpdatedNickname") &&
-                        dto.profileImageFileKey().equals("updated-profile-img") &&
-                        dto.expertNo().equals(expertNo)
-        ));
-        then(expertReadPort).shouldHaveNoInteractions();
-        then(expertUpdatePort).shouldHaveNoInteractions();
-    }
-
-    @Test
-    @DisplayName("모든 값이 null일 경우 아무 업데이트도 수행되지 않는다.")
-    void updateExpertBasicInfo_nothingChanged() {
-        // given
-        String userNo = "USER003";
-
-        UpdateExpertBasicInfoCommand request = UpdateExpertBasicInfoCommand.builder()
-                .currentUserNo(userNo)
-                .build(); // 모든 필드가 null
-
-        // when
-        expertInfoCommandService.updateExpertBasicInfo(request);
-
-        // then
-        then(userReadPort).shouldHaveNoInteractions();
-        then(expertReadPort).shouldHaveNoInteractions();
-        then(expertUpdatePort).shouldHaveNoInteractions();
-        then(userUpdatePort).shouldHaveNoInteractions();
-    }
-
-    @Test
     @DisplayName("Expert 상세 정보가 모두 수정되는 경우 updateExpertWithDetail이 호출된다.")
     void updateExpertDetailInfo_success() {
         // given
         String userNo = "USR001";
-        String expertNo = "EXP001";
+        String expertNo = userNo; // PK 공유
 
         // --- 요청 DTO 구성
         UpdateProjectCommand projectNew = createProjectCommand(null, "추가된 프로젝트",
@@ -220,9 +132,6 @@ class UpdateExpertServiceTest {
                 .build();
 
         // --- Mock 정의
-        User user = mock(User.class);
-        given(userReadPort.findById(userNo)).willReturn(user);
-        given(user.getExpertNo()).willReturn(expertNo);
 
         Expert expert = mock(Expert.class);
         given(expertReadPort.findById(expertNo)).willReturn(Optional.of(expert));
@@ -245,7 +154,6 @@ class UpdateExpertServiceTest {
 
         // then
         InOrder inOrder = inOrder(
-                userReadPort, user,
                 expertReadPort, expert,
                 updateProjectCommandMapper, expert,
                 updateSkillCommandMapper, expert,
@@ -253,8 +161,6 @@ class UpdateExpertServiceTest {
                 expertUpdatePort
         );
 
-        then(userReadPort).should(inOrder).findById(userNo);
-        then(user).should(inOrder).getExpertNo();
         then(expertReadPort).should(inOrder).findById(expertNo);
 
         then(updateProjectCommandMapper).should(inOrder).toDomain(projectNew);
@@ -310,25 +216,5 @@ class UpdateExpertServiceTest {
                 .address(address)
                 .changeStatus(changeStatus)
                 .build();
-    }
-
-    @Test
-    @DisplayName("모든 값이 null일 경우 updateExpertDetailInfo는 아무 작업도 하지 않는다.")
-    void updateExpertDetailInfo_nothingChanged() {
-        // given
-        String userNo = "USER003";
-
-        UpdateExpertDetailInfoCommand request = UpdateExpertDetailInfoCommand.builder()
-                .currentUserNo(userNo)
-                .build(); // 모든 필드가 null
-
-        // when
-        expertInfoCommandService.updateExpertDetailInfo(request);
-
-        // then
-        then(userReadPort).shouldHaveNoInteractions();
-        then(expertReadPort).shouldHaveNoInteractions();
-        then(expertUpdatePort).shouldHaveNoInteractions();
-        then(userUpdatePort).shouldHaveNoInteractions();
     }
 }

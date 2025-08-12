@@ -161,20 +161,22 @@ public class UpdateExpertInfoIntegrationTest {
         SkillEntity shdDelSkillEntity = givenSkillEntity(expertEntity, SkillType.CAMERA, "수정 전 내용");
         skillJpaRepository.saveAll(List.of(shdUptskillEntity, shdDelSkillEntity));
 
-        StudioEntity shdDelStudioEntity = givenStudioEntity(expertEntity,
-                "삭제될 스튜디오명", 5);
-        studioJpaRepository.save(shdDelStudioEntity);
+        StudioEntity shdUptStudioEntity = givenStudioEntity(expertEntity,
+                "수정될 스튜디오명", 5, "10:00 - 19:00", "서울시 은평구");
+        studioJpaRepository.save(shdUptStudioEntity);
 
         commitTestTransaction();
 
         // 요청 셋팅
-        UpdateExpertDetailInfoRequest request = builder()
+        UpdateExpertDetailInfoRequest request = UpdateExpertDetailInfoRequest.builder()
                 .activityCareer("수정 후 경력")
                 .activityAreas(List.of("수정 후 지역", "새로운 지역"))
                 .projects(List.of(
                         ProjectWebRequest.builder()
                                 .projectNo(shdUptProjectEntity.getProjectNo())
                                 .projectName("수정된 프로젝트명")
+                                .startDate(shdUptProjectEntity.getStartDate())
+                                .endDate(shdUptProjectEntity.getEndDate())
                                 .changeStatus(UPDATE)
                                 .build(),
                         ProjectWebRequest.builder()
@@ -185,34 +187,42 @@ public class UpdateExpertInfoIntegrationTest {
                                 .build(),
                         ProjectWebRequest.builder()
                                 .projectNo(shddelProjectEntity.getProjectNo())
+                                .projectName(shddelProjectEntity.getProjectName())
+                                .startDate(shddelProjectEntity.getStartDate())
+                                .endDate(shddelProjectEntity.getEndDate())
                                 .changeStatus(DELETE)
                                 .build()
                 ))
                 .skills(List.of(
                                 SkillWebRequest.builder()
                                         .skillNo(shdUptskillEntity.getSkillNo())
-                                        .skillType("LIGHT")
+                                        .skillType(LIGHT)
                                         .content("수정된 내용")
                                         .changeStatus(UPDATE)
                                         .build(),
                                 SkillWebRequest.builder()
-                                        .skillType("EDIT")
+                                        .skillType(EDIT)
                                         .content("새로운 내용")
                                         .changeStatus(NEW)
                                         .build(),
                                 SkillWebRequest.builder()
                                         .skillNo(shdDelSkillEntity.getSkillNo())
+                                        .skillType(shdDelSkillEntity.getSkillType())
+                                        .content(shdDelSkillEntity.getContent())
                                         .changeStatus(DELETE)
                                         .build()
                         )
                 )
                 .studio(
                         StudioWebRequest.builder()
-                                .studioNo(shdDelStudioEntity.getStudioNo())
+                                .studioNo(shdUptStudioEntity.getStudioNo())
                                 .studioName("수정된 이름")
                                 .employeesCount(10)
+                                .businessHours(shdUptStudioEntity.getBusinessHours())
+                                .address(shdUptStudioEntity.getAddress())
                                 .changeStatus(UPDATE)
-                                .build())
+                                .build()
+                )
                 .build();
         HttpEntity<UpdateExpertDetailInfoRequest> httpEntity = settingWebRequest(userEntity, request);
 
@@ -281,17 +291,22 @@ public class UpdateExpertInfoIntegrationTest {
 
 
         StudioEntity shdDelStudioEntity = givenStudioEntity(expertEntity,
-                "수정 전 스튜디오명", 5);
+                "삭제될 스튜디오명", 5, "10:00 - 19:00", "서울시 은평구");
         studioJpaRepository.save(shdDelStudioEntity);
 
         commitTestTransaction();
 
         // 요청 셋팅
         UpdateExpertDetailInfoRequest request = builder()
-                .activityAreas(List.of("지역", "새로운 지역")) // activityAreas는 기존값을 함께 넘겨야 함
+                .activityCareer("경력")
+                .activityAreas(List.of("지역"))
                 .studio(
                         StudioWebRequest.builder()
                                 .studioNo(shdDelStudioEntity.getStudioNo())
+                                .studioName(shdDelStudioEntity.getStudioName())
+                                .employeesCount(shdDelStudioEntity.getEmployeesCount())
+                                .businessHours(shdDelStudioEntity.getBusinessHours())
+                                .address(shdDelStudioEntity.getAddress())
                                 .changeStatus(DELETE)
                                 .build()
                 )
@@ -331,7 +346,8 @@ public class UpdateExpertInfoIntegrationTest {
 
         // 요청 셋팅
         UpdateExpertDetailInfoRequest request = builder()
-                .activityAreas(List.of("지역", "새로운 지역")) // activityAreas는 기존값을 함께 넘겨야 함
+                .activityCareer(expertEntity.getActivityCareer())
+                .activityAreas(expertEntity.getActivityAreas())
                 .studio(
                         StudioWebRequest.builder()
                                 .studioName("새로운 스튜디오")
@@ -461,13 +477,13 @@ public class UpdateExpertInfoIntegrationTest {
                 .build();
     }
 
-    private StudioEntity givenStudioEntity(ExpertEntity expertEntity, String studioName, int employeesCount) {
+    private StudioEntity givenStudioEntity(ExpertEntity expertEntity, String studioName, int employeesCount, String businessHours, String address) {
         return StudioEntity.builder()
                 .expertEntity(expertEntity)
                 .studioName(studioName)
                 .employeesCount(employeesCount)
-                .businessHours("10:00 - 19:00")
-                .address("서울시 은평구")
+                .businessHours(businessHours)
+                .address(address)
                 .build();
     }
 

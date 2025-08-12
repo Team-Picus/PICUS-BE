@@ -11,6 +11,8 @@ import com.picus.core.expert.application.port.in.UpdateExpertUseCase;
 import com.picus.core.expert.application.port.in.command.ChangeStatus;
 import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoCommand;
 import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoCommand;
+import com.picus.core.expert.domain.Skill;
+import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -83,10 +86,12 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                 .activityAreas(List.of("서울", "부산"))
                 .projects(List.of(ProjectWebRequest.builder()
                         .projectName("프로젝트1")
+                        .startDate(LocalDateTime.of(2000, 1, 1, 1, 1))
+                        .endDate(LocalDateTime.of(2000, 2, 2, 2, 2))
                         .changeStatus(ChangeStatus.NEW)
                         .build()))
                 .skills(List.of(SkillWebRequest.builder()
-                        .skillType("CAMERA")
+                        .skillType(SkillType.CAMERA)
                         .content("소니 카메라 운용")
                         .changeStatus(ChangeStatus.NEW)
                         .build()))
@@ -94,6 +99,8 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                         .studioName("필름 스튜디오")
                         .employeesCount(5)
                         .changeStatus(ChangeStatus.NEW)
+                        .businessHours("20:00~24:00")
+                        .address("서울 강남구")
                         .build())
                 .build();
 
@@ -119,18 +126,20 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
     @Test
-    @DisplayName("전문가의 상세정보를 수정할 때, activityAreas가 누락되면 오류가 발생한다.")
-    public void updateExpertDetailInfo_activityAreas_null() throws Exception {
+    @DisplayName("전문가의 상세정보를 수정할 때, activityCareer가 blank 오류가 발생한다.")
+    public void updateExpertDetailInfo_activityCareer_blank() throws Exception {
         // given
         String currentUserNo = TEST_USER_ID;
         UpdateExpertDetailInfoRequest request = UpdateExpertDetailInfoRequest.builder()
-                .activityCareer("촬영 5년 경력")
+                .activityAreas(List.of("서울", "부산"))
                 .projects(List.of(ProjectWebRequest.builder()
                         .projectName("프로젝트1")
+                        .startDate(LocalDateTime.of(2000, 1, 1, 1, 1))
+                        .endDate(LocalDateTime.of(2000, 2, 2, 2, 2))
                         .changeStatus(ChangeStatus.NEW)
                         .build()))
                 .skills(List.of(SkillWebRequest.builder()
-                        .skillType("CAMERA")
+                        .skillType(SkillType.CAMERA)
                         .content("소니 카메라 운용")
                         .changeStatus(ChangeStatus.NEW)
                         .build()))
@@ -138,6 +147,8 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                         .studioName("필름 스튜디오")
                         .employeesCount(5)
                         .changeStatus(ChangeStatus.NEW)
+                        .businessHours("20:00~24:00")
+                        .address("서울 강남구")
                         .build())
                 .build();
 
@@ -155,6 +166,80 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
     }
 
     @Test
+    @DisplayName("전문가의 상세정보를 수정할 때, activityAreas가 누락되면 오류가 발생한다.")
+    public void updateExpertDetailInfo_activityAreas_null() throws Exception {
+        // given
+        String currentUserNo = TEST_USER_ID;
+        UpdateExpertDetailInfoRequest request = UpdateExpertDetailInfoRequest.builder()
+                .activityCareer("촬영 5년 경력")
+                .projects(List.of(ProjectWebRequest.builder()
+                        .projectName("프로젝트1")
+                        .startDate(LocalDateTime.of(2000, 1, 1, 1, 1))
+                        .endDate(LocalDateTime.of(2000, 2, 2, 2, 2))
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .skills(List.of(SkillWebRequest.builder()
+                        .skillType(SkillType.CAMERA)
+                        .content("소니 카메라 운용")
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .studio(StudioWebRequest.builder()
+                        .studioName("필름 스튜디오")
+                        .employeesCount(5)
+                        .changeStatus(ChangeStatus.NEW)
+                        .businessHours("20:00~24:00")
+                        .address("서울 강남구")
+                        .build())
+                .build();
+
+        given(updateExpertWebMapper.toDetailInfoCommand(request, currentUserNo))
+                .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/experts/detail_info")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("전문가의 상세정보를 수정시 Project/Skill/Studio를 수정하려고 할 때 id를 제외한 특정 필드가 누락되면 400 에러가 발생한다.")
+    public void updateExpertDetailInfo_Project_Skill_Studio_filed_null() throws Exception {
+        // given
+        String currentUserNo = TEST_USER_ID;
+        UpdateExpertDetailInfoRequest request = UpdateExpertDetailInfoRequest.builder()
+                .activityCareer("촬영 5년 경력")
+                .activityAreas(List.of("서울", "부산"))
+                .projects(List.of(ProjectWebRequest.builder()
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .skills(List.of(SkillWebRequest.builder()
+                        .changeStatus(ChangeStatus.NEW)
+                        .build()))
+                .studio(StudioWebRequest.builder()
+                        .changeStatus(ChangeStatus.NEW)
+                        .build())
+                .build();
+
+        given(updateExpertWebMapper.toDetailInfoCommand(request, currentUserNo))
+                .willReturn(Mockito.mock(UpdateExpertDetailInfoCommand.class));
+
+        // when // then
+        mockMvc.perform(
+                        patch("/api/v1/experts/detail_info")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+
+
+    @Test
     @DisplayName("전문가의 상세정보를 수정시 Project/Skill/Studio를 수정하려고 할 때 change_status가 누락되면 400 에러가 발생한다.")
     public void updateExpertDetailInfo_change_status_null() throws Exception {
         // given
@@ -164,7 +249,19 @@ class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
                 .activityAreas(List.of("서울", "부산"))
                 .projects(List.of(ProjectWebRequest.builder()
                         .projectName("프로젝트1")
+                        .startDate(LocalDateTime.of(2000, 1, 1, 1, 1))
+                        .endDate(LocalDateTime.of(2000, 2, 2, 2, 2))
                         .build()))
+                .skills(List.of(SkillWebRequest.builder()
+                        .skillType(SkillType.CAMERA)
+                        .content("소니 카메라 운용")
+                        .build()))
+                .studio(StudioWebRequest.builder()
+                        .studioName("필름 스튜디오")
+                        .employeesCount(5)
+                        .businessHours("20:00~24:00")
+                        .address("서울 강남구")
+                        .build())
                 .build();
 
         given(updateExpertWebMapper.toDetailInfoCommand(request, currentUserNo))

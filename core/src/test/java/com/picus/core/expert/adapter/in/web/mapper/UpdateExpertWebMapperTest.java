@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.picus.core.expert.application.port.in.command.ChangeStatus.*;
+import static com.picus.core.expert.domain.vo.SkillType.CAMERA;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -67,7 +68,7 @@ class UpdateExpertWebMapperTest {
                 .skills(List.of(
                         SkillWebRequest.builder()
                                 .skillNo("S001")
-                                .skillType("CAMERA")
+                                .skillType(CAMERA)
                                 .content("블랙매직 URSA Mini Pro 사용 가능")
                                 .changeStatus(UPDATE)
                                 .build()
@@ -102,7 +103,7 @@ class UpdateExpertWebMapperTest {
         assertThat(result.skills()).hasSize(1);
         UpdateSkillCommand updateSkillCommand = result.skills().getFirst();
         assertThat(updateSkillCommand.skillNo()).isEqualTo("S001");
-        assertThat(updateSkillCommand.skillType()).isEqualTo(SkillType.CAMERA);
+        assertThat(updateSkillCommand.skillType()).isEqualTo(CAMERA);
         assertThat(updateSkillCommand.content()).isEqualTo("블랙매직 URSA Mini Pro 사용 가능");
         assertThat(updateSkillCommand.changeStatus()).isEqualTo(UPDATE);
 
