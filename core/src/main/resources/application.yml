@@ -98,7 +98,8 @@ jwt:
     header: Authorization-Refresh
 
 cors:
-  allowed-origins: "*"  # 모든 Origin 허용
+#  allowed-origins: "*"  # 모든 Origin 허용
+  allowed-origins: "http://localhost:3000"  # 테스트용
   allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
   allowed-headers: "*"  # 모든 헤더 허용
   max-age: 3600
@@ -111,6 +112,8 @@ exclude-auth-path-patterns:
     - path-pattern: /
       method: GET
     - path-pattern: /oauth2
+      method: GET
+    - path-pattern: /ws/** # 테스트용 임시허용
       method: GET
 
 #exclude-ratelimiter-path-patterns:
