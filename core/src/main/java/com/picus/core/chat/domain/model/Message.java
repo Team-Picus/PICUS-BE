@@ -13,8 +13,9 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Message {
 
-    private String id; // MongoDB _id
+    private String messageNo;
 
+    private String chatRoomNo;
     private String senderNo;
     private String recipientNo;
     private Map<String, Object> content;

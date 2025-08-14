@@ -14,6 +14,7 @@ public class MessageDocument {
     @Id
     private String messageNo; // MongoDB _id
 
+    private String chatRoomNo;
     private String senderNo;
     private String recipientNo;
     private Map<String, Object> content;
