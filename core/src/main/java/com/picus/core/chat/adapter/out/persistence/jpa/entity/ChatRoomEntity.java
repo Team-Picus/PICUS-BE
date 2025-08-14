@@ -7,11 +7,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "chatting_rooms")
-public class ChattingRoomEntity {
+@Table(name = "chat_rooms")
+public class ChatRoomEntity {
 
     @Id @Tsid
-    private String chattingRoomNo;
+    private String chatRoomNo;
 
     @Column(nullable = false)
     private String clientNo;

@@ -8,9 +8,9 @@ import lombok.Getter;
 @Builder
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChattingRoom {
+public class ChatRoom {
 
-    private String chattingRoomNo;
+    private String chatRoomNo;
 
     private String clientNo;
     private String expertNo;
