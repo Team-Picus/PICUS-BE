@@ -15,4 +15,13 @@ public class ChatRoomPersistenceMapper {
                 .isPinned(entity.getIsPinned())
                 .build();
     }
+
+    public ChatRoomEntity toEntity(ChatRoom domain) {
+        return ChatRoomEntity.builder()
+                .chatRoomNo(domain.getChatRoomNo())
+                .clientNo(domain.getClientNo())
+                .expertNo(domain.getExpertNo())
+                .isPinned(domain.getIsPinned())
+                .build();
+    }
 }

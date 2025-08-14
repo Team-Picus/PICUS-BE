@@ -21,7 +21,10 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
 
     @Override
     public ChatRoom create(ChatRoom chatRoom) {
-        return null;
+        ChatRoomEntity entity = mapper.toEntity(chatRoom);
+        ChatRoomEntity savedEntity = chatRoomJpaRepository.save(entity);
+
+        return mapper.toDomain(savedEntity);
     }
 
     @Override

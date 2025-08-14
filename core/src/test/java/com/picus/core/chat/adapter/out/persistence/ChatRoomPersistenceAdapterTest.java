@@ -56,6 +56,26 @@ class ChatRoomPersistenceAdapterTest {
         assertThat(chatRoom.getIsPinned()).isEqualTo(chatRoomEntity.getIsPinned());
     }
 
+    @Test
+    @DisplayName("ChatRoom을 저장한다.")
+    public void create() throws Exception {
+        // given
+        ChatRoom chatRoom =
+                createChatRoom("c-123", "e-123", true);
+        // when
+        ChatRoom createChatRoom = chatRoomPersistenceAdapter.create(chatRoom);
+        clearPersistenceContext();
+
+        // then
+        Optional<ChatRoomEntity> optional = chatRoomJpaRepository.findById(createChatRoom.getChatRoomNo());
+        assertThat(optional).isPresent();
+        ChatRoomEntity chatRoomEntity = optional.get();
+        assertThat(createChatRoom.getChatRoomNo()).isEqualTo(chatRoomEntity.getChatRoomNo());
+        assertThat(createChatRoom.getClientNo()).isEqualTo(chatRoomEntity.getClientNo());
+        assertThat(createChatRoom.getExpertNo()).isEqualTo(chatRoomEntity.getExpertNo());
+        assertThat(createChatRoom.getIsPinned()).isEqualTo(chatRoomEntity.getIsPinned());
+    }
+
     private ChatRoomEntity createChatRoomEntity(String clientNo, String expertNo, boolean isPinned) {
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder()
                 .clientNo(clientNo)
@@ -64,6 +84,15 @@ class ChatRoomPersistenceAdapterTest {
                 .build();
         return chatRoomJpaRepository.save(chatRoomEntity);
     }
+
+    private ChatRoom createChatRoom(String clientNo, String expertNo, boolean isPinned) {
+        return ChatRoom.builder()
+                .clientNo(clientNo)
+                .expertNo(expertNo)
+                .isPinned(isPinned)
+                .build();
+    }
+
     private void clearPersistenceContext() {
         em.flush();
         em.clear();
