@@ -4,7 +4,7 @@ import com.picus.core.expert.adapter.in.web.data.response.SearchExpertResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SearchExpertWebMapper;
 import com.picus.core.expert.application.port.in.SearchExpertsUseCase;
 import com.picus.core.expert.application.port.in.result.SearchExpertResult;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = SearchExpertController.class)
 @Import(SearchExpertWebMapper.class)
 @AutoConfigureMockMvc(addFilters = false)
-class SearchExpertControllerTest extends AbstractSecurityMockSetup {
+class SearchExpertControllerTest extends ControllerTestSupport {
     @Autowired
     private MockMvc mockMvc;
 

@@ -3,7 +3,7 @@ package com.picus.core.chat.integration;
 import com.picus.core.chat.adapter.in.web.data.request.CreateChatRoomRequest;
 import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatRoomEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRepository;
-import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import com.picus.core.shared.IntegrationTestSupport;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
@@ -13,28 +13,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
-@ActiveProfiles("test")
-public class CreateChatRoomIntegrationTest {
+public class CreateChatRoomIntegrationTest extends IntegrationTestSupport {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-    @Autowired
-    private TokenProvider tokenProvider;
     @Autowired
     private UserJpaRepository userJpaRepository;
     @Autowired
@@ -101,15 +88,4 @@ public class CreateChatRoomIntegrationTest {
         return userJpaRepository.save(userEntity);
     }
 
-    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer " + accessToken);
-        return new HttpEntity<>(webRequest, headers);
-    }
-
-    private void commitTestTransaction() {
-        TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
-        TestTransaction.end(); // 실제 커밋 수행
-    }
 }

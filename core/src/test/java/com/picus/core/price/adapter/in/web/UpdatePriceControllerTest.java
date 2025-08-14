@@ -1,7 +1,7 @@
 package com.picus.core.price.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.price.adapter.in.UpdatePriceController;
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.adapter.in.web.mapper.UpdatePriceWebMapper;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(controllers = UpdatePriceController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-class UpdatePriceControllerTest extends AbstractSecurityMockSetup {
+class UpdatePriceControllerTest extends ControllerTestSupport {
     @Autowired
     MockMvc mockMvc;
     @Autowired

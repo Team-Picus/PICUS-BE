@@ -2,7 +2,7 @@ package com.picus.core.post.adapter.in;
 
 import com.picus.core.post.adapter.in.web.data.response.LoadGalleryResponse;
 import com.picus.core.post.adapter.in.web.mapper.LoadGalleryWebMapper;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.application.port.in.LoadGalleryUseCase;
 import com.picus.core.post.application.port.in.result.LoadGalleryResult;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = LoadGalleryController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class LoadGalleryControllerTest extends AbstractSecurityMockSetup {
+class LoadGalleryControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

@@ -1,15 +1,13 @@
 package com.picus.core.post.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.adapter.in.web.data.request.UpdatePostRequest;
 import com.picus.core.post.adapter.in.web.mapper.UpdatePostWebMapper;
 import com.picus.core.post.application.port.in.UpdatePostUseCase;
 import com.picus.core.post.application.port.in.command.ChangeStatus;
 import com.picus.core.post.application.port.in.command.UpdatePostCommand;
 import com.picus.core.post.domain.vo.PostMoodType;
-import com.picus.core.post.domain.vo.PostThemeType;
-import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = UpdatePostController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class UpdatePostControllerTest extends AbstractSecurityMockSetup {
+class UpdatePostControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

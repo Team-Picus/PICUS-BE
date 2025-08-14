@@ -1,4 +1,4 @@
-package com.picus.core.infrastructure.security;
+package com.picus.core.shared;
 
 import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-public abstract class AbstractSecurityMockSetup {
+public abstract class ControllerTestSupport {
 
     protected static final String TEST_USER_ID = "test_user_id";
 

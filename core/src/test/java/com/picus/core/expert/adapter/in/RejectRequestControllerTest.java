@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in;
 
 import com.picus.core.expert.application.port.in.RejectRequestUseCase;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = RejectRequestController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class RejectRequestControllerTest extends AbstractSecurityMockSetup {
+class RejectRequestControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

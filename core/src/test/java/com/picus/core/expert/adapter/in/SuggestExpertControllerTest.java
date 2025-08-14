@@ -4,7 +4,7 @@ import com.picus.core.expert.adapter.in.web.data.response.SuggestExpertResponse;
 import com.picus.core.expert.adapter.in.web.mapper.SuggestExpertWebMapper;
 import com.picus.core.expert.application.port.in.SuggestExpertsUseCase;
 import com.picus.core.expert.application.port.in.result.SuggestExpertResult;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = SuggestExpertController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class SuggestExpertControllerTest extends AbstractSecurityMockSetup {
+class SuggestExpertControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

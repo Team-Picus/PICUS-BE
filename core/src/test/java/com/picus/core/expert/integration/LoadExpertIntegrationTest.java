@@ -16,6 +16,7 @@ import com.picus.core.expert.domain.Studio;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import com.picus.core.shared.IntegrationTestSupport;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -42,15 +43,7 @@ import static com.picus.core.expert.adapter.in.web.data.response.LoadExpertDetai
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
-@ActiveProfiles("test")
-public class LoadExpertIntegrationTest {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-    @Autowired
-    private TokenProvider tokenProvider;
+public class LoadExpertIntegrationTest extends IntegrationTestSupport {
 
     @Autowired
     private ExpertJpaRepository expertJpaRepository;
@@ -102,11 +95,7 @@ public class LoadExpertIntegrationTest {
         commitTestTransaction();
 
         // 요청 셋팅
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        HttpEntity<Void> request = new HttpEntity<>(null, headers);
+        HttpEntity<Void> request = settingWebRequest(userEntity, null);
 
         // when
         ResponseEntity<BaseResponse<LoadExpertBasicInfoResponse>> response = restTemplate.exchange(
@@ -180,11 +169,7 @@ public class LoadExpertIntegrationTest {
         commitTestTransaction();
 
         // 응답값 셋팅
-
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        HttpEntity<Void> request = new HttpEntity<>(null, headers);
+        HttpEntity<Void> request = settingWebRequest(userEntity, null);
 
         // when
         ResponseEntity<BaseResponse<LoadExpertDetailInfoResponse>> response = restTemplate.exchange(
@@ -269,6 +254,9 @@ public class LoadExpertIntegrationTest {
                 );
     }
 
+    /**
+     * private 메서드
+     */
     private ExpertEntity settingBasicData(
             UserEntity userEntity,
             String testProfileImageFileKey,
@@ -461,10 +449,4 @@ public class LoadExpertIntegrationTest {
                 .address(studio.getAddress())
                 .build();
     }
-
-    private void commitTestTransaction() {
-        TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
-        TestTransaction.end(); // 실제 커밋 수행
-    }
-
 }

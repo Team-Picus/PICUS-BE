@@ -1,12 +1,9 @@
 package com.picus.core.price.adapter.in;
 
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.price.adapter.in.web.data.response.LoadPriceResponse;
 import com.picus.core.price.adapter.in.web.mapper.LoadPriceWebMapper;
 import com.picus.core.price.application.port.in.LoadPriceUseCase;
-import com.picus.core.price.domain.Price;
-import com.picus.core.price.domain.vo.PriceThemeType;
-import com.picus.core.price.domain.vo.SnapSubTheme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(controllers = LoadPriceController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-class LoadPriceControllerTest extends AbstractSecurityMockSetup {
+class LoadPriceControllerTest extends ControllerTestSupport {
 
     @Autowired
     MockMvc mockMvc;

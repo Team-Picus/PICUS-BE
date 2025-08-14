@@ -13,7 +13,7 @@ import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaReposito
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.expert.domain.vo.SkillType;
-import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import com.picus.core.shared.IntegrationTestSupport;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.ProfileImageJpaRepository;
@@ -24,13 +24,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,17 +36,9 @@ import static com.picus.core.expert.application.port.in.command.ChangeStatus.*;
 import static com.picus.core.expert.domain.vo.SkillType.EDIT;
 import static com.picus.core.expert.domain.vo.SkillType.LIGHT;
 import static org.assertj.core.api.Assertions.*;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-@Transactional
-public class UpdateExpertInfoIntegrationTest {
+public class UpdateExpertInfoIntegrationTest extends IntegrationTestSupport {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-    @Autowired
-    private TokenProvider tokenProvider;
     @Autowired
     private UserJpaRepository userJpaRepository;
     @Autowired
@@ -385,14 +372,6 @@ public class UpdateExpertInfoIntegrationTest {
                 );
     }
 
-
-    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer " + accessToken);
-        return new HttpEntity<>(webRequest, headers);
-    }
-
     private UserEntity givenUserEntity(String nickname) {
         return UserEntity.builder()
                 .name("이름")
@@ -495,10 +474,5 @@ public class UpdateExpertInfoIntegrationTest {
                 .link(links)
                 .intro(intro)
                 .build();
-    }
-
-    private void commitTestTransaction() {
-        TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
-        TestTransaction.end(); // 실제 커밋 수행
     }
 }

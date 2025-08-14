@@ -1,7 +1,7 @@
 package com.picus.core.expert.adapter.in;
 
 import com.picus.core.expert.application.port.in.ApproveRequestUseCase;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest(controllers = ApproveRequestController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class ApproveRequestControllerTest extends AbstractSecurityMockSetup {
+class ApproveRequestControllerTest extends ControllerTestSupport {
     @Autowired
     private MockMvc mockMvc;
 

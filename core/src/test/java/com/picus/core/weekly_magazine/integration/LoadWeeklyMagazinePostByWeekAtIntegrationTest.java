@@ -1,9 +1,9 @@
 package com.picus.core.weekly_magazine.integration;
 
-import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.post.adapter.out.persistence.entity.PostEntity;
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.domain.vo.SpaceType;
+import com.picus.core.shared.IntegrationTestSupport;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
@@ -19,16 +19,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,15 +33,8 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpMethod.GET;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
-@ActiveProfiles("test")
-public class LoadWeeklyMagazinePostByWeekAtIntegrationTest {
+public class LoadWeeklyMagazinePostByWeekAtIntegrationTest extends IntegrationTestSupport {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-    @Autowired
-    private TokenProvider tokenProvider;
     @Autowired
     private UserJpaRepository userJpaRepository;
     @Autowired
@@ -171,16 +158,5 @@ public class LoadWeeklyMagazinePostByWeekAtIntegrationTest {
                 .month(month)
                 .week(week)
                 .build();
-    }
-    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer " + accessToken);
-        return new HttpEntity<>(webRequest, headers);
-    }
-
-    private void commitTestTransaction() {
-        TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
-        TestTransaction.end(); // 실제 커밋 수행
     }
 }

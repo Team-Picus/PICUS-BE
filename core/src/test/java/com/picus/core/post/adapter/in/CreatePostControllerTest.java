@@ -1,7 +1,7 @@
 package com.picus.core.post.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest;
 import com.picus.core.post.adapter.in.web.data.request.CreatePostRequest.PostImageRequest;
 import com.picus.core.post.adapter.in.web.mapper.CreatePostWebMapper;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = CreatePostController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class CreatePostControllerTest extends AbstractSecurityMockSetup {
+class CreatePostControllerTest extends ControllerTestSupport {
     @Autowired
     private MockMvc mockMvc;
 

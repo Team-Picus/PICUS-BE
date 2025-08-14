@@ -1,6 +1,6 @@
 package com.picus.core.price.adapter.in.web;
 
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.price.adapter.in.web.data.response.LoadMyPackageResponse;
 import com.picus.core.price.adapter.in.web.mapper.LoadMyPackageWebMapper;
 import com.picus.core.price.application.port.in.LoadMyPackageUseCase;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = LoadMyPackageController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class LoadMyPackageControllerTest extends AbstractSecurityMockSetup {
+class LoadMyPackageControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

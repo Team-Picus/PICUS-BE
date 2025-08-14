@@ -1,6 +1,6 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.adapter.in.web.data.response.LoadPostDetailResponse;
 import com.picus.core.post.adapter.in.web.mapper.LoadPostDetailWebMapper;
 import com.picus.core.post.application.port.in.LoadPostDetailUseCase;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = LoadPostDetailController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class LoadPostDetailControllerTest extends AbstractSecurityMockSetup {
+class LoadPostDetailControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

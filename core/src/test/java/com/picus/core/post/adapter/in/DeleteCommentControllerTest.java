@@ -1,6 +1,6 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.application.port.in.DeleteCommentUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(controllers = DeleteCommentController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-class DeleteCommentControllerTest extends AbstractSecurityMockSetup {
+class DeleteCommentControllerTest extends ControllerTestSupport {
     @Autowired
     MockMvc mockMvc;
     

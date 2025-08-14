@@ -4,7 +4,6 @@ import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
 import com.picus.core.price.domain.vo.PriceThemeType;
-import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.price.adapter.in.web.data.request.*;
 import com.picus.core.price.adapter.out.persistence.entity.OptionEntity;
 import com.picus.core.price.adapter.out.persistence.entity.PackageEntity;
@@ -16,6 +15,7 @@ import com.picus.core.price.adapter.out.persistence.repository.PriceJpaRepositor
 import com.picus.core.price.adapter.out.persistence.repository.PriceReferenceImageJpaRepository;
 import com.picus.core.price.application.port.in.command.ChangeStatus;
 import com.picus.core.price.domain.vo.SnapSubTheme;
+import com.picus.core.shared.IntegrationTestSupport;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
@@ -24,13 +24,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,17 +35,8 @@ import static com.picus.core.price.application.port.in.command.ChangeStatus.*;
 import static com.picus.core.price.domain.vo.PriceThemeType.*;
 import static com.picus.core.price.domain.vo.SnapSubTheme.ADMISSION;
 import static org.assertj.core.api.Assertions.*;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
-@ActiveProfiles("test")
-public class UpdatePriceIntegrationTest {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-    @Autowired
-    private TokenProvider tokenProvider;
+public class UpdatePriceIntegrationTest extends IntegrationTestSupport {
 
     @Autowired
     UserJpaRepository userJpaRepository;
@@ -421,18 +407,6 @@ public class UpdatePriceIntegrationTest {
                 .userEntity(userEntity)
                 .build();
         return expertJpaRepository.save(expertEntity);
-    }
-
-    private <T> HttpEntity<T> settingWebRequest(UserEntity userEntity, T webRequest) {
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer " + accessToken);
-        return new HttpEntity<>(webRequest, headers);
-    }
-
-    private void commitTestTransaction() {
-        TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
-        TestTransaction.end(); // 실제 커밋 수행
     }
 
     private UpdatePriceReferenceImageRequest createPriceRefImageWebRequest(String priceRefImageNo, String fileKey,

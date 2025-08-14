@@ -1,6 +1,6 @@
 package com.picus.core.weekly_magazine.adapter.in;
 
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.weekly_magazine.adapter.in.web.data.response.LoadWeeklyMagazinePostByWeekAtResponse;
 import com.picus.core.weekly_magazine.adapter.in.web.mapper.LoadWeeklyMagazinePostByWeekAtWebMapper;
 import com.picus.core.weekly_magazine.application.port.in.LoadWeeklyMagazinePostByWeekAtUseCase;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = LoadWeeklyMagazinePostByWeekAtController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class LoadWeeklyMagazinePostByWeekAtControllerTest extends AbstractSecurityMockSetup {
+class LoadWeeklyMagazinePostByWeekAtControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

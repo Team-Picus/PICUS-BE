@@ -1,6 +1,6 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.adapter.in.web.data.response.LoadRandomPostResponse;
 import com.picus.core.post.adapter.in.web.mapper.LoadRandomPostWebMapper;
 import com.picus.core.post.application.port.in.LoadRandomPostUseCase;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = LoadRandomPostController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class LoadRandomPostControllerTest extends AbstractSecurityMockSetup {
+class LoadRandomPostControllerTest extends ControllerTestSupport {
     @Autowired
     private MockMvc mockMvc;
 

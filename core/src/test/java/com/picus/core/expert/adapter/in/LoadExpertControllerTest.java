@@ -7,7 +7,7 @@ import com.picus.core.expert.adapter.in.web.mapper.LoadExpertWebMapper;
 import com.picus.core.expert.application.port.in.LoadExpertUseCase;
 import com.picus.core.expert.application.port.in.result.ExpertBasicInfoResult;
 import com.picus.core.expert.domain.Expert;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(controllers = LoadExpertController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-class LoadExpertControllerTest extends AbstractSecurityMockSetup {
+class LoadExpertControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

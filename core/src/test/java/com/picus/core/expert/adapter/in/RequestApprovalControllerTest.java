@@ -6,7 +6,7 @@ import com.picus.core.expert.adapter.in.web.mapper.RequestApprovalWebMapper;
 import com.picus.core.expert.application.port.in.RequestApprovalUseCase;
 import com.picus.core.expert.application.port.in.command.RequestApprovalCommand;
 import com.picus.core.expert.domain.vo.SkillType;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest(controllers = RequestApprovalController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class RequestApprovalControllerTest extends AbstractSecurityMockSetup {
+class RequestApprovalControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

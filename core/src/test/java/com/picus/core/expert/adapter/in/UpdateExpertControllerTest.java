@@ -11,9 +11,8 @@ import com.picus.core.expert.application.port.in.UpdateExpertUseCase;
 import com.picus.core.expert.application.port.in.command.ChangeStatus;
 import com.picus.core.expert.application.port.in.command.UpdateExpertBasicInfoCommand;
 import com.picus.core.expert.application.port.in.command.UpdateExpertDetailInfoCommand;
-import com.picus.core.expert.domain.Skill;
 import com.picus.core.expert.domain.vo.SkillType;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(controllers = UpdateExpertController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-class UpdateExpertControllerTest extends AbstractSecurityMockSetup {
+class UpdateExpertControllerTest extends ControllerTestSupport {
     @Autowired
     MockMvc mockMvc;
     @Autowired

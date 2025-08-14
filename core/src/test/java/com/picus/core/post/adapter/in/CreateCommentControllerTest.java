@@ -1,18 +1,16 @@
 package com.picus.core.post.adapter.in;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.adapter.in.web.data.request.CreateCommentRequest;
 import com.picus.core.post.adapter.in.web.mapper.CreateCommentWebMapper;
 import com.picus.core.post.application.port.in.CreateCommentUseCase;
 import com.picus.core.post.application.port.in.command.CreateCommentCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -27,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = CreateCommentController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class CreateCommentControllerTest extends AbstractSecurityMockSetup {
+class CreateCommentControllerTest extends ControllerTestSupport {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

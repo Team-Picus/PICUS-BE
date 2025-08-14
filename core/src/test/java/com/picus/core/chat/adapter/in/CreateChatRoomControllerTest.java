@@ -5,7 +5,7 @@ import com.picus.core.chat.adapter.in.web.data.request.CreateChatRoomRequest;
 import com.picus.core.chat.adapter.in.web.mapper.CreateChatRoomWebMapper;
 import com.picus.core.chat.application.port.in.CreateChatRoomUseCase;
 import com.picus.core.chat.application.port.in.command.CreateChatRoomCommand;
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = CreateChatRoomController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class CreateChatRoomControllerTest extends AbstractSecurityMockSetup {
+class CreateChatRoomControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

@@ -1,6 +1,6 @@
 package com.picus.core.post.adapter.in;
 
-import com.picus.core.infrastructure.security.AbstractSecurityMockSetup;
+import com.picus.core.shared.ControllerTestSupport;
 import com.picus.core.post.adapter.in.web.data.response.SuggestPostResponse;
 import com.picus.core.post.adapter.in.web.mapper.SuggestPostWebMapper;
 import com.picus.core.post.application.port.in.SuggestPostUseCase;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = SuggestPostController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class SuggestPostControllerTest extends AbstractSecurityMockSetup {
+class SuggestPostControllerTest extends ControllerTestSupport {
 
     @Autowired
     private MockMvc mockMvc;

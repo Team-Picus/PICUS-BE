@@ -4,7 +4,7 @@ import com.picus.core.expert.adapter.in.web.data.response.SearchExpertResponse;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
-import com.picus.core.infrastructure.security.jwt.TokenProvider;
+import com.picus.core.shared.IntegrationTestSupport;
 import com.picus.core.shared.common.BaseResponse;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
@@ -17,27 +17,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
-@ActiveProfiles("test")
-public class SearchExpertIntegrationTest {
-    @Autowired
-    private TestRestTemplate restTemplate;
-    @Autowired
-    private TokenProvider tokenProvider;
+public class SearchExpertIntegrationTest extends IntegrationTestSupport {
+
     @Autowired
     private UserJpaRepository userJpaRepository;
     @Autowired
@@ -81,13 +70,15 @@ public class SearchExpertIntegrationTest {
         commitTestTransaction();
 
         // 요청값 셋팅
-        HttpEntity<Void> request = setUpRequest();
+        UserEntity userEntity = createUserEntity(); // 인증을 위해 가상의 사용자 생성
+        HttpEntity<Object> webRequest = settingWebRequest(userEntity, null);
+
 
         // when
         ResponseEntity<BaseResponse<List<SearchExpertResponse>>> response = restTemplate.exchange(
                 "/api/v1/experts/search/results?keyword={keyword}",
                 HttpMethod.GET,
-                request,
+                webRequest,
                 new ParameterizedTypeReference<>() {
                 },
                 testKeyword
@@ -146,15 +137,6 @@ public class SearchExpertIntegrationTest {
         );
     }
 
-    private HttpEntity<Void> setUpRequest() {
-        UserEntity userEntity = createUserEntity(); // 인증을 위해 가상의 사용자 생성
-        String accessToken = tokenProvider.createAccessToken(userEntity.getUserNo(), userEntity.getRole().toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-        HttpEntity<Void> request = new HttpEntity<>(null, headers);
-        return request;
-    }
-
     private UserEntity givenUserEntity(String nickname, String email, String providerId) {
         return UserEntity.builder()
                 .name("이름")
@@ -207,9 +189,4 @@ public class SearchExpertIntegrationTest {
                 .build();
         return userJpaRepository.save(userEntity);
     }
-    private void commitTestTransaction() {
-        TestTransaction.flagForCommit();  // 지금까지 열린 테스트 트랜잭션을 커밋
-        TestTransaction.end(); // 실제 커밋 수행
-    }
-
 }
