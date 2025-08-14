@@ -17,7 +17,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, String> {
     Optional<UserEntity> findByProviderAndProviderId(Provider provider, String providerId);
 
     @Query("select u.role from UserEntity u where u.userNo = :userNo")
-    Optional<Role> findRoleById(@Param("currentUserNo") String userNo);
+    Optional<Role> findRoleById(@Param("userNo") String userNo);
 
     @Query("""
                 select new com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto(u.nickname, p.file_key, u.expertNo)
