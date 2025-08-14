@@ -1,5 +1,8 @@
 package com.picus.core.chat.adapter.out.persistence;
 
+import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatRoomEntity;
+import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRepository;
+import com.picus.core.chat.adapter.out.persistence.mapper.ChatRoomPersistenceMapper;
 import com.picus.core.chat.application.port.out.ChatRoomCreatePort;
 import com.picus.core.chat.application.port.out.ChatRoomReadPort;
 import com.picus.core.chat.domain.model.ChatRoom;
@@ -12,6 +15,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomReadPort {
 
+    private final ChatRoomJpaRepository chatRoomJpaRepository;
+
+    private final ChatRoomPersistenceMapper mapper;
+
     @Override
     public ChatRoom create(ChatRoom chatRoom) {
         return null;
@@ -19,6 +26,7 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
 
     @Override
     public Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo) {
-        return Optional.empty();
+        return chatRoomJpaRepository.findByClientNoAndExpertNo(clientNo, expertNo)
+                .map(mapper::toDomain);
     }
 }
