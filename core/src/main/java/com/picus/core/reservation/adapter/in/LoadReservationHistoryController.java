@@ -1,9 +1,11 @@
 package com.picus.core.reservation.adapter.in;
 
+import com.picus.core.reservation.adapter.in.web.data.response.LoadReservationDetailResponse;
+import com.picus.core.reservation.adapter.in.web.data.response.LoadReservationDetailWebMapper;
 import com.picus.core.reservation.adapter.in.web.data.response.LoadReservationHistoryResponse;
 import com.picus.core.reservation.adapter.in.web.mapper.LoadReservationHistoryWebMapper;
 import com.picus.core.reservation.application.port.in.LoadReservationHistoryUseCase;
-import com.picus.core.reservation.application.port.in.response.LoadReservationHistoryResult;
+import com.picus.core.reservation.application.port.in.response.LoadReservationDetailResult;
 import com.picus.core.reservation.domain.Reservation;
 import com.picus.core.reservation.domain.ReservationStatus;
 import com.picus.core.shared.annotation.CurrentUser;
@@ -20,7 +22,8 @@ import java.util.List;
 public class LoadReservationHistoryController {
 
     private final LoadReservationHistoryUseCase loadReservationHistoryUseCase;
-    private final LoadReservationHistoryWebMapper webMapper;
+    private final LoadReservationHistoryWebMapper loadReservationHistoryWebMapper;
+    private final LoadReservationDetailWebMapper loadReservationDetailWebMapper;
 
     @GetMapping
     public BaseResponse<List<LoadReservationHistoryResponse>> loadAll(
@@ -29,18 +32,18 @@ public class LoadReservationHistoryController {
             @RequestParam(required = false) ReservationStatus status
     ) {
         List<LoadReservationHistoryResponse> responses = loadReservationHistoryUseCase.loadAll(userNo, start, status).stream()
-                .map(webMapper::toResponse)
+                .map(loadReservationHistoryWebMapper::toResponse)
                 .toList();
 
         return BaseResponse.onSuccess(responses);
     }
 
     @GetMapping("/{reservationNo}")
-    public BaseResponse<LoadReservationHistoryResponse> load(
+    public BaseResponse<LoadReservationDetailResponse> load(
             @CurrentUser String userNo,
             @PathVariable String reservationNo
     ) {
-        loadReservationHistoryUseCase.load(userNo, reservationNo);
-        return BaseResponse.onSuccess();
+        LoadReservationDetailResult reservation = loadReservationHistoryUseCase.load(userNo, reservationNo);
+        return BaseResponse.onSuccess(loadReservationDetailWebMapper.toResponse(reservation));
     }
 }

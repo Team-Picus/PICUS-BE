@@ -1,6 +1,7 @@
 package com.picus.core.reservation.application.service;
 
 import com.picus.core.post.application.port.out.PostReadPort;
+import com.picus.core.post.domain.Post;
 import com.picus.core.price.application.port.out.PriceReadPort;
 import com.picus.core.price.domain.Price;
 import com.picus.core.reservation.application.port.in.SendReservationRequestUseCase;
@@ -14,6 +15,8 @@ import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserReadPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.RESERVATION_BLACKLIST_USER;
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
@@ -39,7 +42,7 @@ public class SendReservationRequestService implements SendReservationRequestUseC
             throw new RestApiException(RESERVATION_BLACKLIST_USER);
 
         Price price = priceReadPort.findById(command.getPriceNo());
-        postReadPort.findById(command.getPostNo());
+        Optional<Post> post = postReadPort.findById(command.getPostNo());
         Reservation reservation = saveReservationCommandMapper.toDomain(userNo, command, price);
 
         reservationCreatePort.create(reservation);

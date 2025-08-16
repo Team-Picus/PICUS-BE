@@ -45,7 +45,7 @@ public class SaveReservationCommandMapper {
         for (SaveReservationCommand.OptionSelection sel : command.getOptionSelection()) {
             for (Option option : price.getOptions()) {
                 if (option.getOptionNo().equals(sel.optionNo())) {
-                    optionsTotal += option.getPrice() * sel.count();
+                    optionsTotal += option.getPricePerUnit() * sel.count();
                 }
             }
         }
@@ -73,8 +73,8 @@ public class SaveReservationCommandMapper {
                         .filter(o -> o.getOptionNo().equals(sel.optionNo()))
                         .map(o -> SelectedOption.builder()
                                 .name(o.getName())
-                                .unitSize(o.getCount())
-                                .pricePerUnit(o.getPrice())
+                                .unitSize(o.getUnitSize())
+                                .pricePerUnit(o.getPricePerUnit())
                                 .orderCount(sel.count())
                                 .contents(o.getContents())
                                 .build()))

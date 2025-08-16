@@ -1,6 +1,5 @@
 package com.picus.core.reservation.domain;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -32,10 +32,11 @@ public class SaveReservationCommand extends SelfValidating<SaveReservationComman
     @NotBlank
     String requestDetail;
 
-    public SaveReservationCommand(String priceNo, String packageNo, List<OptionSelection> optionSelection, String place, LocalDateTime startTime, String requestDetail) {
+    public SaveReservationCommand(String priceNo, String packageNo, List<OptionSelection> optionSelection, String postNo, String place, LocalDateTime startTime, String requestDetail) {
         this.priceNo = priceNo;
         this.packageNo = packageNo;
         this.optionSelection = optionSelection;
+        this.postNo = postNo;
         this.place = place;
         this.startTime = startTime;
         this.requestDetail = requestDetail;
