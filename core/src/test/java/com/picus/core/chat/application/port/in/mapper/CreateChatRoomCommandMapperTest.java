@@ -1,7 +1,6 @@
 package com.picus.core.chat.application.port.in.mapper;
 
-import com.picus.core.chat.application.port.in.command.CreateChatRoomCommand;
-import com.picus.core.chat.domain.model.ChatRoom;
+import com.picus.core.chat.domain.model.ChatParticipant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,20 +10,17 @@ class CreateChatRoomCommandMapperTest {
     private final CreateChatRoomCommandMapper commandMapper = new CreateChatRoomCommandMapper();
 
     @Test
-    @DisplayName("CreateChatRoomCommand -> ChatRoom 매핑")
-    public void toDomain() throws Exception {
+    @DisplayName("participantNo -> ChatParticipant 매핑")
+    public void toChatParticipantDomain() throws Exception {
         // given
-        CreateChatRoomCommand command = CreateChatRoomCommand.builder()
-                .clientNo("c-123")
-                .expertNo("e-123")
-                .build();
+        String participantNo = "u1";
 
         // when
-        ChatRoom domain = commandMapper.toDomain(command);
+        ChatParticipant domain = commandMapper.toChatParticipantDomain(participantNo);
 
         // then
-        assertThat(domain.getClientNo()).isEqualTo("c-123");
-        assertThat(domain.getExpertNo()).isEqualTo("e-123");
+        assertThat(domain.getUserNo()).isEqualTo(participantNo);
         assertThat(domain.getIsPinned()).isFalse();
+        assertThat(domain.getIsExit()).isFalse();
     }
 }

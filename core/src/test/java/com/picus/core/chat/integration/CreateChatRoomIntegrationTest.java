@@ -1,7 +1,9 @@
 package com.picus.core.chat.integration;
 
 import com.picus.core.chat.adapter.in.web.data.request.CreateChatRoomRequest;
+import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatParticipantEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatRoomEntity;
+import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatParticipantJpaRepository;
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRepository;
 import com.picus.core.shared.IntegrationTestSupport;
 import com.picus.core.shared.common.BaseResponse;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,9 +29,12 @@ public class CreateChatRoomIntegrationTest extends IntegrationTestSupport {
     private UserJpaRepository userJpaRepository;
     @Autowired
     private ChatRoomJpaRepository chatRoomJpaRepository;
+    @Autowired
+    private ChatParticipantJpaRepository chatParticipantJpaRepository;
 
     @AfterEach
     void tearDown() {
+        chatParticipantJpaRepository.deleteAllInBatch();
         chatRoomJpaRepository.deleteAllInBatch();
         userJpaRepository.deleteAllInBatch();
     }
@@ -57,19 +63,22 @@ public class CreateChatRoomIntegrationTest extends IntegrationTestSupport {
                 }
         );
 
-        // then
+        // then - 응답 검증
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         BaseResponse<String> body = response.getBody();
         assertThat(body).isNotNull();
 
+        // then - ChatRoomEntity 검증
         Optional<ChatRoomEntity> optional = chatRoomJpaRepository.findById(body.getResult());
         assertThat(optional).isPresent();
-
         ChatRoomEntity chatRoomEntity = optional.get();
-        assertThat(chatRoomEntity.getExpertNo()).isEqualTo(request.expertNo());
-        assertThat(chatRoomEntity.getClientNo()).isEqualTo(clientUser.getUserNo());
-        assertThat(chatRoomEntity.getIsPinned()).isFalse();
+
+        // then - ChatParticipantEntity 검증
+        List<ChatParticipantEntity> chatParticipantEntities = chatParticipantJpaRepository.findByChatRoomEntity(chatRoomEntity);
+        assertThat(chatParticipantEntities).hasSize(2)
+                .extracting(ChatParticipantEntity::getUserNo)
+                .containsExactlyInAnyOrder(clientUser.getUserNo(), expertUser.getUserNo());
     }
 
     private UserEntity createUserEntity(String nickname, Role role, String email, String providerId) {

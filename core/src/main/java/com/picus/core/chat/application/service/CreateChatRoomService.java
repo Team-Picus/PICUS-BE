@@ -5,6 +5,7 @@ import com.picus.core.chat.application.port.in.command.CreateChatRoomCommand;
 import com.picus.core.chat.application.port.in.mapper.CreateChatRoomCommandMapper;
 import com.picus.core.chat.application.port.out.ChatRoomCreatePort;
 import com.picus.core.chat.application.port.out.ChatRoomReadPort;
+import com.picus.core.chat.domain.model.ChatParticipant;
 import com.picus.core.chat.domain.model.ChatRoom;
 import com.picus.core.shared.annotation.UseCase;
 import com.picus.core.shared.exception.RestApiException;
@@ -14,6 +15,7 @@ import com.picus.core.user.domain.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @UseCase
@@ -45,8 +47,9 @@ public class CreateChatRoomService implements CreateChatRoomUseCase {
             return findChatRoom.get().getChatRoomNo();
         } else {
             // 없다면 채팅방 생성 및 해당 chatRoomNo 반환
-            ChatRoom chatRoom = commandMapper.toDomain(command);
-            ChatRoom createdChatRoom = chatRoomCreatePort.create(chatRoom);
+            ChatParticipant client = commandMapper.toChatParticipantDomain(command.clientNo());
+            ChatParticipant expert = commandMapper.toChatParticipantDomain(command.expertNo());
+            ChatRoom createdChatRoom = chatRoomCreatePort.create(List.of(client, expert));
             return createdChatRoom.getChatRoomNo();
         }
 

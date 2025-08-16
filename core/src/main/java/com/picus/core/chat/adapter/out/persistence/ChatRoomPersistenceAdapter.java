@@ -1,14 +1,19 @@
 package com.picus.core.chat.adapter.out.persistence;
 
+import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatParticipantEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatRoomEntity;
+import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatParticipantJpaRepository;
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRepository;
 import com.picus.core.chat.adapter.out.persistence.mapper.ChatRoomPersistenceMapper;
 import com.picus.core.chat.application.port.out.ChatRoomCreatePort;
 import com.picus.core.chat.application.port.out.ChatRoomReadPort;
+import com.picus.core.chat.domain.model.ChatParticipant;
 import com.picus.core.chat.domain.model.ChatRoom;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @PersistenceAdapter
@@ -16,20 +21,40 @@ import java.util.Optional;
 public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomReadPort {
 
     private final ChatRoomJpaRepository chatRoomJpaRepository;
+    private final ChatParticipantJpaRepository chatParticipantJpaRepository;
 
     private final ChatRoomPersistenceMapper mapper;
 
     @Override
-    public ChatRoom create(ChatRoom chatRoom) {
-        ChatRoomEntity entity = mapper.toEntity(chatRoom);
-        ChatRoomEntity savedEntity = chatRoomJpaRepository.save(entity);
+    public ChatRoom create(List<ChatParticipant> participants) {
+        // ChatRoomEntity 저장
+        ChatRoomEntity savedChatRoomEntity = chatRoomJpaRepository.save(ChatRoomEntity.builder().build());
 
-        return mapper.toDomain(savedEntity);
+        List<ChatParticipantEntity> savedParticipantEntities = new ArrayList<>();
+        participants.forEach(chatParticipant -> {
+            // ChatParticipant Domain -> Entity
+            ChatParticipantEntity chatParticipantEntity = mapper.toChatParticipantEntity(chatParticipant);
+            // ChatRoomEntity 바인딩
+            chatParticipantEntity.bindChatRoomEntity(savedChatRoomEntity);
+            // ChatParticipantEntity 저장
+            ChatParticipantEntity saved = chatParticipantJpaRepository.save(chatParticipantEntity);
+            savedParticipantEntities.add(saved);
+        });
+
+        return mapper.toDomain(savedChatRoomEntity, savedParticipantEntities);
     }
 
     @Override
     public Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo) {
-        return chatRoomJpaRepository.findByClientNoAndExpertNo(clientNo, expertNo)
-                .map(mapper::toDomain);
+        Optional<ChatRoomEntity> optionalChatRoomEntity = chatRoomJpaRepository.findByClientNoAndExpertNo(clientNo, expertNo);
+
+        if(optionalChatRoomEntity.isEmpty())
+            return Optional.empty();
+
+        ChatRoomEntity chatRoomEntity = optionalChatRoomEntity.get();
+        List<ChatParticipantEntity> chatParticipantEntities = chatParticipantJpaRepository.findByChatRoomEntity(chatRoomEntity);
+
+        return optionalChatRoomEntity
+                .map(entity -> mapper.toDomain(entity, chatParticipantEntities));
     }
 }

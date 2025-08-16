@@ -5,6 +5,7 @@ import com.picus.core.chat.application.port.in.command.CreateChatRoomCommand;
 import com.picus.core.chat.application.port.in.mapper.CreateChatRoomCommandMapper;
 import com.picus.core.chat.application.port.out.ChatRoomCreatePort;
 import com.picus.core.chat.application.port.out.ChatRoomReadPort;
+import com.picus.core.chat.domain.model.ChatParticipant;
 import com.picus.core.chat.domain.model.ChatRoom;
 import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserReadPort;
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.picus.core.user.domain.model.Role.CLIENT;
@@ -81,12 +83,14 @@ class CreateChatRoomServiceTest {
         given(chatRoomReadPort.findByClientNoAndExpertNo(command.clientNo(), command.expertNo()))
                 .willReturn(Optional.empty());
 
-        ChatRoom mockNewChatRoom = createMockChatRoom(null); // 새로 생성되기 전에는 chatRoomNo가 없음
-        given(commandMapper.toDomain(command)).willReturn(mockNewChatRoom);
+        ChatParticipant mockClient = creatMockChatParticipant(command.clientNo());
+        given(commandMapper.toChatParticipantDomain(command.clientNo())).willReturn(mockClient);
+        ChatParticipant mockExpert = creatMockChatParticipant(command.expertNo());
+        given(commandMapper.toChatParticipantDomain(command.expertNo())).willReturn(mockExpert);
 
         String createdChatRoomNo = "cr-123";
         ChatRoom mockCreatedChatRoom = createMockChatRoom(createdChatRoomNo); // 데이터베이스에 저장되면 ChatRoomNo가 생김ㄴ
-        given(chatRoomCreatePort.create(mockNewChatRoom)).willReturn(mockCreatedChatRoom);
+        given(chatRoomCreatePort.create(List.of(mockClient, mockExpert))).willReturn(mockCreatedChatRoom);
 
         // when
         String returnChatRoomNo = service.create(command);
@@ -94,8 +98,9 @@ class CreateChatRoomServiceTest {
         // then
         then(userReadPort).should().findRoleById(command.expertNo());
         then(chatRoomReadPort).should().findByClientNoAndExpertNo(command.clientNo(), command.expertNo());
-        then(commandMapper).should().toDomain(command);
-        then(chatRoomCreatePort).should().create(mockNewChatRoom);
+        then(commandMapper).should().toChatParticipantDomain(command.clientNo());
+        then(commandMapper).should().toChatParticipantDomain(command.expertNo());
+        then(chatRoomCreatePort).should().create(List.of(mockClient, mockExpert));
 
         assertThat(returnChatRoomNo).isEqualTo(createdChatRoomNo);
     }
@@ -121,6 +126,12 @@ class CreateChatRoomServiceTest {
     private ChatRoom createMockChatRoom(String chatRoomNo) {
         return ChatRoom.builder()
                 .chatRoomNo(chatRoomNo)
+                .build();
+    }
+
+    private ChatParticipant creatMockChatParticipant(String userNo) {
+        return ChatParticipant.builder()
+                .userNo(userNo)
                 .build();
     }
 

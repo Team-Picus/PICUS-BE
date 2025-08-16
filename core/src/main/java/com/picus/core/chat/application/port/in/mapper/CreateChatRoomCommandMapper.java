@@ -1,17 +1,16 @@
 package com.picus.core.chat.application.port.in.mapper;
 
-import com.picus.core.chat.application.port.in.command.CreateChatRoomCommand;
-import com.picus.core.chat.domain.model.ChatRoom;
+import com.picus.core.chat.domain.model.ChatParticipant;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateChatRoomCommandMapper {
 
-    public ChatRoom toDomain(CreateChatRoomCommand command) {
-        return ChatRoom.builder()
-                .clientNo(command.clientNo())
-                .expertNo(command.expertNo())
+    public ChatParticipant toChatParticipantDomain(String participantNo) {
+        return ChatParticipant.builder()
+                .userNo(participantNo)
                 .isPinned(false)
+                .isExit(false)
                 .build();
     }
 }

@@ -17,12 +17,4 @@ public class ChatRoomEntity {
 
     @Id @Tsid
     private String chatRoomNo;
-
-    @Column(nullable = false)
-    private String clientNo;
-    @Column(nullable = false)
-    private String expertNo;
-
-    @Column(nullable = false)
-    private Boolean isPinned;
 }

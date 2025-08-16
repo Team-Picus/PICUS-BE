@@ -16,8 +16,6 @@ public class MessageDocument {
 
     private String chatRoomNo;
     private String senderNo;
-    private String recipientNo;
     private Map<String, Object> content;
     private MessageType messageType;
-    private Boolean isRead;
 }
