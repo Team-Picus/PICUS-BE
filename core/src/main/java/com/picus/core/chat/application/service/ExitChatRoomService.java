@@ -48,7 +48,7 @@ public class ExitChatRoomService implements ExitChatRoomUseCase {
                 chatRoomDeletePort.delete(chatRoomNo);
             } else {
                 // 상대방이 채팅방에 남아있다면 그냥 ChatParticipant의 isExit만 수정
-                me.exit(LocalDateTime.now());
+                chatRoom.exit(me);
                 chatRoomUpdatePort.updateChatParticipant(me);
             }
         }

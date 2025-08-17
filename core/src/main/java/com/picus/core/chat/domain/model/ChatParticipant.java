@@ -20,4 +20,8 @@ public class ChatParticipant {
         this.isExited = true;
         this.exitedAt = now;
     }
+
+    public void pin() {
+        this.isPinned = true;
+    }
 }

@@ -7,7 +7,6 @@ import com.picus.core.chat.application.port.out.ChatRoomUpdatePort;
 import com.picus.core.chat.domain.model.ChatParticipant;
 import com.picus.core.chat.domain.model.ChatRoom;
 import com.picus.core.shared.exception.RestApiException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +52,8 @@ class ExitChatRoomServiceTest {
         boolean otherIsExited = true; // 상대방이 현재 채팅방에 나간 상태
         ChatParticipant me = createChatParticipant("cp-1", currentUserNo, false);
         ChatParticipant other = createChatParticipant("cp-2", chatRoomNo + "_other", otherIsExited);
-        stubbing(chatRoomNo, me, other);
+        ChatRoom mockChatRoom = createChatRoom(chatRoomNo, me, other);
+        stubbing(chatRoomNo, mockChatRoom);
 
 
         // when
@@ -78,17 +78,18 @@ class ExitChatRoomServiceTest {
 
         // given - 메서드 Stubbing
         boolean otherIsExited = false; // 상대방이 아직 채팅방에 남아 있는 상태
-        ChatParticipant spyMe = spy(createChatParticipant("cp-1", currentUserNo, false));
+        ChatParticipant me = createChatParticipant("cp-1", currentUserNo, false);
         ChatParticipant other = createChatParticipant("cp-2", chatRoomNo + "_other", otherIsExited);
-        stubbing(chatRoomNo, spyMe, other);
+        ChatRoom mockChatRoom = spy(createChatRoom(chatRoomNo, me, other));
+        stubbing(chatRoomNo, mockChatRoom);
 
         // when
         service.exit(command);
 
         // then
         then(chatRoomReadPort).should().findById(chatRoomNo);
-        then(spyMe).should().exit(any(LocalDateTime.class));
-        then(chatRoomUpdatePort).should().updateChatParticipant(spyMe);
+        then(mockChatRoom).should().exit(me);
+        then(chatRoomUpdatePort).should().updateChatParticipant(me);
 
         then(chatRoomDeletePort).shouldHaveNoInteractions();
     }
@@ -124,28 +125,21 @@ class ExitChatRoomServiceTest {
         // given - 메서드 Stubbing
         ChatParticipant other1 = createChatParticipant("cp-1", chatRoomNo + "_other1", false);
         ChatParticipant other2 = createChatParticipant("cp-2", chatRoomNo + "_other2", false);
-        stubbing(chatRoomNo, other1, other2);
+        stubbing(chatRoomNo, createChatRoom(chatRoomNo, other1, other2));
 
         // when // then
         assertThatThrownBy(() -> service.exit(command))
                 .isInstanceOf(RestApiException.class);
     }
 
-    private void stubbing(String chatRoomNo, ChatParticipant me, ChatParticipant other) {
-        ChatRoom mockChatRoom = ChatRoom.builder()
-                .chatRoomNo(chatRoomNo)
-                .chatParticipants(List.of(me, other))
-                .build();
+    private void stubbing(String chatRoomNo, ChatRoom mockChatRoom) {
         given(chatRoomReadPort.findById(chatRoomNo)).willReturn(Optional.ofNullable(mockChatRoom));
     }
 
-
-    private ChatParticipant createChatParticipant(String chatParticipantNo, String currentUserNo, boolean isExited) {
-        return ChatParticipant.builder()
-                .chatParticipantNo(chatParticipantNo)
-                .userNo(currentUserNo)
-                .isExited(isExited)
-                .isPinned(false)
+    private ChatRoom createChatRoom(String chatRoomNo, ChatParticipant cp1, ChatParticipant cp2) {
+        return ChatRoom.builder()
+                .chatRoomNo(chatRoomNo)
+                .chatParticipants(List.of(cp1, cp2))
                 .build();
     }
 
@@ -153,6 +147,15 @@ class ExitChatRoomServiceTest {
         return ExitChatRoomCommand.builder()
                 .chatRoomNos(chatRoomNoList)
                 .currentUserNo(currentUserNo)
+                .build();
+    }
+
+    private ChatParticipant createChatParticipant(String chatParticipantNo, String currentUserNo, boolean isExited) {
+        return ChatParticipant.builder()
+                .chatParticipantNo(chatParticipantNo)
+                .userNo(currentUserNo)
+                .isExited(isExited)
+                .isPinned(false)
                 .build();
     }
 

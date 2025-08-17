@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,4 +18,12 @@ public class ChatRoom {
 
     @Builder.Default
     private List<ChatParticipant> chatParticipants = new ArrayList<>();
+
+    public void exit(ChatParticipant chatParticipant) {
+        chatParticipant.exit(LocalDateTime.now());
+    }
+
+    public void pin(ChatParticipant chatParticipant) {
+        chatParticipant.pin();
+    }
 }

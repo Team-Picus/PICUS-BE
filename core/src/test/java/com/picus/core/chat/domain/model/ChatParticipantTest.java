@@ -25,5 +25,19 @@ class ChatParticipantTest {
         // then
         assertThat(chatParticipant.getIsExited()).isTrue();
     }
+    @Test
+    @DisplayName("ChatPariticipant의 isPinned을 True로 변경한다.")
+    public void pin() throws Exception {
+        // given
+        ChatParticipant chatParticipant = ChatParticipant.builder()
+                .isPinned(false)
+                .build();
+
+        // when
+        chatParticipant.pin();
+
+        // then
+        assertThat(chatParticipant.getIsPinned()).isTrue();
+    }
 
 }

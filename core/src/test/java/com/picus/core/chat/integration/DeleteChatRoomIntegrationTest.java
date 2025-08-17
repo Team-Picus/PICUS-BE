@@ -11,6 +11,7 @@ import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,13 @@ public class DeleteChatRoomIntegrationTest extends IntegrationTestSupport {
     private ChatParticipantJpaRepository chatParticipantJpaRepository;
     @Autowired
     private UserJpaRepository userJpaRepository;
+
+    @AfterEach
+    void tearDown() {
+        chatParticipantJpaRepository.deleteAllInBatch();
+        chatRoomJpaRepository.deleteAllInBatch();
+        userJpaRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("사용자는 채팅방을 나갈 수 있다.")

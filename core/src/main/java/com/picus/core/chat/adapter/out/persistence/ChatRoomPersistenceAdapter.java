@@ -61,6 +61,22 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
     }
 
     @Override
+    public List<ChatRoom> findAllByIds(List<String> chatRoomNos) {
+
+        // ChatRoomEntity 조회
+        List<ChatRoomEntity> chatRoomEntities = chatRoomJpaRepository.findAllById(chatRoomNos);
+
+        List<ChatRoom> chatRoomDomains = new ArrayList<>();
+        for (ChatRoomEntity chatRoomEntity : chatRoomEntities) {
+            // 각 채팅방의 ChatParticipantEntity 조회
+            List<ChatParticipantEntity> chatParticipantEntities =
+                    chatParticipantJpaRepository.findByChatRoomEntity(chatRoomEntity);
+            chatRoomDomains.add(mapper.toDomain(chatRoomEntity, chatParticipantEntities));
+        }
+        return chatRoomDomains;
+    }
+
+    @Override
     public Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo) {
         Optional<ChatRoomEntity> optionalChatRoomEntity = chatRoomJpaRepository.findByClientNoAndExpertNo(clientNo, expertNo);
 
@@ -84,6 +100,11 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
                                 chatParticipant.getExitedAt()
                         )
                 );
+    }
+
+    @Override
+    public void bulkUpdateChatParticipant(List<ChatParticipant> chatParticipants) {
+
     }
 
     @Override
