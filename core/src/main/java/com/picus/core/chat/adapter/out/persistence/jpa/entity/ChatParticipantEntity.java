@@ -22,7 +22,7 @@ public class ChatParticipantEntity {
     @JoinColumn(name = "chat_room_no", nullable = false)
     private ChatRoomEntity chatRoomEntity;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String userNo;
 
     @Column(nullable = false)
@@ -35,5 +35,11 @@ public class ChatParticipantEntity {
 
     public void bindChatRoomEntity(ChatRoomEntity chatRoomEntity) {
         this.chatRoomEntity = chatRoomEntity;
+    }
+
+    public void update(boolean isPinned, boolean isExited, LocalDateTime exitedAt) {
+        this.isPinned = isPinned;
+        this.isExited = isExited;
+        this.exitedAt = exitedAt;
     }
 }

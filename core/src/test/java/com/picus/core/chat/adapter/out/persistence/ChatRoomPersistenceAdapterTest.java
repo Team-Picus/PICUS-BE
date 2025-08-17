@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +104,40 @@ class ChatRoomPersistenceAdapterTest {
     }
 
     @Test
+    @DisplayName("ChatParticipant를 업데이트한다.")
+    public void updateChatParticipant() throws Exception {
+        // given - 데이터베이스에 데이터 셋팅
+        String clientNo = "c-123";
+        String expertNo = "e-123";
+        ChatRoomEntity chatRoomEntity = createChatRoomEntity();
+        ChatParticipantEntity shdUptCpE = createChatParticipantEntity(chatRoomEntity, clientNo, false, false);
+        createChatParticipantEntity(chatRoomEntity, expertNo);
+        clearPersistenceContext();
+
+        // given - 파라미터 셋팅
+        LocalDateTime newExitedAt = LocalDateTime.of(2000, 1, 1, 1, 1);
+        ChatParticipant uptCp = ChatParticipant.builder()
+                .chatParticipantNo(shdUptCpE.getChatParticipantNo())
+                .userNo(shdUptCpE.getUserNo())
+                .isPinned(true)
+                .isExited(true)
+                .exitedAt(newExitedAt)
+                .build();
+
+        // when
+        chatRoomPersistenceAdapter.updateChatParticipant(uptCp);
+        clearPersistenceContext();
+
+        // then
+        ChatParticipantEntity updated = chatParticipantJpaRepository.findById(shdUptCpE.getChatParticipantNo())
+                .orElseThrow();
+
+        assertThat(updated.getIsPinned()).isTrue();
+        assertThat(updated.getIsExited()).isTrue();
+        assertThat(updated.getExitedAt()).isEqualTo(newExitedAt);
+    }
+
+    @Test
     @DisplayName("ChatRoom을 삭제한다.")
     public void delete() throws Exception {
         // given - 데이터베이스에 데이터 셋팅
@@ -137,6 +172,16 @@ class ChatRoomPersistenceAdapterTest {
                 .userNo(userNo)
                 .isPinned(false)
                 .isExited(false)
+                .build();
+        return chatParticipantJpaRepository.save(participantEntity);
+    }
+
+    private ChatParticipantEntity createChatParticipantEntity(ChatRoomEntity chatRoomEntity, String userNo, boolean isPinned, boolean isExited) {
+        ChatParticipantEntity participantEntity = ChatParticipantEntity.builder()
+                .chatRoomEntity(chatRoomEntity)
+                .userNo(userNo)
+                .isPinned(isPinned)
+                .isExited(isExited)
                 .build();
         return chatParticipantJpaRepository.save(participantEntity);
     }

@@ -55,7 +55,7 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
     public Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo) {
         Optional<ChatRoomEntity> optionalChatRoomEntity = chatRoomJpaRepository.findByClientNoAndExpertNo(clientNo, expertNo);
 
-        if(optionalChatRoomEntity.isEmpty())
+        if (optionalChatRoomEntity.isEmpty())
             return Optional.empty();
 
         ChatRoomEntity chatRoomEntity = optionalChatRoomEntity.get();
@@ -67,7 +67,14 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
 
     @Override
     public void updateChatParticipant(ChatParticipant chatParticipant) {
-
+        chatParticipantJpaRepository.findById(chatParticipant.getChatParticipantNo())
+                .ifPresent(chatParticipantEntity ->
+                        chatParticipantEntity.update(
+                                chatParticipant.getIsPinned(),
+                                chatParticipant.getIsExited(),
+                                chatParticipant.getExitedAt()
+                        )
+                );
     }
 
     @Override
