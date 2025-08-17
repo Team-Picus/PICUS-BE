@@ -1,6 +1,7 @@
 package com.picus.core.chat.integration;
 
 import com.picus.core.chat.adapter.in.web.data.request.ExitChatRoomRequest;
+import com.picus.core.chat.adapter.in.web.data.request.PinChatRoomRequest;
 import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatParticipantEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatRoomEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatParticipantJpaRepository;
@@ -25,7 +26,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeleteChatRoomIntegrationTest extends IntegrationTestSupport {
+public class PinChatRoomIntegrationTest extends IntegrationTestSupport {
 
     @Autowired
     private ChatRoomJpaRepository chatRoomJpaRepository;
@@ -42,35 +43,29 @@ public class DeleteChatRoomIntegrationTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("사용자는 채팅방을 나갈 수 있다.")
+    @DisplayName("사용자는 채팅방을 상단고정처리 할 수 있다.")
     public void exit() throws Exception {
         // given - 데이터베이스 데이터 셋팅
-        UserEntity other1 =
+        UserEntity other =
                 createUserEntity("other1", Role.EXPERT, "other1@email.com", "other1");
-        UserEntity other2 =
-                createUserEntity("other2", Role.EXPERT, "other2@email.com", "other2");
         UserEntity me =
                 createUserEntity("me", Role.CLIENT, "me@email.com", "me");
 
-        ChatRoomEntity cr1 = createChatRoomEntity();
-        ChatParticipantEntity cr1_me = createChatParticipantEntity(cr1, me.getUserNo(), false, false);// 요청 주체
-        createChatParticipantEntity(cr1, other1.getUserNo(), false, false); // 채팅방에 있음
-
-        ChatRoomEntity cr2 = createChatRoomEntity();
-        ChatParticipantEntity cr2_me = createChatParticipantEntity(cr2, me.getUserNo(), false, false);// 요청 주체
-        createChatParticipantEntity(cr2, other2.getUserNo(), false, true); // 채팅방에서 나가 있음
+        ChatRoomEntity cr = createChatRoomEntity();
+        ChatParticipantEntity cr_me = createChatParticipantEntity(cr, me.getUserNo(), false); // 요청 주체
+        ChatParticipantEntity cr_other = createChatParticipantEntity(cr, other.getUserNo(), false);// 채팅 상대방
 
         commitTestTransaction();
 
         // given - 요청 셋팅
-        ExitChatRoomRequest request = ExitChatRoomRequest.builder()
-                .chatRoomNos(List.of(cr1.getChatRoomNo(), cr2.getChatRoomNo()))
+        PinChatRoomRequest request = PinChatRoomRequest.builder()
+                .chatRoomNos(List.of(cr.getChatRoomNo()))
                 .build();
-        HttpEntity<ExitChatRoomRequest> webRequest = settingWebRequest(me, request);
+        HttpEntity<PinChatRoomRequest> webRequest = settingWebRequest(me, request);
 
         // when
         ResponseEntity<BaseResponse<Void>> response = restTemplate.exchange(
-                "/api/v1/chats/exit",
+                "/api/v1/chats/pin",
                 HttpMethod.POST,
                 webRequest,
                 new ParameterizedTypeReference<>() {
@@ -83,15 +78,15 @@ public class DeleteChatRoomIntegrationTest extends IntegrationTestSupport {
         BaseResponse<Void> body = response.getBody();
         assertThat(body).isNotNull();
 
-        // then - cr1은 상대방이 채팅방에 있으므로 채팅방은 그대로이고 ChatParticipant의 isExited, exitedAt만 변경됨
-        ChatParticipantEntity uptCr1 = chatParticipantJpaRepository.findById(cr1_me.getChatParticipantNo())
+        // then - 현재 사용자는 True로 변경됨
+        ChatParticipantEntity uptCr = chatParticipantJpaRepository.findById(cr_me.getChatParticipantNo())
                 .orElseThrow();
+        assertThat(uptCr.getIsPinned()).isTrue();
 
-        assertThat(uptCr1.getIsExited()).isTrue();
-        assertThat(uptCr1.getExitedAt()).isNotNull();
-
-        // then - cr2는 상대방이 채팅방에서 나가있었으므로 채팅방이 삭제됨.
-        assertThat(chatRoomJpaRepository.findById(cr2.getChatRoomNo())).isNotPresent();
+        // then - 상대방은 그대로 유지
+        ChatParticipantEntity otherCr = chatParticipantJpaRepository.findById(cr_other.getChatParticipantNo())
+                .orElseThrow();
+        assertThat(otherCr.getIsPinned()).isFalse();
     }
 
     private ChatRoomEntity createChatRoomEntity() {
@@ -99,12 +94,12 @@ public class DeleteChatRoomIntegrationTest extends IntegrationTestSupport {
         return chatRoomJpaRepository.save(chatRoomEntity);
     }
 
-    private ChatParticipantEntity createChatParticipantEntity(ChatRoomEntity chatRoomEntity, String userNo, boolean isPinned, boolean isExited) {
+    private ChatParticipantEntity createChatParticipantEntity(ChatRoomEntity chatRoomEntity, String userNo, boolean isPinned) {
         ChatParticipantEntity participantEntity = ChatParticipantEntity.builder()
                 .chatRoomEntity(chatRoomEntity)
                 .userNo(userNo)
                 .isPinned(isPinned)
-                .isExited(isExited)
+                .isExited(false)
                 .build();
         return chatParticipantJpaRepository.save(participantEntity);
     }
