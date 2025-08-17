@@ -66,6 +66,37 @@ class ChatRoomPersistenceAdapterTest {
     }
 
     @Test
+    @DisplayName("id 리스트로 ChatRoom 조회")
+    public void findAllByIds() throws Exception {
+        // given - 데이터베이스에 데이터 셋팅
+        ChatRoomEntity cr1 = createChatRoomEntity();
+        createChatParticipantEntity(cr1, "u-1");
+        createChatParticipantEntity(cr1, "u-2");
+
+        ChatRoomEntity cr2 = createChatRoomEntity();
+        createChatParticipantEntity(cr2, "u-3");
+        createChatParticipantEntity(cr2, "u-4");
+        clearPersistenceContext();
+
+        // when
+        List<ChatRoom> chatRooms =
+                chatRoomPersistenceAdapter.findAllByIds(List.of(cr1.getChatRoomNo(), cr2.getChatRoomNo()));
+
+        // then
+        assertThat(chatRooms).hasSize(2)
+                .extracting(ChatRoom::getChatRoomNo)
+                .containsExactly(cr1.getChatRoomNo(), cr2.getChatRoomNo());
+
+        assertThat(chatRooms.get(0).getChatParticipants())
+                .extracting(ChatParticipant::getUserNo)
+                .containsExactlyInAnyOrder("u-1", "u-2");
+
+        assertThat(chatRooms.get(1).getChatParticipants())
+                .extracting(ChatParticipant::getUserNo)
+                .containsExactlyInAnyOrder("u-3", "u-4");
+    }
+
+    @Test
     @DisplayName("clientNo와 expertNo로 ChatRoom을 조회한다.")
     public void findByClientNoAndExpertNo() throws Exception {
         // given
