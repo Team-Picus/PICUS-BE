@@ -55,7 +55,7 @@ class PinChatRoomServiceTest {
         // then
         then(chatRoomReadPort).should().findAllByIds(command.chatRoomNos());
         then(mockChatRoom).should().pin(me);
-        then(chatRoomUpdatePort).should().bulkUpdateChatParticipant(List.of(me));
+        then(chatRoomUpdatePort).should().updateChatParticipant(me);
     }
 
     @Test

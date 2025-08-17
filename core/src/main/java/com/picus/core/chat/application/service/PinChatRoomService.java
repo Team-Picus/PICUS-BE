@@ -11,7 +11,6 @@ import com.picus.core.shared.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._FORBIDDEN;
@@ -28,7 +27,6 @@ public class PinChatRoomService implements PinChatRoomUseCase {
     public void pin(PinChatRoomCommand command) {
         // chatRoom List 조회
         List<ChatRoom> chatRooms = chatRoomReadPort.findAllByIds(command.chatRoomNos());
-        List<ChatParticipant> updatedChatParticipants = new ArrayList<>();
         for (ChatRoom chatRoom : chatRooms) {
             List<ChatParticipant> chatParticipants = chatRoom.getChatParticipants();
 
@@ -40,9 +38,7 @@ public class PinChatRoomService implements PinChatRoomUseCase {
 
             // 고정처리
             chatRoom.pin(me);
-            updatedChatParticipants.add(me);
+            chatRoomUpdatePort.updateChatParticipant(me);
         }
-        // 데이터베이스 일괄 업데이트
-        chatRoomUpdatePort.bulkUpdateChatParticipant(updatedChatParticipants);
     }
 }
