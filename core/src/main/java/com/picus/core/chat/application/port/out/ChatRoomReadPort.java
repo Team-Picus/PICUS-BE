@@ -5,5 +5,7 @@ import com.picus.core.chat.domain.model.ChatRoom;
 import java.util.Optional;
 
 public interface ChatRoomReadPort {
+    Optional<ChatRoom> findById(String chatRoomNo);
+
     Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo);
 }

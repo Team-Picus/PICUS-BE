@@ -4,6 +4,8 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "chat_participants")
 @Getter
@@ -27,7 +29,9 @@ public class ChatParticipantEntity {
     private Boolean isPinned;
 
     @Column(nullable = false)
-    private Boolean isExit;
+    private Boolean isExited;
+
+    private LocalDateTime exitedAt;
 
     public void bindChatRoomEntity(ChatRoomEntity chatRoomEntity) {
         this.chatRoomEntity = chatRoomEntity;

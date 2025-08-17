@@ -21,6 +21,6 @@ class CreateChatRoomCommandMapperTest {
         // then
         assertThat(domain.getUserNo()).isEqualTo(participantNo);
         assertThat(domain.getIsPinned()).isFalse();
-        assertThat(domain.getIsExit()).isFalse();
+        assertThat(domain.getIsExited()).isFalse();
     }
 }

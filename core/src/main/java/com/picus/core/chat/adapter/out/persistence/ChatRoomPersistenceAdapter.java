@@ -6,7 +6,9 @@ import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatParticipan
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRepository;
 import com.picus.core.chat.adapter.out.persistence.mapper.ChatRoomPersistenceMapper;
 import com.picus.core.chat.application.port.out.ChatRoomCreatePort;
+import com.picus.core.chat.application.port.out.ChatRoomDeletePort;
 import com.picus.core.chat.application.port.out.ChatRoomReadPort;
+import com.picus.core.chat.application.port.out.ChatRoomUpdatePort;
 import com.picus.core.chat.domain.model.ChatParticipant;
 import com.picus.core.chat.domain.model.ChatRoom;
 import com.picus.core.shared.annotation.PersistenceAdapter;
@@ -18,7 +20,7 @@ import java.util.Optional;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomReadPort {
+public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomReadPort, ChatRoomUpdatePort, ChatRoomDeletePort {
 
     private final ChatRoomJpaRepository chatRoomJpaRepository;
     private final ChatParticipantJpaRepository chatParticipantJpaRepository;
@@ -45,6 +47,11 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
     }
 
     @Override
+    public Optional<ChatRoom> findById(String chatRoomNo) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo) {
         Optional<ChatRoomEntity> optionalChatRoomEntity = chatRoomJpaRepository.findByClientNoAndExpertNo(clientNo, expertNo);
 
@@ -56,5 +63,15 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
 
         return optionalChatRoomEntity
                 .map(entity -> mapper.toDomain(entity, chatParticipantEntities));
+    }
+
+    @Override
+    public void updateChatParticipant(ChatParticipant chatParticipant) {
+
+    }
+
+    @Override
+    public void delete(String chatRoomNo) {
+
     }
 }

@@ -29,7 +29,7 @@ class ChatParticipantEntityTest {
         return ChatParticipantEntity.builder()
                 .userNo("userNo")
                 .isPinned(false)
-                .isExit(false)
+                .isExited(false)
                 .build();
     }
 }

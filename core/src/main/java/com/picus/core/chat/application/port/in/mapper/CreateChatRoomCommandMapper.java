@@ -10,7 +10,7 @@ public class CreateChatRoomCommandMapper {
         return ChatParticipant.builder()
                 .userNo(participantNo)
                 .isPinned(false)
-                .isExit(false)
+                .isExited(false)
                 .build();
     }
 }

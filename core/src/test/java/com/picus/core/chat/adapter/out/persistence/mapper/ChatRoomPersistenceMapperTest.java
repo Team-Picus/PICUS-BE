@@ -36,10 +36,10 @@ class ChatRoomPersistenceMapperTest {
                         ChatParticipant::getChatParticipantNo,
                         ChatParticipant::getUserNo,
                         ChatParticipant::getIsPinned,
-                        ChatParticipant::getIsExit
+                        ChatParticipant::getIsExited
                 ).containsExactlyInAnyOrder(
-                        tuple(cp1.getChatParticipantNo(), cp1.getUserNo(), cp1.getIsPinned(), cp1.getIsExit()),
-                        tuple(cp2.getChatParticipantNo(), cp2.getUserNo(), cp2.getIsPinned(), cp2.getIsExit())
+                        tuple(cp1.getChatParticipantNo(), cp1.getUserNo(), cp1.getIsPinned(), cp1.getIsExited()),
+                        tuple(cp2.getChatParticipantNo(), cp2.getUserNo(), cp2.getIsPinned(), cp2.getIsExited())
                 );
     }
 
@@ -69,7 +69,7 @@ class ChatRoomPersistenceMapperTest {
                 .chatParticipantNo(chatParticipantNo)
                 .userNo(userNo)
                 .isPinned(isPinned)
-                .isExit(isExit)
+                .isExited(isExit)
                 .build();
     }
 

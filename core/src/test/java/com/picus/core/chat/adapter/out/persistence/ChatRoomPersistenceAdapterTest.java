@@ -66,10 +66,10 @@ class ChatRoomPersistenceAdapterTest {
                         ChatParticipant::getChatParticipantNo,
                         ChatParticipant::getUserNo,
                         ChatParticipant::getIsPinned,
-                        ChatParticipant::getIsExit
+                        ChatParticipant::getIsExited
                 ).containsExactlyInAnyOrder(
-                        tuple(client.getChatParticipantNo(), client.getUserNo(), client.getIsPinned(), client.getIsExit()),
-                        tuple(expert.getChatParticipantNo(), expert.getUserNo(), expert.getIsPinned(), expert.getIsExit())
+                        tuple(client.getChatParticipantNo(), client.getUserNo(), client.getIsPinned(), client.getIsExited()),
+                        tuple(expert.getChatParticipantNo(), expert.getUserNo(), expert.getIsPinned(), expert.getIsExited())
                 );
     }
 
@@ -117,7 +117,7 @@ class ChatRoomPersistenceAdapterTest {
                 .chatRoomEntity(chatRoomEntity)
                 .userNo(userNo)
                 .isPinned(false)
-                .isExit(false)
+                .isExited(false)
                 .build();
         return chatParticipantJpaRepository.save(participantEntity);
     }
@@ -126,7 +126,7 @@ class ChatRoomPersistenceAdapterTest {
         return ChatParticipant.builder()
                 .userNo(userNo)
                 .isPinned(false)
-                .isExit(false)
+                .isExited(false)
                 .build();
     }
 

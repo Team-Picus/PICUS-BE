@@ -25,7 +25,7 @@ public class ChatRoomPersistenceMapper {
                 .chatParticipantNo(chatParticipantEntity.getChatParticipantNo())
                 .userNo(chatParticipantEntity.getUserNo())
                 .isPinned(chatParticipantEntity.getIsPinned())
-                .isExit(chatParticipantEntity.getIsExit())
+                .isExited(chatParticipantEntity.getIsExited())
                 .build();
     }
 
@@ -39,7 +39,7 @@ public class ChatRoomPersistenceMapper {
         return ChatParticipantEntity.builder()
                 .userNo(chatParticipant.getUserNo())
                 .isPinned(chatParticipant.getIsPinned())
-                .isExit(chatParticipant.getIsExit())
+                .isExited(chatParticipant.getIsExited())
                 .build();
     }
 
