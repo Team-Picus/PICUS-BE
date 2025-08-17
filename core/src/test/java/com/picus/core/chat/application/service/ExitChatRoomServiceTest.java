@@ -55,12 +55,11 @@ class ExitChatRoomServiceTest {
         ChatRoom mockChatRoom = createChatRoom(chatRoomNo, me, other);
         stubbing(chatRoomNo, mockChatRoom);
 
-
         // when
         service.exit(command);
 
         // then
-        then(chatRoomReadPort).should().findById(chatRoomNo);
+        then(chatRoomReadPort).should().findAllByIds(List.of(chatRoomNo));
         then(chatRoomDeletePort).should().delete(chatRoomNo);
 
         then(chatRoomUpdatePort).shouldHaveNoInteractions();
@@ -87,29 +86,11 @@ class ExitChatRoomServiceTest {
         service.exit(command);
 
         // then
-        then(chatRoomReadPort).should().findById(chatRoomNo);
+        then(chatRoomReadPort).should().findAllByIds(List.of(chatRoomNo));
         then(mockChatRoom).should().exit(me);
         then(chatRoomUpdatePort).should().updateChatParticipant(me);
 
         then(chatRoomDeletePort).shouldHaveNoInteractions();
-    }
-
-    @Test
-    @DisplayName("채팅방을 나갈 때 채팅방이 존재하지 않으면 에러가 발생한다.")
-    public void exit_ifChatRoomNotExist() throws Exception {
-        // given - 파라미터 셋팅
-        String chatRoomNo = "cr-1";
-        List<String> chatRoomNoList = List.of(chatRoomNo);
-        String currentUserNo = "user-123";
-
-        ExitChatRoomCommand command = createCommand(chatRoomNoList, currentUserNo);
-
-        // given - 메서드 Stubbing
-        given(chatRoomReadPort.findById(chatRoomNo)).willReturn(Optional.empty());
-
-        // when // then
-        assertThatThrownBy(() -> service.exit(command))
-                .isInstanceOf(RestApiException.class);
     }
 
     @Test
@@ -133,7 +114,7 @@ class ExitChatRoomServiceTest {
     }
 
     private void stubbing(String chatRoomNo, ChatRoom mockChatRoom) {
-        given(chatRoomReadPort.findById(chatRoomNo)).willReturn(Optional.ofNullable(mockChatRoom));
+        given(chatRoomReadPort.findAllByIds(List.of(chatRoomNo))).willReturn(List.of(mockChatRoom));
     }
 
     private ChatRoom createChatRoom(String chatRoomNo, ChatParticipant cp1, ChatParticipant cp2) {

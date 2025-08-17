@@ -30,11 +30,8 @@ public class ExitChatRoomService implements ExitChatRoomUseCase {
     // TODO: 동시성 처리
     @Override
     public void exit(ExitChatRoomCommand command) {
-
-        for (String chatRoomNo : command.chatRoomNos()) {
-            // ChatRoom 조회
-            ChatRoom chatRoom = chatRoomReadPort.findById(chatRoomNo)
-                    .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+        List<ChatRoom> chatRooms = chatRoomReadPort.findAllByIds(command.chatRoomNos());
+        for (ChatRoom chatRoom : chatRooms) {
 
             List<ChatParticipant> chatParticipants = chatRoom.getChatParticipants();
             // 현재 사용자가 채팅방에 들어가 있는지 검증
@@ -45,7 +42,7 @@ public class ExitChatRoomService implements ExitChatRoomUseCase {
 
             if (isChatRoomEmptyExceptMe(chatParticipants, me.getUserNo())) {
                 // 상대방이 채팅방을 나가 있으면(isExit이 True라면) 채팅방 삭제
-                chatRoomDeletePort.delete(chatRoomNo);
+                chatRoomDeletePort.delete(chatRoom.getChatRoomNo());
             } else {
                 // 상대방이 채팅방에 남아있다면 그냥 ChatParticipant의 isExit만 수정
                 chatRoom.exit(me);
