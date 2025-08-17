@@ -72,6 +72,9 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
 
     @Override
     public void delete(String chatRoomNo) {
-
+        // ChatParticipantEntity 삭제
+        chatParticipantJpaRepository.deleteByChatRoomEntity_chatRoomNo(chatRoomNo);
+        // ChatRoomEntity 삭제
+        chatRoomJpaRepository.deleteById(chatRoomNo);
     }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface ChatParticipantJpaRepository extends JpaRepository<ChatParticipantEntity, String> {
 
     List<ChatParticipantEntity> findByChatRoomEntity(ChatRoomEntity chatRoomEntity);
+
+    void deleteByChatRoomEntity_chatRoomNo(String chatRoomNo);
 }

@@ -102,6 +102,25 @@ class ChatRoomPersistenceAdapterTest {
                 .containsExactlyInAnyOrder(clientNo, expertNo);
     }
 
+    @Test
+    @DisplayName("ChatRoom을 삭제한다.")
+    public void delete() throws Exception {
+        // given - 데이터베이스에 데이터 셋팅
+        String clientNo = "c-123";
+        String expertNo = "e-123";
+        ChatRoomEntity chatRoomEntity = createChatRoomEntity();
+        createChatParticipantEntity(chatRoomEntity, clientNo);
+        createChatParticipantEntity(chatRoomEntity, expertNo);
+        clearPersistenceContext();
+
+        // when
+        chatRoomPersistenceAdapter.delete(chatRoomEntity.getChatRoomNo());
+
+        // then
+        assertThat(chatRoomJpaRepository.findAll()).isEmpty();
+        assertThat(chatParticipantJpaRepository.findAll()).isEmpty();
+    }
+
     private void clearPersistenceContext() {
         em.flush();
         em.clear();
