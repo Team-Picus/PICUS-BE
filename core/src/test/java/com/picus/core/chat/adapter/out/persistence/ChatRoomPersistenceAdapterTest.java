@@ -43,6 +43,29 @@ class ChatRoomPersistenceAdapterTest {
     private ChatParticipantJpaRepository chatParticipantJpaRepository;
 
     @Test
+    @DisplayName("id로 ChatRoom을 조회한다.")
+    public void findById() throws Exception {
+        // given
+        String user1 = "u-1";
+        String user2 = "u-2";
+        ChatRoomEntity chatRoomEntity = createChatRoomEntity();
+        createChatParticipantEntity(chatRoomEntity, user1);
+        createChatParticipantEntity(chatRoomEntity, user2);
+        clearPersistenceContext();
+
+        // when
+        Optional<ChatRoom> optionalChatRoom = chatRoomPersistenceAdapter.findById(chatRoomEntity.getChatRoomNo());
+
+        // then
+        assertThat(optionalChatRoom).isPresent();
+
+        ChatRoom chatRoom = optionalChatRoom.get();
+        assertThat(chatRoom.getChatParticipants()).hasSize(2)
+                .extracting(ChatParticipant::getUserNo)
+                .containsExactlyInAnyOrder(user1, user2);
+    }
+
+    @Test
     @DisplayName("clientNo와 expertNo로 ChatRoom을 조회한다.")
     public void findByClientNoAndExpertNo() throws Exception {
         // given

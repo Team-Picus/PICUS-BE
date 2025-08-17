@@ -48,7 +48,16 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
 
     @Override
     public Optional<ChatRoom> findById(String chatRoomNo) {
-        return Optional.empty();
+        Optional<ChatRoomEntity> optionalChatRoomEntity = chatRoomJpaRepository.findById(chatRoomNo);
+
+        if(optionalChatRoomEntity.isEmpty())
+            return Optional.empty();
+
+        ChatRoomEntity chatRoomEntity = optionalChatRoomEntity.get();
+        List<ChatParticipantEntity> chatParticipantEntities =
+                chatParticipantJpaRepository.findByChatRoomEntity(chatRoomEntity);
+
+        return Optional.of(mapper.toDomain(chatRoomEntity, chatParticipantEntities));
     }
 
     @Override
