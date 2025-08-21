@@ -1,6 +1,5 @@
 package com.picus.core.reservation.adapter.out.persistence.entity;
 
-import com.picus.core.expert.domain.vo.PriceThemeType;
 import com.picus.core.reservation.adapter.out.persistence.entity.vo.OptionSnapshot;
 import com.picus.core.reservation.adapter.out.persistence.entity.vo.PackageSnapshot;
 import com.picus.core.reservation.adapter.out.persistence.entity.vo.PostSnapshot;

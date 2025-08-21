@@ -12,7 +12,7 @@ public class SelectedPost {
     private String title;
     private String thumbnailImageKey;
     private String expertName;
-    private String theme;
+    private List<String> themes;
     private List<String> moods;
 
 }

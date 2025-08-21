@@ -17,7 +17,8 @@ public record LoadReservationDetailResponse(
     public record PostInfo(
             String postName,
             String expertName,
-            String postTheme,
+            List<String> postThemes,
+            List<String> moods,
             String thumbnailImage
     ) {}
 

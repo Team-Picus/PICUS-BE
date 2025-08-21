@@ -4,6 +4,7 @@ import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
+import com.picus.core.shared.exception.RestApiException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
 
 @Getter
 public class  Post {
@@ -138,5 +141,13 @@ public class  Post {
         if (!containsSnap && hasSubThemes) {
             throw new IllegalStateException("SNAP 테마가 없는데 세부 테마(snapSubThemes)가 존재합니다.");
         }
+    }
+
+    public String getFirstImage() {
+        return this.postImages.stream()
+                .filter(image -> image.getImageOrder().equals(1))
+                .findAny()
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND))
+                .getFileKey();
     }
 }

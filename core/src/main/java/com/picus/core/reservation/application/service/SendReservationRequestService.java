@@ -40,8 +40,10 @@ public class SendReservationRequestService implements SendReservationRequestUseC
         if (userNo.equals(price.getExpertNo()))
             throw new RestApiException(SELF_REQUEST_NOT_ALLOWED);
 
-        Optional<Post> post = postReadPort.findById(command.getPostNo());
-        Reservation reservation = saveReservationCommandMapper.toDomain(userNo, command, price);
+        Post post = postReadPort.findById(command.getPostNo())
+                .orElseThrow(() -> new RestApiException(_NOT_FOUND));
+
+        Reservation reservation = saveReservationCommandMapper.toDomain(userNo, command, price, post);
 
         reservationCreatePort.create(reservation);
     }

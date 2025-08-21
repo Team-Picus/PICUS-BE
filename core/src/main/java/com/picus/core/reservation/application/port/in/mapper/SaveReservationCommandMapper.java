@@ -1,13 +1,13 @@
 package com.picus.core.reservation.application.port.in.mapper;
 
+import com.picus.core.post.domain.Post;
+import com.picus.core.post.domain.vo.PostMoodType;
+import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.price.domain.Option;
 import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.reservation.application.port.in.request.SaveReservationCommand;
-import com.picus.core.reservation.domain.Reservation;
-import com.picus.core.reservation.domain.ReservationStatus;
-import com.picus.core.reservation.domain.SelectedOption;
-import com.picus.core.reservation.domain.SelectedPackage;
+import com.picus.core.reservation.domain.*;
 import com.picus.core.shared.exception.RestApiException;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.PACK
 @Component
 public class SaveReservationCommandMapper {
 
-    public Reservation toDomain(String userNo, SaveReservationCommand command, Price price) {
+    public Reservation toDomain(String userNo, SaveReservationCommand command, Price price, Post post) {
         return Reservation.builder()
                 .reservationStatus(ReservationStatus.REQUESTED)
                 .place(command.getPlace())
@@ -30,8 +30,8 @@ public class SaveReservationCommandMapper {
                 .totalPrice(toTotalPrice(price, command))
                 .userNo(userNo)
                 .expertNo(price.getExpertNo())
+                .selectedPost(toSelectedPost(post))
                 .build();
-
     }
 
     private Integer toTotalPrice(Price price, SaveReservationCommand command) {
@@ -79,5 +79,19 @@ public class SaveReservationCommandMapper {
                                 .contents(o.getContents())
                                 .build()))
                 .toList();
+    }
+
+    private SelectedPost toSelectedPost(Post post) {
+        return SelectedPost.builder()
+                .themes(post.getPostThemeTypes().stream()
+                        .map(PostThemeType::getText).toList()
+                )
+                .moods(post.getPostMoodTypes().stream()
+                        .map(PostMoodType::getText).toList()
+                )
+                .expertName(post.getAuthorNo())
+                .thumbnailImageKey(post.getFirstImage())
+                .title(post.getTitle())
+                .build();
     }
 }
