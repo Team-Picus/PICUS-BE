@@ -7,7 +7,6 @@ import com.picus.core.price.domain.Price;
 import com.picus.core.reservation.application.port.in.SendReservationRequestUseCase;
 import com.picus.core.reservation.application.port.in.mapper.SaveReservationCommandMapper;
 import com.picus.core.reservation.application.port.in.request.SaveReservationCommand;
-import com.picus.core.reservation.application.port.out.ReservationBlacklistReadPort;
 import com.picus.core.reservation.application.port.out.ReservationCreatePort;
 import com.picus.core.reservation.domain.Reservation;
 import com.picus.core.shared.annotation.UseCase;
@@ -18,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.RESERVATION_BLACKLIST_USER;
-import static com.picus.core.shared.exception.code.status.GlobalErrorStatus._NOT_FOUND;
+import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.*;
 
 @UseCase
 @Transactional
@@ -30,18 +28,18 @@ public class SendReservationRequestService implements SendReservationRequestUseC
     private final PostReadPort postReadPort;
     private final PriceReadPort priceReadPort;
     private final ReservationCreatePort reservationCreatePort;
-    private final ReservationBlacklistReadPort reservationBlacklistReadPort;
     private final SaveReservationCommandMapper saveReservationCommandMapper;
 
     @Override
     public void send(String userNo, SaveReservationCommand command) {
-        if (userReadPort.existsById(userNo))
+        if (!userReadPort.existsById(userNo))
             throw new RestApiException(_NOT_FOUND);
 
-        if (reservationBlacklistReadPort.isBlacklist(userNo))
-            throw new RestApiException(RESERVATION_BLACKLIST_USER);
-
         Price price = priceReadPort.findById(command.getPriceNo());
+
+        if (userNo.equals(price.getExpertNo()))
+            throw new RestApiException(SELF_REQUEST_NOT_ALLOWED);
+
         Optional<Post> post = postReadPort.findById(command.getPostNo());
         Reservation reservation = saveReservationCommandMapper.toDomain(userNo, command, price);
 

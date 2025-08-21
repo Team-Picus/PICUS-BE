@@ -39,7 +39,8 @@ public enum GlobalErrorStatus implements BaseCodeInterface {
     ALREADY_DECIDE_RESERVATION(HttpStatus.BAD_REQUEST, "RESERVATION002", "이미 처리된 예약입니다."),
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION003", "존재하지 않는 예약입니다."),
     ALREADY_COMPLETED_RESERVATION(HttpStatus.BAD_REQUEST, "RESERVATION004", "이미 완료된 예약입니다."),
-    RESERVATION_BLACKLIST_USER(HttpStatus.BAD_REQUEST, "RESERVATION005", "24시간이 지난 후에 예약이 가능합니다.")
+    RESERVATION_BLACKLIST_USER(HttpStatus.BAD_REQUEST, "RESERVATION005", "24시간이 지난 후에 예약이 가능합니다."),
+    SELF_REQUEST_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "RESERVATION006", "자신의 게시물을 예약할 수 없습니다.")
     ;
 
     private final HttpStatus httpStatus;

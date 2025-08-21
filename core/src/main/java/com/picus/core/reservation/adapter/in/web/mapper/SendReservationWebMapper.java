@@ -18,6 +18,7 @@ public class SendReservationWebMapper {
                 .toList();
 
         return builder()
+                .postNo(request.postNo())
                 .priceNo(request.priceNo())
                 .packageNo(request.packageNo())
                 .optionSelection(selections)

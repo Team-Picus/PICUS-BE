@@ -9,6 +9,7 @@ import java.util.List;
 import static com.picus.core.reservation.application.port.in.request.SaveReservationCommand.OptionSelection;
 
 public record SendReservationRequest (
+        @NotBlank String postNo,
         @NotBlank String priceNo,
         @NotBlank String packageNo,
         List<OptionSelectionRequest> selectedOptions,

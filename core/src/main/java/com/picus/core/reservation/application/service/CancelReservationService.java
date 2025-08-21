@@ -1,9 +1,6 @@
 package com.picus.core.reservation.application.service;
 
-import com.picus.core.reservation.adapter.out.persistence.repository.ReservationBlacklistRepository;
 import com.picus.core.reservation.application.port.in.CancelReservationUseCase;
-import com.picus.core.reservation.application.port.out.ReservationBlacklistCreatePort;
-import com.picus.core.reservation.application.port.out.ReservationBlacklistReadPort;
 import com.picus.core.reservation.application.port.out.ReservationDeletePort;
 import com.picus.core.reservation.application.port.out.ReservationReadPort;
 import com.picus.core.reservation.domain.Reservation;
@@ -19,7 +16,6 @@ import static com.picus.core.shared.exception.code.status.GlobalErrorStatus.RESE
 public class CancelReservationService implements CancelReservationUseCase {
 
     private final ReservationReadPort reservationReadPort;
-    private final ReservationBlacklistCreatePort reservationBlacklistCreatePort;
     private final ReservationDeletePort reservationDeletePort;
 
     @Override
@@ -33,7 +29,7 @@ public class CancelReservationService implements CancelReservationUseCase {
             throw new RestApiException(ALREADY_COMPLETED_RESERVATION);
 
         if (reservation.isApproval()) {
-            reservationBlacklistCreatePort.create(userNo);
+//            reservationBlacklistCreatePort.create(userNo);
         } else if (reservation.isPaid()) {
             // 결제 취소
         }

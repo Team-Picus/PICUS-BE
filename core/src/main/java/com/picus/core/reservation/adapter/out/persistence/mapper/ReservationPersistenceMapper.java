@@ -18,9 +18,11 @@ public class ReservationPersistenceMapper {
                 .reservationStatus(reservation.getReservationStatus())
                 .place(reservation.getPlace())
                 .startTime(reservation.getStartTime())
+                .themeType(reservation.getThemeType())
                 .requestDetail(reservation.getRequestDetail())
                 .userNo(reservation.getUserNo())
                 .expertNo(reservation.getExpertNo())
+                .totalPrice(reservation.getTotalPrice())
                 .optionSnapshots(toOptionSnapshot(reservation.getSelectedOptions()))
                 .packageSnapshot(toPackageSnapshot(reservation.getSelectedPackage()))
                 .build();
