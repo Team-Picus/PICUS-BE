@@ -32,7 +32,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/ws/publish");
 
         // RabbitMQ 메시지 브로커 사용
-        registry.enableStompBrokerRelay("/topic", "/queue")
+        registry.enableStompBrokerRelay("/topic", "/queue") // Rabbit MQ 자체적으로 /ws 같은 접두어를 붙일 수 없도록 되어 있음
                 .setRelayHost(rabbitMqConfigProperties.getHost())
                 .setRelayPort(rabbitMqConfigProperties.getRelay().getPort())
                 .setVirtualHost(rabbitMqConfigProperties.getVirtualHost())
