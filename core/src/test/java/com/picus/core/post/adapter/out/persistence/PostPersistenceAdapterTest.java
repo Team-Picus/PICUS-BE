@@ -13,15 +13,12 @@ import com.picus.core.post.domain.vo.PostMoodType;
 import com.picus.core.post.domain.vo.PostThemeType;
 import com.picus.core.post.domain.vo.SnapSubTheme;
 import com.picus.core.post.domain.vo.SpaceType;
+import com.picus.core.shared.PersistenceAdapterTestSupport;
 import com.picus.core.shared.config.QueryDslConfig;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,10 +38,7 @@ import static org.assertj.core.api.Assertions.*;
         PostImagePersistenceMapper.class,
         QueryDslConfig.class
 })
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class PostPersistenceAdapterTest {
+class PostPersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
     @Autowired
     PostJpaRepository postJpaRepository;
@@ -53,9 +47,6 @@ class PostPersistenceAdapterTest {
 
     @Autowired
     private PostPersistenceAdapter postPersistenceAdapter;
-
-    @Autowired
-    EntityManager em;
 
     @Test
     @DisplayName("Post를 데이터베이스에 저장한다.")
@@ -950,10 +941,5 @@ class PostPersistenceAdapterTest {
                 .postEntity(postEntity)
                 .build();
         return postImageJpaRepository.save(postImageEntity);
-    }
-
-    private void clearPersistenceContext() {
-        em.flush();
-        em.clear();
     }
 }

@@ -8,14 +8,11 @@ import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRep
 import com.picus.core.chat.adapter.out.persistence.mapper.ChatRoomPersistenceMapper;
 import com.picus.core.chat.domain.model.ChatParticipant;
 import com.picus.core.chat.domain.model.ChatRoom;
-import jakarta.persistence.EntityManager;
+import com.picus.core.shared.PersistenceAdapterTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,13 +25,8 @@ import static org.assertj.core.groups.Tuple.tuple;
         ChatRoomPersistenceAdapter.class,
         ChatRoomPersistenceMapper.class
 })
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ChatRoomPersistenceAdapterTest {
+class ChatRoomPersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
-    @Autowired
-    private EntityManager em;
     @Autowired
     private ChatRoomJpaRepository chatRoomJpaRepository;
     @Autowired
@@ -208,11 +200,6 @@ class ChatRoomPersistenceAdapterTest {
         // then
         assertThat(chatRoomJpaRepository.findAll()).isEmpty();
         assertThat(chatParticipantJpaRepository.findAll()).isEmpty();
-    }
-
-    private void clearPersistenceContext() {
-        em.flush();
-        em.clear();
     }
 
     private ChatRoomEntity createChatRoomEntity() {

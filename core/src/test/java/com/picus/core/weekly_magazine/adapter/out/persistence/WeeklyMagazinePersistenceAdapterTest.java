@@ -1,5 +1,6 @@
 package com.picus.core.weekly_magazine.adapter.out.persistence;
 
+import com.picus.core.shared.PersistenceAdapterTestSupport;
 import com.picus.core.weekly_magazine.adapter.out.persistence.entity.WeeklyMagazineEntity;
 import com.picus.core.weekly_magazine.adapter.out.persistence.entity.WeeklyMagazinePostEntity;
 import com.picus.core.weekly_magazine.adapter.out.persistence.entity.vo.WeekAt;
@@ -9,14 +10,10 @@ import com.picus.core.weekly_magazine.adapter.out.persistence.repository.WeeklyM
 import com.picus.core.weekly_magazine.adapter.out.persistence.repository.WeeklyMagazinePostJpaRepository;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazine;
 import com.picus.core.weekly_magazine.domain.model.WeeklyMagazinePost;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +26,7 @@ import static org.assertj.core.api.Assertions.tuple;
         WeeklyMagazinePersistenceMapper.class,
         WeeklyMagazinePostPersistenceMapper.class
 })
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class WeeklyMagazinePersistenceAdapterTest {
+class WeeklyMagazinePersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
     @Autowired
     private WeeklyMagazinePersistenceAdapter persistenceAdapter;
@@ -41,9 +35,6 @@ class WeeklyMagazinePersistenceAdapterTest {
     private WeeklyMagazineJpaRepository weeklyMagazineJpaRepository;
     @Autowired
     private WeeklyMagazinePostJpaRepository weeklyMagazinePostJpaRepository;
-
-    @Autowired
-    EntityManager em;
 
     @Test
     @DisplayName("특정 WeekAt을 가진 WeeklyMagazine을 조회한다.")
@@ -117,10 +108,5 @@ class WeeklyMagazinePersistenceAdapterTest {
                 .month(month)
                 .week(week)
                 .build();
-    }
-
-    private void clearPersistenceContext() {
-        em.flush();
-        em.clear();
     }
 }

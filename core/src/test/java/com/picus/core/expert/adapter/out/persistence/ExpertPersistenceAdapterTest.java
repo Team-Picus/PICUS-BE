@@ -18,18 +18,15 @@ import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaReposit
 import com.picus.core.expert.adapter.out.persistence.repository.ProjectJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.SkillJpaRepository;
 import com.picus.core.expert.adapter.out.persistence.repository.StudioJpaRepository;
+import com.picus.core.shared.PersistenceAdapterTestSupport;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,10 +42,7 @@ import static org.assertj.core.api.Assertions.tuple;
         SkillPersistenceMapper.class,
         StudioPersistenceMapper.class
 })
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ExpertPersistenceAdapterTest {
+class ExpertPersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
     @Autowired
     ExpertPersistenceAdapter expertPersistenceAdapter;
@@ -67,9 +61,6 @@ class ExpertPersistenceAdapterTest {
 
     @Autowired
     UserJpaRepository userJpaRepository;
-
-    @Autowired
-    EntityManager em;
 
     @Test
     @DisplayName("Expert 도메인 객체를 저장하면 연관된 Project, Skill, Studio도 함께 저장되며 기본키는 연관맺은 UserEntity의 기본키가 된다.")
@@ -472,11 +463,5 @@ class ExpertPersistenceAdapterTest {
                                 .build()
                 )
                 .build();
-    }
-
-
-    private void clearPersistenceContext() {
-        em.flush();
-        em.clear();
     }
 }

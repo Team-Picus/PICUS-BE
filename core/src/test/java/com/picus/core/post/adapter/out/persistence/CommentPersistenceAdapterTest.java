@@ -7,14 +7,11 @@ import com.picus.core.post.adapter.out.persistence.repository.CommentJpaReposito
 import com.picus.core.post.adapter.out.persistence.repository.PostJpaRepository;
 import com.picus.core.post.domain.Comment;
 import com.picus.core.post.domain.vo.SpaceType;
-import jakarta.persistence.EntityManager;
+import com.picus.core.shared.PersistenceAdapterTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,16 +25,11 @@ import static org.assertj.core.api.Assertions.tuple;
         CommentPersistenceAdapter.class,
         CommentPersistenceMapper.class
 })
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CommentPersistenceAdapterTest {
+class CommentPersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
 
     @Autowired
     private PostJpaRepository postJpaRepository;
-    @Autowired
-    private EntityManager em;
     @Autowired
     private CommentPersistenceAdapter commentPersistenceAdapter;
     @Autowired
@@ -167,11 +159,5 @@ class CommentPersistenceAdapterTest {
                 .authorNo("user-123")
                 .content("content")
                 .build();
-    }
-
-
-    private void clearPersistenceContext() {
-        em.flush();
-        em.clear();
     }
 }

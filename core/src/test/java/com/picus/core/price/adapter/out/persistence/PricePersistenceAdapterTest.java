@@ -18,6 +18,7 @@ import com.picus.core.price.domain.Package;
 import com.picus.core.price.domain.Price;
 import com.picus.core.price.domain.PriceReferenceImage;
 import com.picus.core.price.domain.vo.SnapSubTheme;
+import com.picus.core.shared.PersistenceAdapterTestSupport;
 import com.picus.core.shared.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
@@ -42,10 +43,7 @@ import static org.assertj.core.api.Assertions.*;
         PriceReferenceImagePersistenceMapper.class,
         QueryDslConfig.class
 })
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class PricePersistenceAdapterTest {
+class PricePersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
     @Autowired
     PricePersistenceAdapter pricePersistenceAdapter;
@@ -57,9 +55,6 @@ class PricePersistenceAdapterTest {
     OptionJpaRepository optionJpaRepository;
     @Autowired
     PriceReferenceImageJpaRepository priceReferenceImageJpaRepository;
-
-    @Autowired
-    EntityManager em;
 
     @Test
     @DisplayName("특정 expertNo을 가진 Price를 조회한다. 조건없이 조회")
@@ -531,11 +526,6 @@ class PricePersistenceAdapterTest {
                 .pricePerUnit(price)
                 .contents(contents)
                 .build();
-    }
-
-    private void clearPersistenceContext() {
-        em.flush();
-        em.clear();
     }
 
 }

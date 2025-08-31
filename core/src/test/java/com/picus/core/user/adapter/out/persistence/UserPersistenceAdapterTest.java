@@ -3,6 +3,7 @@ package com.picus.core.user.adapter.out.persistence;
 import com.picus.core.expert.adapter.out.persistence.entity.ExpertEntity;
 import com.picus.core.expert.adapter.out.persistence.repository.ExpertJpaRepository;
 import com.picus.core.expert.domain.vo.ApprovalStatus;
+import com.picus.core.shared.PersistenceAdapterTestSupport;
 import com.picus.core.user.adapter.out.persistence.entity.ProfileImageEntity;
 import com.picus.core.user.adapter.out.persistence.entity.UserEntity;
 import com.picus.core.user.adapter.out.persistence.mapper.ProfileImagePersistenceMapper;
@@ -34,10 +35,7 @@ import static org.assertj.core.api.Assertions.tuple;
         UserPersistenceMapper.class,
         ProfileImagePersistenceMapper.class
 })
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserPersistenceAdapterTest {
+class UserPersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
     @Autowired
     UserPersistenceAdapter userPersistenceAdapter;
@@ -47,8 +45,6 @@ class UserPersistenceAdapterTest {
     ExpertJpaRepository expertJpaRepository;
     @Autowired
     ProfileImageJpaRepository profileImageJpaRepository;
-    @Autowired
-    EntityManager em;
 
     @Test
     @DisplayName("해당 User에 ExpertNo를 할당한다.")
@@ -341,8 +337,4 @@ class UserPersistenceAdapterTest {
         ProfileImageEntity profileImageEntity4 = createProfileImageEntity(testFileKey4, userEntity4.getUserNo());
     }
 
-    private void clearPersistenceContext() {
-        em.flush();
-        em.clear();
-    }
 }
