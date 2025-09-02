@@ -1,4 +1,4 @@
-package com.picus.core.chat.adapter.in.web;
+package com.picus.core.chat.adapter.in;
 
 import com.picus.core.chat.adapter.in.web.data.request.SendMessageRequest;
 import com.picus.core.shared.annotation.CurrentUser;

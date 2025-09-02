@@ -1,13 +1,10 @@
 package com.picus.core.chat.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.picus.core.chat.adapter.in.web.data.request.ExitChatRoomRequest;
+import com.picus.core.chat.adapter.in.PinChatRoomController;
 import com.picus.core.chat.adapter.in.web.data.request.PinChatRoomRequest;
-import com.picus.core.chat.adapter.in.web.mapper.ExitChatRoomWebMapper;
 import com.picus.core.chat.adapter.in.web.mapper.PinChatRoomWebMapper;
-import com.picus.core.chat.application.port.in.ExitChatRoomUseCase;
 import com.picus.core.chat.application.port.in.PinChatRoomUseCase;
-import com.picus.core.chat.application.port.in.command.ExitChatRoomCommand;
 import com.picus.core.chat.application.port.in.command.PinChatRoomCommand;
 import com.picus.core.shared.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;

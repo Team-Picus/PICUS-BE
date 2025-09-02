@@ -2,17 +2,20 @@ package com.picus.core.chat.adapter.out.persistence.jpa.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "message_read_statuses")
+@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MessageReadStatusEntity {
 
     @Id @Tsid
     private String messageReadStatusNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_no")
-    private ChatRoomEntity chatRoomEntity; // 조회 편의를 위해
+    private String chatRoomNo; // 조회 편의를 위해
 
     @Column(nullable = false)
     private String messageNo;
