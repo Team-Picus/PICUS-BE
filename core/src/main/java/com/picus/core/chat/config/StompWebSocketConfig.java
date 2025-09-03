@@ -1,13 +1,18 @@
 package com.picus.core.chat.config;
 
+import com.picus.core.infrastructure.stomp.resolver.StompCurrentUserArgumentResolver;
+import com.picus.core.infrastructure.web.resolver.CurrentUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.beans.factory.annotation.Value;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -45,5 +50,10 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new StompCurrentUserArgumentResolver()); // @CurrentUser 어노테이션 리졸버 등록
     }
 }
