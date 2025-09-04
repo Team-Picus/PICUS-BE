@@ -1,5 +1,6 @@
 package com.picus.core.chat.config;
 
+import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.infrastructure.stomp.resolver.StompCurrentUserArgumentResolver;
 import com.picus.core.infrastructure.web.resolver.CurrentUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    private final TokenProvider tokenProvider;
     private final RabbitMqConfigProperties rabbitMqConfigProperties;
     private final StompHandler stompHandler;
 
@@ -54,6 +56,6 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new StompCurrentUserArgumentResolver()); // @CurrentUser 어노테이션 리졸버 등록
+        argumentResolvers.add(new StompCurrentUserArgumentResolver(tokenProvider)); // @CurrentUser 어노테이션 리졸버 등록
     }
 }

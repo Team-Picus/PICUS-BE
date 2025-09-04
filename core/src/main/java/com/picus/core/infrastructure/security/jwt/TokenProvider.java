@@ -1,6 +1,7 @@
 package com.picus.core.infrastructure.security.jwt;
 
 import com.picus.core.shared.exception.RestApiException;
+import com.picus.core.shared.exception.code.status.GlobalErrorStatus;
 import com.picus.core.user.domain.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -126,6 +128,12 @@ public class TokenProvider {
 
     public Optional<String> getToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(TOKEN_HEADER))
+                .filter(token -> token.startsWith(BEARER))
+                .map(token -> token.replace(BEARER, ""));
+    }
+
+    public Optional<String> getToken(StompHeaderAccessor accessor) {
+        return Optional.ofNullable(accessor.getFirstNativeHeader(TOKEN_HEADER))
                 .filter(token -> token.startsWith(BEARER))
                 .map(token -> token.replace(BEARER, ""));
     }

@@ -15,6 +15,7 @@ public class MessageReadStatusEntity {
     @Id @Tsid
     private String messageReadStatusNo;
 
+    @Column(nullable = false)
     private String chatRoomNo; // 조회 편의를 위해
 
     @Column(nullable = false)
@@ -25,4 +26,8 @@ public class MessageReadStatusEntity {
 
     @Column(nullable = false)
     private Boolean isRead;
+
+    public void bindMessageNo(String messageNo) {
+        this.messageNo = messageNo;
+    }
 }

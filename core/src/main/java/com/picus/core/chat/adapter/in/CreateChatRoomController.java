@@ -3,7 +3,6 @@ package com.picus.core.chat.adapter.in;
 import com.picus.core.chat.adapter.in.web.data.request.CreateChatRoomRequest;
 import com.picus.core.chat.adapter.in.web.mapper.CreateChatRoomWebMapper;
 import com.picus.core.chat.application.port.in.CreateChatRoomUseCase;
-import com.picus.core.chat.application.port.in.command.CreateChatRoomCommand;
 import com.picus.core.shared.annotation.CurrentUser;
 import com.picus.core.shared.common.BaseResponse;
 import jakarta.validation.Valid;

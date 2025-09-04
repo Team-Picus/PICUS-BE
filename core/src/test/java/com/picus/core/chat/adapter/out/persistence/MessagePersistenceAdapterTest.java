@@ -1,7 +1,9 @@
 package com.picus.core.chat.adapter.out.persistence;
 
 import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatRoomEntity;
+import com.picus.core.chat.adapter.out.persistence.jpa.entity.MessageReadStatusEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRepository;
+import com.picus.core.chat.adapter.out.persistence.jpa.repository.MessageReadStatusJpaRepository;
 import com.picus.core.chat.adapter.out.persistence.mapper.MessagePersistenceMapper;
 import com.picus.core.chat.adapter.out.persistence.mongo.repository.MessageMongoRepository;
 import com.picus.core.chat.domain.model.Message;
@@ -10,6 +12,7 @@ import com.picus.core.chat.domain.model.vo.FileContent;
 import com.picus.core.chat.domain.model.vo.MessageContent;
 import com.picus.core.chat.domain.model.vo.MessageType;
 import jakarta.persistence.EntityManager;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,11 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -37,8 +40,6 @@ import static org.assertj.core.api.Assertions.tuple;
 class MessagePersistenceAdapterTest {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
-    @Autowired
     private EntityManager em;
     @Autowired
     private ChatRoomJpaRepository chatRoomJpaRepository;
@@ -46,6 +47,8 @@ class MessagePersistenceAdapterTest {
     private MessagePersistenceAdapter messagePersistenceAdapter;
     @Autowired
     private MessageMongoRepository messageMongoRepository;
+    @Autowired
+    private MessageReadStatusJpaRepository messageReadStatusJpaRepository;
 
     @AfterEach
     void tearDown() {
@@ -88,6 +91,18 @@ class MessagePersistenceAdapterTest {
                         tuple("u-123", true),
                         tuple("u-456", false)
                 );
+
+        // then - 데이터베이스에 저장되었는지 검증
+        assertThat(messageMongoRepository.findById(new ObjectId(savedMessage.getMessageNo())))
+                .isPresent();
+
+        for (MessageReadStatus messageReadStatus : savedMessage.getMessageReadStatuses()) {
+            Optional<MessageReadStatusEntity> optional = messageReadStatusJpaRepository.findById(messageReadStatus.getMessageReadStatusNo());
+            assertThat(optional).isPresent();
+
+            MessageReadStatusEntity messageReadStatusEntity = optional.get();
+            assertThat(messageReadStatusEntity.getMessageNo()).isEqualTo(savedMessage.getMessageNo());
+        }
     }
 
     private Message createMessageDomain(

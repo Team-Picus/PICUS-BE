@@ -3,6 +3,7 @@ package com.picus.core.shared;
 import com.picus.core.infrastructure.security.jwt.ExcludeBlacklistPathProperties;
 import com.picus.core.infrastructure.security.jwt.TokenProvider;
 import com.picus.core.user.application.port.in.ValidateTokenUseCase;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -28,7 +29,7 @@ public abstract class ControllerTestSupport {
 
     @BeforeEach
     void setupSecurityMocks() {
-        given(tokenProvider.getToken(any())).willReturn(Optional.of("mock-jwt-token"));
+        given(tokenProvider.getToken(any(HttpServletRequest.class))).willReturn(Optional.of("mock-jwt-token"));
         given(tokenProvider.getId(any())).willReturn(Optional.of(TEST_USER_ID));
         given(tokenProvider.validateToken("mock-jwt-token")).willReturn(true);
         given(tokenProvider.getAuthentication("mock-jwt-token"))

@@ -4,6 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record ImageContent (
-        String imageFileKey
+        String imageKey
 ) implements MessageContent {
 }

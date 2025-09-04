@@ -23,6 +23,7 @@ public class MessagePersistenceAdapter implements MessageCreatePort {
 
     @Override
     public Message create(Message message) {
+        // TODO:  JPA(RDB) + MongoDB 트랜잭션 처리
         // Message Domain -> Message Document
         MessageDocument messageDocument = messageMapper.toMessageDocument(message);
         // Message Document 저장
@@ -31,7 +32,11 @@ public class MessagePersistenceAdapter implements MessageCreatePort {
         // MessageReadStatus Domain -> MessageReadStatus Entity
 
         List<MessageReadStatusEntity> readStatusEntities = message.getMessageReadStatuses().stream()
-                .map(messageMapper::toMessageReadStatusEntity)
+                .map(readStatus -> {
+                    MessageReadStatusEntity readStatusEntity = messageMapper.toMessageReadStatusEntity(readStatus);
+                    readStatusEntity.bindMessageNo(savedMessageDocument.getMessageNo().toHexString());
+                    return readStatusEntity;
+                })
                 .toList();
         // MessageReadStatus Entity 저장
         List<MessageReadStatusEntity> savedReadStatusEntities = messageReadStatusJpaRepository.saveAll(readStatusEntities);// TODO: bulk insert

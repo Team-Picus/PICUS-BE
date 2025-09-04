@@ -140,7 +140,7 @@ class CreateMessageServiceTest {
         CreateImageMessageCommand messageCommand = CreateImageMessageCommand.builder()
                 .chatRoomNo("cr-123")
                 .senderNo("u-123")
-                .imageContent(ImageContent.builder().imageFileKey("a.png").build())
+                .imageContent(ImageContent.builder().imageKey("a.png").build())
                 .build();
 
         ChatRoom mockChatRoom = mock(ChatRoom.class);
@@ -163,7 +163,7 @@ class CreateMessageServiceTest {
         Message capturedMessage = captor.getValue();
         assertThat(capturedMessage.getChatRoomNo()).isEqualTo("cr-123");
         assertThat(capturedMessage.getSenderNo()).isEqualTo("u-123");
-        assertThat(((ImageContent) capturedMessage.getContent()).imageFileKey()).isEqualTo("a.png");
+        assertThat(((ImageContent) capturedMessage.getContent()).imageKey()).isEqualTo("a.png");
 
         // then - getMessageReadStatuses 검증
         assertReadStatus(capturedMessage.getMessageReadStatuses());
@@ -183,7 +183,7 @@ class CreateMessageServiceTest {
         CreateImageMessageCommand messageCommand = CreateImageMessageCommand.builder()
                 .chatRoomNo("cr-123")
                 .senderNo("u-123")
-                .imageContent(ImageContent.builder().imageFileKey("a.png").build())
+                .imageContent(ImageContent.builder().imageKey("a.png").build())
                 .build();
 
         given(chatRoomReadPort.findById(messageCommand.chatRoomNo()))

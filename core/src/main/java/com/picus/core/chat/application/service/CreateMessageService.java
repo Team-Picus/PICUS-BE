@@ -48,35 +48,28 @@ public class CreateMessageService implements CreateMessageUseCase {
         // 메시지 읽음여부 생성
         List<MessageReadStatus> messageReadStatuses = createReadStatuses(command, chatParticipants);
 
+        // 채팅 메시지 생성 및 저장
+        Message message = commandMapper.toDomain(command, messageReadStatuses);
+        messageCreatePort.create(message);
+
         switch (command) {
             case CreateTextMessageCommand textMessageCommand -> {
 
-                // 채팅 메시지 생성 및 저장
-                Message textMessage = commandMapper.toDomain(textMessageCommand, messageReadStatuses);
-                messageCreatePort.create(textMessage);
-
                 return CreateTextMessageResult.builder()
-                        .senderNo(textMessage.getSenderNo())
-                        .text(((TextContent) textMessage.getContent()).text())
+                        .senderNo(message.getSenderNo())
+                        .text(((TextContent) message.getContent()).text())
                         .build();
             }
             case CreateFileMessageCommand createFileMessageCommand -> {
 
-                // 채팅 메시지 생성 및 저장
-                Message fileMessage = commandMapper.toDomain(createFileMessageCommand, messageReadStatuses);
-                messageCreatePort.create(fileMessage);
-
                 return CreateFileMessageResult.builder()
-                        .senderNo(fileMessage.getSenderNo())
+                        .senderNo(message.getSenderNo())
                         .fileUrl("") // TODO: file key -> url
                         .build();
             }
             case CreateImageMessageCommand createImageMessageCommand -> {
-                Message imageMessage = commandMapper.toDomain(createImageMessageCommand, messageReadStatuses);
-                messageCreatePort.create(imageMessage);
-
                 return CreateImageMessageResult.builder()
-                        .senderNo(imageMessage.getSenderNo())
+                        .senderNo(message.getSenderNo())
                         .imageUrl("") // TODO: file key -> url
                         .build();
             }
