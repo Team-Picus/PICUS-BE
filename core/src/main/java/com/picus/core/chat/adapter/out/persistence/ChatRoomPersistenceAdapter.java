@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -88,6 +90,31 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
 
         return optionalChatRoomEntity
                 .map(entity -> mapper.toDomain(entity, chatParticipantEntities));
+    }
+
+    @Override
+    public List<ChatRoom> findByUserNo(String userNo) {
+        // 1) 해당 userNo가 속한 채팅방들 조회
+        List<ChatRoomEntity> chatRoomEntities = chatParticipantJpaRepository.findChatRoomNosByUserNo(userNo);
+
+        // 2) 채팅방 리스트에서 chatRoomNo 추출
+        List<String> chatRoomNos = chatRoomEntities.stream()
+                .map(ChatRoomEntity::getChatRoomNo)
+                .toList();
+
+        // 3) 해당 채팅방들의 모든 참여자 로딩
+        List<ChatParticipantEntity> allParticipants =
+                chatParticipantJpaRepository.findByChatRoomEntity_ChatRoomNoIn(chatRoomNos);
+
+        // 4) 채팅방 번호별 참여자 그룹화
+        Map<String, List<ChatParticipantEntity>> groupedByRoom =
+                allParticipants.stream()
+                        .collect(Collectors.groupingBy(p -> p.getChatRoomEntity().getChatRoomNo()));
+
+        // 5) 매핑
+        return chatRoomEntities.stream()
+                .map(room -> mapper.toDomain(room, groupedByRoom.get(room.getChatRoomNo())))
+                .toList();
     }
 
     @Override
