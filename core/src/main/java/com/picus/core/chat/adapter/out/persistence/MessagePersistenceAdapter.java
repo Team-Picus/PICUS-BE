@@ -6,15 +6,17 @@ import com.picus.core.chat.adapter.out.persistence.mapper.MessagePersistenceMapp
 import com.picus.core.chat.adapter.out.persistence.mongo.document.MessageDocument;
 import com.picus.core.chat.adapter.out.persistence.mongo.repository.MessageMongoRepository;
 import com.picus.core.chat.application.port.out.MessageCreatePort;
+import com.picus.core.chat.application.port.out.MessageReadPort;
 import com.picus.core.chat.domain.model.Message;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class MessagePersistenceAdapter implements MessageCreatePort {
+public class MessagePersistenceAdapter implements MessageCreatePort, MessageReadPort {
 
     private final MessageMongoRepository messageMongoRepository;
     private final MessageReadStatusJpaRepository messageReadStatusJpaRepository;
@@ -43,5 +45,25 @@ public class MessagePersistenceAdapter implements MessageCreatePort {
 
         // Domain 변환하여 리턴
         return messageMapper.toMessageDomain(savedMessageDocument, savedReadStatusEntities);
+    }
+
+    @Override
+    public Optional<Message> findLastMessageByChatRoomNo(String chatRoomNo) {
+        // 현재 채팅방의 가장 마지막 메시지 조회
+        Optional<MessageDocument> optionalLastMessageDoc = messageMongoRepository.findFirstByChatRoomNoOrderByCreatedAtDesc(chatRoomNo);
+        if(optionalLastMessageDoc.isEmpty())
+            return Optional.empty();
+
+        MessageDocument messageDocument = optionalLastMessageDoc.get();
+        List<MessageReadStatusEntity> readStatusEntities =
+                messageReadStatusJpaRepository.findByMessageNo(messageDocument.getMessageNo().toHexString());
+
+        return Optional.of(messageMapper.toMessageDomain(messageDocument, readStatusEntities));
+    }
+
+    @Override
+    public long countUnReadMessageByChatRoomNoAndUserNo(String chatRoomNo, String userNo) {
+        return messageReadStatusJpaRepository
+                .countByChatRoomNoAndUserNoAndIsReadFalse(chatRoomNo, userNo);
     }
 }
