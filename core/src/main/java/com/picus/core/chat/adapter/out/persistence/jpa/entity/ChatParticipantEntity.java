@@ -7,7 +7,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_participants")
+@Table(
+        name = "chat_participants",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"chat_room_no", "user_no"})
+        }
+)
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
