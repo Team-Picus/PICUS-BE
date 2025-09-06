@@ -14,7 +14,6 @@ import com.picus.core.expert.domain.vo.SkillType;
 import com.picus.core.user.application.port.out.UserUpdatePort;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
-import com.picus.core.user.domain.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,7 +80,7 @@ class UpdateExpertServiceTest {
                 .build();
 
         given(expertReadPort.findById(expertNo)).willReturn(Optional.of(expert));
-        given(userReadPort.findUserInfoByExpertNo(expertNo)).willReturn(Optional.of(userWithProfile));
+        given(userReadPort.findUserInfoByUserNo(expertNo)).willReturn(Optional.of(userWithProfile));
 
         // when
         expertInfoCommandService.updateExpertBasicInfo(request);
@@ -90,7 +89,7 @@ class UpdateExpertServiceTest {
         then(expertReadPort).should().findById(expertNo);
         then(expert).should().updateBasicInfo("new-background", List.of("https://new.link"), "New intro");
         then(expertUpdatePort).should().update(expert);
-        then(userReadPort).should().findUserInfoByExpertNo(expertNo);
+        then(userReadPort).should().findUserInfoByUserNo(expertNo);
         then(userUpdatePort).should().updateNicknameAndImageByExpertNo(argThat(updatedDto ->
                 updatedDto.nickname().equals("NewNickname") &&
                         updatedDto.profileImageFileKey().equals("new-profile-img") &&

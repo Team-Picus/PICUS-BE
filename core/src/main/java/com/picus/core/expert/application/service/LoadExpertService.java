@@ -35,7 +35,7 @@ public class LoadExpertService implements LoadExpertUseCase {
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // expertNo로 User 정보 조회
-        UserWithProfileImageDto userInfo = userReadPort.findUserInfoByExpertNo(expertNo)
+        UserWithProfileImageDto userInfo = userReadPort.findUserInfoByUserNo(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // TODO: 배경 이미지, 프로필 이미지 key->url 변환

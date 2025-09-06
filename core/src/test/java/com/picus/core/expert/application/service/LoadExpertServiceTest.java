@@ -61,7 +61,7 @@ class LoadExpertServiceTest {
 
         // then - 메서드 상호작용 검증
         then(expertReadPort).should().findById(eq(expertNo));
-        then(userReadPort).should().findUserInfoByExpertNo(eq(expertNo));
+        then(userReadPort).should().findUserInfoByUserNo(eq(expertNo));
     }
 
     private void stubPortResult(Expert expert, UserWithProfileImageDto userWithProfileImageDto, String expertNo) {
@@ -70,7 +70,7 @@ class LoadExpertServiceTest {
                 .willReturn(Optional.of(expert));
 
         // userReadPort Stubbing
-        given(userReadPort.findUserInfoByExpertNo(expertNo))
+        given(userReadPort.findUserInfoByUserNo(expertNo))
                 .willReturn(Optional.of(userWithProfileImageDto));
     }
 

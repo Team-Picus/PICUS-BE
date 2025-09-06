@@ -14,14 +14,10 @@ import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto
 import com.picus.core.user.domain.model.Provider;
 import com.picus.core.user.domain.model.Role;
 import com.picus.core.user.domain.model.User;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,7 +63,7 @@ class UserPersistenceAdapterTest extends PersistenceAdapterTestSupport {
 
     @Test
     @DisplayName("ExpertNo을 가지고 사용자의 닉네임과 프로필이미지 파일키를 조회한다.")
-    public void findUserInfoByExpertNo_success() throws Exception {
+    public void findUserInfoByUserNo_success() throws Exception {
         // given
         String testNickname = "nick"; // 테스트 데이터
         String testProfileImageFileKey = "profile_key";
@@ -84,7 +80,7 @@ class UserPersistenceAdapterTest extends PersistenceAdapterTestSupport {
         clearPersistenceContext();
 
         // when
-        Optional<UserWithProfileImageDto> optionalResult = userPersistenceAdapter.findUserInfoByExpertNo(expertNo);
+        Optional<UserWithProfileImageDto> optionalResult = userPersistenceAdapter.findUserInfoByUserNo(expertNo);
 
         // then
         assertThat(optionalResult).isPresent();

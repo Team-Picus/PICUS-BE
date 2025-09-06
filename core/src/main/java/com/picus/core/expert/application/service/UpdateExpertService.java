@@ -13,7 +13,6 @@ import com.picus.core.shared.exception.RestApiException;
 import com.picus.core.user.application.port.out.UserUpdatePort;
 import com.picus.core.user.application.port.out.UserReadPort;
 import com.picus.core.user.application.port.out.join_dto.UserWithProfileImageDto;
-import com.picus.core.user.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +53,7 @@ public class UpdateExpertService implements UpdateExpertUseCase {
         expertUpdatePort.update(expert);
 
         // User 정보 로드
-        UserWithProfileImageDto userWithProfileImageDto = userReadPort.findUserInfoByExpertNo(expertNo)
+        UserWithProfileImageDto userWithProfileImageDto = userReadPort.findUserInfoByUserNo(expertNo)
                 .orElseThrow(() -> new RestApiException(_NOT_FOUND));
 
         // User 수정

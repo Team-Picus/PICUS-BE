@@ -11,4 +11,6 @@ public interface ChatRoomReadPort {
     List<ChatRoom> findAllByIds(List<String> chatRoomNos);
 
     Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo);
+
+    List<ChatRoom> findByUserNo(String userNo);
 }

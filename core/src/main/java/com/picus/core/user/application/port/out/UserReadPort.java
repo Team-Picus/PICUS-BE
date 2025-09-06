@@ -13,7 +13,7 @@ public interface UserReadPort {
     Role findRoleById(String userNo);
     Boolean existsById(String userNo);
     User findByExpertNo(String expertNo);
-    Optional<UserWithProfileImageDto> findUserInfoByExpertNo(String expertNo);
+    Optional<UserWithProfileImageDto> findUserInfoByUserNo(String userNo);
     List<UserWithProfileImageDto> findUserInfoByNicknameContaining(String keyword);
     List<UserWithProfileImageDto> findTopNUserInfoByNicknameContainingOrderByNickname(String keyword, int size);
 }
