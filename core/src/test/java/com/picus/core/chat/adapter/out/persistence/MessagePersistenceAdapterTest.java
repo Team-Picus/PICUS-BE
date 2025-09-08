@@ -1,6 +1,5 @@
 package com.picus.core.chat.adapter.out.persistence;
 
-import com.picus.core.chat.adapter.out.persistence.jpa.entity.ChatRoomEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.entity.MessageReadStatusEntity;
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.ChatRoomJpaRepository;
 import com.picus.core.chat.adapter.out.persistence.jpa.repository.MessageReadStatusJpaRepository;
@@ -128,10 +127,5 @@ class MessagePersistenceAdapterTest {
     private void clearPersistenceContext() {
         em.flush();
         em.clear();
-    }
-
-    private ChatRoomEntity createChatRoomEntity() {
-        ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder().build();
-        return chatRoomJpaRepository.save(chatRoomEntity);
     }
 }

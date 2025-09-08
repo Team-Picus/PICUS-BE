@@ -93,9 +93,9 @@ public class ChatRoomPersistenceAdapter implements ChatRoomCreatePort, ChatRoomR
     }
 
     @Override
-    public List<ChatRoom> findByUserNo(String userNo) {
+    public List<ChatRoom> findByUserNoOrderByIsPinned(String userNo) {
         // 1) 해당 userNo가 속한 채팅방들 조회
-        List<ChatRoomEntity> chatRoomEntities = chatParticipantJpaRepository.findChatRoomNosByUserNo(userNo);
+        List<ChatRoomEntity> chatRoomEntities = chatParticipantJpaRepository.findChatRoomsByUserNoOrderByIsPinned(userNo);
 
         // 2) 채팅방 리스트에서 chatRoomNo 추출
         List<String> chatRoomNos = chatRoomEntities.stream()

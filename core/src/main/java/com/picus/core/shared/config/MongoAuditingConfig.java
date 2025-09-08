@@ -7,6 +7,5 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 @Configuration
 @EnableMongoAuditing
-@Profile("!test")
 public class MongoAuditingConfig {
 }
