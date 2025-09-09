@@ -60,7 +60,7 @@ public class LoadMyChatRoomListIntegrationTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("내 채팅방 목록을 조회한다. 상단고정된 채팅방이 먼저 노출된다.")
+    @DisplayName("사용자는 자신의 채팅방 목록을 조회할 수 있다.")
     public void load() throws Exception {
         // given - 데이터베이스에 데이터 셋팅
         UserEntity me = createUserEntity("me");
@@ -114,7 +114,7 @@ public class LoadMyChatRoomListIntegrationTest extends IntegrationTestSupport {
                         LoadMyChatRoomListResponse.ChatRoomResponse::lastMessage,
                         LoadMyChatRoomListResponse.ChatRoomResponse::isPinned,
                         LoadMyChatRoomListResponse.ChatRoomResponse::unreadMessageCount
-                ).containsExactly(
+                ).containsExactlyInAnyOrder(
                         tuple("opponent1", "", "opp_sent", true, 1L),
                         tuple("opponent2", "", "me_sent", false, 1L)
                 );

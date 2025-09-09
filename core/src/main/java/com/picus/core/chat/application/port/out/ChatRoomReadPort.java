@@ -12,5 +12,5 @@ public interface ChatRoomReadPort {
 
     Optional<ChatRoom> findByClientNoAndExpertNo(String clientNo, String expertNo);
 
-    List<ChatRoom> findByUserNoOrderByIsPinned(String userNo);
+    List<ChatRoom> findByUserNo(String userNo);
 }

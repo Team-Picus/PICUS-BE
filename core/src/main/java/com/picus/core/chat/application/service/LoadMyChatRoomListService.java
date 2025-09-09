@@ -32,12 +32,12 @@ public class LoadMyChatRoomListService implements LoadMyChatRoomListUseCase {
     public List<LoadMyChatRoomListResult> load(String currentUserNo) {
 
         // 해당 사용자가 속한 채팅방 목록 조회. 상단 고정처리한 채팅방부터 우선적으로 가져오기
-        List<ChatRoom> chatRooms = chatRoomReadPort.findByUserNoOrderByIsPinned(currentUserNo);
+        List<ChatRoom> chatRooms = chatRoomReadPort.findByUserNo(currentUserNo);
 
         List<LoadMyChatRoomListResult> results = new ArrayList<>();
         for (ChatRoom chatRoom : chatRooms) {
             // 각 채팅방의 마지막 메시지 조회.
-            Message lastMessage = messageReadPort.findLastMessageByChatRoomNo(chatRoom.getChatRoomNo())
+            Message lastMessage = messageReadPort.findLastByChatRoomNo(chatRoom.getChatRoomNo())
                     .orElseThrow(() -> new RestApiException(_INTERNAL_SERVER_ERROR)); // 채팅방은 메시지가 보내져야 만들어지기 때문에 서버에러로 처리
 
             // 안읽은 메시지 수 조회

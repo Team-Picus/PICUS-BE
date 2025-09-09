@@ -5,7 +5,10 @@ import com.picus.core.chat.domain.model.Message;
 import java.util.Optional;
 
 public interface MessageReadPort {
-    Optional<Message> findLastMessageByChatRoomNo(String chatRoomNo);
+    Optional<Message> findLastByChatRoomNo(String chatRoomNo);
+
+    Optional<Message> findLastByChatRoomNoAndKeywordContaining(String chatRoomNo, String keyword);
 
     long countUnReadMessageByChatRoomNoAndUserNo(String chatRoomNo, String userNo);
+
 }

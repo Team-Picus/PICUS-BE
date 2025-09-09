@@ -10,9 +10,12 @@ import com.picus.core.chat.application.port.out.MessageReadPort;
 import com.picus.core.chat.domain.model.Message;
 import com.picus.core.shared.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -48,13 +51,35 @@ public class MessagePersistenceAdapter implements MessageCreatePort, MessageRead
     }
 
     @Override
-    public Optional<Message> findLastMessageByChatRoomNo(String chatRoomNo) {
+    public Optional<Message> findLastByChatRoomNo(String chatRoomNo) {
         // 현재 채팅방의 가장 마지막 메시지 조회
         Optional<MessageDocument> optionalLastMessageDoc = messageMongoRepository.findFirstByChatRoomNoOrderByCreatedAtDesc(chatRoomNo);
         if(optionalLastMessageDoc.isEmpty())
             return Optional.empty();
 
         MessageDocument messageDocument = optionalLastMessageDoc.get();
+        List<MessageReadStatusEntity> readStatusEntities =
+                messageReadStatusJpaRepository.findByMessageNo(messageDocument.getMessageNo().toHexString());
+
+        return Optional.of(messageMapper.toMessageDomain(messageDocument, readStatusEntities));
+    }
+
+    @Override
+    public Optional<Message> findLastByChatRoomNoAndKeywordContaining(String chatRoomNo, String keyword) {
+        // 키워드를 안전하게 이스케이프하여 부분일치 정규식 생성 (대소문자 무시)
+        String escaped = Pattern.quote(keyword == null ? "" : keyword.trim());
+        String regex = ".*" + escaped + ".*";
+
+        // 해당 채팅방의 해당 키워드가 포함된 메시지 조회
+        PageRequest page = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<MessageDocument> messageDocuments =
+                messageMongoRepository.findByChatRoomNoAndContentTextRegex(chatRoomNo, regex, page);
+
+        Optional<MessageDocument> optionalMessage = messageDocuments.isEmpty() ? Optional.empty() : Optional.of(messageDocuments.getFirst());
+
+        if (optionalMessage.isEmpty()) return Optional.empty();
+
+        MessageDocument messageDocument = optionalMessage.get();
         List<MessageReadStatusEntity> readStatusEntities =
                 messageReadStatusJpaRepository.findByMessageNo(messageDocument.getMessageNo().toHexString());
 
